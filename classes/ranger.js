@@ -14,7 +14,7 @@ classes.ranger = {
   icon: "🏹",
   text: "A bow and forest magic. Shoots before the enemy can reach you, and calls spirits to fight.",
   powerStat: "Dexterity",
-  base: { maxHp: 75, attack: 9, firstStrike: 1, aimChance: 0.25, spirits: 3, regrowth: 0.04 },
+  base: { maxHp: 80, attack: 10, firstStrike: 1, aimChance: 0.3, spirits: 3, regrowth: 0.05 },
 
   gearLabel: "Bow",
   gearTypes: { longbow: "Longbow", spirit: "Spirit Bow", bloom: "Bloom Bow" },
@@ -144,7 +144,7 @@ function rangerWhenAttacked() {
 
 // The damage of one spirit each turn
 function rangerDotPerStack() {
-  return Math.max(1, Math.round(playerAttack * 0.2));
+  return Math.max(1, Math.round(playerAttack * 0.25));
 }
 
 function rangerStatLine() {

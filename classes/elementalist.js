@@ -15,7 +15,7 @@ classes.elementalist = {
   icon: "🧤",
   text: "Commands the four elements. Each pair of elemental gloves changes how you fight, and every spell ignores armor.",
   powerStat: "Intelligence",
-  base: { maxHp: 70, attack: 9, tideHeal: 0.06, burnStacks: 4, critChance: 0.3, stunChance: 0.2, crush: 0.25 },
+  base: { maxHp: 75, attack: 10, tideHeal: 0.06, burnStacks: 4, critChance: 0.3, stunChance: 0.2, crush: 0.25 },
 
   gearLabel: "Gloves",
   gearTypes: { water: "Water Gloves", fire: "Fire Gloves", lightning: "Lightning Gloves", earth: "Earth Gloves" },

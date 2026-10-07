@@ -22,8 +22,8 @@ classes.assassin = {
 
   upgrades: [
     { id: "sharpenedEdge", name: "Sharpened Edge", text: "+3 attack", bonus: { attack: 3 } },
-    { id: "smokeBomb", name: "Smoke Bomb", text: "+4% dodge", bonus: { dodge: 0.04 } },
-    { id: "backstab", name: "Backstab", text: "+25% ambush damage", bonus: { ambush: 0.25 } },
+    { id: "smokeBomb", name: "Smoke Bomb", text: "+2% dodge", bonus: { dodge: 0.02 } },
+    { id: "backstab", name: "Backstab", text: "+10% ambush damage", bonus: { ambush: 0.1 } },
     { id: "toxicCoating", name: "Toxic Coating", text: "Venom Dagger: +1 poison stack", bonus: { poisonStacks: 1 } },
     { id: "killerInstinct", name: "Killer Instinct", text: "Stiletto: +5% critical chance", bonus: { critChance: 0.05 } }
   ],
@@ -31,8 +31,8 @@ classes.assassin = {
   skills: [
     { id: "lethality", name: "Lethality", text: "+2 attack", bonus: { attack: 2 }, maxLevel: 10, cost: 100 },
     { id: "conditioning", name: "Conditioning", text: "+12 health", bonus: { maxHp: 12 }, maxLevel: 10, cost: 100 },
-    { id: "evasion", name: "Evasion", text: "+2% dodge", bonus: { dodge: 0.02 }, maxLevel: 5, cost: 250 },
-    { id: "ambushTraining", name: "Ambush Training", text: "+25% ambush damage", bonus: { ambush: 0.25 }, maxLevel: 4, cost: 250 },
+    { id: "evasion", name: "Evasion", text: "+1% dodge", bonus: { dodge: 0.01 }, maxLevel: 5, cost: 250 },
+    { id: "ambushTraining", name: "Ambush Training", text: "+10% ambush damage", bonus: { ambush: 0.1 }, maxLevel: 4, cost: 250 },
     { id: "venomMastery", name: "Venom Mastery", text: "Venom Dagger: +1 poison stack", bonus: { poisonStacks: 1 }, maxLevel: 3, cost: 300 },
     { id: "stilettoMastery", name: "Stiletto Mastery", text: "Stiletto: +3% critical chance", bonus: { critChance: 0.03 }, maxLevel: 5, cost: 300 }
   ],
@@ -48,7 +48,7 @@ classes.assassin = {
     {
       floor: 10,
       perks: [
-        { id: "lurker", name: "Lurker", text: "+50% ambush damage", bonus: { ambush: 0.5 } },
+        { id: "lurker", name: "Lurker", text: "+25% ambush damage", bonus: { ambush: 0.25 } },
         { id: "leatherWraps", name: "Leather Wraps", text: "+25 health", bonus: { maxHp: 25 } }
       ]
     },
@@ -71,7 +71,7 @@ classes.assassin = {
       floor: 30,
       perks: [
         { id: "nightStalker", name: "Night Stalker", text: "+12 attack and +10% dodge", bonus: { attack: 12, dodge: 0.1 } },
-        { id: "deathMark", name: "Death Mark", text: "+200% ambush damage and +80 health", bonus: { ambush: 2, maxHp: 80 } }
+        { id: "deathMark", name: "Death Mark", text: "+50% ambush damage and +80 health", bonus: { ambush: 0.5, maxHp: 80 } }
       ]
     },
     {
@@ -85,15 +85,15 @@ classes.assassin = {
       floor: 50,
       perks: [
         { id: "shadowMaster", name: "Shadow Master", text: "+20 attack and +10% dodge", bonus: { attack: 20, dodge: 0.1 } },
-        { id: "grimReaper", name: "Grim Reaper", text: "+300% ambush damage and +250 health", bonus: { ambush: 3, maxHp: 250 } }
+        { id: "grimReaper", name: "Grim Reaper", text: "+100% ambush damage and +250 health", bonus: { ambush: 1, maxHp: 250 } }
       ]
     }
   ],
 
   relics: [
-    { id: "shadowCloak", name: "Shadow Cloak", text: "+6% dodge", bonus: { dodge: 0.06 } },
+    { id: "shadowCloak", name: "Shadow Cloak", text: "+3% dodge", bonus: { dodge: 0.03 } },
     { id: "viperFang", name: "Viper Fang", text: "Venom Dagger: +1 poison stack", bonus: { poisonStacks: 1 } },
-    { id: "assassinsMark", name: "Assassin's Mark", text: "+100% ambush damage", bonus: { ambush: 1 } }
+    { id: "assassinsMark", name: "Assassin's Mark", text: "+25% ambush damage", bonus: { ambush: 0.25 } }
   ],
 
   startFight: assassinStartFight,
@@ -163,7 +163,7 @@ function assassinWhenAttacked() {
 }
 
 function assassinDotPerStack() {
-  return Math.max(1, Math.round(playerAttack * 0.08));
+  return Math.max(1, Math.round(playerAttack * 0.06));
 }
 
 function assassinStatLine() {
