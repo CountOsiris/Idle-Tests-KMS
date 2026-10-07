@@ -1,0 +1,153 @@
+// =====================================================================
+//  The Warlock - arcane magic, a pure glass cannon
+// =====================================================================
+// Bonus words only the Warlock uses:
+//   critChance   arcane tome critical chance                       (0.1 means +10%)
+//   critPower    extra damage of a critical                         (0.5 means +50%)
+//   voidRend     void tome damage, as a share of the enemy's health  (0.01 means +1%)
+//   echoChance   rune tome chance to cast twice                     (0.1 means +10%)
+//
+// See classes/barbarian.js for what each list is for.
+
+classes.warlock = {
+  name: "Warlock",
+  icon: "📖",
+  text: "Master of arcane magic, read from a tome. Fragile, but every spell ignores armor.",
+  powerStat: "Intelligence",
+  base: { maxHp: 60, attack: 12, critChance: 0.25, critPower: 1.5, voidRend: 0.03, echoChance: 0.3 },
+
+  gearLabel: "Tome",
+  gearTypes: { arcane: "Arcane Tome", void: "Void Tome", rune: "Rune Tome" },
+
+  upgrades: [
+    { id: "arcanePower", name: "Arcane Power", text: "+4 attack", bonus: { attack: 4 } },
+    { id: "manaShield", name: "Mana Shield", text: "+15 health", bonus: { maxHp: 15 } },
+    { id: "focus", name: "Focus", text: "Arcane Tome: +5% critical chance", bonus: { critChance: 0.05 } },
+    { id: "devour", name: "Devour", text: "Void Tome: +1% of the enemy's health per hit", bonus: { voidRend: 0.01 } },
+    { id: "resonance", name: "Resonance", text: "Rune Tome: +5% chance to cast twice", bonus: { echoChance: 0.05 } }
+  ],
+
+  skills: [
+    { id: "intellect", name: "Intellect", text: "+3 attack", bonus: { attack: 3 }, maxLevel: 10, cost: 100 },
+    { id: "warding", name: "Warding", text: "+10 health", bonus: { maxHp: 10 }, maxLevel: 10, cost: 100 },
+    { id: "criticalFocus", name: "Critical Focus", text: "+10% critical damage", bonus: { critPower: 0.1 }, maxLevel: 5, cost: 250 },
+    { id: "arcaneMastery", name: "Arcane Mastery", text: "Arcane Tome: +3% critical chance", bonus: { critChance: 0.03 }, maxLevel: 5, cost: 300 },
+    { id: "voidMastery", name: "Void Mastery", text: "Void Tome: +0.5% of the enemy's health per hit", bonus: { voidRend: 0.005 }, maxLevel: 4, cost: 300 },
+    { id: "runeMastery", name: "Rune Mastery", text: "Rune Tome: +3% chance to cast twice", bonus: { echoChance: 0.03 }, maxLevel: 5, cost: 300 }
+  ],
+
+  milestones: [
+    {
+      floor: 5,
+      perks: [
+        { id: "ward", name: "Ward", text: "+25 health", bonus: { maxHp: 25 } },
+        { id: "surge", name: "Surge", text: "+6 attack", bonus: { attack: 6 } }
+      ]
+    },
+    {
+      floor: 10,
+      perks: [
+        { id: "overload", name: "Overload", text: "+50% critical damage", bonus: { critPower: 0.5 } },
+        { id: "shimmer", name: "Shimmer", text: "+3 armor", bonus: { armor: 3 } }
+      ]
+    },
+    {
+      floor: 15,
+      perks: [
+        { id: "archmage", name: "Archmage", text: "Arcane Tome: +10% critical chance", bonus: { critChance: 0.1 } },
+        { id: "voidCaller", name: "Void Caller", text: "Void Tome: +2% of the enemy's health per hit", bonus: { voidRend: 0.02 } },
+        { id: "runemaster", name: "Runemaster", text: "Rune Tome: +10% chance to cast twice", bonus: { echoChance: 0.1 } }
+      ]
+    },
+    {
+      floor: 20,
+      perks: [
+        { id: "plunderer", name: "Plunderer", text: "+50% gold", bonus: { gold: 0.5 } },
+        { id: "veteran", name: "Veteran", text: "+25% experience", bonus: { experience: 0.25 } }
+      ]
+    },
+    {
+      floor: 30,
+      perks: [
+        { id: "cataclysm", name: "Cataclysm", text: "+20 attack and +50% critical damage", bonus: { attack: 20, critPower: 0.5 } },
+        { id: "lichForm", name: "Lich Form", text: "+100 health and +5 armor", bonus: { maxHp: 100, armor: 5 } }
+      ]
+    },
+    {
+      floor: 40,
+      perks: [
+        { id: "arcaneMight", name: "Arcane Might", text: "+30 attack", bonus: { attack: 30 } },
+        { id: "arcaneBarrier", name: "Arcane Barrier", text: "+180 health", bonus: { maxHp: 180 } }
+      ]
+    },
+    {
+      floor: 50,
+      perks: [
+        { id: "annihilation", name: "Annihilation", text: "+20 attack and +100% critical damage", bonus: { attack: 20, critPower: 1 } },
+        { id: "voidLord", name: "Void Lord", text: "+250 health and Void Tome: +2% of the enemy's health per hit", bonus: { maxHp: 250, voidRend: 0.02 } }
+      ]
+    }
+  ],
+
+  relics: [
+    { id: "magesEye", name: "Mage's Eye", text: "Arcane Tome: +8% critical chance", bonus: { critChance: 0.08 } },
+    { id: "voidShard", name: "Void Shard", text: "Void Tome: +1% of the enemy's health per hit", bonus: { voidRend: 0.01 } },
+    { id: "echoStone", name: "Echo Stone", text: "Rune Tome: +8% chance to cast twice", bonus: { echoChance: 0.08 } }
+  ],
+
+  attack: warlockAttack,
+  whenAttacked: warlockWhenAttacked,
+  dotPerStack: warlockDotPerStack,
+  statLine: warlockStatLine,
+  gearInfo: warlockGearInfo
+};
+
+// One spell
+function warlockCast() {
+  let damage = playerAttack;
+
+  if (weapon === "arcane" && chance(totalBonus("critChance"))) {
+    damage = damage * (1 + totalBonus("critPower"));
+    say("An arcane critical!");
+  }
+
+  // The void tears away a share of the enemy's full health
+  if (weapon === "void") {
+    damage = damage + monsterMaxHp * totalBonus("voidRend");
+  }
+
+  // Spells ignore armor
+  magicHitMonster(damage);
+}
+
+function warlockAttack() {
+  warlockCast();
+
+  if (weapon === "rune" && chance(totalBonus("echoChance"))) {
+    say("The spell echoes!");
+    warlockCast();
+  }
+}
+
+function warlockWhenAttacked() {
+  return false;
+}
+
+// The Warlock has no damage over time
+function warlockDotPerStack() {
+  return 0;
+}
+
+function warlockStatLine() {
+  return "Arcane: your spells ignore armor";
+}
+
+function warlockGearInfo() {
+  if (weapon === "arcane") {
+    return "Arcane Tome: " + percent(totalBonus("critChance")) + " chance of a critical for +" + percent(totalBonus("critPower")) + " damage.";
+  }
+  if (weapon === "void") {
+    return "Void Tome: every spell also tears away " + percent(totalBonus("voidRend")) + " of the enemy's full health.";
+  }
+  return "Rune Tome: " + percent(totalBonus("echoChance")) + " chance to cast twice.";
+}

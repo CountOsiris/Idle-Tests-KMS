@@ -1,0 +1,466 @@
+/* ----- Colours (change them here and the whole page follows) ----- */
+:root {
+  --background: #1b1b1f;
+  --panel: #26262c;
+  --border: #3a3a44;
+  --text: #f0e6d2;
+  --faded: #a89f8d;
+  --gold: #c9a227;
+  --player: #4caf6a;
+  --monster: #c0453c;
+}
+
+body {
+  background: var(--background);
+  color: var(--text);
+  font-family: sans-serif;
+  margin: 0;
+  padding: 24px;
+}
+
+h1 {
+  text-align: center;
+  color: var(--gold);
+  margin: 0 0 16px;
+}
+
+h2 {
+  font-size: 18px;
+  color: var(--gold);
+  margin: 0 0 10px;
+}
+
+p {
+  margin: 6px 0;
+}
+
+/* ----- The strip of numbers along the top ----- */
+.top-bar {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.tile {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 8px 16px;
+  min-width: 110px;
+  text-align: center;
+  color: var(--faded);
+  font-size: 13px;
+}
+
+.tile strong {
+  display: block;
+  color: var(--text);
+  font-size: 20px;
+}
+
+/* ----- The three columns ----- */
+.columns {
+  display: grid;
+  grid-template-columns: 1fr 1.2fr 1fr;
+  gap: 16px;
+  max-width: 1200px;
+  margin: 0 auto;
+  align-items: start;
+}
+
+.panel {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 16px;
+  margin-bottom: 16px;
+}
+
+.panel.highlight {
+  border-color: var(--gold);
+}
+
+.note {
+  color: var(--faded);
+  font-size: 13px;
+}
+
+.tower .panel {
+  text-align: center;
+}
+
+/* ----- The fight: you on the left, the monster on the right ----- */
+.stage {
+  display: flex;
+  gap: 16px;
+  margin: 14px 0 10px;
+  padding: 12px;
+  border-radius: 8px;
+  background: var(--background);
+}
+
+.fighter {
+  flex: 1;
+  min-width: 0;
+  position: relative;
+}
+
+.fighter-name {
+  font-weight: bold;
+  color: var(--gold);
+  min-height: 38px;
+}
+
+.mover {
+  display: inline-block;
+}
+
+.icon {
+  font-size: 52px;
+  line-height: 64px;
+  height: 64px;
+}
+
+.icon.rare {
+  filter: drop-shadow(0 0 8px #5fa8ff);
+}
+
+.icon.boss {
+  font-size: 64px;
+  filter: drop-shadow(0 0 10px var(--gold));
+}
+
+/* ----- Animations -----
+   game.js adds these class names when something happens (see "Animations" there).
+   Change the numbers here to make things faster, slower or bigger. */
+
+/* You step toward the monster as you attack */
+.lunge-right {
+  animation: lunge-right 0.3s;
+}
+
+@keyframes lunge-right {
+  50% { transform: translateX(22px); }
+}
+
+/* The monster attacks a moment after you do */
+.lunge-left {
+  animation: lunge-left 0.3s 0.4s;
+}
+
+@keyframes lunge-left {
+  50% { transform: translateX(-22px); }
+}
+
+/* Whoever is hit shakes and flashes */
+.shake {
+  animation: shake 0.3s 0.12s;
+}
+
+.shake-late {
+  animation: shake 0.3s 0.52s;
+}
+
+@keyframes shake {
+  20% { transform: translateX(-6px); filter: brightness(2.5); }
+  40% { transform: translateX(6px); }
+  60% { transform: translateX(-4px); filter: brightness(1); }
+  80% { transform: translateX(4px); }
+}
+
+/* A new monster or room pops in */
+.appear {
+  animation: appear 0.35s;
+}
+
+@keyframes appear {
+  from { transform: scale(0.5); opacity: 0; }
+}
+
+/* The whole fight flashes red when you fall */
+.death {
+  animation: death 0.8s;
+}
+
+@keyframes death {
+  20% { background: var(--monster); }
+}
+
+/* Damage and healing numbers float up and fade */
+.float {
+  position: absolute;
+  top: 8px;
+  left: 50%;
+  font-weight: bold;
+  font-size: 18px;
+  white-space: nowrap;
+  pointer-events: none;
+  text-shadow: 0 1px 3px #000;
+  opacity: 0;
+  animation: float-up 1s forwards;
+}
+
+.float.late {
+  animation-delay: 0.5s;
+}
+
+.float.hit  { color: #ffffff; }
+.float.hurt { color: #ff6b5e; }
+.float.heal { color: var(--player); left: 78%; }
+.float.word { color: var(--gold); }
+
+@keyframes float-up {
+  0%   { opacity: 0; transform: translate(-50%, 0); }
+  15%  { opacity: 1; }
+  100% { opacity: 0; transform: translate(-50%, -46px); }
+}
+
+/* People who have asked their device for less motion get none of the above */
+@media (prefers-reduced-motion: reduce) {
+  .lunge-right, .lunge-left, .shake, .shake-late, .appear, .death {
+    animation: none;
+  }
+
+  .float {
+    display: none;
+  }
+}
+
+/* ----- The "What happened" list ----- */
+#log {
+  height: 180px;
+  overflow-y: auto;
+  text-align: left;
+  font-size: 13px;
+  color: var(--faded);
+}
+
+#log p {
+  margin: 3px 0;
+}
+
+/* The newest line stands out */
+#log p:first-child {
+  color: var(--gold);
+  font-size: 14px;
+}
+
+/* The tab buttons only appear on narrow screens (see the bottom of this file) */
+.tabs {
+  display: none;
+}
+
+/* ----- Health bars ----- */
+.bar {
+  background: var(--background);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  height: 14px;
+  overflow: hidden;
+}
+
+.fill {
+  height: 100%;
+  width: 0;
+  transition: width 0.3s;
+}
+
+.fill.player {
+  background: var(--player);
+}
+
+.fill.monster {
+  background: var(--monster);
+}
+
+/* ----- Buttons ----- */
+button {
+  background: var(--border);
+  color: var(--text);
+  border: 1px solid var(--faded);
+  border-radius: 6px;
+  padding: 5px 10px;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+button:hover {
+  border-color: var(--gold);
+}
+
+button:disabled {
+  opacity: 0.45;
+  cursor: default;
+  border-color: var(--border);
+}
+
+button.chosen {
+  background: var(--gold);
+  color: var(--background);
+  font-weight: bold;
+}
+
+button.quiet {
+  display: block;
+  margin: 8px auto 0;
+  background: none;
+  color: var(--faded);
+}
+
+#class-buttons button {
+  margin: 0 4px 4px 0;
+}
+
+/* ----- Equipment rarity colours -----
+   rarity-0 is ordinary and keeps the normal text colour */
+.rarity-1 { color: #6fcf6f; }
+.rarity-2 { color: #5fa8ff; font-weight: bold; }
+.rarity-3 { color: #c77dff; font-weight: bold; }
+
+/* ----- Skills and the tower list ----- */
+.tower-row,
+.town-row {
+  border-top: 1px solid var(--border);
+  padding: 8px 0;
+}
+
+.choices button {
+  margin: 0 4px 4px 0;
+}
+
+.skill {
+  border-top: 1px solid var(--border);
+  padding: 8px 0;
+}
+
+/* ----- The save code box ----- */
+textarea {
+  width: 100%;
+  box-sizing: border-box;
+  background: var(--background);
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 6px;
+  font-size: 12px;
+}
+
+/* ----- Milestones ----- */
+.milestone {
+  border-top: 1px solid var(--border);
+  padding: 8px 0;
+}
+
+.milestone button {
+  margin: 0 4px 6px 0;
+}
+
+/* ----- Narrow screens -----
+   Instead of three columns, show one column at a time and switch with tabs.
+   Keep this and the phone rules at the bottom of the file, so they win over the rules above */
+@media (max-width: 900px) {
+  .columns {
+    grid-template-columns: 1fr;
+  }
+
+  .tabs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    background: var(--background);
+    padding: 8px 0;
+    margin-bottom: 8px;
+  }
+
+  /* Seven tabs, wrapping onto three rows */
+  .tabs button {
+    flex: 1 1 30%;
+    padding: 10px 2px;
+    font-size: 13px;
+  }
+
+  .column {
+    display: none;
+  }
+
+  .show-tower .tower,
+  .show-character .character,
+  .show-skills .character,
+  .show-town .town,
+  .show-travel .town,
+  .show-milestones .town,
+  .show-ascension .town {
+    display: block;
+  }
+
+  /* Several tabs share the right-hand column. First hide all of its panels... */
+  .town .panel {
+    display: none;
+  }
+
+  /* ...then show only the ones that belong to the open tab */
+  .show-town .town-panel,
+  .show-travel .travel-panel,
+  .show-milestones .milestones-panel,
+  .show-ascension .ascension-panel {
+    display: block;
+  }
+
+  /* Character and Skills share the left-hand column the same way */
+  .show-character .skills-panel,
+  .show-skills .character .panel:not(.skills-panel) {
+    display: none;
+  }
+
+  .show-tower #tab-tower,
+  .show-character #tab-character,
+  .show-skills #tab-skills,
+  .show-town #tab-town,
+  .show-travel #tab-travel,
+  .show-milestones #tab-milestones,
+  .show-ascension #tab-ascension {
+    background: var(--gold);
+    color: var(--background);
+    font-weight: bold;
+  }
+}
+
+/* ----- Phones ----- */
+@media (max-width: 600px) {
+  body {
+    padding: 12px;
+  }
+
+  h1 {
+    font-size: 24px;
+  }
+
+  .top-bar {
+    gap: 8px;
+  }
+
+  .tile {
+    flex: 1 1 40%;
+    min-width: 0;
+  }
+
+  .panel {
+    padding: 12px;
+  }
+
+  button {
+    padding: 10px 14px;
+    font-size: 15px;
+  }
+
+  .milestone button {
+    display: block;
+    width: 100%;
+    margin: 0 0 8px;
+  }
+}
