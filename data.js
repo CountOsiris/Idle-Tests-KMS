@@ -47,7 +47,7 @@ const skillPointsPerLevel = 1;
 //
 // ascendFloorStep raises the floor needed by that much after every ascension.
 // It is 0, which means "never". Set it above 0 only if ascending should get harder.
-const ascendFirstFloor = 20;
+const ascendFirstFloor = 10;
 const ascendFloorStep = 0;
 
 // What fame buys. These are kept forever, through every ascension.
