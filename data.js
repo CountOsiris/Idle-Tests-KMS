@@ -241,10 +241,17 @@ const classes = {};
 //   autoEquip        1 = stronger equipment is equipped for you
 //   favouriteGear    1 = you may pick a favourite kind of weapon
 //   favouriteUpgrade 1 = you may pick a favourite upgrade
+//   favouriteLuck    chance a found weapon is the favourite kind (0.1 means +10%)
+
+// Favourite luck past 100% makes the favourite kind stronger instead:
+// each extra 100% adds this much power (0.5 means +50%)
+const favouritePowerPerLuck = 0.5;
+
 const townUpgrades = [
   { id: "autoEquip", name: "Squire", text: "Stronger equipment you find is equipped for you.", bonus: { autoEquip: 1 }, maxLevel: 1, cost: 2000, growth: 1 },
   { id: "quartermaster", name: "Quartermaster", text: "Pick a favourite kind of weapon (or shield, for the Warden). You start every run with it, and your Squire only equips that kind.", bonus: { favouriteGear: 1 }, maxLevel: 1, cost: 5000, growth: 1 },
   { id: "tactician", name: "Tactician", text: "Pick a favourite upgrade. Upgrade areas give it to you straight away, with no waiting, until it reaches the level limit for upgrade areas.", bonus: { favouriteUpgrade: 1 }, maxLevel: 1, cost: 5000, growth: 1 },
+  { id: "weaponsmith", name: "Weaponsmith", text: "+10% chance that a weapon you find is your favourite kind (pick it with the Quartermaster). Past 100% it makes those weapons stronger instead.", bonus: { favouriteLuck: 0.1 }, maxLevel: 0, cost: 3000, growth: 1.4 },
   { id: "armory", name: "Armory", text: "Start every run with +2 weapon power and +1 armor.", bonus: { startGear: 2 }, maxLevel: 0, cost: 1000, growth: 1.4 },
   { id: "trainingGrounds", name: "Training Grounds", text: "+5% experience.", bonus: { experience: 0.05 }, maxLevel: 0, cost: 500, growth: 1.4 },
   { id: "treasureMaps", name: "Treasure Maps", text: "+5% gold.", bonus: { gold: 0.05 }, maxLevel: 0, cost: 500, growth: 1.4 },

@@ -584,6 +584,25 @@ function rollRarity(least) {
   return Math.max(rarity, least);
 }
 
+// The kind of special gear the player is after: the favourite, or the only
+// kind there is for a class with just one (the Elementalist's gloves)
+function wantedGear() {
+  let types = Object.keys(currentClass().gearTypes);
+  if (types.length === 1) {
+    return types[0];
+  }
+  return favouriteGear;
+}
+
+// Favourite luck that is not needed to find the favourite kind. It makes that
+// kind stronger instead. A class with one kind of gear needs none, so all of it is spare.
+function favouriteLuckSpare() {
+  if (Object.keys(currentClass().gearTypes).length === 1) {
+    return totalBonus("favouriteLuck");
+  }
+  return overflow("favouriteLuck", 1);
+}
+
 function makeItem(least) {
   let rarity = rollRarity(least);
 
@@ -603,6 +622,14 @@ function makeItem(least) {
   let type = "plain";
   if (slot === specialSlot()) {
     type = randomGearType(playerClass);
+
+    // The Weaponsmith in town makes the favourite kind turn up more often
+    if (favouriteGear !== "" && chance(totalBonus("favouriteLuck"))) {
+      type = favouriteGear;
+    }
+    if (type === wantedGear()) {
+      power = power * (1 + favouriteLuckSpare() * favouritePowerPerLuck);
+    }
   }
 
   return { slot: slot, type: type, power: Math.max(1, Math.round(power)), rarity: rarity };
