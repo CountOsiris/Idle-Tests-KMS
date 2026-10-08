@@ -6,6 +6,16 @@
 //   ambush       extra damage on the first hit of a fight    (1 means +100%)
 //   poisonStacks most venom dagger poison stacks             (2 means +2)
 //   critChance   stiletto critical chance (triple damage)    (0.1 means +10%)
+//   critPower    stiletto: extra damage of a critical         (0.1 means +10%)
+//   counter      shadow blade: extra damage after a dodge     (0.15 means +15%)
+//   vanishChance chance each turn to hide again, so the next
+//                hit is another ambush                        (0.02 means +2%)
+//
+// The four ways to build an Assassin:
+//   Poisoner      (venom dagger) - stacks poison that ignores armor. Long fights and bosses.
+//   Cutthroat     (stiletto)     - critical hits for triple damage and more.
+//   Shadow Dancer (shadow blade) - dodges, then strikes back hard after every dodge.
+//   Ambusher      (any blade)    - a huge first hit, and vanishing to do it again.
 //
 // See classes/barbarian.js for what each list is for.
 
@@ -15,7 +25,7 @@ classes.assassin = {
   art: "art/assassin.png",
   text: "Stealth and poison. Opens every fight with an ambush and slips away from attacks.",
   perLevel: { maxHp: 7, attack: 2 },
-  base: { maxHp: 65, attack: 7, dodge: 0.1, ambush: 0.5, poisonStacks: 4, critChance: 0.2 },
+  base: { maxHp: 65, attack: 7, dodge: 0.1, ambush: 0.5, poisonStacks: 4, critChance: 0.2, counter: 1.25, vanishChance: 0.05 },
 
   gearLabel: "Blade",
   gearTypes: { venom: "Venom Dagger", stiletto: "Stiletto", shadow: "Shadow Blade" },
@@ -26,7 +36,8 @@ classes.assassin = {
     { id: "smokeBomb", name: "Smoke Bomb", text: "+2% dodge", bonus: { dodge: 0.02 } },
     { id: "backstab", name: "Backstab", text: "+10% ambush damage", bonus: { ambush: 0.1 } },
     { id: "toxicCoating", name: "Toxic Coating", text: "Venom Dagger: +1 poison stack", bonus: { poisonStacks: 1 } },
-    { id: "killerInstinct", name: "Killer Instinct", text: "Stiletto: +5% critical chance", bonus: { critChance: 0.05 } }
+    { id: "killerInstinct", name: "Killer Instinct", text: "Stiletto: +5% critical chance", bonus: { critChance: 0.05 } },
+    { id: "shadowstep", name: "Shadowstep", text: "Shadow Blade: +15% damage after a dodge", bonus: { counter: 0.15 } }
   ],
 
   skills: [
@@ -36,7 +47,10 @@ classes.assassin = {
     { id: "evasion", name: "Evasion", text: "+1% dodge", bonus: { dodge: 0.01 }, cost: 1 },
     { id: "ambushTraining", name: "Ambush Training", text: "+10% ambush damage", bonus: { ambush: 0.1 }, cost: 1 },
     { id: "venomMastery", name: "Venom Mastery", text: "Venom Dagger: +1 poison stack", bonus: { poisonStacks: 1 }, cost: 2 },
-    { id: "stilettoMastery", name: "Stiletto Mastery", text: "Stiletto: +3% critical chance", bonus: { critChance: 0.03 }, cost: 2 }
+    { id: "stilettoMastery", name: "Stiletto Mastery", text: "Stiletto: +3% critical chance", bonus: { critChance: 0.03 }, cost: 2 },
+    { id: "deathblow", name: "Deathblow", text: "Stiletto: +10% critical damage", bonus: { critPower: 0.1 }, cost: 1 },
+    { id: "riposte", name: "Riposte", text: "Shadow Blade: +10% damage after a dodge", bonus: { counter: 0.1 }, cost: 1 },
+    { id: "vanish", name: "Vanish", text: "+1% chance each turn to hide again, so your next hit is another ambush", bonus: { vanishChance: 0.01 }, cost: 1 }
   ],
 
   milestones: [
@@ -59,7 +73,8 @@ classes.assassin = {
       perks: [
         { id: "toxicologist", name: "Toxicologist", text: "Venom Dagger: +2 poison stacks", bonus: { poisonStacks: 2 } },
         { id: "executioner", name: "Executioner", text: "Stiletto: +10% critical chance", bonus: { critChance: 0.1 } },
-        { id: "phantom", name: "Phantom", text: "+8% dodge", bonus: { dodge: 0.08 } }
+        { id: "phantom", name: "Phantom", text: "+5% dodge and Shadow Blade: +40% damage after a dodge", bonus: { dodge: 0.05, counter: 0.4 } },
+        { id: "stalker", name: "Stalker", text: "+8% chance each turn to hide again", bonus: { vanishChance: 0.08 } }
       ]
     },
     {
@@ -95,7 +110,9 @@ classes.assassin = {
   relics: [
     { id: "shadowCloak", name: "Shadow Cloak", text: "+3% dodge", bonus: { dodge: 0.03 } },
     { id: "viperFang", name: "Viper Fang", text: "Venom Dagger: +1 poison stack", bonus: { poisonStacks: 1 } },
-    { id: "assassinsMark", name: "Assassin's Mark", text: "+25% ambush damage", bonus: { ambush: 0.25 } }
+    { id: "assassinsMark", name: "Assassin's Mark", text: "+25% ambush damage", bonus: { ambush: 0.25 } },
+    { id: "needlePoint", name: "Needle Point", text: "Stiletto: +8% critical chance", bonus: { critChance: 0.08 } },
+    { id: "duskMantle", name: "Dusk Mantle", text: "Shadow Blade: +25% damage after a dodge", bonus: { counter: 0.25 } }
   ],
 
   startFight: assassinStartFight,
@@ -123,19 +140,19 @@ function assassinAttack() {
   let damage = playerAttack;
 
   if (assassinAmbushReady) {
-    damage = damage * (1 + totalBonus("ambush"));
+    damage = damage * (1 + assassinAmbush());
     assassinAmbushReady = false;
     say("You strike from the shadows!");
   }
 
   if (weapon === "stiletto" && chance(totalBonus("critChance"))) {
     // Critical chance past 100% adds to the critical damage instead
-    damage = damage * (3 + overflow("critChance", 1));
+    damage = damage * (3 + totalBonus("critPower") + overflow("critChance", 1));
     say("A deadly critical hit!");
   }
 
   if (weapon === "shadow" && assassinCounterReady) {
-    damage = damage * 2;
+    damage = damage * (1 + totalBonus("counter"));
     assassinCounterReady = false;
   }
 
@@ -146,6 +163,17 @@ function assassinAttack() {
     addDotStack(totalBonus("poisonStacks"));
   }
   monsterHp = monsterHp - dotDamage();
+
+  // Vanish: slip back into the shadows, so the next hit is an ambush again.
+  // Vanish chance past its limit adds to the ambush damage instead (see assassinAmbush).
+  if (chance(cappedChance("vanishChance"))) {
+    assassinAmbushReady = true;
+  }
+}
+
+// The extra damage of an ambush
+function assassinAmbush() {
+  return totalBonus("ambush") + overflow("vanishChance", maxChance);
 }
 
 function assassinDodgeChance() {
@@ -176,11 +204,11 @@ function assassinWhenAttacked() {
 }
 
 function assassinDotPerStack() {
-  return Math.max(1, Math.round(playerAttack * 0.08));
+  return Math.max(1, Math.round(playerAttack * 0.1));
 }
 
 function assassinStatLine() {
-  return "Dodge: " + percent(assassinDodgeChance()) + ". Ambush: the first hit of a fight deals +" + percent(totalBonus("ambush")) + " damage";
+  return "Dodge: " + percent(assassinDodgeChance()) + ". Ambush: the first hit of a fight deals +" + percent(assassinAmbush()) + " damage. Vanish: " + percent(cappedChance("vanishChance")) + " chance each turn to hide and ambush again";
 }
 
 function assassinGearInfo() {
@@ -188,7 +216,7 @@ function assassinGearInfo() {
     return "Venom Dagger: every hit poisons the enemy more each turn (up to " + totalBonus("poisonStacks") + " stacks).";
   }
   if (weapon === "stiletto") {
-    return "Stiletto: " + percent(totalBonus("critChance")) + " chance to deal triple damage.";
+    return "Stiletto: " + percent(Math.min(1, totalBonus("critChance"))) + " chance of a critical hit for x" + (3 + totalBonus("critPower") + overflow("critChance", 1)).toFixed(1) + " damage.";
   }
-  return "Shadow Blade: +10% dodge, and your next hit after a dodge deals double damage.";
+  return "Shadow Blade: +10% dodge, and your next hit after a dodge deals +" + percent(totalBonus("counter")) + " damage.";
 }
