@@ -54,20 +54,17 @@ classes.ranger = {
     { id: "feralBond", name: "Feral Bond", text: "Your companion deals +15% damage", bonus: { bond: 0.15 } }
   ],
 
+  // Each bow has one skill, and the companion has two that work for EVERY companion,
+  // so a Ranger can swap animal to suit the fight without wasting any points.
   skills: [
     { id: "marksmanship", name: "Marksmanship", text: "+3% attack", bonus: { attackPercent: 0.03 }, cost: 1 },
     { id: "endurance", name: "Endurance", text: "+3% health", bonus: { healthPercent: 0.03 }, cost: 1 },
-    { id: "packTactics", name: "Pack Tactics", text: "Spirits deal +10% damage", bonus: { dotPower: 0.1 }, cost: 1 },
     { id: "openingVolley", name: "Opening Volley", text: "The enemy misses 1 more turn at the start of a fight", bonus: { firstStrike: 1 }, cost: 5 },
-    { id: "longbowMastery", name: "Longbow Mastery", text: "Longbow: +3% aimed shot chance", bonus: { aimChance: 0.03 }, cost: 2 },
-    { id: "spiritMastery", name: "Spirit Mastery", text: "Spirit Bow: +1 spirit", bonus: { spirits: 1 }, cost: 2 },
-    { id: "bloomMastery", name: "Bloom Mastery", text: "Bloom Bow: +1% healing per shot", bonus: { regrowth: 0.01 }, cost: 2 },
-    { id: "beastBond", name: "Beast Bond", text: "Your companion deals +10% damage", bonus: { bond: 0.1 }, cost: 1 },
-    { id: "bearMastery", name: "Bear Mastery", text: "Bear: +2% chance to take a hit for you", bonus: { guardChance: 0.02 }, cost: 1 },
-    { id: "hawkMastery", name: "Hawk Mastery", text: "Hawk: +2% dive chance", bonus: { diveChance: 0.02 }, cost: 1 },
-    { id: "wolfMastery", name: "Wolf Mastery", text: "Wolf: +4% chance to bite again", bonus: { packChance: 0.04 }, cost: 1 },
-    { id: "deadeyeShot", name: "Steady Aim", text: "Longbow: aimed shots deal +8% damage", bonus: { aimPower: 0.08 }, cost: 1 },
-    { id: "thornweaver", name: "Thornweaver", text: "Bloom Bow: thorns deal +10% damage", bonus: { thornPower: 0.1 }, cost: 1 }
+    { id: "longbowMastery", name: "Longbow Mastery", text: "Longbow: +1.5% aimed shot chance and aimed shots deal +3% damage", bonus: { aimChance: 0.015, aimPower: 0.03 }, cost: 1 },
+    { id: "spiritMastery", name: "Spirit Mastery", text: "Spirit Bow: +1 spirit and spirits deal +8% damage", bonus: { spirits: 1, dotPower: 0.08 }, cost: 1 },
+    { id: "bloomMastery", name: "Bloom Mastery", text: "Bloom Bow: more healing per shot and thorns deal +8% damage", bonus: { regrowth: 0.005, thornPower: 0.08 }, cost: 1 },
+    { id: "beastBond", name: "Beast Bond", text: "Your companion deals +10% damage, whichever it is", bonus: { bond: 0.1 }, cost: 1 },
+    { id: "instinct", name: "Animal Instinct", text: "Sharpens your companion's own trick: Wolf +4% chance to bite again, Bear +2% chance to take a hit for you, Hawk +2% dive chance", bonus: { packChance: 0.04, guardChance: 0.02, diveChance: 0.02 }, cost: 1 }
   ],
 
   milestones: [
@@ -175,14 +172,24 @@ function rangerAttack() {
 
   // The bloom bow heals you, and its thorns hurt the enemy by as much, ignoring armor
   if (weapon === "bloom") {
-    healPlayer(playerMaxHp * totalBonus("regrowth"));
-    magicHitMonster(playerMaxHp * totalBonus("regrowth") * (1 + totalBonus("thornPower")));
+    healPlayer(playerMaxHp * bloomHealing());
+    magicHitMonster(playerMaxHp * bloomHealing() * (1 + totalBonus("thornPower")));
   }
 
   // Every summoned spirit attacks too
   monsterHp = monsterHp - dotDamage();
 
   companionAttack();
+}
+
+// Bloom bow: the share of full health healed by every shot. Regrowth always adds to
+// it, but less and less, so it creeps toward maxBloomHealing and never reaches it.
+// Without that, enough regrowth would make the Ranger impossible to kill.
+const maxBloomHealing = 0.2;
+
+function bloomHealing() {
+  let regrowth = totalBonus("regrowth");
+  return maxBloomHealing * regrowth / (regrowth + maxBloomHealing);
 }
 
 // The numbers behind the companions. Change these to retune them.
@@ -266,5 +273,5 @@ function rangerGearInfo() {
   if (weapon === "spirit") {
     return "Spirit Bow: every shot summons a spirit that attacks each turn (up to " + totalBonus("spirits") + " spirits).";
   }
-  return "Bloom Bow: every shot heals you for " + percent(totalBonus("regrowth")) + " of your health, and its thorns deal that much damage and " + percent(totalBonus("thornPower")) + " more. Health makes this bow stronger.";
+  return "Bloom Bow: every shot heals you for " + percent(bloomHealing()) + " of your health, and its thorns deal that much damage and " + percent(totalBonus("thornPower")) + " more. Health makes this bow stronger.";
 }
