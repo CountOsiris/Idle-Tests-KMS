@@ -115,10 +115,10 @@ const towers = {
     monsters: [
       { name: "Wild Boar", text: "Charges in a straight line.", minFloor: 1, hp: 1.2, attack: 1.1, armor: 0.5, gold: 1, weak: ["piercing"], resist: ["crushing", "earth"] },
       { name: "Giant Spider", icon: "🕷️",text: "Venomous: 30% of its attack ignores your armor.", minFloor: 1, hp: 0.9, attack: 1, armor: 1, gold: 1.1, poison: 0.3, weak: ["fire", "piercing"], resist: ["affliction", "arcane"] },
-      { name: "Dire Wolf", icon: "🐺",text: "Bites hard, drops fast.", minFloor: 3, hp: 1, attack: 1.3, armor: 0.5, gold: 1, weak: ["piercing", "fire"], resist: ["ice", "holy"] },
+      { name: "Dire Wolf", icon: "🐺",text: "Bites hard, drops fast.", minFloor: 3, hp: 1, attack: 1.3, armor: 0.5, gold: 1, weak: ["piercing", "fire"], resist: ["arcane", "holy"] },
       { name: "Treant", icon: "🌳",text: "Slow, tough and covered in bark.", minFloor: 5, hp: 1.8, attack: 0.8, armor: 1.5, gold: 1.2, weak: ["fire", "slashing"], resist: ["crushing", "earth", "arcane"] },
       { name: "Forest Troll", icon: "👹",text: "Regenerates 4% of its health every turn.", minFloor: 7, hp: 1.3, attack: 1, armor: 1, gold: 1.3, regen: 0.04, weak: ["fire", "nature"], resist: ["crushing", "affliction", "holy"] },
-      { name: "Dire Bear", icon: "🐻",text: "Huge, and hits like it.", minFloor: 10, hp: 1.8, attack: 1.4, armor: 1, gold: 1.5, weak: ["piercing"], resist: ["crushing", "ice", "arcane"] }
+      { name: "Dire Bear", icon: "🐻",text: "Huge, and hits like it.", minFloor: 10, hp: 1.8, attack: 1.4, armor: 1, gold: 1.5, weak: ["piercing"], resist: ["crushing", "earth", "arcane"] }
     ],
     bosses: [
       { name: "Spider Queen", icon: "🕸️",text: "Venomous: 40% of her attack ignores your armor.", hp: 1, attack: 1, armor: 1, gold: 1.2, poison: 0.4, weak: ["fire", "piercing"], resist: ["affliction", "arcane", "holy"] },
