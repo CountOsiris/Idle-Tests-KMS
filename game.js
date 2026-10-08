@@ -1536,6 +1536,71 @@ function showAscension() {
   }
 }
 
+// ----- What to do next -----
+// A short list under the tower that tells the player what needs their attention
+// and what they are working toward. At most three lines, most urgent first.
+function nextGoals() {
+  let goals = [];
+
+  // Things waiting to be used
+  if (statPoints > 0) {
+    goals.push("You have " + statPoints + " stat points to spend (Character).");
+  }
+  if (experience >= levelCost()) {
+    goals.push("You have enough experience to level up (Character).");
+  }
+  for (let milestone of currentClass().milestones) {
+    if (bestFloor >= milestone.floor && chosenPerks[milestone.floor] === undefined) {
+      goals.push("You have a milestone perk to pick for floor " + milestone.floor + " (Milestones).");
+      break;
+    }
+  }
+  if (foundItem !== null && isBetter(foundItem)) {
+    goals.push("You found better equipment: " + itemName(foundItem) + " (Character).");
+  }
+  if (canAscend()) {
+    goals.push("You can ascend (Ascension).");
+  }
+  for (let item of fameUpgrades) {
+    if (fameUpgradeIsUnlocked(item) && !fameUpgradeIsMaxed(item) && fame >= fameCost(item)) {
+      goals.push("You have enough fame for an upgrade (Ascension).");
+      break;
+    }
+  }
+
+  // Things to aim for
+  if (!canAscend()) {
+    goals.push("Reach floor " + ascendFloorNeeded() + " to ascend. Best since your last ascension: " + ascensionBest + ".");
+  }
+  for (let milestone of currentClass().milestones) {
+    if (bestFloor < milestone.floor) {
+      goals.push("Reach floor " + milestone.floor + " to unlock a milestone perk.");
+      break;
+    }
+  }
+  if (isAway()) {
+    for (let trophy of towers[tower].trophies) {
+      if (!trophies.includes(trophy.id)) {
+        goals.push("Reach floor " + trophy.floor + " here to win a trophy: " + trophy.name + ".");
+        break;
+      }
+    }
+  }
+
+  return goals.slice(0, 3);
+}
+
+function showGoals() {
+  let box = document.getElementById("goals");
+  box.innerHTML = "";
+
+  for (let goal of nextGoals()) {
+    let row = document.createElement("p");
+    row.textContent = goal;
+    box.appendChild(row);
+  }
+}
+
 function showRelics() {
   let names = [];
 
@@ -1563,6 +1628,7 @@ function updateScreen() {
   showTown();
   showTowers();
   showAscension();
+  showGoals();
   showLog();
 
   document.getElementById("tower-name").textContent = towers[tower].name;
