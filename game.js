@@ -270,8 +270,13 @@ function fameUpgradeIsMaxed(item) {
   return item.maxLevel > 0 && fameLevel(item.id) >= item.maxLevel;
 }
 
+// Fame upgrades are locked behind ascensions: each one appears after a certain number
+function fameUpgradeIsUnlocked(item) {
+  return ascensions >= item.unlockAt;
+}
+
 function buyFameUpgrade(item) {
-  if (!fameUpgradeIsMaxed(item) && fame >= fameCost(item)) {
+  if (fameUpgradeIsUnlocked(item) && !fameUpgradeIsMaxed(item) && fame >= fameCost(item)) {
     fame = fame - fameCost(item);
     fameLevels[item.id] = fameLevel(item.id) + 1;
     recalcStats();
@@ -474,7 +479,7 @@ function makeItem(least) {
   let rarity = rollRarity(least);
 
   // Items get stronger the higher you are in the tower, and with their rarity
-  let power = floor * gearPowerPerFloor * (1 + Math.random()) * rarities[rarity].power;
+  let power = floor * gearPowerPerFloor * (1 + Math.random()) * rarities[rarity].power * fameMultiplier("gear");
 
   let slot = "armor";
   if (Math.random() < 0.5) {
@@ -568,7 +573,13 @@ function startingGear() {
 
   // The Armory in town gives every run a head start
   weaponPower = totalBonus("startGear");
-  armorPower = Math.ceil(totalBonus("startGear") / 2);
+
+  // Starting a run part-way up the tower (the Pathfinder fame upgrade) skips the
+  // floors where gear would have been found, so it comes with ordinary gear for that floor
+  if (floor > 1) {
+    weaponPower = Math.max(weaponPower, Math.round(floor * gearPowerPerFloor * fameMultiplier("gear")));
+  }
+  armorPower = Math.ceil(weaponPower / 2);
   weaponRarity = 0;
   armorRarity = 0;
   foundItem = null;
@@ -632,7 +643,7 @@ function upgradeLevel(id) {
 }
 
 function chooseUpgrade(upgrade) {
-  if (encounterType !== "upgrade" || upgradeLevel(upgrade.id) >= maxUpgradeLevel) {
+  if (encounterType !== "upgrade" || upgradeLevel(upgrade.id) >= upgradeCap()) {
     return;
   }
 
@@ -645,14 +656,25 @@ function chooseUpgrade(upgrade) {
 
 // Is there a favourite upgrade, and can it still be levelled up?
 function favouriteIsAvailable() {
-  return favouriteUpgrade !== "" && upgradeLevel(favouriteUpgrade) < maxUpgradeLevel;
+  return favouriteUpgrade !== "" && upgradeLevel(favouriteUpgrade) < upgradeCap();
+}
+
+// The top level of the upgrades picked in upgrade areas. The Mastery fame upgrade raises it.
+function upgradeCap() {
+  return maxUpgradeLevel + fameAdd("upgradeCap");
+}
+
+// The floor a run starts on. Normally 1; the Pathfinder fame upgrade starts runs
+// part-way to the best floor reached since the last ascension.
+function startFloor() {
+  return Math.max(1, Math.floor(ascensionBest * fameAdd("startFloorShare")));
 }
 
 // If the player is away, a random upgrade is taken for them
 function takeRandomUpgrade() {
   let choices = [];
   for (let upgrade of currentClass().upgrades) {
-    if (upgradeLevel(upgrade.id) < maxUpgradeLevel) {
+    if (upgradeLevel(upgrade.id) < upgradeCap()) {
       choices.push(upgrade);
     }
   }
@@ -1278,7 +1300,7 @@ function showUpgrades() {
   for (let upgrade of currentClass().upgrades) {
     let button = document.getElementById("upgrade-" + upgrade.id);
 
-    if (upgradeLevel(upgrade.id) >= maxUpgradeLevel) {
+    if (upgradeLevel(upgrade.id) >= upgradeCap()) {
       button.textContent = upgrade.name + " (max level)";
       button.disabled = true;
     } else {
@@ -1458,7 +1480,13 @@ function fameEffectText(item) {
   }
   if (item.add !== undefined) {
     for (let stat in item.add) {
-      parts.push("+" + item.add[stat] * fameLevel(item.id) + " " + item.addLabel);
+      // Shares like 0.1 are written as 10%
+      let amount = item.add[stat] * fameLevel(item.id);
+      if (item.addAsPercent) {
+        parts.push(percent(amount) + " " + item.addLabel);
+      } else {
+        parts.push("+" + amount + " " + item.addLabel);
+      }
     }
   }
 
@@ -1482,6 +1510,19 @@ function showAscension() {
 
   for (let item of fameUpgrades) {
     let upgradeButton = document.getElementById("fame-" + item.id);
+
+    // A locked upgrade shows only when it will appear
+    if (!fameUpgradeIsUnlocked(item)) {
+      upgradeButton.textContent = item.name + " (locked)";
+      upgradeButton.disabled = true;
+
+      if (item.unlockAt === 1) {
+        document.getElementById("fame-text-" + item.id).textContent = "Unlocks after your first ascension.";
+      } else {
+        document.getElementById("fame-text-" + item.id).textContent = "Unlocks after " + item.unlockAt + " ascensions.";
+      }
+      continue;
+    }
 
     if (fameUpgradeIsMaxed(item)) {
       upgradeButton.textContent = item.name + " level " + fameLevel(item.id) + " (max)";
@@ -1803,8 +1844,11 @@ function die() {
   gold = 0;
   upgrades = {};
   ownedRelics = [];
-  floor = 1;
+  floor = startFloor();
   room = 1;
+  if (floor > 1) {
+    say("You find your way back up to floor " + floor + ".");
+  }
 
   // The next run starts in whichever tower was chosen
   if (nextTower !== tower) {
@@ -1828,7 +1872,7 @@ function victory() {
   reward = Math.round(reward * monsterGold * (1 + totalBonus("gold")) * fameMultiplier("gold"));
   gold = gold + reward;
 
-  healPlayer(playerMaxHp * healOnKill);
+  healPlayer(playerMaxHp * (healOnKill + fameAdd("healOnKill")));
 
   say("You defeat the " + monsterName + " and earn " + big(reward) + " gold.");
   // Bosses and rare monsters always drop equipment, and it is better than usual

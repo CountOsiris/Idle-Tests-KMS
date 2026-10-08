@@ -44,25 +44,38 @@ const ascendFirstFloor = 20;
 const ascendFloorStep = 5;
 
 // What fame buys. These are kept forever, through every ascension.
+// They are locked behind ascensions: nothing can be bought before the first
+// ascension, and more upgrades appear the more times a class has ascended.
 //
 // TO ADD ONE: add a line. It needs:
 //   id       - a unique name with no spaces (used in the save)
 //   name     - what the player sees
 //   text     - a short description of what ONE level does
+//   unlockAt - how many times the class must have ascended before it appears
 //   cost     - the price of the first level, in fame
 //   growth   - each level costs this many times more than the last (1.5 means +50%)
 //   maxLevel - how many times it can be bought. 0 means no limit, ever.
 // and one of these two:
 //   multiply - multiplies something, and every level multiplies again (they compound).
-//              It can multiply: attack, health, armor, experience, gold
-//   add      - adds something per level. It can add: startLevels (levels kept when ascending).
-//              Give it an addLabel too, which is how the total is described on the page.
+//              It can multiply: attack, health, armor, experience, gold,
+//              gear (the power of equipment you find)
+//   add      - adds something per level. It can add:
+//                startLevels      levels kept when ascending
+//                startFloorShare  runs start this far toward your best floor (0.1 means 10%)
+//                healOnKill       extra healing after a kill (0.03 means +3% of your health)
+//                upgradeCap       extra top levels for the upgrades picked in upgrade areas
+//              Give it an addLabel too, which is how the total is described on the page,
+//              and addAsPercent: true if the total should be written as a percentage.
 const fameUpgrades = [
-  { id: "might", name: "Might", text: "Multiplies your attack by 1.25.", multiply: { attack: 1.25 }, cost: 3, growth: 1.5, maxLevel: 0 },
-  { id: "vitality", name: "Vitality", text: "Multiplies your health and armor by 1.25.", multiply: { health: 1.25, armor: 1.25 }, cost: 3, growth: 1.5, maxLevel: 0 },
-  { id: "wisdom", name: "Wisdom", text: "Multiplies the experience you earn by 1.2.", multiply: { experience: 1.2 }, cost: 2, growth: 1.5, maxLevel: 0 },
-  { id: "fortune", name: "Fortune", text: "Multiplies the gold you earn by 1.2.", multiply: { gold: 1.2 }, cost: 2, growth: 1.5, maxLevel: 0 },
-  { id: "legacy", name: "Legacy", text: "Start every ascension 3 levels higher.", add: { startLevels: 3 }, addLabel: "starting levels", cost: 4, growth: 1.5, maxLevel: 0 }
+  { id: "might", name: "Might", text: "Multiplies your attack by 1.25.", unlockAt: 1, multiply: { attack: 1.25 }, cost: 3, growth: 1.5, maxLevel: 0 },
+  { id: "vitality", name: "Vitality", text: "Multiplies your health and armor by 1.25.", unlockAt: 1, multiply: { health: 1.25, armor: 1.25 }, cost: 3, growth: 1.5, maxLevel: 0 },
+  { id: "wisdom", name: "Wisdom", text: "Multiplies the experience you earn by 1.2.", unlockAt: 1, multiply: { experience: 1.2 }, cost: 2, growth: 1.5, maxLevel: 0 },
+  { id: "fortune", name: "Fortune", text: "Multiplies the gold you earn by 1.2.", unlockAt: 1, multiply: { gold: 1.2 }, cost: 2, growth: 1.5, maxLevel: 0 },
+  { id: "legacy", name: "Legacy", text: "Start every ascension 3 levels higher.", unlockAt: 2, add: { startLevels: 3 }, addLabel: "starting levels", cost: 4, growth: 1.5, maxLevel: 0 },
+  { id: "pathfinder", name: "Pathfinder", text: "Start every run 10% of the way to your best floor since ascending.", unlockAt: 3, add: { startFloorShare: 0.1 }, addLabel: "of the way up", addAsPercent: true, cost: 8, growth: 2, maxLevel: 5 },
+  { id: "scavenger", name: "Scavenger", text: "Multiplies the power of equipment you find by 1.2.", unlockAt: 5, multiply: { gear: 1.2 }, cost: 6, growth: 1.5, maxLevel: 0 },
+  { id: "endurance", name: "Endurance", text: "Heal 3% more of your health after every kill.", unlockAt: 8, add: { healOnKill: 0.03 }, addLabel: "extra healing per kill", addAsPercent: true, cost: 10, growth: 2, maxLevel: 5 },
+  { id: "mastery", name: "Mastery", text: "The upgrades you pick in upgrade areas can go 1 level higher.", unlockAt: 12, add: { upgradeCap: 1 }, addLabel: "upgrade levels", cost: 15, growth: 2, maxLevel: 5 }
 ];
 
 // How much of your health comes back after every kill (0.2 means a fifth)
