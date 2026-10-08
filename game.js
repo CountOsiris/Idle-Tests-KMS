@@ -1920,7 +1920,7 @@ function buildMilestones() {
 // style.css shows the page whose name matches body's data-tab.
 // On a wide screen the tower is always visible beside the tabs; on a narrow
 // one it is a tab of its own.
-const tabNames = ["tower", "character", "skills", "town", "travel", "milestones", "ascension", "save"];
+const tabNames = ["tower", "character", "inventory", "skills", "town", "travel", "milestones", "ascension", "save"];
 
 function showTab(name) {
   document.body.dataset.tab = name;
@@ -2300,7 +2300,7 @@ function nextGoals() {
     goals.push("You have a milestone perk to pick (Milestones).");
   }
   if (backpackHasBetter()) {
-    goals.push("There is better equipment in your backpack (Character).");
+    goals.push("There is better equipment in your backpack (Inventory).");
   }
   if (canAscend()) {
     goals.push("You can ascend (Ascension).");
@@ -2343,27 +2343,80 @@ function showGoals() {
 
   // The same things put a dot on their tab
   markTab("tower", encounterType === "upgrade");
-  markTab("character", backpackHasBetter());
+  markTab("inventory", backpackHasBetter());
   markTab("skills", skillPointsLeft() > 0);
   markTab("milestones", hasPerkToPick());
   markTab("ascension", canAscend() || canBuyFameUpgrade());
 }
 
-function showRelics() {
-  let names = [];
+// The relic list is rebuilt only when the relics held change
+let relicsShown = "";
 
-  for (let id of ownedRelics) {
-    for (let relic of allRelics()) {
-      if (relic.id === id) {
-        names.push(relic.name + " (" + relic.text + ")");
+function showRelics() {
+  let key = playerClass + ownedRelics.join(",");
+  if (key === relicsShown) {
+    return;
+  }
+  relicsShown = key;
+
+  let box = document.getElementById("relics");
+  box.innerHTML = "";
+  document.getElementById("relic-count").textContent = ownedRelics.length;
+  document.getElementById("relics-empty").hidden = ownedRelics.length > 0;
+
+  // One card for each different relic, saying how many of it are held
+  for (let relic of allRelics()) {
+    let held = 0;
+    for (let id of ownedRelics) {
+      if (id === relic.id) {
+        held = held + 1;
       }
     }
-  }
+    if (held === 0) {
+      continue;
+    }
 
-  if (names.length === 0) {
-    document.getElementById("relics").textContent = "none";
-  } else {
-    document.getElementById("relics").textContent = names.join(", ");
+    let card = document.createElement("div");
+    card.className = "item";
+
+    let icon = document.createElement("div");
+    icon.className = "item-icon";
+    if (relic.icon !== undefined) {
+      icon.textContent = relic.icon;
+    } else {
+      icon.textContent = "💎";
+    }
+    card.appendChild(icon);
+
+    let text = document.createElement("div");
+    text.className = "item-text";
+
+    let label = document.createElement("p");
+    label.className = "item-slot";
+    label.textContent = "Relic";
+    text.appendChild(label);
+
+    let name = document.createElement("p");
+    name.className = "row-title";
+    name.textContent = relic.name;
+    if (held > 1) {
+      let count = document.createElement("span");
+      count.className = "item-count";
+      count.textContent = "  x" + held;
+      name.appendChild(count);
+    }
+    text.appendChild(name);
+
+    let effect = document.createElement("p");
+    effect.className = "item-stats";
+    effect.textContent = relic.text;
+    if (held > 1) {
+      effect.textContent = relic.text + " (each)";
+    }
+    text.appendChild(effect);
+
+    card.appendChild(text);
+    box.appendChild(card);
   }
 }
 
@@ -2549,7 +2602,6 @@ function showBackpack() {
 
   let box = document.getElementById("backpack");
   box.innerHTML = "";
-  document.getElementById("backpack-empty").hidden = backpack.length > 0;
 
   // The same spares as buttons under the fight, to swap in the middle of a run
   let swapBox = document.getElementById("quick-swap-buttons");
@@ -2563,11 +2615,88 @@ function showBackpack() {
     document.getElementById("quick-swap-" + i).title = itemStat(backpack[i]) + ". " + itemEffect(backpack[i]);
   }
 
-  for (let i = 0; i < backpack.length; i++) {
-    box.appendChild(itemCard(backpack[i], false, function () {
-      equipFromBackpack(i);
-    }));
+  // One slot for every kind of gear the class can use, whether or not it is filled
+  let slots = backpackSlots();
+  for (let slot of slots) {
+    let index = backpackIndex(slot.slot, slot.type);
+    if (index === -1) {
+      box.appendChild(emptySlotCard(slot));
+    } else {
+      box.appendChild(itemCard(backpack[index], false, function () {
+        equipFromBackpack(index);
+      }, function () {
+        dropFromBackpack(index);
+      }));
+    }
   }
+
+  document.getElementById("backpack-count").textContent = backpack.length;
+  document.getElementById("backpack-size").textContent = "of " + slots.length + " slots filled";
+}
+
+// The slots of the backpack: one for each kind of special gear, and one for the plain piece
+function backpackSlots() {
+  let slots = [];
+  for (let type in currentClass().gearTypes) {
+    slots.push({ slot: specialSlot(), type: type });
+  }
+
+  if (specialSlot() === "weapon") {
+    slots.push({ slot: "armor", type: "plain" });
+  } else {
+    slots.push({ slot: "weapon", type: "plain" });
+  }
+  return slots;
+}
+
+// Where in the backpack the spare of this kind is, or -1 if there is none
+function backpackIndex(slot, type) {
+  for (let i = 0; i < backpack.length; i++) {
+    if (backpack[i].slot === slot && backpack[i].type === type) {
+      return i;
+    }
+  }
+  return -1;
+}
+
+// Throws a spare away
+function dropFromBackpack(index) {
+  if (backpack[index] !== undefined) {
+    say("You leave the " + itemName(backpack[index]) + " behind.");
+    backpack.splice(index, 1);
+    updateScreen();
+  }
+}
+
+// The card for a backpack slot with nothing in it
+function emptySlotCard(slot) {
+  let card = document.createElement("div");
+  card.className = "item empty";
+
+  let icon = document.createElement("div");
+  icon.className = "item-icon";
+  icon.textContent = itemIcon({ slot: slot.slot, type: slot.type });
+  card.appendChild(icon);
+
+  let text = document.createElement("div");
+  text.className = "item-text";
+
+  let label = document.createElement("p");
+  label.className = "item-slot";
+  label.textContent = "Empty slot";
+  text.appendChild(label);
+
+  let name = document.createElement("p");
+  name.className = "row-title";
+  if (slot.slot === specialSlot()) {
+    name.textContent = "Spare " + currentClass().gearTypes[slot.type];
+  } else {
+    name.textContent = "Spare " + plainLabel();
+  }
+  text.appendChild(name);
+
+  card.appendChild(text);
+  return card;
 }
 
 // ----- Describing an item: its picture, its stats and what it does -----
@@ -2621,8 +2750,9 @@ function itemEffect(item) {
 }
 
 // Builds the card for one item. "worn" is true for something being worn;
-// "whenEquipped" is what the Equip button does (null for no button).
-function itemCard(item, worn, whenEquipped) {
+// "whenEquipped" is what the Equip button does (null for no button),
+// and "whenDropped" is what the Drop button does (leave it out for no button).
+function itemCard(item, worn, whenEquipped, whenDropped) {
   let card = document.createElement("div");
   card.className = "item";
 
@@ -2683,10 +2813,22 @@ function itemCard(item, worn, whenEquipped) {
   card.appendChild(text);
 
   if (whenEquipped !== null) {
+    let buttons = document.createElement("div");
+    buttons.className = "item-buttons";
+
     let button = document.createElement("button");
     button.textContent = "Equip";
     button.onclick = whenEquipped;
-    card.appendChild(button);
+    buttons.appendChild(button);
+
+    if (whenDropped !== undefined) {
+      let drop = document.createElement("button");
+      drop.className = "quiet";
+      drop.textContent = "Drop";
+      drop.onclick = whenDropped;
+      buttons.appendChild(drop);
+    }
+    card.appendChild(buttons);
   }
 
   return card;

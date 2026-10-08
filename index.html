@@ -148,6 +148,7 @@
       <nav class="tabs">
         <button id="tab-tower" class="tab-tower" onclick="showTab('tower')">Tower</button>
         <button id="tab-character" onclick="showTab('character')">Character</button>
+        <button id="tab-inventory" onclick="showTab('inventory')">Inventory</button>
         <button id="tab-skills" onclick="showTab('skills')">Skills</button>
         <button id="tab-town" onclick="showTab('town')">Town</button>
         <button id="tab-travel" onclick="showTab('travel')">Towers</button>
@@ -182,22 +183,43 @@
         </div>
 
         <div class="card">
-          <h2>Equipment</h2>
-          <p class="note">Found in the tower, and lost when you fall.</p>
-          <!-- What you are wearing. The cards are made by game.js. -->
-          <div id="worn"></div>
-
-          <!-- Spare equipment found this run. The rows are made by game.js. -->
-          <p class="row-title">Backpack</p>
-          <p id="backpack-empty" class="note">Empty. Spare equipment you find is kept here: the best of each kind.</p>
-          <div id="backpack"></div>
-          <p class="note">Relics: <span id="relics">none</span></p>
-        </div>
-
-        <div class="card">
           <h2>Play as</h2>
           <p class="note">Each class keeps its own progress. The others wait where you left them.</p>
           <div id="class-buttons" class="choices"></div>
+        </div>
+      </div>
+
+      <!-- Inventory: everything carried this run. All of it is lost when you fall. -->
+      <div class="page" id="page-inventory">
+        <div class="card">
+          <h2>Wearing</h2>
+          <p class="note">Equipment is found in the tower and lost when you fall.</p>
+          <!-- The cards are made by game.js -->
+          <div id="worn"></div>
+        </div>
+
+        <div class="card">
+          <div class="card-head">
+            <h2>Backpack</h2>
+            <p><strong id="backpack-count" class="big-number">0</strong> <span id="backpack-size"></span></p>
+          </div>
+          <p class="note">
+            The backpack has one slot for each kind of gear your class can use.
+            A find goes into its slot if the slot is empty or holds something weaker, which it replaces.
+            A find that is no better than what you already have is left behind.
+            Equipping a spare puts what you take off in its place.
+          </p>
+          <div id="backpack"></div>
+        </div>
+
+        <div class="card">
+          <div class="card-head">
+            <h2>Relics</h2>
+            <p><strong id="relic-count" class="big-number">0</strong> held</p>
+          </div>
+          <p class="note">Every boss you defeat gives one relic. They last until you fall, and the same relic can be held more than once.</p>
+          <p id="relics-empty" class="note">None yet. The first boss is on floor 5.</p>
+          <div id="relics"></div>
         </div>
       </div>
 

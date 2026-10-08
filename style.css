@@ -234,11 +234,11 @@ strong {
   border-bottom: 2px solid transparent;
   border-radius: 0;
   margin-bottom: -1px;
-  padding: 9px 4px;
+  padding: 9px 2px;
   color: var(--faded);
   font-family: var(--title-font);
-  font-size: 12px;
-  letter-spacing: 1px;
+  font-size: 11.5px;
+  letter-spacing: 0.4px;
   text-transform: uppercase;
   white-space: nowrap;
 }
@@ -274,6 +274,7 @@ strong {
 }
 
 body[data-tab="character"] #page-character,
+body[data-tab="inventory"] #page-inventory,
 body[data-tab="skills"] #page-skills,
 body[data-tab="town"] #page-town,
 body[data-tab="travel"] #page-travel,
@@ -364,6 +365,27 @@ body[data-tab="tower"] #tab-character {
 .item button {
   flex: none;
   align-self: center;
+}
+
+.item-buttons {
+  flex: none;
+  align-self: center;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+/* A backpack slot with nothing in it */
+.item.empty {
+  opacity: 0.45;
+}
+
+.item.empty .item-icon {
+  filter: grayscale(1);
+}
+
+.item-count {
+  color: var(--gold-bright);
 }
 
 .row-title {
