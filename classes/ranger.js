@@ -37,9 +37,9 @@ classes.ranger = {
   // The companions. The player picks one on the Skills tab; "stance" holds the choice.
   stanceLabel: "Companion",
   stances: {
-    wolf: { name: "Wolf", text: "Bites every turn for 30% of your attack. The steady damage dealer." },
-    bear: { name: "Bear", text: "Has a chance to take a hit for you, and mauls every turn for 15% of your attack. The protector." },
-    hawk: { name: "Hawk", text: "Has a chance each turn to dive for 100% of your attack, ignoring armor, and blind the enemy so it misses its turn." }
+    wolf: { name: "Wolf", text: "Bites every turn. The steady damage dealer." },
+    bear: { name: "Bear", text: "Has a chance to take a hit for you, and mauls every turn for half a wolf's bite. The protector." },
+    hawk: { name: "Hawk", text: "Has a chance each turn to dive for a heavy hit that ignores armor, and blind the enemy so it misses its turn." }
   },
 
   gearLabel: "Bow",
@@ -63,7 +63,7 @@ classes.ranger = {
     { id: "longbowMastery", name: "Longbow Mastery", text: "Longbow: +1.5% aimed shot chance and aimed shots deal +3% damage", bonus: { aimChance: 0.015, aimPower: 0.03 }, cost: 1 },
     { id: "spiritMastery", name: "Spirit Mastery", text: "Spirit Bow: +1 spirit and spirits deal +8% damage", bonus: { spirits: 1, dotPower: 0.08 }, cost: 1 },
     { id: "bloomMastery", name: "Bloom Mastery", text: "Bloom Bow: more healing per shot and thorns deal +8% damage", bonus: { regrowth: 0.005, thornPower: 0.08 }, cost: 1 },
-    { id: "beastBond", name: "Beast Bond", text: "Your companion deals +10% damage, whichever it is", bonus: { bond: 0.1 }, cost: 1 },
+    { id: "beastBond", name: "Beast Bond", text: "Your companion deals +10% damage, whichever it is. Companions grow with your level, not your attack", bonus: { bond: 0.1 }, cost: 1 },
     { id: "instinct", name: "Animal Instinct", text: "Sharpens your companion's own trick: Wolf +4% chance to bite again, Bear +2% chance to take a hit for you, Hawk +2% dive chance", bonus: { packChance: 0.04, guardChance: 0.02, diveChance: 0.02 }, cost: 1 }
   ],
 
@@ -193,13 +193,25 @@ function bloomHealing() {
 }
 
 // The numbers behind the companions. Change these to retune them.
-const wolfBite = 0.3;       // the wolf bites for this share of your attack every turn
-const bearMaul = 0.15;      // the bear mauls for this share of your attack every turn
-const hawkDive = 1;         // a hawk's dive hits for this many times your attack
+//
+// A companion has its OWN strength. It grows with your level and with Beast Bond,
+// and NOT with your attack: a beast tamer does not have to build attack as well.
+// (Whatever multiplies attack from outside a run, like the Might fame upgrade,
+// multiplies the companion too, so ascending makes it stronger like everything else.)
+const companionBase = 10;       // a companion's strength at level 1
+const companionPerLevel = 2;    // and what every level adds to it
+const wolfBite = 0.6;           // the wolf bites for this share of its strength every turn
+const bearMaul = 0.3;           // the bear mauls for this share of its strength every turn
+const hawkDive = 2;             // a hawk's dive hits for this many times its strength
+
+function companionStrength() {
+  let strength = companionBase + (level - 1) * companionPerLevel;
+  return strength * (1 + totalBonus("bond")) * multiplier("attack");
+}
 
 // The companion's part of your turn
 function companionAttack() {
-  let power = 1 + totalBonus("bond");
+  let strength = companionStrength();
 
   // Each full 100% of pack chance is one more bite for certain,
   // and what is left over is the chance of another
@@ -209,17 +221,17 @@ function companionAttack() {
       bites = bites + 1;
     }
     for (let i = 0; i < bites; i++) {
-      hitMonster(playerAttack * wolfBite * power);
+      hitMonster(strength * wolfBite);
     }
   }
 
   if (stance === "bear") {
-    hitMonster(playerAttack * bearMaul * power);
+    hitMonster(strength * bearMaul);
   }
 
   // Dive chance past its limit makes the dive hit harder instead
   if (stance === "hawk" && chance(cappedChance("diveChance"))) {
-    magicHitMonster(playerAttack * (hawkDive + overflow("diveChance", maxChance)) * power);
+    magicHitMonster(strength * (hawkDive + overflow("diveChance", maxChance)));
     monsterStunned = true;
     say("Your hawk dives at the enemy's eyes!");
   }
@@ -243,16 +255,16 @@ function rangerDamageDivider() {
 
 // What the companion is doing, for the "You" panel
 function companionLine() {
-  let power = 1 + totalBonus("bond");
+  let strength = companionStrength();
 
   if (stance === "wolf") {
-    return " Wolf: bites every turn for " + percent(wolfBite * power) + " of your attack, with a " + percent(totalBonus("packChance")) + " chance to bite again.";
+    return " Wolf: bites every turn for " + big(Math.round(strength * wolfBite)) + ", with a " + percent(totalBonus("packChance")) + " chance to bite again.";
   }
   if (stance === "bear") {
-    return " Bear: " + percent(cappedChance("guardChance")) + " chance to take a hit for you, and mauls for " + percent(bearMaul * power) + " of your attack."
+    return " Bear: " + percent(cappedChance("guardChance")) + " chance to take a hit for you, and mauls for " + big(Math.round(strength * bearMaul)) + " every turn."
       + overflowNote(overflow("guardChance", maxChance), "damage resistance");
   }
-  return " Hawk: " + percent(cappedChance("diveChance")) + " chance each turn to dive for " + percent((hawkDive + overflow("diveChance", maxChance)) * power) + " of your attack and blind the enemy.";
+  return " Hawk: " + percent(cappedChance("diveChance")) + " chance each turn to dive for " + big(Math.round(strength * (hawkDive + overflow("diveChance", maxChance)))) + " and blind the enemy.";
 }
 
 // The damage of one spirit each turn
