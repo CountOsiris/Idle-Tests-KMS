@@ -1944,6 +1944,9 @@ function updateScreen() {
 
   // The tower
   document.getElementById("tower-name").textContent = towers[tower].icon + " " + towers[tower].name;
+
+  // Each tower tints the fight with its own colour (the "sky" in towers.js)
+  document.getElementById("stage").style.setProperty("--sky", towers[tower].sky);
   if (isAway()) {
     document.getElementById("tower-note").textContent = "Away from home: monsters have +" + percent(awayTowerHealth) + " health and +" + percent(awayTowerAttack) + " attack, and you earn +" + percent(awayTowerExperience) + " experience.";
   } else {
@@ -1970,7 +1973,10 @@ function updateScreen() {
   document.getElementById("level").textContent = level;
   document.getElementById("health").textContent = big(playerMaxHp);
   document.getElementById("player-hp").textContent = big(playerHp) + " / " + big(playerMaxHp);
+  // The pale "trail" behind each health bar is set to the same width but moves
+  // more slowly (see style.css), so you can see how much a hit just took off
   document.getElementById("player-hp-bar").style.width = Math.max(0, playerHp / playerMaxHp * 100) + "%";
+  document.getElementById("player-hp-trail").style.width = Math.max(0, playerHp / playerMaxHp * 100) + "%";
   document.getElementById("attack").textContent = big(playerAttack);
   document.getElementById("total-armor").textContent = big(totalArmor());
   document.getElementById("class-stat").textContent = currentClass().statLine();
@@ -2017,6 +2023,7 @@ function updateScreen() {
   // Bosses and rare monsters get a coloured glow (see style.css).
   // classList.toggle switches one class on or off and leaves the animation classes alone.
   document.getElementById("monster-icon").classList.toggle("boss", encounterType === "boss");
+  document.getElementById("stage").classList.toggle("boss-fight", encounterType === "boss");
   document.getElementById("monster-icon").classList.toggle("rare", inFight && monsterIsRare);
 
   document.getElementById("upgrade-area").hidden = encounterType !== "upgrade";
@@ -2025,6 +2032,7 @@ function updateScreen() {
   if (inFight) {
     document.getElementById("monster-hp").textContent = big(Math.max(0, monsterHp)) + " / " + big(monsterMaxHp);
     document.getElementById("monster-hp-bar").style.width = Math.max(0, monsterHp / monsterMaxHp * 100) + "%";
+    document.getElementById("monster-hp-trail").style.width = Math.max(0, monsterHp / monsterMaxHp * 100) + "%";
     document.getElementById("monster-attack").textContent = big(monsterAttack);
     document.getElementById("monster-armor").textContent = big(monsterArmor);
     document.getElementById("monster-dot").textContent = big(dotDamage());
@@ -2357,17 +2365,28 @@ function step() {
 // before a second is played, play it, and animate whatever changed.
 // The movements themselves are described in style.css (look for "Animations").
 
+// A hit this big, as a share of the target's full health, gets a bigger number and a jolt
+const bigHitShare = 0.3;
+
+// Every animation there is. They are the class names in style.css under "Animations".
+const animationNames = ["lunge-right", "lunge-left", "shake", "shake-late", "appear", "death", "jolt", "pop", "dying"];
+
 // Plays one of the CSS animations on something on the page.
-// Taking the class off and reading offsetWidth makes the browser start it afresh.
+// Something can only play one at a time, so any earlier one is cleared first.
+// Reading offsetWidth in between makes the browser start the new one afresh.
 function animate(id, animationName) {
   let element = document.getElementById(id);
-  element.classList.remove(animationName);
+
+  for (let name of animationNames) {
+    element.classList.remove(name);
+  }
   void element.offsetWidth;
   element.classList.add(animationName);
 }
 
 // A number or word that floats up from a fighter and fades.
-// kind is "hit", "hurt", "heal" or "word". late = true makes it wait for the monster's turn.
+// kind is "hit", "hurt", "heal" or "word", and can have " big" added.
+// late = true makes it wait for the monster's turn.
 function floatText(sideId, text, kind, late) {
   let bubble = document.createElement("span");
   bubble.className = "float " + kind;
@@ -2383,18 +2402,81 @@ function floatText(sideId, text, kind, late) {
   document.getElementById(sideId).appendChild(bubble);
 }
 
+// A short message that pops up over the fight and fades: a level gained, an item found...
+// kind decides its colour: "good", "floor", "bad", or "rarity-0" to "rarity-5" for items.
+function toast(text, kind) {
+  let box = document.getElementById("toasts");
+
+  // Never more than three at once: the oldest makes room
+  if (box.children.length >= 3) {
+    box.children[0].remove();
+  }
+
+  let note = document.createElement("div");
+  note.className = "toast " + kind;
+  note.textContent = text;
+  note.onanimationend = function () {
+    note.remove();
+  };
+  box.appendChild(note);
+}
+
+// ----- Settings -----
+// Settings belong to the device, not to the save: they are kept under their own
+// name in the browser, and a save code does not carry them.
+const settingsName = "lloegrys-idle-settings";
+let animationsOn = true;
+
+function loadSettings() {
+  let saved = localStorage.getItem(settingsName);
+
+  if (saved !== null) {
+    try {
+      animationsOn = JSON.parse(saved).animationsOn !== false;
+    } catch (error) {
+      animationsOn = true;
+    }
+  }
+
+  showSettings();
+}
+
+function setAnimations(on) {
+  animationsOn = on;
+  localStorage.setItem(settingsName, JSON.stringify({ animationsOn: animationsOn }));
+  showSettings();
+}
+
+function showSettings() {
+  document.getElementById("animations-box").checked = animationsOn;
+
+  // style.css switches every animation off when the body has "no-motion"
+  document.body.classList.toggle("no-motion", !animationsOn);
+}
+
 function animatedStep() {
-  // Nothing to animate if nobody is looking, or the player has asked their device for less motion
-  if (document.hidden || window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+  // Nothing to animate if nobody is looking, or animations are switched off
+  if (document.hidden || !animationsOn) {
     step();
     return;
   }
 
+  // What things look like before this second is played
   let wasFight = encounterType === "monster" || encounterType === "boss";
   let roomBefore = roomCount;
   let deathsBefore = deaths;
   let monsterHpBefore = monsterHp;
+  let monsterMaxHpBefore = monsterMaxHp;
+  let monsterIconBefore = document.getElementById("monster-icon").textContent;
   let playerHpBefore = playerHp;
+  let floorBefore = floor;
+  let levelBefore = level;
+  let fameBefore = fame;
+  let relicsBefore = ownedRelics.length;
+  let trophiesBefore = trophies.length;
+  let foundBefore = foundItem;
+  let weaponBefore = weaponPower;
+  let armorBefore = armorPower;
 
   step();
 
@@ -2402,11 +2484,40 @@ function animatedStep() {
   let newRoom = roomCount !== roomBefore;
   let playerChange = playerHp - playerHpBefore;
 
+  // Things worth a pop-up message, whatever else happened
+  if (level > levelBefore) {
+    toast("Level " + level + "!", "good");
+    animate("header-level", "pop");
+  }
+  if (fame > fameBefore) {
+    animate("fame", "pop");
+  }
+  if (trophies.length > trophiesBefore) {
+    toast("Trophy won!", "good");
+  }
+
   if (died) {
     animate("stage", "death");
-    floatText("player-side", "You fell!", "hurt", false);
+    toast("You fell on floor " + floorBefore, "bad");
     animate("monster-mover", "appear");
     return;
+  }
+
+  if (floor > floorBefore) {
+    toast("Floor " + floor, "floor");
+    animate("floor", "pop");
+  }
+  if (ownedRelics.length > relicsBefore) {
+    toast("Relic claimed!", "good");
+  }
+
+  // Equipment: either the Squire put it on, or it is waiting on the Character tab
+  if (weaponPower > weaponBefore) {
+    toast("Equipped " + gearName("weapon", weapon, weaponPower, weaponRarity), "rarity-" + weaponRarity);
+  } else if (armorPower > armorBefore) {
+    toast("Equipped " + gearName("armor", weapon, armorPower, armorRarity), "rarity-" + armorRarity);
+  } else if (foundItem !== null && foundItem !== foundBefore) {
+    toast("Found " + itemName(foundItem), "rarity-" + foundItem.rarity);
   }
 
   if (wasFight) {
@@ -2414,11 +2525,17 @@ function animatedStep() {
     animate("player-mover", "lunge-right");
 
     if (newRoom) {
-      floatText("monster-side", "Defeated!", "word", false);
+      // The defeated monster fades away where it stood, while the next room arrives
+      document.getElementById("monster-ghost").textContent = monsterIconBefore;
+      animate("monster-ghost", "dying");
     } else {
       // A regenerating monster can end the turn with more health than it started
       let dealt = monsterHpBefore - monsterHp;
-      if (dealt > 0) {
+      if (dealt >= monsterMaxHpBefore * bigHitShare) {
+        floatText("monster-side", "-" + big(dealt), "hit big", false);
+        animate("monster-icon", "shake");
+        animate("stage", "jolt");
+      } else if (dealt > 0) {
         floatText("monster-side", "-" + big(dealt), "hit", false);
         animate("monster-icon", "shake");
       } else if (dealt < 0) {
@@ -2429,7 +2546,12 @@ function animatedStep() {
       if (playerChange < 0) {
         animate("monster-mover", "lunge-left");
         animate("player-icon", "shake-late");
-        floatText("player-side", "-" + big(-playerChange), "hurt", true);
+
+        if (-playerChange >= playerMaxHp * bigHitShare) {
+          floatText("player-side", "-" + big(-playerChange), "hurt big", true);
+        } else {
+          floatText("player-side", "-" + big(-playerChange), "hurt", true);
+        }
       }
     }
   }
@@ -2509,6 +2631,7 @@ buildFameList();
 buildTowerList();
 buildClassScreen();
 showTab("tower");
+loadSettings();
 showSaveProblem();
 startEncounter();
 tick();

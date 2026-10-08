@@ -264,6 +264,38 @@ body[data-tab="tower"] #tab-character {
   min-width: 104px;
 }
 
+/* A price you can afford is picked out in gold, so it catches the eye */
+.row button:enabled {
+  border-color: var(--gold-dark);
+  color: var(--gold);
+}
+
+.row button:enabled:hover {
+  background: var(--gold);
+  border-color: var(--gold);
+  color: var(--background);
+}
+
+/* A tick box with its name and a note beside it, on the Settings tab */
+.setting {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  cursor: pointer;
+}
+
+.setting input {
+  width: 18px;
+  height: 18px;
+  margin-top: 2px;
+  accent-color: var(--gold);
+}
+
+.setting .row-title,
+.setting .note {
+  display: block;
+}
+
 /* A label on the left and its value on the right */
 .pair {
   display: flex;
@@ -372,15 +404,31 @@ body[data-tab="tower"] #tab-character {
 
 /* The fight: you on the left, the monster on the right */
 .stage {
+  /* game.js sets --sky to the colour of the tower you are in */
+  --sky: #2a2a3a;
+
+  position: relative;
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
   align-items: start;
   gap: 10px;
   margin: 14px 0 10px;
-  padding: 16px 14px;
+  padding: 22px 14px 16px;
   border-radius: 10px;
-  background: linear-gradient(180deg, #191922 0%, var(--inset) 100%);
+  overflow: hidden;
   border: 1px solid var(--card-edge);
+
+  /* A glow of the tower's colour from above, fading down to a dark floor */
+  background:
+    radial-gradient(ellipse at 50% 0%, var(--sky) 0%, transparent 70%),
+    linear-gradient(180deg, #1b1b25 0%, var(--inset) 100%);
+  transition: border-color 0.4s;
+}
+
+/* A boss fight has a gold frame and a red glow from below */
+.stage.boss-fight {
+  border-color: var(--gold);
+  box-shadow: inset 0 -40px 60px -30px rgba(207, 80, 69, 0.45);
 }
 
 .fighter {
@@ -404,6 +452,89 @@ body[data-tab="tower"] #tab-character {
 
 .mover {
   display: inline-block;
+}
+
+/* Fighters sway gently while they wait. The monster is half a beat behind you. */
+.bobber {
+  animation: bob 2.6s ease-in-out infinite;
+}
+
+.bobber.late {
+  animation-delay: -1.3s;
+}
+
+@keyframes bob {
+  50% { transform: translateY(-5px); }
+}
+
+/* The shadow on the floor under each fighter */
+.shadow {
+  width: 62px;
+  height: 10px;
+  margin: -4px auto 6px;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.45);
+  filter: blur(2px);
+}
+
+/* The monster that was just defeated: it sits exactly where the monster stands,
+   invisible, until game.js plays "dying" on it */
+.ghost {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  font-size: 54px;
+  line-height: 66px;
+  height: 66px;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.ghost.dying {
+  animation: dying 0.6s forwards;
+}
+
+@keyframes dying {
+  0%   { opacity: 1; transform: none; filter: brightness(3); }
+  100% { opacity: 0; transform: translateY(26px) rotate(18deg) scale(0.6); filter: grayscale(1); }
+}
+
+/* Short messages that pop up over the fight */
+.toasts {
+  position: absolute;
+  top: 6px;
+  left: 0;
+  right: 0;
+  z-index: 3;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  pointer-events: none;
+}
+
+.toast {
+  padding: 3px 14px;
+  border-radius: 20px;
+  background: rgba(10, 10, 14, 0.88);
+  border: 1px solid var(--card-edge);
+  font-size: 13px;
+  font-weight: bold;
+  white-space: nowrap;
+  animation: toast 2.4s forwards;
+}
+
+.toast.good  { color: var(--gold); border-color: var(--gold-dark); }
+.toast.floor { color: var(--text); }
+.toast.bad   { color: var(--hurt); border-color: var(--monster); }
+.toast.rarity-0 { color: var(--text); }
+
+@keyframes toast {
+  0%   { opacity: 0; transform: translateY(-8px) scale(0.9); }
+  10%  { opacity: 1; transform: none; }
+  80%  { opacity: 1; }
+  100% { opacity: 0; transform: translateY(-6px); }
 }
 
 .icon {
@@ -456,11 +587,24 @@ body[data-tab="tower"] #tab-character {
 
 /* ----- Bars ----- */
 .bar {
+  position: relative;
   background: var(--inset);
   border: 1px solid var(--card-edge);
   border-radius: 7px;
   height: 14px;
   overflow: hidden;
+}
+
+/* The pale strip behind a health bar. It follows the bar after a short wait,
+   so for a moment you can see how much a hit took off. */
+.trail {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 0;
+  background: rgba(255, 255, 255, 0.55);
+  transition: width 0.7s 0.35s;
 }
 
 .bar.thin {
@@ -474,6 +618,7 @@ body[data-tab="tower"] #tab-character {
 }
 
 .fill {
+  position: relative;
   height: 100%;
   width: 0;
   transition: width 0.3s;
@@ -603,9 +748,34 @@ textarea {
   80% { transform: translateX(4px); }
 }
 
-/* A new monster or room pops in */
+/* A new monster or room pops in, just after the last one has gone */
 .appear {
-  animation: appear 0.35s;
+  animation: appear 0.35s 0.2s backwards;
+}
+
+/* A big hit jolts the whole fight */
+.jolt {
+  animation: jolt 0.3s 0.1s;
+}
+
+@keyframes jolt {
+  25% { transform: translate(5px, -2px); }
+  50% { transform: translate(-4px, 2px); }
+  75% { transform: translate(2px, 0); }
+}
+
+/* A number that has just gone up swells for a moment: the floor, your level, your fame */
+.pop {
+  display: inline-block;
+  animation: pop 0.5s;
+}
+
+#floor.pop {
+  display: block;
+}
+
+@keyframes pop {
+  40% { transform: scale(1.5); color: var(--gold); }
 }
 
 @keyframes appear {
@@ -624,7 +794,8 @@ textarea {
 /* Damage and healing numbers float up and fade */
 .float {
   position: absolute;
-  top: 8px;
+  top: 30px;
+  z-index: 2;
   left: 50%;
   font-weight: bold;
   font-size: 18px;
@@ -639,6 +810,15 @@ textarea {
   animation-delay: 0.5s;
 }
 
+/* A big hit gets a bigger number */
+.float.big {
+  font-size: 28px;
+}
+
+.float.hit.big {
+  color: var(--gold);
+}
+
 .float.hit  { color: #ffffff; }
 .float.hurt { color: var(--hurt); }
 .float.heal { color: var(--heal); left: 78%; }
@@ -650,15 +830,28 @@ textarea {
   100% { opacity: 0; transform: translate(-50%, -46px); }
 }
 
-/* People who have asked their device for less motion get none of the above */
-@media (prefers-reduced-motion: reduce) {
-  .lunge-right, .lunge-left, .shake, .shake-late, .appear, .death {
-    animation: none;
-  }
+/* Animations can be switched off on the Settings tab. game.js then puts
+   "no-motion" on the body, and none of the above plays. */
+.no-motion .lunge-right,
+.no-motion .lunge-left,
+.no-motion .shake,
+.no-motion .shake-late,
+.no-motion .appear,
+.no-motion .death,
+.no-motion .jolt,
+.no-motion .pop,
+.no-motion .bobber,
+.no-motion .ghost.dying {
+  animation: none;
+}
 
-  .float {
-    display: none;
-  }
+.no-motion .float,
+.no-motion .toasts {
+  display: none;
+}
+
+.no-motion .trail {
+  display: none;
 }
 
 /* ----- Narrow screens -----

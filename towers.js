@@ -8,6 +8,7 @@
 // in data.js), but it earns more experience and can win that tower's trophies for itself.
 //
 // ----- Pictures -----
+// Every tower has a "sky": the colour the fight is tinted with while you are there.
 // Every tower has an icon, which is the picture shown for its monsters.
 // A single monster or boss can have its own by adding  icon: "🐺"  to its line.
 //
@@ -40,6 +41,7 @@
 const towers = {
   barbarian: {
     name: "Orc Stronghold",
+    sky: "#4d2e1a",
     icon: "👹",
     text: "Big, loud and lightly armored. Plenty of flesh to steal life from.",
     monsters: [
@@ -64,6 +66,7 @@ const towers = {
 
   warden: {
     name: "Raider's Pass",
+    sky: "#3a3f4d",
     icon: "🤺",
     text: "Reckless raiders who hit hard and fall quickly. Every blow they land comes straight back.",
     monsters: [
@@ -88,6 +91,7 @@ const towers = {
 
   ranger: {
     name: "Wildwood",
+    sky: "#1d4028",
     icon: "🐗",
     text: "Slow, heavy beasts. They take a long time to reach an archer.",
     monsters: [
@@ -112,6 +116,7 @@ const towers = {
 
   assassin: {
     name: "The Undercity",
+    sky: "#2e2244",
     icon: "🐀",
     text: "Thugs and vermin in the dark. Frail enough to fall to one well-placed blade.",
     monsters: [
@@ -136,6 +141,7 @@ const towers = {
 
   warlock: {
     name: "Iron Crypt",
+    sky: "#1c3042",
     icon: "💀",
     text: "The armored dead. Steel means nothing to a spell.",
     monsters: [
@@ -160,6 +166,7 @@ const towers = {
 
   elementalist: {
     name: "Storm Peak",
+    sky: "#1f3d47",
     icon: "🐉",
     text: "A bit of everything: armor, venom and fury. The right element answers each of them.",
     monsters: [
@@ -184,6 +191,7 @@ const towers = {
 
   zealot: {
     name: "Haunted Abbey",
+    sky: "#3b2540",
     icon: "👻",
     text: "The restless dead. They wear you down slowly, which only works on those who cannot heal.",
     monsters: [
