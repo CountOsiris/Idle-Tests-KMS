@@ -40,11 +40,15 @@ const skillPointsPerLevel = 1;
 // Every floor pays 1 fame the first time it is reached since the last ascension.
 // Ascending starts the class again from level 1 and makes every floor pay again.
 //
-// To ascend, a class must first reach a certain floor. The first time it is
-// ascendFirstFloor, and it goes up by ascendFloorStep with every ascension,
-// so each ascension means pushing further than the one before.
+// To ascend, a class must first reach floor ascendFirstFloor. That floor stays the
+// same for every ascension, so the first one takes a while and each one after is
+// quicker, as fame upgrades make the early floors fly by. When to stop climbing and
+// ascend is the player's call: deeper floors still pay fame, but slower and slower.
+//
+// ascendFloorStep raises the floor needed by that much after every ascension.
+// It is 0, which means "never". Set it above 0 only if ascending should get harder.
 const ascendFirstFloor = 20;
-const ascendFloorStep = 5;
+const ascendFloorStep = 0;
 
 // What fame buys. These are kept forever, through every ascension.
 // They are locked behind ascensions: nothing can be bought before the first

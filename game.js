@@ -52,6 +52,12 @@ let ascensions = 0;
 let ascensionBest = 1;
 let fameLevels = {};
 
+// How long the current ascension has lasted, in seconds of play, and how the last one
+// went. Shown on the page so the player can judge when it is time to ascend again.
+let ascensionSeconds = 0;
+let lastAscensionFame = 0;
+let lastAscensionSeconds = 0;
+
 // The ids of the trophies this class has won in other towers (see towers.js)
 let trophies = [];
 
@@ -309,8 +315,8 @@ function fameAdd(stat) {
   return total;
 }
 
-// The floor that must be reached before the class can ascend.
-// It goes up with every ascension, so each one means pushing further than before.
+// The floor that must be reached before the class can ascend (see data.js).
+// It is the same every time, so each ascension gets there faster than the last.
 function ascendFloorNeeded() {
   return ascendFirstFloor + ascendFloorStep * ascensions;
 }
@@ -326,6 +332,11 @@ function ascend() {
   if (!confirm("Ascend? You start again from level 1, and every floor pays fame again.")) {
     return;
   }
+
+  // Remember how this ascension went, to compare the next one against
+  lastAscensionFame = ascensionBest - 1;
+  lastAscensionSeconds = ascensionSeconds;
+  ascensionSeconds = 0;
 
   ascensions = ascensions + 1;
   ascensionBest = 1;
@@ -913,6 +924,9 @@ function freshClass(className) {
     ascensions: 0,
     ascensionBest: 1,
     fameLevels: {},
+    ascensionSeconds: 0,
+    lastAscensionFame: 0,
+    lastAscensionSeconds: 0,
     trophies: []
   };
 }
@@ -949,6 +963,9 @@ function packClass() {
     ascensions: ascensions,
     ascensionBest: ascensionBest,
     fameLevels: fameLevels,
+    ascensionSeconds: ascensionSeconds,
+    lastAscensionFame: lastAscensionFame,
+    lastAscensionSeconds: lastAscensionSeconds,
     trophies: trophies
   };
 }
@@ -1004,6 +1021,9 @@ function unpackClass(saved) {
   ascensions = data.ascensions;
   ascensionBest = data.ascensionBest;
   fameLevels = data.fameLevels;
+  ascensionSeconds = data.ascensionSeconds;
+  lastAscensionFame = data.lastAscensionFame;
+  lastAscensionSeconds = data.lastAscensionSeconds;
   trophies = data.trophies;
 
   // In case a tower or gear type was renamed or removed since the save was made
@@ -1545,8 +1565,22 @@ function fameEffectText(item) {
   return parts.join(", ");
 }
 
+// For example "34 fame in 1h 12m (28.3 an hour)"
+function fameRateText(fameEarned, seconds) {
+  if (seconds < 60) {
+    return fameEarned + " fame so far";
+  }
+  return big(fameEarned) + " fame in " + timeText(seconds) + " (" + big(fameEarned / (seconds / 3600)) + " an hour)";
+}
+
 function showAscension() {
   document.getElementById("fame-owned").textContent = big(fame);
+  document.getElementById("this-ascension").textContent = fameRateText(ascensionBest - 1, ascensionSeconds);
+  if (ascensions === 0) {
+    document.getElementById("last-ascension").textContent = "none yet";
+  } else {
+    document.getElementById("last-ascension").textContent = fameRateText(lastAscensionFame, lastAscensionSeconds);
+  }
   document.getElementById("ascensions").textContent = ascensions;
   document.getElementById("ascension-best").textContent = ascensionBest;
   document.getElementById("ascend-floor").textContent = ascendFloorNeeded();
@@ -2066,6 +2100,8 @@ function fightMonster() {
 
 // One second of the game
 function step() {
+  ascensionSeconds = ascensionSeconds + 1;
+
   if (encounterType === "monster" || encounterType === "boss") {
     fightMonster();
   } else if (encounterType === "rest") {
