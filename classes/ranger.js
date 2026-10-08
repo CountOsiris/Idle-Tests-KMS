@@ -9,6 +9,8 @@
 //   bond         damage of your companion                         (0.1 means +10% stronger)
 //   guardChance  bear: chance it takes a hit for you              (0.02 means +2%)
 //   diveChance   hawk: chance it dives each turn                  (0.02 means +2%)
+//   packChance   wolf: chance of another bite                     (0.05 means +5%;
+//                every full 1 is a bite for certain)
 //
 // The Ranger also has a COMPANION, picked on the Skills tab and free to change.
 // It fights beside you whichever bow you carry, so every bow goes with every companion.
@@ -27,7 +29,7 @@ classes.ranger = {
   stanceLabel: "Companion",
   stances: {
     wolf: { name: "Wolf", text: "Bites every turn for 30% of your attack. The steady damage dealer." },
-    bear: { name: "Bear", text: "Has a chance to take a hit for you, and mauls every turn for 10% of your attack. The protector." },
+    bear: { name: "Bear", text: "Has a chance to take a hit for you, and mauls every turn for 15% of your attack. The protector." },
     hawk: { name: "Hawk", text: "Has a chance each turn to dive for 100% of your attack, ignoring armor, and blind the enemy so it misses its turn." }
   },
 
@@ -39,7 +41,8 @@ classes.ranger = {
     { id: "quickDraw", name: "Quick Draw", text: "+3 attack", bonus: { attack: 3 } },
     { id: "eagleEye", name: "Eagle Eye", text: "Longbow: +5% aimed shot chance", bonus: { aimChance: 0.05 } },
     { id: "packLeader", name: "Pack Leader", text: "Spirit Bow: +1 spirit", bonus: { spirits: 1 } },
-    { id: "overgrowth", name: "Overgrowth", text: "Bloom Bow: +1% healing per shot", bonus: { regrowth: 0.01 } }
+    { id: "overgrowth", name: "Overgrowth", text: "Bloom Bow: +1% healing per shot", bonus: { regrowth: 0.01 } },
+    { id: "feralBond", name: "Feral Bond", text: "Your companion deals +15% damage", bonus: { bond: 0.15 } }
   ],
 
   skills: [
@@ -52,7 +55,8 @@ classes.ranger = {
     { id: "bloomMastery", name: "Bloom Mastery", text: "Bloom Bow: +1% healing per shot", bonus: { regrowth: 0.01 }, cost: 2 },
     { id: "beastBond", name: "Beast Bond", text: "Your companion deals +10% damage", bonus: { bond: 0.1 }, cost: 1 },
     { id: "bearMastery", name: "Bear Mastery", text: "Bear: +2% chance to take a hit for you", bonus: { guardChance: 0.02 }, cost: 1 },
-    { id: "hawkMastery", name: "Hawk Mastery", text: "Hawk: +2% dive chance", bonus: { diveChance: 0.02 }, cost: 1 }
+    { id: "hawkMastery", name: "Hawk Mastery", text: "Hawk: +2% dive chance", bonus: { diveChance: 0.02 }, cost: 1 },
+    { id: "wolfMastery", name: "Wolf Mastery", text: "Wolf: +4% chance to bite again", bonus: { packChance: 0.04 }, cost: 1 }
   ],
 
   milestones: [
@@ -75,7 +79,8 @@ classes.ranger = {
       perks: [
         { id: "marksman", name: "Marksman", text: "Longbow: +10% aimed shot chance", bonus: { aimChance: 0.1 } },
         { id: "beastmaster", name: "Beastmaster", text: "Spirit Bow: +2 spirits", bonus: { spirits: 2 } },
-        { id: "druid", name: "Druid", text: "Bloom Bow: +2% healing per shot", bonus: { regrowth: 0.02 } }
+        { id: "druid", name: "Druid", text: "Bloom Bow: +2% healing per shot", bonus: { regrowth: 0.02 } },
+        { id: "beastTamer", name: "Beast Tamer", text: "Your companion deals +50% damage", bonus: { bond: 0.5 } }
       ]
     },
     {
@@ -89,21 +94,24 @@ classes.ranger = {
       floor: 50,
       perks: [
         { id: "hawksVolley", name: "Hawk's Volley", text: "+30% attack and the enemy misses 1 more turn", bonus: { attackPercent: 0.3, firstStrike: 1 } },
-        { id: "forestGuardian", name: "Forest Guardian", text: "+50% health and +4 armor", bonus: { healthPercent: 0.5, armor: 4 } }
+        { id: "forestGuardian", name: "Forest Guardian", text: "+50% health and +4 armor", bonus: { healthPercent: 0.5, armor: 4 } },
+        { id: "beastlord", name: "Beastlord", text: "Your companion deals +100% damage, and +20% health", bonus: { bond: 1, healthPercent: 0.2 } }
       ]
     },
     {
       floor: 75,
       perks: [
         { id: "deadeye", name: "Deadeye", text: "+50% attack", bonus: { attackPercent: 0.5 } },
-        { id: "wildHeart", name: "Wild Heart", text: "+100% health", bonus: { healthPercent: 1 } }
+        { id: "wildHeart", name: "Wild Heart", text: "+100% health", bonus: { healthPercent: 1 } },
+        { id: "apexPredator", name: "Apex Predator", text: "Your companion deals +150% damage", bonus: { bond: 1.5 } }
       ]
     },
     {
       floor: 100,
       perks: [
         { id: "stormOfArrows", name: "Storm of Arrows", text: "+60% attack and the enemy misses 1 more turn", bonus: { attackPercent: 0.6, firstStrike: 1 } },
-        { id: "spiritLord", name: "Spirit Lord", text: "+100% health and Spirit Bow: +3 spirits", bonus: { healthPercent: 1, spirits: 3 } }
+        { id: "spiritLord", name: "Spirit Lord", text: "+100% health and Spirit Bow: +3 spirits", bonus: { healthPercent: 1, spirits: 3 } },
+        { id: "lordOfTheWild", name: "Lord of the Wild", text: "Your companion deals +200% damage, and +50% health", bonus: { bond: 2, healthPercent: 0.5 } }
       ]
     }
   ],
@@ -111,7 +119,8 @@ classes.ranger = {
   relics: [
     { id: "hawkFeather", name: "Hawk Feather", text: "Longbow: +10% aimed shot chance", bonus: { aimChance: 0.1 } },
     { id: "wolfTotem", name: "Wolf Totem", text: "Spirit Bow: +1 spirit", bonus: { spirits: 1 } },
-    { id: "heartwood", name: "Heartwood", text: "Bloom Bow: +2% healing per shot", bonus: { regrowth: 0.02 } }
+    { id: "heartwood", name: "Heartwood", text: "Bloom Bow: +2% healing per shot", bonus: { regrowth: 0.02 } },
+    { id: "alphaFang", name: "Alpha Fang", text: "Your companion deals +25% damage", bonus: { bond: 0.25 } }
   ],
 
   startFight: rangerStartFight,
@@ -167,15 +176,23 @@ function rangerAttack() {
 
 // The numbers behind the companions. Change these to retune them.
 const wolfBite = 0.3;       // the wolf bites for this share of your attack every turn
-const bearMaul = 0.1;       // the bear mauls for this share of your attack every turn
+const bearMaul = 0.15;      // the bear mauls for this share of your attack every turn
 const hawkDive = 1;         // a hawk's dive hits for this many times your attack
 
 // The companion's part of your turn
 function companionAttack() {
   let power = 1 + totalBonus("bond");
 
+  // Each full 100% of pack chance is one more bite for certain,
+  // and what is left over is the chance of another
   if (stance === "wolf") {
-    hitMonster(playerAttack * wolfBite * power);
+    let bites = 1 + Math.floor(totalBonus("packChance"));
+    if (chance(totalBonus("packChance") % 1)) {
+      bites = bites + 1;
+    }
+    for (let i = 0; i < bites; i++) {
+      hitMonster(playerAttack * wolfBite * power);
+    }
   }
 
   if (stance === "bear") {
@@ -211,7 +228,7 @@ function companionLine() {
   let power = 1 + totalBonus("bond");
 
   if (stance === "wolf") {
-    return " Wolf: bites every turn for " + percent(wolfBite * power) + " of your attack.";
+    return " Wolf: bites every turn for " + percent(wolfBite * power) + " of your attack, with a " + percent(totalBonus("packChance")) + " chance to bite again.";
   }
   if (stance === "bear") {
     return " Bear: " + percent(cappedChance("guardChance")) + " chance to take a hit for you, and mauls for " + percent(bearMaul * power) + " of your attack."
