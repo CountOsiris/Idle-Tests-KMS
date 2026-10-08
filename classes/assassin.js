@@ -48,17 +48,14 @@ classes.assassin = {
     { id: "shadowstep", name: "Shadowstep", text: "Shadow Blade: +15% damage after a dodge", bonus: { counter: 0.15 } }
   ],
 
+  // One skill for each build, so there is never a question of where a build's points go
   skills: [
     { id: "lethality", name: "Lethality", text: "+3% attack", bonus: { attackPercent: 0.03 }, cost: 1 },
     { id: "conditioning", name: "Conditioning", text: "+3% health", bonus: { healthPercent: 0.03 }, cost: 1 },
-    { id: "virulence", name: "Virulence", text: "Poison deals +10% damage", bonus: { dotPower: 0.1 }, cost: 1 },
-    { id: "evasion", name: "Evasion", text: "+1% dodge", bonus: { dodge: 0.01 }, cost: 1 },
-    { id: "ambushTraining", name: "Ambush Training", text: "+10% ambush damage", bonus: { ambush: 0.1 }, cost: 1 },
-    { id: "venomMastery", name: "Venom Mastery", text: "Venom Dagger: +1 poison stack", bonus: { poisonStacks: 1 }, cost: 2 },
-    { id: "stilettoMastery", name: "Stiletto Mastery", text: "Stiletto: +3% critical chance", bonus: { critChance: 0.03 }, cost: 2 },
-    { id: "deathblow", name: "Deathblow", text: "Stiletto: +10% critical damage", bonus: { critPower: 0.1 }, cost: 1 },
-    { id: "riposte", name: "Riposte", text: "Shadow Blade: +10% damage after a dodge", bonus: { counter: 0.1 }, cost: 1 },
-    { id: "vanish", name: "Vanish", text: "+1% chance each turn to hide again, so your next hit is another ambush", bonus: { vanishChance: 0.01 }, cost: 1 }
+    { id: "ambushTraining", name: "Ambush Training", text: "+5% ambush damage and +0.5% chance each turn to hide again", bonus: { ambush: 0.05, vanishChance: 0.005 }, cost: 1 },
+    { id: "venomMastery", name: "Venom Mastery", text: "Venom Dagger: +1 poison stack and poison deals +8% damage", bonus: { poisonStacks: 1, dotPower: 0.08 }, cost: 1 },
+    { id: "stilettoMastery", name: "Stiletto Mastery", text: "Stiletto: +1% critical chance and +2.5% critical damage", bonus: { critChance: 0.01, critPower: 0.025 }, cost: 1 },
+    { id: "riposte", name: "Shadow Mastery", text: "Shadow Blade: +0.5% dodge and +8% damage after a dodge", bonus: { dodge: 0.005, counter: 0.08 }, cost: 1 }
   ],
 
   milestones: [

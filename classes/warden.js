@@ -58,17 +58,15 @@ classes.warden = {
     { id: "oath", name: "Oath", text: "+8% vengeance", bonus: { vengeance: 0.08 } }
   ],
 
+  // One skill for each build, so there is never a question of where a build's points go
   skills: [
     { id: "spearThrust", name: "Spear Thrust", text: "+3% attack", bonus: { attackPercent: 0.03 }, cost: 1 },
     { id: "vigor", name: "Vigor", text: "+3% health", bonus: { healthPercent: 0.03 }, cost: 1 },
     { id: "plating", name: "Plating", text: "+2 armor", bonus: { armor: 2 }, cost: 1 },
-    { id: "retaliation", name: "Retaliation", text: "Shield damage (reflected or thrown) is 8% stronger", bonus: { shieldPower: 0.08 }, cost: 1 },
-    { id: "thornmail", name: "Thornmail", text: "Spiked: +4% reflect", bonus: { reflect: 0.04 }, cost: 1 },
-    { id: "phalanx", name: "Phalanx", text: "Tower: +2% block chance", bonus: { blockChance: 0.02 }, cost: 1 },
-    { id: "impale", name: "Impale", text: "Tower: +5% spear damage", bonus: { spearPower: 0.05 }, cost: 1 },
-    { id: "discus", name: "Discus", text: "Bladed: throws hit for 40% of your armor more", bonus: { throwPower: 0.4 }, cost: 1 },
-    { id: "grudge", name: "Grudge", text: "+5% vengeance", bonus: { vengeance: 0.05 }, cost: 1 },
-    { id: "spite", name: "Spite", text: "+10% vengeance against bosses and rare monsters", bonus: { spite: 0.1 }, cost: 1 }
+    { id: "thornmail", name: "Spiked Mastery", text: "Spiked: +3% reflect, and all reflected damage is 4% stronger", bonus: { reflect: 0.03, shieldPower: 0.04 }, cost: 1 },
+    { id: "phalanx", name: "Tower Mastery", text: "Tower: +1% block chance and +2.5% spear damage", bonus: { blockChance: 0.01, spearPower: 0.025 }, cost: 1 },
+    { id: "discus", name: "Bladed Mastery", text: "Bladed: throws hit for 20% of your armor more, and are 4% stronger", bonus: { throwPower: 0.2, shieldPower: 0.04 }, cost: 1 },
+    { id: "grudge", name: "Grudge", text: "+4% vengeance, and +5% more against bosses and rare monsters", bonus: { vengeance: 0.04, spite: 0.05 }, cost: 1 }
   ],
 
   milestones: [

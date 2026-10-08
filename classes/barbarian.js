@@ -58,17 +58,14 @@ classes.barbarian = {
     { id: "fury", name: "Fury", text: "+15% damage while below half health", bonus: { rage: 0.15 } }
   ],
 
+  // One skill for each build, so there is never a question of where a build's points go
   skills: [
     { id: "might", name: "Might", text: "+3% attack", bonus: { attackPercent: 0.03 }, cost: 1 },
     { id: "toughness", name: "Toughness", text: "+3% health", bonus: { healthPercent: 0.03 }, cost: 1 },
-    { id: "savagery", name: "Savagery", text: "Bleeding deals +10% damage", bonus: { dotPower: 0.1 }, cost: 1 },
-    { id: "bloodletting", name: "Bloodletting", text: "+2% lifesteal", bonus: { lifesteal: 0.02 }, cost: 1 },
-    { id: "rage", name: "Rage", text: "+10% damage while below half health", bonus: { rage: 0.1 }, cost: 1 },
-    { id: "axeMastery", name: "Axe Mastery", text: "Axe: +1 bleed stack", bonus: { bleedStacks: 1 }, cost: 2 },
-    { id: "swordMastery", name: "Sword Mastery", text: "Sword: +3% critical and parry chance", bonus: { critChance: 0.03, parryChance: 0.03 }, cost: 2 },
-    { id: "clubMastery", name: "Club Mastery", text: "Club: +3% stun chance", bonus: { stunChance: 0.03 }, cost: 1 },
-    { id: "executioner", name: "Executioner", text: "Sword: +8% critical damage", bonus: { critPower: 0.08 }, cost: 1 },
-    { id: "concussion", name: "Concussion", text: "Club: hits deal +4% damage", bonus: { clubPower: 0.04 }, cost: 1 }
+    { id: "rage", name: "Berserker", text: "+5% damage while below half health and +1% lifesteal", bonus: { rage: 0.05, lifesteal: 0.01 }, cost: 1 },
+    { id: "axeMastery", name: "Axe Mastery", text: "Axe: +1 bleed stack and bleeding deals +8% damage", bonus: { bleedStacks: 1, dotPower: 0.08 }, cost: 1 },
+    { id: "swordMastery", name: "Sword Mastery", text: "Sword: +1% critical and parry chance, and +2% critical damage", bonus: { critChance: 0.01, parryChance: 0.01, critPower: 0.02 }, cost: 1 },
+    { id: "clubMastery", name: "Club Mastery", text: "Club: hits deal +2% damage and +1.5% stun chance", bonus: { clubPower: 0.02, stunChance: 0.015 }, cost: 1 }
   ],
 
   milestones: [

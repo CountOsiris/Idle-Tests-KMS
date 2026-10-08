@@ -52,17 +52,14 @@ classes.warlock = {
     { id: "soulJar", name: "Soul Jar", text: "+25% chance of an extra soul from a kill", bonus: { soulChance: 0.25 } }
   ],
 
+  // One skill for each build, so there is never a question of where a build's points go
   skills: [
     { id: "intellect", name: "Intellect", text: "+3% attack", bonus: { attackPercent: 0.03 }, cost: 1 },
     { id: "warding", name: "Warding", text: "+3% health", bonus: { healthPercent: 0.03 }, cost: 1 },
-    { id: "criticalFocus", name: "Critical Focus", text: "Arcane Tome: +10% critical damage", bonus: { critPower: 0.1 }, cost: 1 },
-    { id: "arcaneMastery", name: "Arcane Mastery", text: "Arcane Tome: +3% critical chance", bonus: { critChance: 0.03 }, cost: 2 },
-    { id: "voidMastery", name: "Void Mastery", text: "Void Tome: +1 void power", bonus: { voidRend: 0.01 }, cost: 2 },
-    { id: "runeMastery", name: "Rune Mastery", text: "Rune Tome: +3% chance to cast twice", bonus: { echoChance: 0.03 }, cost: 2 },
-    { id: "siphon", name: "Siphon", text: "Void Tome: every spell heals 0.2% of your health", bonus: { voidHeal: 0.002 }, cost: 1 },
-    { id: "runicPower", name: "Runic Power", text: "Rune Tome: echoes deal +8% damage", bonus: { echoPower: 0.08 }, cost: 1 },
-    { id: "harvester", name: "Harvester", text: "+2.5% damage for every 100 souls", bonus: { soulPower: 0.025 }, cost: 1 },
-    { id: "reaper", name: "Reaper", text: "+5% chance of an extra soul from a kill", bonus: { soulChance: 0.05 }, cost: 1 }
+    { id: "arcaneMastery", name: "Arcane Mastery", text: "Arcane Tome: +1% critical chance and +2.5% critical damage", bonus: { critChance: 0.01, critPower: 0.025 }, cost: 1 },
+    { id: "voidMastery", name: "Void Mastery", text: "Void Tome: +0.6 void power, and every spell heals 0.1% more of your health", bonus: { voidRend: 0.006, voidHeal: 0.001 }, cost: 1 },
+    { id: "runeMastery", name: "Rune Mastery", text: "Rune Tome: +1% chance to cast twice and echoes deal +2.5% damage", bonus: { echoChance: 0.01, echoPower: 0.025 }, cost: 1 },
+    { id: "harvester", name: "Soul Mastery", text: "+1.25% damage for every 100 souls and +2.5% chance of an extra soul from a kill", bonus: { soulPower: 0.0125, soulChance: 0.025 }, cost: 1 }
   ],
 
   milestones: [

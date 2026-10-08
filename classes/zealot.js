@@ -49,17 +49,15 @@ classes.zealot = {
     { id: "battleHymn", name: "Battle Hymn", text: "+2% damage for every turn a fight lasts", bonus: { crusade: 0.02 } }
   ],
 
+  // One skill for each build, and Piety for the healing every Zealot has
   skills: [
     { id: "zeal", name: "Zeal", text: "+3% attack", bonus: { attackPercent: 0.03 }, cost: 1 },
     { id: "faithful", name: "Faithful", text: "+3% health", bonus: { healthPercent: 0.03 }, cost: 1 },
-    { id: "radiance", name: "Radiance", text: "Holy Mace: +5% holy damage", bonus: { smite: 0.05 }, cost: 1 },
-    { id: "armorOfFaith", name: "Armor of Faith", text: "+2 armor", bonus: { armor: 2 }, cost: 1 },
     { id: "piety", name: "Piety", text: "+0.5% healing every turn", bonus: { devotion: 0.005 }, cost: 1 },
-    { id: "shieldMastery", name: "Shield Mastery", text: "Mace and Shield: +3% block chance", bonus: { blockChance: 0.03 }, cost: 1 },
-    { id: "judgement", name: "Judgement", text: "Holy Mace: every third hit deals +10% more", bonus: { judgement: 0.1 }, cost: 1 },
-    { id: "retribution", name: "Retribution", text: "Mace and Shield: the blow after a block deals +8% of your attack more", bonus: { counter: 0.08 }, cost: 1 },
-    { id: "holyLight", name: "Holy Light", text: "Holy Tome: wasted healing burns for +10% more", bonus: { sacredFlame: 0.1 }, cost: 1 },
-    { id: "holyWar", name: "Holy War", text: "+1% damage for every turn a fight lasts", bonus: { crusade: 0.01 }, cost: 1 }
+    { id: "radiance", name: "Mace Mastery", text: "Holy Mace: +2.5% holy damage, and every third hit deals +5% more", bonus: { smite: 0.025, judgement: 0.05 }, cost: 1 },
+    { id: "shieldMastery", name: "Shield Mastery", text: "Mace and Shield: +1.5% block chance, and the blow after a block deals +4% of your attack more", bonus: { blockChance: 0.015, counter: 0.04 }, cost: 1 },
+    { id: "holyLight", name: "Tome Mastery", text: "Holy Tome: wasted healing burns for +10% more", bonus: { sacredFlame: 0.1 }, cost: 1 },
+    { id: "holyWar", name: "Holy War", text: "+1.5% damage for every turn a fight lasts", bonus: { crusade: 0.015 }, cost: 1 }
   ],
 
   milestones: [
