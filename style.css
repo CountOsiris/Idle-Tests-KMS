@@ -1,21 +1,30 @@
 /* =====================================================================
    style.css - how the game looks.
-   The colours are all named here at the top: change one and the whole
-   page follows.
+   A dark, worn, gothic look: near-black stone, bone-coloured text,
+   tarnished gold and ember red. The colours are all named here at the
+   top: change one and the whole page follows.
    ===================================================================== */
 :root {
-  --background: #121218;
-  --card: #1c1c25;
-  --card-edge: #2c2c3a;
-  --inset: #14141b;
-  --text: #ece3cf;
-  --faded: #9a917f;
-  --gold: #d9ad42;
-  --gold-dark: #8a6a1c;
-  --player: #4fb873;
-  --monster: #cf5045;
-  --heal: #6fdc8c;
-  --hurt: #ff7566;
+  --background: #080706;
+  --card: #110f0d;
+  --card-edge: #2b2520;
+  --inset: #0a0908;
+  --text: #cdc4b2;
+  --faded: #7c7364;
+  --gold: #b8924a;
+  --gold-bright: #dcb866;
+  --gold-dark: #5e4a22;
+  --ember: #b5522a;
+  --blood: #8d241d;
+  --player: #4f7a45;
+  --monster: #8d241d;
+  --heal: #86b572;
+  --hurt: #d0553f;
+
+  /* The two typefaces. They come from Google Fonts (see the top of index.html);
+     if that cannot be reached, the names after the commas are used instead. */
+  --title-font: "Cinzel", Georgia, "Times New Roman", serif;
+  --text-font: "EB Garamond", Georgia, "Times New Roman", serif;
 }
 
 * {
@@ -24,38 +33,58 @@
 
 body {
   margin: 0;
-  padding: 20px;
-  background: radial-gradient(circle at 50% -10%, #23202e 0%, var(--background) 55%) fixed;
+  padding: 22px;
   color: var(--text);
-  font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
-  font-size: 15px;
-  line-height: 1.4;
+  font-family: var(--text-font);
+  font-size: 17px;
+  line-height: 1.35;
+  font-variant-numeric: lining-nums;
+
+  /* From the top down: a faint grain, a dim light falling from above, and darkness */
+  background:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 0.06 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"),
+    radial-gradient(ellipse at 50% -20%, #2a211a 0%, transparent 60%),
+    var(--background);
+  background-attachment: fixed;
 }
 
 h1,
 h2 {
-  font-family: Georgia, "Palatino Linotype", serif;
+  font-family: var(--title-font);
+  font-weight: 500;
   color: var(--gold);
   margin: 0;
-  letter-spacing: 0.5px;
+  text-transform: uppercase;
 }
 
 h1 {
   font-size: 30px;
+  letter-spacing: 6px;
+  text-shadow: 0 0 18px rgba(184, 146, 74, 0.25);
 }
 
+/* Section titles sit on a thin line that fades away to the right */
 h2 {
-  font-size: 19px;
-  margin-bottom: 8px;
+  font-size: 17px;
+  letter-spacing: 3px;
+  padding-bottom: 7px;
+  margin-bottom: 10px;
+  border-bottom: 1px solid transparent;
+  border-image: linear-gradient(90deg, var(--gold-dark), transparent) 1;
 }
 
 p {
   margin: 6px 0;
 }
 
+strong {
+  font-weight: 600;
+  color: #e3dac6;
+}
+
 .note {
   color: var(--faded);
-  font-size: 13px;
+  font-size: 15px;
 }
 
 .centre {
@@ -70,13 +99,15 @@ p {
   justify-content: space-between;
   gap: 16px;
   max-width: 1280px;
-  margin: 0 auto 18px;
+  margin: 0 auto 20px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--card-edge);
 }
 
 .brand {
   display: flex;
   align-items: center;
-  gap: 22px;
+  gap: 26px;
 }
 
 .who {
@@ -86,11 +117,12 @@ p {
 }
 
 .who-icon {
-  font-size: 30px;
+  font-size: 28px;
+  filter: grayscale(0.4) brightness(0.9);
 }
 
 .who-text {
-  min-width: 150px;
+  min-width: 160px;
 }
 
 .who-text p {
@@ -100,51 +132,64 @@ p {
 .tiles {
   display: flex;
   flex-wrap: wrap;
-  gap: 10px;
+  gap: 0;
 }
 
+/* The four numbers are divided by thin lines instead of sitting in boxes */
 .tile {
-  background: var(--card);
-  border: 1px solid var(--card-edge);
-  border-radius: 10px;
-  padding: 7px 16px;
+  padding: 2px 22px;
   min-width: 112px;
   text-align: center;
+  border-left: 1px solid var(--card-edge);
+}
+
+.tile:first-child {
+  border-left: none;
 }
 
 .tile span {
   display: block;
+  font-family: var(--title-font);
   color: var(--faded);
-  font-size: 12px;
+  font-size: 11px;
+  letter-spacing: 2px;
   text-transform: uppercase;
-  letter-spacing: 0.6px;
 }
 
 .tile strong {
-  font-size: 20px;
+  font-size: 23px;
+  font-weight: 500;
 }
 
 /* ----- The two halves of the page ----- */
 .layout {
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-  gap: 18px;
+  gap: 20px;
   max-width: 1280px;
   margin: 0 auto;
   align-items: start;
 }
 
+/* A slab of dark stone with a thin bronze edge, and a second faint line just inside it */
 .card {
-  background: var(--card);
+  background: linear-gradient(180deg, #151210 0%, var(--card) 100%);
   border: 1px solid var(--card-edge);
-  border-radius: 12px;
-  padding: 16px 18px;
-  margin-bottom: 16px;
-  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.25);
+  border-radius: 2px;
+  padding: 18px 20px;
+  margin-bottom: 18px;
+  box-shadow:
+    inset 0 0 0 3px var(--card),
+    inset 0 0 0 4px rgba(184, 146, 74, 0.08),
+    0 10px 30px rgba(0, 0, 0, 0.6);
 }
 
 .card.highlight {
-  border-color: var(--gold);
+  border-color: var(--gold-dark);
+  box-shadow:
+    inset 0 0 0 3px var(--card),
+    inset 0 0 0 4px rgba(184, 146, 74, 0.25),
+    0 0 24px rgba(184, 146, 74, 0.12);
 }
 
 /* A message across the whole page, above everything else */
@@ -161,47 +206,66 @@ p {
   gap: 12px;
 }
 
+.card-head h2 {
+  flex: 1;
+}
+
 .big-number {
-  font-size: 22px;
-  color: var(--gold);
+  font-size: 24px;
+  color: var(--gold-bright);
   margin-left: 6px;
 }
 
-/* ----- Tabs ----- */
+/* ----- Tabs -----
+   Plain words in a row. The open one is gold with a line under it. */
 .tabs {
   display: flex;
   flex-wrap: wrap;
-  gap: 6px;
-  margin-bottom: 14px;
+  gap: 2px;
+  margin-bottom: 16px;
+  border-bottom: 1px solid var(--card-edge);
 }
 
 .tabs button {
   position: relative;
   flex: 1 1 auto;
-  background: var(--card);
-  border: 1px solid var(--card-edge);
+  background: none;
+  border: none;
+  border-bottom: 2px solid transparent;
+  border-radius: 0;
+  margin-bottom: -1px;
+  padding: 9px 4px;
   color: var(--faded);
-  padding: 8px 12px;
+  font-family: var(--title-font);
+  font-size: 12px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.tabs button:hover {
+  background: none;
+  color: var(--text);
+  border-bottom-color: var(--gold-dark);
+  box-shadow: none;
 }
 
 .tabs button.open {
-  background: var(--gold);
-  border-color: var(--gold);
-  color: var(--background);
-  font-weight: bold;
+  color: var(--gold-bright);
+  border-bottom-color: var(--gold);
 }
 
-/* A small dot on a tab that has something waiting for you */
+/* A small ember on a tab that has something waiting for you */
 .tabs button.alert::after {
   content: "";
   position: absolute;
-  top: -4px;
-  right: -4px;
-  width: 11px;
-  height: 11px;
+  top: 5px;
+  right: 4px;
+  width: 7px;
+  height: 7px;
   border-radius: 50%;
-  background: var(--hurt);
-  border: 2px solid var(--background);
+  background: var(--ember);
+  box-shadow: 0 0 8px 2px rgba(181, 82, 42, 0.7);
 }
 
 /* Only the page that matches body's data-tab is shown */
@@ -230,10 +294,8 @@ body[data-tab="tower"] #page-character {
 }
 
 body[data-tab="tower"] #tab-character {
-  background: var(--gold);
-  border-color: var(--gold);
-  color: var(--background);
-  font-weight: bold;
+  color: var(--gold-bright);
+  border-bottom-color: var(--gold);
 }
 
 /* ----- Lists: a title and a note on the left, a button on the right ----- */
@@ -241,8 +303,8 @@ body[data-tab="tower"] #tab-character {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 12px;
-  padding: 10px 0;
+  gap: 14px;
+  padding: 11px 0;
   border-top: 1px solid var(--card-edge);
 }
 
@@ -252,6 +314,7 @@ body[data-tab="tower"] #tab-character {
 
 .row-title {
   font-weight: 600;
+  color: #e3dac6;
   margin: 0;
 }
 
@@ -261,19 +324,19 @@ body[data-tab="tower"] #tab-character {
 
 .row button {
   flex: none;
-  min-width: 104px;
+  min-width: 108px;
 }
 
-/* A price you can afford is picked out in gold, so it catches the eye */
+/* A price you can afford glows like an ember, so it catches the eye */
 .row button:enabled {
   border-color: var(--gold-dark);
-  color: var(--gold);
+  color: var(--gold-bright);
 }
 
 .row button:enabled:hover {
-  background: var(--gold);
+  background: #2a1e12;
   border-color: var(--gold);
-  color: var(--background);
+  color: #f2d68c;
 }
 
 /* A tick box with its name and a note beside it, on the Settings tab */
@@ -287,7 +350,7 @@ body[data-tab="tower"] #tab-character {
 .setting input {
   width: 18px;
   height: 18px;
-  margin-top: 2px;
+  margin-top: 3px;
   accent-color: var(--gold);
 }
 
@@ -301,8 +364,8 @@ body[data-tab="tower"] #tab-character {
   display: flex;
   justify-content: space-between;
   gap: 12px;
-  padding: 5px 0;
-  border-bottom: 1px dashed var(--card-edge);
+  padding: 6px 0;
+  border-bottom: 1px solid #1c1815;
 }
 
 .pair span:first-child {
@@ -317,27 +380,30 @@ body[data-tab="tower"] #tab-character {
 .stats {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: 8px;
-  margin: 12px 0;
+  gap: 1px;
+  margin: 14px 0;
+  background: var(--card-edge);
+  border: 1px solid var(--card-edge);
 }
 
 .stats div {
   background: var(--inset);
-  border-radius: 8px;
-  padding: 8px 4px;
+  padding: 10px 4px;
   text-align: center;
 }
 
 .stats span {
   display: block;
+  font-family: var(--title-font);
   color: var(--faded);
-  font-size: 12px;
+  font-size: 11px;
+  letter-spacing: 2px;
   text-transform: uppercase;
-  letter-spacing: 0.6px;
 }
 
 .stats strong {
-  font-size: 18px;
+  font-size: 21px;
+  font-weight: 500;
 }
 
 /* Groups of buttons to pick one from: classes, perks, favourites */
@@ -350,7 +416,7 @@ body[data-tab="tower"] #tab-character {
 
 .picker,
 .milestone {
-  padding: 10px 0;
+  padding: 11px 0;
   border-top: 1px solid var(--card-edge);
 }
 
@@ -361,36 +427,44 @@ body[data-tab="tower"] #tab-character {
   gap: 16px;
 }
 
+.tower-head > div:first-child {
+  flex: 1;
+  min-width: 0;
+}
+
 .floor-box {
   flex: none;
   text-align: center;
+  font-family: var(--title-font);
   color: var(--faded);
-  font-size: 12px;
+  font-size: 11px;
+  letter-spacing: 2px;
   text-transform: uppercase;
-  letter-spacing: 0.6px;
 }
 
 .floor-box strong {
   display: block;
-  font-family: Georgia, serif;
-  font-size: 36px;
-  line-height: 1;
-  color: var(--text);
+  font-family: var(--title-font);
+  font-weight: 500;
+  font-size: 40px;
+  line-height: 1.05;
+  color: #e3dac6;
+  text-shadow: 0 0 14px rgba(184, 146, 74, 0.25);
 }
 
-/* One dot per room on the floor */
+/* One small diamond per room on the floor */
 .pips {
   display: flex;
   justify-content: center;
-  gap: 5px;
-  margin: 6px 0 4px;
+  gap: 7px;
+  margin: 6px 0;
 }
 
 .pips span {
-  width: 9px;
-  height: 9px;
-  border-radius: 50%;
-  background: var(--card-edge);
+  width: 7px;
+  height: 7px;
+  transform: rotate(45deg);
+  background: #26211c;
 }
 
 .pips span.done {
@@ -398,8 +472,8 @@ body[data-tab="tower"] #tab-character {
 }
 
 .pips span.now {
-  background: var(--gold);
-  box-shadow: 0 0 6px var(--gold);
+  background: var(--gold-bright);
+  box-shadow: 0 0 8px var(--gold);
 }
 
 /* The fight: you on the left, the monster on the right */
@@ -412,23 +486,34 @@ body[data-tab="tower"] #tab-character {
   grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
   align-items: start;
   gap: 10px;
-  margin: 14px 0 10px;
-  padding: 22px 14px 16px;
-  border-radius: 10px;
+  margin: 16px 0 12px;
+  padding: 30px 16px 18px;
   overflow: hidden;
   border: 1px solid var(--card-edge);
 
-  /* A glow of the tower's colour from above, fading down to a dark floor */
+  /* A dim light of the tower's colour from above, falling onto a black floor */
   background:
-    radial-gradient(ellipse at 50% 0%, var(--sky) 0%, transparent 70%),
-    linear-gradient(180deg, #1b1b25 0%, var(--inset) 100%);
-  transition: border-color 0.4s;
+    radial-gradient(ellipse at 50% -10%, var(--sky) 0%, transparent 62%),
+    linear-gradient(180deg, #0d0c0b 0%, #050505 100%);
+  transition: border-color 0.4s, box-shadow 0.4s;
 }
 
-/* A boss fight has a gold frame and a red glow from below */
+/* Darkness closing in from the edges */
+.stage::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: radial-gradient(ellipse at 50% 35%, transparent 25%, rgba(0, 0, 0, 0.8) 100%);
+  pointer-events: none;
+}
+
+/* A boss fight has a gold frame and a blood-red glow from below */
 .stage.boss-fight {
-  border-color: var(--gold);
-  box-shadow: inset 0 -40px 60px -30px rgba(207, 80, 69, 0.45);
+  border-color: var(--gold-dark);
+  box-shadow: inset 0 -50px 70px -30px rgba(141, 36, 29, 0.6);
 }
 
 .fighter {
@@ -439,15 +524,20 @@ body[data-tab="tower"] #tab-character {
 
 .versus {
   align-self: center;
-  color: var(--faded);
-  font-family: Georgia, serif;
-  font-style: italic;
+  color: #4a433a;
+  font-family: var(--title-font);
+  font-size: 13px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
 }
 
 .fighter-name {
-  font-weight: bold;
+  font-family: var(--title-font);
+  font-size: 14px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
   color: var(--gold);
-  min-height: 42px;
+  min-height: 40px;
 }
 
 .mover {
@@ -467,14 +557,40 @@ body[data-tab="tower"] #tab-character {
   50% { transform: translateY(-5px); }
 }
 
+/* A fighter's picture. The emoji are dimmed a little so they sit better in the gloom. */
+.icon {
+  font-size: 54px;
+  line-height: 66px;
+  height: 66px;
+  filter: saturate(0.7) brightness(0.92) drop-shadow(0 4px 6px rgba(0, 0, 0, 0.8));
+}
+
+/* Pixel art, when a class or monster has some (see "art" in the class and tower files).
+   "pixelated" keeps small drawings sharp when they are shown bigger. */
+.icon img,
+.ghost img {
+  height: 64px;
+  image-rendering: pixelated;
+}
+
+.icon.rare {
+  filter: saturate(0.8) drop-shadow(0 0 9px #4f86c9);
+}
+
+.icon.boss {
+  font-size: 66px;
+  filter: saturate(0.85) drop-shadow(0 0 12px var(--ember));
+}
+
 /* The shadow on the floor under each fighter */
 .shadow {
-  width: 62px;
-  height: 10px;
-  margin: -4px auto 6px;
+  width: 66px;
+  height: 9px;
+  margin: -3px auto 8px;
   border-radius: 50%;
-  background: rgba(0, 0, 0, 0.45);
-  filter: blur(2px);
+  background: #000;
+  filter: blur(3px);
+  opacity: 0.9;
 }
 
 /* The monster that was just defeated: it sits exactly where the monster stands,
@@ -492,74 +608,90 @@ body[data-tab="tower"] #tab-character {
 }
 
 .ghost.dying {
-  animation: dying 0.6s forwards;
+  animation: dying 0.7s forwards;
 }
 
+/* It turns to ash and sinks */
 @keyframes dying {
-  0%   { opacity: 1; transform: none; filter: brightness(3); }
-  100% { opacity: 0; transform: translateY(26px) rotate(18deg) scale(0.6); filter: grayscale(1); }
+  0%   { opacity: 1; transform: none; filter: brightness(2.5); }
+  100% { opacity: 0; transform: translateY(24px) scale(0.7); filter: grayscale(1) brightness(0.4) blur(2px); }
 }
 
 /* Short messages that pop up over the fight */
 .toasts {
   position: absolute;
-  top: 6px;
+  top: 5px;
   left: 0;
   right: 0;
   z-index: 3;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 4px;
+  gap: 3px;
   pointer-events: none;
 }
 
 .toast {
-  padding: 3px 14px;
-  border-radius: 20px;
-  background: rgba(10, 10, 14, 0.88);
-  border: 1px solid var(--card-edge);
-  font-size: 13px;
-  font-weight: bold;
+  padding: 2px 16px;
+  background: rgba(0, 0, 0, 0.85);
+  border-top: 1px solid var(--card-edge);
+  border-bottom: 1px solid var(--card-edge);
+  font-size: 15px;
   white-space: nowrap;
   animation: toast 2.4s forwards;
 }
 
-.toast.good  { color: var(--gold); border-color: var(--gold-dark); }
+.toast.good  { color: var(--gold-bright); border-color: var(--gold-dark); }
 .toast.floor { color: var(--text); }
-.toast.bad   { color: var(--hurt); border-color: var(--monster); }
+.toast.bad   { color: var(--hurt); border-color: var(--blood); }
 .toast.rarity-0 { color: var(--text); }
 
 @keyframes toast {
-  0%   { opacity: 0; transform: translateY(-8px) scale(0.9); }
+  0%   { opacity: 0; transform: translateY(-8px); }
   10%  { opacity: 1; transform: none; }
   80%  { opacity: 1; }
-  100% { opacity: 0; transform: translateY(-6px); }
+  100% { opacity: 0; }
 }
 
-.icon {
-  font-size: 54px;
-  line-height: 66px;
-  height: 66px;
+/* The words that fill the fight when you fall, or when a boss does */
+.banner {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 4;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--title-font);
+  font-size: 38px;
+  letter-spacing: 8px;
+  text-transform: uppercase;
+  opacity: 0;
+  pointer-events: none;
+
+  /* A dark band across the middle, fading out above and below */
+  background: linear-gradient(180deg, transparent 12%, rgba(0, 0, 0, 0.82) 38%, rgba(0, 0, 0, 0.82) 62%, transparent 88%);
 }
 
-.icon.rare {
-  filter: drop-shadow(0 0 8px #5fa8ff);
+.banner.died {
+  color: var(--blood);
+  text-shadow: 0 0 22px rgba(141, 36, 29, 0.7);
 }
 
-.icon.boss {
-  font-size: 66px;
-  filter: drop-shadow(0 0 10px var(--gold));
+.banner.won {
+  color: var(--gold-bright);
+  text-shadow: 0 0 22px rgba(184, 146, 74, 0.6);
 }
 
 /* The "what to do next" list */
 .goals {
-  margin-top: 12px;
-  padding: 8px 12px;
-  border-left: 3px solid var(--gold);
+  margin-top: 14px;
+  padding: 9px 14px;
+  border-left: 2px solid var(--gold-dark);
   background: var(--inset);
-  border-radius: 0 8px 8px 0;
-  font-size: 13px;
+  font-size: 15px;
   color: var(--faded);
 }
 
@@ -571,7 +703,7 @@ body[data-tab="tower"] #tab-character {
 #log {
   height: 170px;
   overflow-y: auto;
-  font-size: 13px;
+  font-size: 15px;
   color: var(--faded);
 }
 
@@ -582,17 +714,27 @@ body[data-tab="tower"] #tab-character {
 /* The newest line stands out */
 #log p:first-child {
   color: var(--gold);
-  font-size: 14px;
 }
 
-/* ----- Bars ----- */
+/* ----- Bars -----
+   Long, thin and square-ended, in a dark frame */
 .bar {
   position: relative;
-  background: var(--inset);
-  border: 1px solid var(--card-edge);
-  border-radius: 7px;
-  height: 14px;
+  background: #050505;
+  border: 1px solid #3a3229;
+  height: 12px;
   overflow: hidden;
+  box-shadow: 0 0 0 1px #000;
+}
+
+.bar.thin {
+  height: 6px;
+}
+
+.bar-text {
+  margin: 4px 0 0;
+  font-size: 15px;
+  text-align: center;
 }
 
 /* The pale strip behind a health bar. It follows the bar after a short wait,
@@ -603,18 +745,8 @@ body[data-tab="tower"] #tab-character {
   left: 0;
   height: 100%;
   width: 0;
-  background: rgba(255, 255, 255, 0.55);
+  background: #c9b27a;
   transition: width 0.7s 0.35s;
-}
-
-.bar.thin {
-  height: 7px;
-}
-
-.bar-text {
-  margin: 4px 0 0;
-  font-size: 13px;
-  text-align: center;
 }
 
 .fill {
@@ -625,64 +757,71 @@ body[data-tab="tower"] #tab-character {
 }
 
 .fill.player {
-  background: linear-gradient(180deg, #6fd68f, var(--player));
+  background: linear-gradient(180deg, #6c9a5f 0%, var(--player) 45%, #2f4d29 100%);
 }
 
 .fill.monster {
-  background: linear-gradient(180deg, #e8695d, var(--monster));
+  background: linear-gradient(180deg, #b03a30 0%, var(--monster) 45%, #4f120e 100%);
 }
 
 .fill.level {
-  background: linear-gradient(180deg, #f0c865, var(--gold));
+  background: linear-gradient(180deg, var(--gold-bright) 0%, var(--gold) 45%, var(--gold-dark) 100%);
 }
 
 /* ----- Buttons ----- */
 button {
-  background: #2a2a37;
+  background: #16130f;
   color: var(--text);
-  border: 1px solid #45455a;
-  border-radius: 8px;
-  padding: 7px 12px;
+  border: 1px solid #3a3229;
+  border-radius: 1px;
+  padding: 7px 13px;
   font: inherit;
-  font-size: 14px;
+  font-size: 15px;
   cursor: pointer;
-  transition: border-color 0.15s, background 0.15s;
+  transition: border-color 0.2s, background 0.2s, color 0.2s, box-shadow 0.2s;
 }
 
 button:hover {
   border-color: var(--gold);
-  background: #323242;
+  background: #1f1a14;
+  box-shadow: 0 0 12px rgba(184, 146, 74, 0.15);
 }
 
 button:disabled {
-  opacity: 0.4;
+  opacity: 0.38;
   cursor: default;
-  border-color: #45455a;
-  background: #2a2a37;
+  border-color: #2a2520;
+  background: #121010;
+  box-shadow: none;
 }
 
 /* The one picked out of a group, and anything already yours */
 button.chosen,
 button.chosen:disabled {
-  background: var(--gold);
+  background: #2a2010;
   border-color: var(--gold);
-  color: var(--background);
-  font-weight: bold;
+  color: var(--gold-bright);
   opacity: 1;
+  box-shadow: inset 0 0 12px rgba(184, 146, 74, 0.18);
 }
 
 /* The big button on the Ascension tab */
 button.main {
   width: 100%;
-  padding: 11px;
+  padding: 12px;
+  font-family: var(--title-font);
   font-size: 16px;
-  font-weight: bold;
-  border-color: var(--gold);
-  color: var(--gold);
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  border-color: var(--gold-dark);
+  color: var(--gold-bright);
 }
 
 button.main:disabled {
   color: var(--faded);
+  letter-spacing: 1px;
+  text-transform: none;
+  font-family: var(--text-font);
 }
 
 button.quiet {
@@ -692,23 +831,30 @@ button.quiet {
   text-decoration: underline;
 }
 
+button.quiet:hover {
+  background: none;
+  box-shadow: none;
+  color: var(--text);
+}
+
 textarea {
   width: 100%;
   background: var(--inset);
   color: var(--text);
   border: 1px solid var(--card-edge);
-  border-radius: 8px;
+  border-radius: 1px;
   padding: 8px;
+  font-family: monospace;
   font-size: 12px;
 }
 
 /* ----- Equipment rarity colours -----
-   rarity-0 is ordinary and keeps the normal text colour */
-.rarity-1 { color: #6fcf6f; }
-.rarity-2 { color: #5fa8ff; font-weight: bold; }
-.rarity-3 { color: #c77dff; font-weight: bold; }
-.rarity-4 { color: #ff9d3c; font-weight: bold; }
-.rarity-5 { color: #ff5c5c; font-weight: bold; }
+   rarity-0 is ordinary and keeps the normal text colour. They are muted to suit the gloom. */
+.rarity-1 { color: #7ea76a; }
+.rarity-2 { color: #6b97c9; font-weight: 600; }
+.rarity-3 { color: #a57fcf; font-weight: 600; }
+.rarity-4 { color: #cf8a3e; font-weight: 600; }
+.rarity-5 { color: #c9463c; font-weight: 600; }
 
 /* ----- Animations -----
    game.js adds these class names when something happens (see "Animations" there).
@@ -748,9 +894,13 @@ textarea {
   80% { transform: translateX(4px); }
 }
 
-/* A new monster or room pops in, just after the last one has gone */
+/* A new monster or room emerges from the dark, just after the last one has gone */
 .appear {
-  animation: appear 0.35s 0.2s backwards;
+  animation: appear 0.45s 0.2s backwards;
+}
+
+@keyframes appear {
+  from { transform: scale(0.8); opacity: 0; filter: brightness(0); }
 }
 
 /* A big hit jolts the whole fight */
@@ -775,33 +925,42 @@ textarea {
 }
 
 @keyframes pop {
-  40% { transform: scale(1.5); color: var(--gold); }
+  40% { transform: scale(1.4); color: var(--gold-bright); }
 }
 
-@keyframes appear {
-  from { transform: scale(0.5); opacity: 0; }
-}
-
-/* The whole fight flashes red when you fall */
+/* The whole fight flushes red when you fall */
 .death {
-  animation: death 0.8s;
+  animation: death 1s;
 }
 
 @keyframes death {
-  20% { background: var(--monster); }
+  20% { box-shadow: inset 0 0 90px 30px rgba(141, 36, 29, 0.85); }
+}
+
+/* The banner fades in slowly, holds, and fades away */
+.banner-show {
+  animation: banner 2.6s forwards;
+}
+
+@keyframes banner {
+  0%   { opacity: 0; letter-spacing: 4px; }
+  25%  { opacity: 1; }
+  75%  { opacity: 1; }
+  100% { opacity: 0; letter-spacing: 12px; }
 }
 
 /* Damage and healing numbers float up and fade */
 .float {
   position: absolute;
   top: 30px;
-  z-index: 2;
   left: 50%;
-  font-weight: bold;
+  z-index: 2;
+  font-family: var(--title-font);
+  font-weight: 700;
   font-size: 18px;
   white-space: nowrap;
   pointer-events: none;
-  text-shadow: 0 1px 3px #000;
+  text-shadow: 0 1px 4px #000, 0 0 10px #000;
   opacity: 0;
   animation: float-up 1s forwards;
 }
@@ -816,10 +975,10 @@ textarea {
 }
 
 .float.hit.big {
-  color: var(--gold);
+  color: var(--gold-bright);
 }
 
-.float.hit  { color: #ffffff; }
+.float.hit  { color: #e8e0cf; }
 .float.hurt { color: var(--hurt); }
 .float.heal { color: var(--heal); left: 78%; }
 .float.word { color: var(--gold); }
@@ -841,15 +1000,13 @@ textarea {
 .no-motion .jolt,
 .no-motion .pop,
 .no-motion .bobber,
+.no-motion .banner-show,
 .no-motion .ghost.dying {
   animation: none;
 }
 
 .no-motion .float,
-.no-motion .toasts {
-  display: none;
-}
-
+.no-motion .toasts,
 .no-motion .trail {
   display: none;
 }
@@ -860,10 +1017,12 @@ textarea {
 @media (max-width: 900px) {
   body {
     padding: 12px;
+    font-size: 16px;
   }
 
   h1 {
-    font-size: 24px;
+    font-size: 22px;
+    letter-spacing: 3px;
   }
 
   .top {
@@ -873,6 +1032,7 @@ textarea {
   .brand {
     width: 100%;
     justify-content: space-between;
+    gap: 12px;
   }
 
   .tiles {
@@ -880,8 +1040,13 @@ textarea {
   }
 
   .tile {
-    flex: 1 1 40%;
+    flex: 1 1 25%;
     min-width: 0;
+    padding: 2px 4px;
+  }
+
+  .tile strong {
+    font-size: 19px;
   }
 
   .layout {
@@ -896,16 +1061,17 @@ textarea {
   .tabs {
     position: sticky;
     top: 0;
-    z-index: 2;
+    z-index: 5;
     background: var(--background);
-    padding: 8px 0;
-    margin-bottom: 6px;
+    padding-top: 6px;
+    margin-bottom: 10px;
   }
 
   .tabs button {
     flex: 1 1 22%;
     padding: 9px 2px;
-    font-size: 13px;
+    font-size: 11px;
+    letter-spacing: 0.5px;
   }
 
   .tab-tower {
@@ -926,14 +1092,17 @@ textarea {
   }
 
   body[data-tab="tower"] #tab-character {
-    background: var(--card);
-    border-color: var(--card-edge);
     color: var(--faded);
-    font-weight: normal;
+    border-bottom-color: transparent;
   }
 
   .stats {
     grid-template-columns: repeat(2, 1fr);
+  }
+
+  .banner {
+    font-size: 26px;
+    letter-spacing: 5px;
   }
 
   .row button {

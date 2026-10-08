@@ -81,6 +81,7 @@ let monsterIsRare = false;
 let monsterStunned = false;
 let fightTurns = 0;
 let monsterIcon = "";
+let monsterArt = "";
 
 // Goes up by one for every new room, so the animations can tell when the room changed
 let roomCount = 0;
@@ -2016,9 +2017,14 @@ function updateScreen() {
   document.getElementById("monster-stats").hidden = !inFight;
   document.getElementById("monster-numbers").hidden = !inFight;
 
-  document.getElementById("player-icon").textContent = currentClass().icon;
+  // Rooms that are not fights have an emoji only, never pixel art
+  let art = monsterArt;
+  if (!inFight) {
+    art = "";
+  }
+  drawPicture("player-icon", currentClass().icon, currentClass().art);
   document.getElementById("player-name").textContent = currentClass().name;
-  document.getElementById("monster-icon").textContent = icon;
+  drawPicture("monster-icon", icon, art);
 
   // Bosses and rare monsters get a coloured glow (see style.css).
   // classList.toggle switches one class on or off and leaves the animation classes alone.
@@ -2140,6 +2146,12 @@ function spawnMonster(isBoss) {
   monsterIcon = towers[tower].icon;
   if (type.icon !== undefined) {
     monsterIcon = type.icon;
+  }
+
+  // Pixel art, if this monster has been given some ("" means it has not)
+  monsterArt = "";
+  if (type.art !== undefined) {
+    monsterArt = type.art;
   }
 
   // Some classes get ready at the start of a fight
@@ -2369,7 +2381,7 @@ function step() {
 const bigHitShare = 0.3;
 
 // Every animation there is. They are the class names in style.css under "Animations".
-const animationNames = ["lunge-right", "lunge-left", "shake", "shake-late", "appear", "death", "jolt", "pop", "dying"];
+const animationNames = ["lunge-right", "lunge-left", "shake", "shake-late", "appear", "death", "jolt", "pop", "dying", "banner-show"];
 
 // Plays one of the CSS animations on something on the page.
 // Something can only play one at a time, so any earlier one is cleared first.
@@ -2454,6 +2466,38 @@ function showSettings() {
   document.body.classList.toggle("no-motion", !animationsOn);
 }
 
+// Big words that fade in across the whole fight and out again.
+// kind is "died" (blood red) or "won" (gold).
+function showBanner(text, kind) {
+  let banner = document.getElementById("banner");
+  banner.textContent = text;
+  banner.className = "banner " + kind;
+  animate("banner", "banner-show");
+}
+
+// Shows a fighter's picture: its pixel art if it has some, otherwise its emoji.
+// A class, monster or boss gets pixel art by adding  art: "art/its-file.png"  to its entry.
+function drawPicture(id, icon, art) {
+  let element = document.getElementById(id);
+
+  if (art === undefined || art === "") {
+    element.dataset.art = "";
+    element.textContent = icon;
+    return;
+  }
+
+  // Only swap the image when it is a different one, or it would flicker every second
+  if (element.dataset.art !== art) {
+    let image = document.createElement("img");
+    image.src = art;
+    image.alt = "";
+
+    element.textContent = "";
+    element.appendChild(image);
+    element.dataset.art = art;
+  }
+}
+
 function animatedStep() {
   // Nothing to animate if nobody is looking, or animations are switched off
   if (document.hidden || !animationsOn) {
@@ -2463,11 +2507,13 @@ function animatedStep() {
 
   // What things look like before this second is played
   let wasFight = encounterType === "monster" || encounterType === "boss";
+  let wasBoss = encounterType === "boss";
   let roomBefore = roomCount;
   let deathsBefore = deaths;
   let monsterHpBefore = monsterHp;
   let monsterMaxHpBefore = monsterMaxHp;
-  let monsterIconBefore = document.getElementById("monster-icon").textContent;
+  let monsterIconBefore = monsterIcon;
+  let monsterArtBefore = monsterArt;
   let playerHpBefore = playerHp;
   let floorBefore = floor;
   let levelBefore = level;
@@ -2498,9 +2544,14 @@ function animatedStep() {
 
   if (died) {
     animate("stage", "death");
-    toast("You fell on floor " + floorBefore, "bad");
+    showBanner("You died", "died");
+    toast("Fell on floor " + floorBefore, "bad");
     animate("monster-mover", "appear");
     return;
+  }
+
+  if (wasBoss && newRoom) {
+    showBanner("Victory", "won");
   }
 
   if (floor > floorBefore) {
@@ -2526,7 +2577,7 @@ function animatedStep() {
 
     if (newRoom) {
       // The defeated monster fades away where it stood, while the next room arrives
-      document.getElementById("monster-ghost").textContent = monsterIconBefore;
+      drawPicture("monster-ghost", monsterIconBefore, monsterArtBefore);
       animate("monster-ghost", "dying");
     } else {
       // A regenerating monster can end the turn with more health than it started

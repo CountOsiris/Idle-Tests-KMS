@@ -6,6 +6,11 @@
   <title>Tower Idle</title>
   <!-- The little picture on the browser tab: crossed swords, drawn from an emoji -->
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚔️</text></svg>">
+  <!-- The two typefaces: Cinzel for titles, EB Garamond for everything else.
+       They load from Google Fonts. Without a connection the page falls back to Georgia. -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&family=EB+Garamond:wght@400;500;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
 </head>
 <body data-tab="tower">
@@ -75,6 +80,9 @@
         <div id="stage" class="stage">
           <!-- Short messages pop up here: a level gained, an item found... -->
           <div id="toasts" class="toasts"></div>
+
+          <!-- Big words across the fight: "You died", or "Victory" over a boss -->
+          <div id="banner" class="banner"></div>
 
           <!-- Each fighter is three boxes inside each other, so three movements can
                play at once: "mover" lunges, "bobber" sways gently, "icon" shakes when hit -->

@@ -12,6 +12,11 @@
 // Every tower has an icon, which is the picture shown for its monsters.
 // A single monster or boss can have its own by adding  icon: "🐺"  to its line.
 //
+// PIXEL ART: to give a monster or boss a real picture instead of an emoji, put the
+// image file in a folder called "art" next to index.html and add  art: "art/goblin.png"
+// to its line. The emoji stays as the fallback and is still used in lists.
+// A class gets art the same way, with an  art:  line in its file under  icon:
+//
 // ----- Monsters -----
 // A normal monster on floor F starts with:
 //   health 20 + F x 10,  attack 1 + F x 2,  armor F / 2
