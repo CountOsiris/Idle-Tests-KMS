@@ -29,7 +29,13 @@ let weaponPower = 0;
 let armorPower = 0;
 let weaponRarity = 0;
 let armorRarity = 0;
-let foundItem = null;
+// The backpack: spare equipment found this run. It only ever holds the best spare
+// of each kind (one spare axe, one spare sword...), so it never needs tidying.
+// Each item looks like { slot: "weapon", type: "axe", power: 12, rarity: 1 }.
+let backpack = [];
+
+// The last thing that went into the backpack, for the pop-up message. Not saved.
+let lastFound = null;
 
 let upgrades = {};
 let skillLevels = {};
@@ -771,24 +777,68 @@ function equipItem(item) {
   recalcStats();
 }
 
+// Is this item the same kind as the one being worn in its slot?
+// (A sword when you carry a sword. Plain pieces are always the same kind.)
+function isSameKind(item) {
+  if (item.slot !== specialSlot()) {
+    return true;
+  }
+  return item.type === weapon;
+}
+
+// The item being worn in a slot, as an item
+function wornItem(slot) {
+  if (slot === "weapon") {
+    return { slot: "weapon", type: slotType("weapon"), power: weaponPower, rarity: weaponRarity };
+  }
+  return { slot: "armor", type: slotType("armor"), power: armorPower, rarity: armorRarity };
+}
+
+// The kind of thing in a slot: the special gear's kind, or "plain"
+function slotType(slot) {
+  if (slot === specialSlot()) {
+    return weapon;
+  }
+  return "plain";
+}
+
 // Should the Squire equip this item for you?
+// The Squire only ever puts on something BETTER OF THE SAME KIND. It never changes
+// the kind of weapon you fight with, because that would change your build. The one
+// exception is a favourite kind: the Squire will switch to it once, if you are not
+// already using it.
 function squireWants(item) {
   if (totalBonus("autoEquip") < 1) {
     return false;
   }
 
-  // With a favourite kind of special gear, other kinds are left alone,
-  // and the favourite is always taken over a kind that is not
-  if (item.slot === specialSlot() && favouriteGear !== "") {
-    if (item.type !== favouriteGear) {
-      return false;
-    }
-    if (weapon !== favouriteGear) {
+  if (item.slot === specialSlot() && favouriteGear !== "" && item.type === favouriteGear && weapon !== favouriteGear) {
+    return true;
+  }
+
+  return isSameKind(item) && isBetter(item);
+}
+
+// Puts an item in the backpack, unless a better spare of that kind is already there.
+// Returns true if it went in.
+function stow(item) {
+  for (let i = 0; i < backpack.length; i++) {
+    if (backpack[i].slot === item.slot && backpack[i].type === item.type) {
+      if (backpack[i].power >= item.power) {
+        return false;
+      }
+      backpack[i] = item;
       return true;
     }
   }
 
-  return isBetter(item);
+  backpack.push(item);
+  return true;
+}
+
+// Is there any point keeping this item? Not if it is the kind you are wearing and no stronger.
+function worthKeeping(item) {
+  return !isSameKind(item) || isBetter(item);
 }
 
 // "least" is the lowest rarity the item can be (0 for anything)
@@ -796,20 +846,83 @@ function findItem(least) {
   let item = makeItem(least);
 
   if (squireWants(item)) {
+    // What comes off goes into the backpack if it is a different kind (so it can be had back)
+    let old = wornItem(item.slot);
     equipItem(item);
+    if (worthKeeping(old)) {
+      stow(old);
+    }
     say("You found and equipped " + itemName(item) + "!");
+  } else if (worthKeeping(item) && stow(item)) {
+    lastFound = item;
+    say("You found " + itemName(item) + ". It is in your backpack.");
   } else {
-    foundItem = item;
-    say("You found " + itemName(item) + "!");
+    say("You found " + itemName(item) + ", but it is no better than what you have.");
+  }
+
+  squireChecksBackpack();
+}
+
+// Swaps what is worn for the item at this place in the backpack
+function swapWithBackpack(index) {
+  let item = backpack[index];
+  let old = wornItem(item.slot);
+
+  backpack.splice(index, 1);
+  equipItem(item);
+  if (worthKeeping(old)) {
+    stow(old);
+  }
+
+  // Spares that are now no better than what is worn are thrown away
+  let kept = [];
+  for (let spare of backpack) {
+    if (worthKeeping(spare)) {
+      kept.push(spare);
+    }
+  }
+  backpack = kept;
+}
+
+// The Equip button on a backpack row
+function equipFromBackpack(index) {
+  if (backpack[index] === undefined) {
+    return;
+  }
+  swapWithBackpack(index);
+  squireChecksBackpack();
+  updateScreen();
+}
+
+// The Squire also keeps an eye on the backpack: if a spare is the same kind as what
+// you are using and stronger, it is put on. (This happens when you change kind and a
+// better one of the new kind was already in there.)
+function squireChecksBackpack() {
+  if (totalBonus("autoEquip") < 1) {
+    return;
+  }
+
+  let looking = true;
+  while (looking) {
+    looking = false;
+    for (let i = 0; i < backpack.length; i++) {
+      if (isSameKind(backpack[i]) && isBetter(backpack[i])) {
+        swapWithBackpack(i);
+        looking = true;
+        break;
+      }
+    }
   }
 }
 
-function equipFound() {
-  if (foundItem !== null) {
-    equipItem(foundItem);
-    foundItem = null;
-    updateScreen();
+// Is something in the backpack simply better than what is worn (same kind, stronger)?
+function backpackHasBetter() {
+  for (let item of backpack) {
+    if (isSameKind(item) && isBetter(item)) {
+      return true;
+    }
   }
+  return false;
 }
 
 function startingGear() {
@@ -829,7 +942,7 @@ function startingGear() {
   armorPower = Math.ceil(weaponPower / 2);
   weaponRarity = 0;
   armorRarity = 0;
-  foundItem = null;
+  backpack = [];
   dotStacks = 0;
   recalcStats();
 }
@@ -1265,7 +1378,7 @@ function freshClass(className) {
     armorPower: 0,
     weaponRarity: 0,
     armorRarity: 0,
-    foundItem: null,
+    backpack: [],
     upgrades: {},
     skillLevels: {},
     chosenPerks: {},
@@ -1308,7 +1421,7 @@ function packClass() {
     armorPower: armorPower,
     weaponRarity: weaponRarity,
     armorRarity: armorRarity,
-    foundItem: foundItem,
+    backpack: backpack,
     upgrades: upgrades,
     skillLevels: skillLevels,
     chosenPerks: chosenPerks,
@@ -1354,7 +1467,12 @@ function unpackClass(saved) {
   armorPower = data.armorPower;
   weaponRarity = data.weaponRarity;
   armorRarity = data.armorRarity;
-  foundItem = data.foundItem;
+  backpack = data.backpack;
+
+  // Saves from before the backpack remembered a single found item
+  if (saved !== undefined && saved.foundItem !== undefined && saved.foundItem !== null) {
+    backpack.push(saved.foundItem);
+  }
 
   upgrades = data.upgrades;
   skillLevels = data.skillLevels;
@@ -1410,9 +1528,13 @@ function unpackClass(saved) {
   } else if (currentClass().stances[stance] === undefined) {
     stance = Object.keys(currentClass().stances)[0];
   }
-  if (foundItem !== null && foundItem.slot === specialSlot() && currentClass().gearTypes[foundItem.type] === undefined) {
-    foundItem = null;
+  let knownItems = [];
+  for (let item of backpack) {
+    if (item.slot !== specialSlot() || currentClass().gearTypes[item.type] !== undefined) {
+      knownItems.push(item);
+    }
   }
+  backpack = knownItems;
 
   // Forget anything the save remembers that is no longer in the game.
   // Skill points spent on a removed skill come back by themselves.
@@ -2177,8 +2299,8 @@ function nextGoals() {
   if (hasPerkToPick()) {
     goals.push("You have a milestone perk to pick (Milestones).");
   }
-  if (foundItem !== null && isBetter(foundItem)) {
-    goals.push("You found better equipment: " + itemName(foundItem) + " (Character).");
+  if (backpackHasBetter()) {
+    goals.push("There is better equipment in your backpack (Character).");
   }
   if (canAscend()) {
     goals.push("You can ascend (Ascension).");
@@ -2221,7 +2343,7 @@ function showGoals() {
 
   // The same things put a dot on their tab
   markTab("tower", encounterType === "upgrade");
-  markTab("character", foundItem !== null && isBetter(foundItem));
+  markTab("character", backpackHasBetter());
   markTab("skills", skillPointsLeft() > 0);
   markTab("milestones", hasPerkToPick());
   markTab("ascension", canAscend() || canBuyFameUpgrade());
@@ -2413,14 +2535,39 @@ function updateScreen() {
   document.getElementById("weapon-info").textContent = currentClass().gearInfo();
   document.getElementById("favourite-gear-label").textContent = "Favourite " + currentClass().gearLabel.toLowerCase();
 
-  if (foundItem === null) {
-    document.getElementById("found-item").textContent = "nothing";
-    document.getElementById("found-item").className = "";
-  } else {
-    document.getElementById("found-item").textContent = itemName(foundItem);
-    document.getElementById("found-item").className = "rarity-" + foundItem.rarity;
+  showBackpack();
+}
+
+// The backpack list is rebuilt only when what is in it changes
+let backpackShown = "";
+
+function showBackpack() {
+  let key = playerClass + JSON.stringify(backpack) + weapon + weaponPower + armorPower;
+  if (key === backpackShown) {
+    return;
   }
-  document.getElementById("equip-btn").disabled = foundItem === null;
+  backpackShown = key;
+
+  let box = document.getElementById("backpack");
+  box.innerHTML = "";
+  document.getElementById("backpack-empty").hidden = backpack.length > 0;
+
+  for (let i = 0; i < backpack.length; i++) {
+    let item = backpack[i];
+    addRow(box, "backpack-" + i, function () {
+      equipFromBackpack(i);
+    });
+
+    let note = "A different " + currentClass().gearLabel.toLowerCase() + ": equipping it changes how you fight.";
+    if (isSameKind(item)) {
+      note = "Stronger than the one you are using.";
+    } else if (!isBetter(item)) {
+      note = note + " Weaker than what you are using.";
+    }
+
+    fillRow("backpack-" + i, itemName(item), note, "Equip", false);
+    document.getElementById("backpack-" + i + "-title").className = "row-title rarity-" + item.rarity;
+  }
 }
 
 // ----- Building each room -----
@@ -2924,7 +3071,7 @@ function animatedStep() {
   let fameBefore = fame;
   let relicsBefore = ownedRelics.length;
   let trophiesBefore = trophies.length;
-  let foundBefore = foundItem;
+  lastFound = null;
   let weaponBefore = weaponPower;
   let armorBefore = armorPower;
 
@@ -2971,8 +3118,8 @@ function animatedStep() {
     toast("Equipped " + gearName("weapon", weapon, weaponPower, weaponRarity), "rarity-" + weaponRarity);
   } else if (armorPower > armorBefore) {
     toast("Equipped " + gearName("armor", weapon, armorPower, armorRarity), "rarity-" + armorRarity);
-  } else if (foundItem !== null && foundItem !== foundBefore) {
-    toast("Found " + itemName(foundItem), "rarity-" + foundItem.rarity);
+  } else if (lastFound !== null) {
+    toast("Found " + itemName(lastFound), "rarity-" + lastFound.rarity);
   }
 
   if (wasFight) {

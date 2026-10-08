@@ -181,12 +181,11 @@
           <div class="pair"><span id="gear-label">Weapon</span><span id="weapon"></span></div>
           <div class="pair"><span id="armor-label">Armor</span><span id="armor"></span></div>
           <p id="weapon-info" class="note"></p>
-          <div class="row">
-            <div class="row-text">
-              <p class="row-title">Found: <span id="found-item">nothing</span></p>
-            </div>
-            <button id="equip-btn" onclick="equipFound()">Equip</button>
-          </div>
+
+          <!-- Spare equipment found this run. The rows are made by game.js. -->
+          <p class="row-title">Backpack</p>
+          <p id="backpack-empty" class="note">Empty. Spare equipment you find is kept here: the best of each kind.</p>
+          <div id="backpack"></div>
           <p class="note">Relics: <span id="relics">none</span></p>
         </div>
 

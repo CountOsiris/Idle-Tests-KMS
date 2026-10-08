@@ -292,8 +292,8 @@ const classes = {};
 const favouritePowerPerLuck = 0.5;
 
 const townUpgrades = [
-  { id: "autoEquip", name: "Squire", text: "Stronger equipment you find is equipped for you.", bonus: { autoEquip: 1 }, maxLevel: 1, cost: 2000, growth: 1 },
-  { id: "quartermaster", name: "Quartermaster", text: "Pick a favourite kind of weapon (or shield, for the Warden). You start every run with it, and your Squire only equips that kind.", bonus: { favouriteGear: 1 }, maxLevel: 1, cost: 5000, growth: 1 },
+  { id: "autoEquip", name: "Squire", text: "Equips stronger equipment for you when it is the same kind you are using. Other kinds go in your backpack.", bonus: { autoEquip: 1 }, maxLevel: 1, cost: 2000, growth: 1 },
+  { id: "quartermaster", name: "Quartermaster", text: "Pick a favourite kind of weapon (or shield, for the Warden). You start every run with it, and your Squire switches you to it if you are using another kind.", bonus: { favouriteGear: 1 }, maxLevel: 1, cost: 5000, growth: 1 },
   { id: "tactician", name: "Tactician", text: "Pick a favourite upgrade. Upgrade areas give it to you straight away, with no waiting, until it reaches the level limit for upgrade areas.", bonus: { favouriteUpgrade: 1 }, maxLevel: 1, cost: 5000, growth: 1 },
   { id: "weaponsmith", name: "Weaponsmith", text: "+10% chance that a weapon you find is your favourite kind (pick it with the Quartermaster). Past 100% it makes those weapons stronger instead.", bonus: { favouriteLuck: 0.1 }, maxLevel: 0, cost: 3000, growth: 1.4 },
   { id: "whetstone", name: "Whetstone", text: "+10% penetration. Penetration cuts through what monsters resist.", bonus: { penetration: 0.1 }, maxLevel: 0, cost: 2000, growth: 1.4 },
