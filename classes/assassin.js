@@ -13,7 +13,7 @@ classes.assassin = {
   name: "Assassin",
   icon: "🗡️",
   text: "Stealth and poison. Opens every fight with an ambush and slips away from attacks.",
-  powerStat: "Dexterity",
+  perLevel: { maxHp: 7, attack: 2 },
   base: { maxHp: 65, attack: 7, dodge: 0.1, ambush: 0.5, poisonStacks: 3, critChance: 0.2 },
 
   gearLabel: "Blade",
@@ -29,12 +29,13 @@ classes.assassin = {
   ],
 
   skills: [
-    { id: "lethality", name: "Lethality", text: "+2 attack", bonus: { attack: 2 }, maxLevel: 10, cost: 100 },
-    { id: "conditioning", name: "Conditioning", text: "+12 health", bonus: { maxHp: 12 }, maxLevel: 10, cost: 100 },
-    { id: "evasion", name: "Evasion", text: "+1% dodge", bonus: { dodge: 0.01 }, maxLevel: 5, cost: 250 },
-    { id: "ambushTraining", name: "Ambush Training", text: "+10% ambush damage", bonus: { ambush: 0.1 }, maxLevel: 4, cost: 250 },
-    { id: "venomMastery", name: "Venom Mastery", text: "Venom Dagger: +1 poison stack", bonus: { poisonStacks: 1 }, maxLevel: 3, cost: 300 },
-    { id: "stilettoMastery", name: "Stiletto Mastery", text: "Stiletto: +3% critical chance", bonus: { critChance: 0.03 }, maxLevel: 5, cost: 300 }
+    { id: "lethality", name: "Lethality", text: "+3% attack", bonus: { attackPercent: 0.03 }, maxLevel: 0, cost: 1 },
+    { id: "conditioning", name: "Conditioning", text: "+3% health", bonus: { healthPercent: 0.03 }, maxLevel: 0, cost: 1 },
+    { id: "virulence", name: "Virulence", text: "Poison deals +10% damage", bonus: { dotPower: 0.1 }, maxLevel: 20, cost: 1 },
+    { id: "evasion", name: "Evasion", text: "+1% dodge", bonus: { dodge: 0.01 }, maxLevel: 5, cost: 1 },
+    { id: "ambushTraining", name: "Ambush Training", text: "+10% ambush damage", bonus: { ambush: 0.1 }, maxLevel: 5, cost: 1 },
+    { id: "venomMastery", name: "Venom Mastery", text: "Venom Dagger: +1 poison stack", bonus: { poisonStacks: 1 }, maxLevel: 5, cost: 2 },
+    { id: "stilettoMastery", name: "Stiletto Mastery", text: "Stiletto: +3% critical chance", bonus: { critChance: 0.03 }, maxLevel: 5, cost: 2 }
   ],
 
   milestones: [

@@ -14,7 +14,7 @@ classes.elementalist = {
   name: "Elementalist",
   icon: "🧤",
   text: "Commands the four elements. Each pair of elemental gloves changes how you fight, and every spell ignores armor.",
-  powerStat: "Intelligence",
+  perLevel: { maxHp: 7, attack: 2 },
   base: { maxHp: 75, attack: 10, tideHeal: 0.06, burnStacks: 4, critChance: 0.3, stunChance: 0.2, crush: 0.25 },
 
   gearLabel: "Gloves",
@@ -30,12 +30,13 @@ classes.elementalist = {
   ],
 
   skills: [
-    { id: "attunement", name: "Attunement", text: "+2 attack", bonus: { attack: 2 }, maxLevel: 10, cost: 100 },
-    { id: "vitality", name: "Vitality", text: "+12 health", bonus: { maxHp: 12 }, maxLevel: 10, cost: 100 },
-    { id: "waterMastery", name: "Water Mastery", text: "Water: +1% healing per spell", bonus: { tideHeal: 0.01 }, maxLevel: 4, cost: 300 },
-    { id: "fireMastery", name: "Fire Mastery", text: "Fire: +1 burn stack", bonus: { burnStacks: 1 }, maxLevel: 3, cost: 300 },
-    { id: "lightningMastery", name: "Lightning Mastery", text: "Lightning: +3% critical chance", bonus: { critChance: 0.03 }, maxLevel: 5, cost: 300 },
-    { id: "earthMastery", name: "Earth Mastery", text: "Earth: +3% stun chance and +5% damage", bonus: { stunChance: 0.03, crush: 0.05 }, maxLevel: 5, cost: 300 }
+    { id: "attunement", name: "Attunement", text: "+3% attack", bonus: { attackPercent: 0.03 }, maxLevel: 0, cost: 1 },
+    { id: "resilience", name: "Resilience", text: "+3% health", bonus: { healthPercent: 0.03 }, maxLevel: 0, cost: 1 },
+    { id: "conflagration", name: "Conflagration", text: "Burning deals +10% damage", bonus: { dotPower: 0.1 }, maxLevel: 20, cost: 1 },
+    { id: "waterMastery", name: "Water Mastery", text: "Water: +1% healing per spell", bonus: { tideHeal: 0.01 }, maxLevel: 5, cost: 2 },
+    { id: "fireMastery", name: "Fire Mastery", text: "Fire: +1 burn stack", bonus: { burnStacks: 1 }, maxLevel: 5, cost: 2 },
+    { id: "lightningMastery", name: "Lightning Mastery", text: "Lightning: +3% critical chance", bonus: { critChance: 0.03 }, maxLevel: 5, cost: 2 },
+    { id: "earthMastery", name: "Earth Mastery", text: "Earth: +3% stun chance and +5% damage", bonus: { stunChance: 0.03, crush: 0.05 }, maxLevel: 5, cost: 2 }
   ],
 
   milestones: [

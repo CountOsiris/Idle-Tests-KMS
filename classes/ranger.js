@@ -13,7 +13,7 @@ classes.ranger = {
   name: "Ranger",
   icon: "🏹",
   text: "A bow and forest magic. Shoots before the enemy can reach you, and calls spirits to fight.",
-  powerStat: "Dexterity",
+  perLevel: { maxHp: 8, attack: 2 },
   base: { maxHp: 80, attack: 10, firstStrike: 1, aimChance: 0.3, spirits: 3, regrowth: 0.05 },
 
   gearLabel: "Bow",
@@ -28,12 +28,13 @@ classes.ranger = {
   ],
 
   skills: [
-    { id: "marksmanship", name: "Marksmanship", text: "+2 attack", bonus: { attack: 2 }, maxLevel: 10, cost: 100 },
-    { id: "endurance", name: "Endurance", text: "+15 health", bonus: { maxHp: 15 }, maxLevel: 10, cost: 100 },
-    { id: "openingVolley", name: "Opening Volley", text: "The enemy misses 1 more turn at the start of a fight", bonus: { firstStrike: 1 }, maxLevel: 2, cost: 500 },
-    { id: "longbowMastery", name: "Longbow Mastery", text: "Longbow: +3% aimed shot chance", bonus: { aimChance: 0.03 }, maxLevel: 5, cost: 300 },
-    { id: "spiritMastery", name: "Spirit Mastery", text: "Spirit Bow: +1 spirit", bonus: { spirits: 1 }, maxLevel: 3, cost: 300 },
-    { id: "bloomMastery", name: "Bloom Mastery", text: "Bloom Bow: +1% healing per shot", bonus: { regrowth: 0.01 }, maxLevel: 4, cost: 300 }
+    { id: "marksmanship", name: "Marksmanship", text: "+3% attack", bonus: { attackPercent: 0.03 }, maxLevel: 0, cost: 1 },
+    { id: "endurance", name: "Endurance", text: "+3% health", bonus: { healthPercent: 0.03 }, maxLevel: 0, cost: 1 },
+    { id: "packTactics", name: "Pack Tactics", text: "Spirits deal +10% damage", bonus: { dotPower: 0.1 }, maxLevel: 20, cost: 1 },
+    { id: "openingVolley", name: "Opening Volley", text: "The enemy misses 1 more turn at the start of a fight", bonus: { firstStrike: 1 }, maxLevel: 2, cost: 5 },
+    { id: "longbowMastery", name: "Longbow Mastery", text: "Longbow: +3% aimed shot chance", bonus: { aimChance: 0.03 }, maxLevel: 5, cost: 2 },
+    { id: "spiritMastery", name: "Spirit Mastery", text: "Spirit Bow: +1 spirit", bonus: { spirits: 1 }, maxLevel: 5, cost: 2 },
+    { id: "bloomMastery", name: "Bloom Mastery", text: "Bloom Bow: +1% healing per shot", bonus: { regrowth: 0.01 }, maxLevel: 5, cost: 2 }
   ],
 
   milestones: [

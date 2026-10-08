@@ -289,6 +289,10 @@ p {
   background: var(--monster);
 }
 
+.fill.level {
+  background: var(--gold);
+}
+
 /* ----- Buttons ----- */
 button {
   background: var(--border);

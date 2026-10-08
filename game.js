@@ -18,9 +18,6 @@ let bestFloor = 1;
 let room = 1;
 
 let level = 1;
-let statPoints = 0;
-let constitution = 0;
-let strength = 0;
 let playerHp = 0;
 
 let weapon = "";
@@ -152,7 +149,7 @@ function addDotStack(most) {
 }
 
 function dotDamage() {
-  return dotStacks * currentClass().dotPerStack();
+  return Math.round(dotStacks * currentClass().dotPerStack() * (1 + totalBonus("dotPower")));
 }
 
 // ----- Adding up bonuses -----
@@ -336,9 +333,6 @@ function ascend() {
   // What is lost: levels, stats, skills, experience, gold and the run in progress.
   // The Legacy fame upgrade gives some levels back straight away.
   level = 1 + fameAdd("startLevels");
-  statPoints = 3 * fameAdd("startLevels");
-  constitution = 0;
-  strength = 0;
   experience = 0;
   skillLevels = {};
   gold = 0;
@@ -700,7 +694,8 @@ function takeRandomUpgrade() {
 }
 
 // ----- Skills -----
-// Skills are bought with experience and kept forever
+// Every level gives skill points, and skills are bought with them.
+// Skills last until the class ascends, and can be reset for free to try another build.
 function skillLevel(id) {
   if (skillLevels[id] === undefined) {
     return 0;
@@ -708,18 +703,43 @@ function skillLevel(id) {
   return skillLevels[id];
 }
 
-// Each level costs more than the last: level 1 costs the skill's cost, level 2 double...
-function skillCost(skill) {
-  return skill.cost * (skillLevel(skill.id) + 1);
+// A top level of 0 means the skill can be raised forever
+function skillIsMaxed(skill) {
+  return skill.maxLevel > 0 && skillLevel(skill.id) >= skill.maxLevel;
+}
+
+// All the skill points the class has earned: some for every level after the first
+function skillPointsEarned() {
+  return (level - 1) * skillPointsPerLevel;
+}
+
+function skillPointsSpent() {
+  let spent = 0;
+
+  for (let skill of currentClass().skills) {
+    spent = spent + skill.cost * skillLevel(skill.id);
+  }
+
+  return spent;
+}
+
+function skillPointsLeft() {
+  return skillPointsEarned() - skillPointsSpent();
 }
 
 function buySkill(skill) {
-  if (skillLevel(skill.id) < skill.maxLevel && experience >= skillCost(skill)) {
-    experience = experience - skillCost(skill);
+  if (!skillIsMaxed(skill) && skillPointsLeft() >= skill.cost) {
     skillLevels[skill.id] = skillLevel(skill.id) + 1;
     recalcStats();
     updateScreen();
   }
+}
+
+// Gives every skill point back
+function resetSkills() {
+  skillLevels = {};
+  recalcStats();
+  updateScreen();
 }
 
 // ----- Milestones -----
@@ -771,10 +791,18 @@ function checkTowerProgress() {
 }
 
 // ----- Stats and levelling -----
+// Health and attack are built up in three steps:
+//   1. the flat numbers: the class's base, what its levels give, equipment, perks, relics...
+//   2. times the percentages from skills (attackPercent and healthPercent)
+//   3. times the fame upgrades
 function recalcStats() {
-  // Fame upgrades multiply the totals, so they stay just as useful however strong you get
-  playerMaxHp = Math.round((constitution * 10 + totalBonus("maxHp")) * fameMultiplier("health"));
-  playerAttack = Math.round((strength * 2 + totalBonus("attack") + weaponPower) * fameMultiplier("attack"));
+  let levelsGained = level - 1;
+
+  let health = totalBonus("maxHp") + levelsGained * currentClass().perLevel.maxHp;
+  let attack = totalBonus("attack") + levelsGained * currentClass().perLevel.attack + weaponPower;
+
+  playerMaxHp = Math.round(health * (1 + totalBonus("healthPercent")) * fameMultiplier("health"));
+  playerAttack = Math.round(attack * (1 + totalBonus("attackPercent")) * fameMultiplier("attack"));
 
   if (playerHp > playerMaxHp) {
     playerHp = playerMaxHp;
@@ -785,30 +813,20 @@ function levelCost() {
   return level * levelCostPerLevel;
 }
 
-function levelUp() {
-  if (experience >= levelCost()) {
+// Levels are bought automatically as soon as there is enough experience.
+// Each one makes the class stronger by itself and gives skill points.
+function levelUpWhilePossible() {
+  let gained = 0;
+
+  while (experience >= levelCost()) {
     experience = experience - levelCost();
     level = level + 1;
-    statPoints = statPoints + 3;
-    updateScreen();
+    gained = gained + 1;
   }
-}
 
-// "strength" is the class's power stat. Each class has its own name for it
-// (Strength, Dexterity, Intelligence, Faith) but it always gives +2 attack.
-function spendPoint(stat) {
-  if (statPoints > 0) {
-    statPoints = statPoints - 1;
-
-    if (stat === "constitution") {
-      constitution = constitution + 1;
-      playerHp = playerHp + Math.round(10 * fameMultiplier("health"));
-    } else if (stat === "strength") {
-      strength = strength + 1;
-    }
-
+  if (gained > 0) {
     recalcStats();
-    updateScreen();
+    say("You reach level " + level + "!");
   }
 }
 
@@ -832,9 +850,6 @@ function freshClass(className) {
     bestFloor: 1,
     room: 1,
     level: 1,
-    statPoints: 0,
-    constitution: 0,
-    strength: 0,
     weapon: randomGearType(className),
     weaponPower: 0,
     armorPower: 0,
@@ -870,9 +885,6 @@ function packClass() {
     bestFloor: bestFloor,
     room: room,
     level: level,
-    statPoints: statPoints,
-    constitution: constitution,
-    strength: strength,
     playerHp: playerHp,
     weapon: weapon,
     weaponPower: weaponPower,
@@ -912,9 +924,6 @@ function unpackClass(saved) {
   bestFloor = data.bestFloor;
   room = data.room;
   level = data.level;
-  statPoints = data.statPoints;
-  constitution = data.constitution;
-  strength = data.strength;
   playerHp = data.playerHp;
   weapon = data.weapon;
   weaponPower = data.weaponPower;
@@ -1311,16 +1320,28 @@ function showUpgrades() {
 }
 
 function showSkills() {
+  document.getElementById("skill-points").textContent = skillPointsLeft();
+
   for (let skill of currentClass().skills) {
     let button = document.getElementById("skill-" + skill.id);
-    let levels = skillLevel(skill.id) + " / " + skill.maxLevel;
 
-    if (skillLevel(skill.id) >= skill.maxLevel) {
+    // Skills with no top level just show how far they have been raised
+    let levels = "level " + skillLevel(skill.id);
+    if (skill.maxLevel > 0) {
+      levels = skillLevel(skill.id) + " / " + skill.maxLevel;
+    }
+
+    let price = skill.cost + " points";
+    if (skill.cost === 1) {
+      price = "1 point";
+    }
+
+    if (skillIsMaxed(skill)) {
       button.textContent = skill.name + " " + levels + " (max)";
       button.disabled = true;
     } else {
-      button.textContent = skill.name + " " + levels + " (" + big(skillCost(skill)) + " experience)";
-      button.disabled = experience < skillCost(skill);
+      button.textContent = skill.name + " " + levels + " (" + price + ")";
+      button.disabled = skillPointsLeft() < skill.cost;
     }
   }
 }
@@ -1543,11 +1564,8 @@ function nextGoals() {
   let goals = [];
 
   // Things waiting to be used
-  if (statPoints > 0) {
-    goals.push("You have " + statPoints + " stat points to spend (Character).");
-  }
-  if (experience >= levelCost()) {
-    goals.push("You have enough experience to level up (Character).");
+  if (skillPointsLeft() > 0) {
+    goals.push("You have " + skillPointsLeft() + " skill points to spend (Skills).");
   }
   for (let milestone of currentClass().milestones) {
     if (bestFloor >= milestone.floor && chosenPerks[milestone.floor] === undefined) {
@@ -1656,15 +1674,11 @@ function updateScreen() {
   document.getElementById("total-armor").textContent = big(totalArmor());
   document.getElementById("class-stat").textContent = currentClass().statLine();
 
-  document.getElementById("stat-points").textContent = statPoints;
-  document.getElementById("constitution").textContent = constitution;
-  document.getElementById("power-stat-name").textContent = currentClass().powerStat;
-  document.getElementById("strength").textContent = strength;
-
-  document.getElementById("level-btn").textContent = "Level up (" + big(levelCost()) + " experience)";
-  document.getElementById("level-btn").disabled = experience < levelCost();
-  document.getElementById("con-btn").disabled = statPoints <= 0;
-  document.getElementById("str-btn").disabled = statPoints <= 0;
+  // The level panel: progress toward the next level, and what a level gives
+  document.getElementById("level-big").textContent = level;
+  document.getElementById("level-progress").textContent = big(experience) + " / " + big(levelCost());
+  document.getElementById("level-bar").style.width = Math.min(100, experience / levelCost() * 100) + "%";
+  document.getElementById("level-gain").textContent = "+" + currentClass().perLevel.attack + " attack, +" + currentClass().perLevel.maxHp + " health and " + skillPointsPerLevel + " skill point";
 
   let inFight = encounterType === "monster" || encounterType === "boss";
 
@@ -1906,6 +1920,7 @@ function die() {
 
   deaths = deaths + 1;
   experience = experience + payout;
+  levelUpWhilePossible();
   bank = bank + gold;
   gold = 0;
   upgrades = {};

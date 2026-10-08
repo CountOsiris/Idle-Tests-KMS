@@ -13,7 +13,7 @@ classes.warlock = {
   name: "Warlock",
   icon: "📖",
   text: "Master of arcane magic, read from a tome. Fragile, but every spell ignores armor.",
-  powerStat: "Intelligence",
+  perLevel: { maxHp: 6, attack: 2.5 },
   base: { maxHp: 60, attack: 12, critChance: 0.25, critPower: 1.5, voidRend: 0.03, echoChance: 0.3 },
 
   gearLabel: "Tome",
@@ -28,12 +28,12 @@ classes.warlock = {
   ],
 
   skills: [
-    { id: "intellect", name: "Intellect", text: "+3 attack", bonus: { attack: 3 }, maxLevel: 10, cost: 100 },
-    { id: "warding", name: "Warding", text: "+10 health", bonus: { maxHp: 10 }, maxLevel: 10, cost: 100 },
-    { id: "criticalFocus", name: "Critical Focus", text: "+10% critical damage", bonus: { critPower: 0.1 }, maxLevel: 5, cost: 250 },
-    { id: "arcaneMastery", name: "Arcane Mastery", text: "Arcane Tome: +3% critical chance", bonus: { critChance: 0.03 }, maxLevel: 5, cost: 300 },
-    { id: "voidMastery", name: "Void Mastery", text: "Void Tome: +0.5% of the enemy's health per hit", bonus: { voidRend: 0.005 }, maxLevel: 4, cost: 300 },
-    { id: "runeMastery", name: "Rune Mastery", text: "Rune Tome: +3% chance to cast twice", bonus: { echoChance: 0.03 }, maxLevel: 5, cost: 300 }
+    { id: "intellect", name: "Intellect", text: "+3% attack", bonus: { attackPercent: 0.03 }, maxLevel: 0, cost: 1 },
+    { id: "warding", name: "Warding", text: "+3% health", bonus: { healthPercent: 0.03 }, maxLevel: 0, cost: 1 },
+    { id: "criticalFocus", name: "Critical Focus", text: "Arcane Tome: +10% critical damage", bonus: { critPower: 0.1 }, maxLevel: 20, cost: 1 },
+    { id: "arcaneMastery", name: "Arcane Mastery", text: "Arcane Tome: +3% critical chance", bonus: { critChance: 0.03 }, maxLevel: 5, cost: 2 },
+    { id: "voidMastery", name: "Void Mastery", text: "Void Tome: +0.5% of the enemy's health per hit", bonus: { voidRend: 0.005 }, maxLevel: 5, cost: 2 },
+    { id: "runeMastery", name: "Rune Mastery", text: "Rune Tome: +3% chance to cast twice", bonus: { echoChance: 0.03 }, maxLevel: 5, cost: 2 }
   ],
 
   milestones: [

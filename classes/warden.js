@@ -3,6 +3,7 @@
 // =====================================================================
 // Bonus words only the Warden uses:
 //   reflect      enemy attack thrown back        (0.1 means +10%)
+//   reflectPower all reflected damage            (0.1 means +10% stronger)
 //   burnStacks   most ember shield burn stacks   (2 means +2)
 //   freezeChance frost shield freeze chance      (0.1 means +10%)
 //   stormChance  storm shield double reflect     (0.1 means +10%)
@@ -13,7 +14,7 @@ classes.warden = {
   name: "Warden",
   icon: "🛡️",
   text: "A spear and an elemental shield. Every attack against you is thrown back at the enemy.",
-  powerStat: "Strength",
+  perLevel: { maxHp: 10, attack: 1.5 },
   base: { maxHp: 120, attack: 5, armor: 2, reflect: 0.3, burnStacks: 3, freezeChance: 0.2, stormChance: 0.25 },
 
   // The Warden's special gear is the shield, which sits in the armor slot.
@@ -33,13 +34,15 @@ classes.warden = {
   ],
 
   skills: [
-    { id: "shieldSlam", name: "Spear Thrust", text: "+2 attack", bonus: { attack: 2 }, maxLevel: 10, cost: 100 },
-    { id: "vigor", name: "Vigor", text: "+20 health", bonus: { maxHp: 20 }, maxLevel: 10, cost: 100 },
-    { id: "plating", name: "Plating", text: "+1 armor", bonus: { armor: 1 }, maxLevel: 10, cost: 150 },
-    { id: "thornmail", name: "Thornmail", text: "+5% reflect", bonus: { reflect: 0.05 }, maxLevel: 6, cost: 200 },
-    { id: "emberMastery", name: "Ember Mastery", text: "Ember: +1 burn stack", bonus: { burnStacks: 1 }, maxLevel: 3, cost: 300 },
-    { id: "frostMastery", name: "Frost Mastery", text: "Frost: +3% freeze chance", bonus: { freezeChance: 0.03 }, maxLevel: 5, cost: 300 },
-    { id: "stormMastery", name: "Storm Mastery", text: "Storm: +4% double reflect chance", bonus: { stormChance: 0.04 }, maxLevel: 5, cost: 300 }
+    { id: "spearThrust", name: "Spear Thrust", text: "+3% attack", bonus: { attackPercent: 0.03 }, maxLevel: 0, cost: 1 },
+    { id: "vigor", name: "Vigor", text: "+3% health", bonus: { healthPercent: 0.03 }, maxLevel: 0, cost: 1 },
+    { id: "retaliation", name: "Retaliation", text: "Reflected damage is 5% stronger", bonus: { reflectPower: 0.05 }, maxLevel: 20, cost: 1 },
+    { id: "scorch", name: "Scorch", text: "Burning deals +10% damage", bonus: { dotPower: 0.1 }, maxLevel: 20, cost: 1 },
+    { id: "plating", name: "Plating", text: "+2 armor", bonus: { armor: 2 }, maxLevel: 10, cost: 1 },
+    { id: "thornmail", name: "Thornmail", text: "+5% reflect", bonus: { reflect: 0.05 }, maxLevel: 10, cost: 1 },
+    { id: "emberMastery", name: "Ember Mastery", text: "Ember: +1 burn stack", bonus: { burnStacks: 1 }, maxLevel: 5, cost: 2 },
+    { id: "frostMastery", name: "Frost Mastery", text: "Frost: +3% freeze chance", bonus: { freezeChance: 0.03 }, maxLevel: 5, cost: 2 },
+    { id: "stormMastery", name: "Storm Mastery", text: "Storm: +4% double reflect chance", bonus: { stormChance: 0.04 }, maxLevel: 5, cost: 2 }
   ],
 
   milestones: [
@@ -112,7 +115,8 @@ classes.warden = {
 // The damage thrown back each time the enemy attacks.
 // A stronger shield throws back more, and it ignores the enemy's armor.
 function reflectDamage() {
-  return Math.round(monsterAttack * totalBonus("reflect") + armorPower * fameMultiplier("armor"));
+  let reflected = monsterAttack * totalBonus("reflect") + armorPower * fameMultiplier("armor");
+  return Math.round(reflected * (1 + totalBonus("reflectPower")));
 }
 
 function wardenAttack() {

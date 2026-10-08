@@ -28,9 +28,12 @@ const rareGold = 3;
 const chestGold = 2;
 
 // Dying pays this much experience per floor reached, and going from
-// level N to the next costs N times levelCostPerLevel
+// level N to the next costs N times levelCostPerLevel. Levels are bought
+// automatically. What a level gives is in each class's file (perLevel),
+// plus this many skill points:
 const experiencePerFloor = 20;
 const levelCostPerLevel = 50;
+const skillPointsPerLevel = 1;
 
 // ----- Ascension -----
 // Fame is the ascension currency. Each class earns and spends its own.
@@ -144,8 +147,12 @@ const maxLogLines = 40;
 // with the same "bonus" words. A bonus can combine several, like { maxHp: 100, armor: 5 }.
 //
 // These words work for every class:
-//   maxHp        health                         (30 means +30)
-//   attack       attack                         (5 means +5)
+//   maxHp          health                             (30 means +30)
+//   attack         attack                             (5 means +5)
+//   healthPercent  health, as a percentage            (0.04 means +4%)
+//   attackPercent  attack, as a percentage            (0.04 means +4%)
+//   dotPower       damage of bleeding, burning,
+//                  poison and spirits                 (0.1 means +10%)
 //   armor        damage blocked per hit         (3 means +3)
 //   gold         extra gold earned              (0.5 means +50%)
 //   experience   extra experience on death      (0.25 means +25%)

@@ -57,24 +57,22 @@
       </div>
 
       <div class="panel">
-        <h2>Level Up</h2>
-        <p>Stat points: <span id="stat-points">0</span></p>
-        <p><button id="level-btn" onclick="levelUp()">Level up</button></p>
-        <p>
-          Constitution: <span id="constitution">0</span>
-          <button id="con-btn" onclick="spendPoint('constitution')">+1</button>
-        </p>
-        <p>
-          <span id="power-stat-name">Strength</span>: <span id="strength">0</span>
-          <button id="str-btn" onclick="spendPoint('strength')">+1</button>
+        <h2>Level <span id="level-big">1</span></h2>
+        <p class="note">Experience toward the next level: <span id="level-progress">0</span></p>
+        <div class="bar"><div id="level-bar" class="fill level"></div></div>
+        <p class="note">
+          You level up by yourself when the bar fills. Every level gives
+          <span id="level-gain"></span>.
         </p>
       </div>
 
       <div class="panel skills-panel">
         <h2>Skills</h2>
-        <p class="note">Bought with experience and kept forever.</p>
+        <p>Skill points: <strong id="skill-points">0</strong></p>
+        <p class="note">Every level gives a skill point. Skills last until you ascend, and resetting them is free.</p>
         <!-- The buttons are made by game.js from the class's skills list -->
         <div id="skills"></div>
+        <p><button onclick="resetSkills()">Reset skills</button></p>
       </div>
     </div>
 

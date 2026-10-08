@@ -12,7 +12,7 @@ classes.zealot = {
   name: "Zealot",
   icon: "🔨",
   text: "A holy crusader. Heals every turn, and fights with a mace, a shield or holy magic.",
-  powerStat: "Faith",
+  perLevel: { maxHp: 10, attack: 2 },
   base: { maxHp: 100, attack: 7, armor: 1, devotion: 0.03, smite: 0.3, blockChance: 0.25 },
 
   gearLabel: "Holy weapon",
@@ -27,12 +27,12 @@ classes.zealot = {
   ],
 
   skills: [
-    { id: "zeal", name: "Zeal", text: "+2 attack", bonus: { attack: 2 }, maxLevel: 10, cost: 100 },
-    { id: "faithful", name: "Faithful", text: "+15 health", bonus: { maxHp: 15 }, maxLevel: 10, cost: 100 },
-    { id: "armorOfFaith", name: "Armor of Faith", text: "+1 armor", bonus: { armor: 1 }, maxLevel: 8, cost: 150 },
-    { id: "piety", name: "Piety", text: "+0.5% healing every turn", bonus: { devotion: 0.005 }, maxLevel: 4, cost: 300 },
-    { id: "maceMastery", name: "Mace Mastery", text: "Holy Mace: +5% holy damage", bonus: { smite: 0.05 }, maxLevel: 5, cost: 300 },
-    { id: "shieldMastery", name: "Shield Mastery", text: "Mace and Shield: +3% block chance", bonus: { blockChance: 0.03 }, maxLevel: 5, cost: 300 }
+    { id: "zeal", name: "Zeal", text: "+3% attack", bonus: { attackPercent: 0.03 }, maxLevel: 0, cost: 1 },
+    { id: "faithful", name: "Faithful", text: "+3% health", bonus: { healthPercent: 0.03 }, maxLevel: 0, cost: 1 },
+    { id: "radiance", name: "Radiance", text: "Holy Mace: +10% holy damage", bonus: { smite: 0.1 }, maxLevel: 20, cost: 1 },
+    { id: "armorOfFaith", name: "Armor of Faith", text: "+2 armor", bonus: { armor: 2 }, maxLevel: 10, cost: 1 },
+    { id: "piety", name: "Piety", text: "+0.5% healing every turn", bonus: { devotion: 0.005 }, maxLevel: 6, cost: 2 },
+    { id: "shieldMastery", name: "Shield Mastery", text: "Mace and Shield: +3% block chance", bonus: { blockChance: 0.03 }, maxLevel: 5, cost: 2 }
   ],
 
   milestones: [

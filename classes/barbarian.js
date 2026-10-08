@@ -11,10 +11,12 @@
 //
 // What each list is for:
 //   base       - the numbers the class starts with
+//   perLevel   - the health and attack every level adds by itself
 //   gearTypes  - the kinds of weapon the class can find in the tower
 //   upgrades   - choices in an upgrade area. Lost on death. Each level gives the bonus again.
-//   skills     - bought with experience. Kept forever. Each level gives the bonus again.
-//                cost is the price of level 1; level 2 costs double, level 3 triple...
+//   skills     - bought with skill points (one per level). Kept until the class ascends.
+//                Each level of a skill gives the bonus again and costs "cost" points.
+//                maxLevel is how far it can be raised; 0 means there is no limit.
 //   milestones - kept forever. The player picks ONE perk per milestone.
 //   relics     - boss drops only this class can find. Lost on death.
 
@@ -22,7 +24,7 @@ classes.barbarian = {
   name: "Barbarian",
   icon: "⚔️",
   text: "Two-handed weapons and lifesteal. Hits hard and heals from the damage dealt.",
-  powerStat: "Strength",
+  perLevel: { maxHp: 8, attack: 2 },
   base: { maxHp: 80, attack: 8, lifesteal: 0.1, bleedStacks: 3, critChance: 0.2, parryChance: 0.2, stunChance: 0.25 },
 
   gearLabel: "Weapon",
@@ -37,13 +39,14 @@ classes.barbarian = {
   ],
 
   skills: [
-    { id: "might", name: "Might", text: "+2 attack", bonus: { attack: 2 }, maxLevel: 10, cost: 100 },
-    { id: "toughness", name: "Toughness", text: "+15 health", bonus: { maxHp: 15 }, maxLevel: 10, cost: 100 },
-    { id: "bloodletting", name: "Bloodletting", text: "+2% lifesteal", bonus: { lifesteal: 0.02 }, maxLevel: 5, cost: 200 },
-    { id: "rage", name: "Rage", text: "+10% damage while below half health", bonus: { rage: 0.1 }, maxLevel: 5, cost: 250 },
-    { id: "axeMastery", name: "Axe Mastery", text: "Axe: +1 bleed stack", bonus: { bleedStacks: 1 }, maxLevel: 3, cost: 300 },
-    { id: "swordMastery", name: "Sword Mastery", text: "Sword: +3% critical and parry chance", bonus: { critChance: 0.03, parryChance: 0.03 }, maxLevel: 5, cost: 300 },
-    { id: "clubMastery", name: "Club Mastery", text: "Club: +4% stun chance", bonus: { stunChance: 0.04 }, maxLevel: 5, cost: 300 }
+    { id: "might", name: "Might", text: "+3% attack", bonus: { attackPercent: 0.03 }, maxLevel: 0, cost: 1 },
+    { id: "toughness", name: "Toughness", text: "+3% health", bonus: { healthPercent: 0.03 }, maxLevel: 0, cost: 1 },
+    { id: "savagery", name: "Savagery", text: "Bleeding deals +10% damage", bonus: { dotPower: 0.1 }, maxLevel: 20, cost: 1 },
+    { id: "bloodletting", name: "Bloodletting", text: "+2% lifesteal", bonus: { lifesteal: 0.02 }, maxLevel: 10, cost: 1 },
+    { id: "rage", name: "Rage", text: "+10% damage while below half health", bonus: { rage: 0.1 }, maxLevel: 10, cost: 1 },
+    { id: "axeMastery", name: "Axe Mastery", text: "Axe: +1 bleed stack", bonus: { bleedStacks: 1 }, maxLevel: 5, cost: 2 },
+    { id: "swordMastery", name: "Sword Mastery", text: "Sword: +3% critical and parry chance", bonus: { critChance: 0.03, parryChance: 0.03 }, maxLevel: 5, cost: 2 },
+    { id: "clubMastery", name: "Club Mastery", text: "Club: +4% stun chance", bonus: { stunChance: 0.04 }, maxLevel: 5, cost: 2 }
   ],
 
   milestones: [
