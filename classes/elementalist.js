@@ -13,6 +13,7 @@
 classes.elementalist = {
   name: "Elementalist",
   icon: "🧤",
+  art: "art/elementalist.png",
   text: "Commands the four elements. Each pair of elemental gloves changes how you fight, and every spell ignores armor.",
   perLevel: { maxHp: 7, attack: 2 },
   base: { maxHp: 75, attack: 10, tideHeal: 0.06, burnStacks: 4, critChance: 0.3, stunChance: 0.2, crush: 0.25 },

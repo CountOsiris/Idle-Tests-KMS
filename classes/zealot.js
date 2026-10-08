@@ -11,6 +11,7 @@
 classes.zealot = {
   name: "Zealot",
   icon: "🔨",
+  art: "art/zealot.png",
   text: "A holy crusader. Heals every turn, and fights with a mace, a shield or holy magic.",
   perLevel: { maxHp: 10, attack: 2 },
   base: { maxHp: 100, attack: 7, armor: 1, devotion: 0.03, smite: 0.3, blockChance: 0.25 },

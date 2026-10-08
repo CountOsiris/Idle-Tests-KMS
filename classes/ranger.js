@@ -12,6 +12,7 @@
 classes.ranger = {
   name: "Ranger",
   icon: "🏹",
+  art: "art/ranger.png",
   text: "A bow and forest magic. Shoots before the enemy can reach you, and calls spirits to fight.",
   perLevel: { maxHp: 8, attack: 2 },
   base: { maxHp: 80, attack: 10, firstStrike: 1, aimChance: 0.3, spirits: 3, regrowth: 0.05 },

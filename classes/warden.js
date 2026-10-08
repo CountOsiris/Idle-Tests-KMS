@@ -13,6 +13,7 @@
 classes.warden = {
   name: "Warden",
   icon: "🛡️",
+  art: "art/warden.png",
   text: "A spear and an elemental shield. Every attack against you is thrown back at the enemy.",
   perLevel: { maxHp: 12, attack: 1.5 },
   base: { maxHp: 120, attack: 5, armor: 2, reflect: 0.3, burnStacks: 3, freezeChance: 0.2, stormChance: 0.25 },

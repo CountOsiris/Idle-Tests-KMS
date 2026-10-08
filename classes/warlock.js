@@ -12,6 +12,7 @@
 classes.warlock = {
   name: "Warlock",
   icon: "📖",
+  art: "art/warlock.png",
   text: "Master of arcane magic, read from a tome. Fragile, but every spell ignores armor.",
   perLevel: { maxHp: 6, attack: 2.5 },
   base: { maxHp: 60, attack: 12, critChance: 0.25, critPower: 1.5, voidRend: 0.03, echoChance: 0.3 },

@@ -12,6 +12,7 @@
 classes.assassin = {
   name: "Assassin",
   icon: "🗡️",
+  art: "art/assassin.png",
   text: "Stealth and poison. Opens every fight with an ambush and slips away from attacks.",
   perLevel: { maxHp: 7, attack: 2 },
   base: { maxHp: 65, attack: 7, dodge: 0.1, ambush: 0.5, poisonStacks: 3, critChance: 0.2 },
