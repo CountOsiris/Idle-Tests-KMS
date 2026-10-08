@@ -22,6 +22,7 @@ let playerHp = 0;
 
 let weapon = "";
 let stance = "";             // the fighting style picked on the Skills tab (only some classes have one)
+let runCounter = 0;         // a number a class may count up during a run (the Warlock's souls). Back to 0 on death.
 let weaponPower = 0;
 let armorPower = 0;
 let weaponRarity = 0;
@@ -413,6 +414,7 @@ function ascend() {
   potions = 0;
   upgrades = {};
   ownedRelics = [];
+  runCounter = 0;
   floor = 1;
   room = 1;
 
@@ -1083,7 +1085,8 @@ function freshClass(className) {
     ascensionSeconds: 0,
     lastAscensionFame: 0,
     lastAscensionSeconds: 0,
-    trophies: []
+    trophies: [],
+    runCounter: 0
   };
 }
 
@@ -1123,7 +1126,8 @@ function packClass() {
     ascensionSeconds: ascensionSeconds,
     lastAscensionFame: lastAscensionFame,
     lastAscensionSeconds: lastAscensionSeconds,
-    trophies: trophies
+    trophies: trophies,
+    runCounter: runCounter
   };
 }
 
@@ -1183,6 +1187,7 @@ function unpackClass(saved) {
   lastAscensionFame = data.lastAscensionFame;
   lastAscensionSeconds = data.lastAscensionSeconds;
   trophies = data.trophies;
+  runCounter = data.runCounter;
 
   // In case a tower or gear type was renamed or removed since the save was made
   if (towers[tower] === undefined) {
@@ -2309,6 +2314,7 @@ function die() {
   gold = 0;
   upgrades = {};
   ownedRelics = [];
+  runCounter = 0;
   floor = startFloor();
   room = 1;
   if (floor > 1) {
@@ -2322,6 +2328,12 @@ function die() {
   }
 
   startingGear();
+
+  // Some classes set something up at the start of a run
+  if (currentClass().startRun !== undefined) {
+    currentClass().startRun();
+  }
+
   playerHp = playerMaxHp;
   startEncounter();
 }
@@ -2348,6 +2360,11 @@ function victory() {
     findItem(rareDropRarity);
   } else if (chance(Math.min(maxDropChance, monsterDropChance + totalBonus("dropChance")))) {
     findItem(0);
+  }
+
+  // Some classes gain something from every kill
+  if (currentClass().whenKill !== undefined) {
+    currentClass().whenKill();
   }
   nextRoom();
 }
