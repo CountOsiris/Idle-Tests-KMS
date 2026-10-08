@@ -1,5 +1,5 @@
 // =====================================================================
-//  The Barbarian - two-handed weapons and lifesteal
+//  The Barbarian - two-handed weapons, lifesteal and rage
 // =====================================================================
 // Bonus words only the Barbarian uses:
 //   lifesteal    health stolen from damage dealt     (0.05 means +5%)
@@ -7,7 +7,15 @@
 //   bleedStacks  most axe bleed stacks               (2 means +2)
 //   critChance   sword critical chance               (0.1 means +10%)
 //   parryChance  sword parry chance                  (0.1 means +10%)
+//   critPower    sword: extra damage of a critical   (0.1 means +10%)
 //   stunChance   club stun chance                    (0.15 means +15%)
+//   clubPower    club: extra damage of every hit     (0.04 means +4%)
+//
+// The four ways to build a Barbarian:
+//   Bleeder   (axe)   - stacks bleeding, which also feeds lifesteal. Long fights and bosses.
+//   Duelist   (sword) - critical hits and parries. Burst damage and avoided hits.
+//   Crusher   (club)  - heavy hits, broken armor and stuns. Control.
+//   Berserker (any)   - rage: far more damage below half health, kept alive by lifesteal.
 //
 // What each list is for:
 //   base       - the numbers the class starts with
@@ -36,7 +44,8 @@ classes.barbarian = {
     { id: "bloodthirst", name: "Bloodthirst", text: "+5% lifesteal", bonus: { lifesteal: 0.05 } },
     { id: "deepWounds", name: "Deep Wounds", text: "Axe: +1 bleed stack", bonus: { bleedStacks: 1 } },
     { id: "precision", name: "Precision", text: "Sword: +5% critical and parry chance", bonus: { critChance: 0.05, parryChance: 0.05 } },
-    { id: "heavyBlows", name: "Heavy Blows", text: "Club: +5% stun chance", bonus: { stunChance: 0.05 } }
+    { id: "heavyBlows", name: "Heavy Blows", text: "Club: +5% stun chance", bonus: { stunChance: 0.05 } },
+    { id: "fury", name: "Fury", text: "+15% damage while below half health", bonus: { rage: 0.15 } }
   ],
 
   skills: [
@@ -47,7 +56,9 @@ classes.barbarian = {
     { id: "rage", name: "Rage", text: "+10% damage while below half health", bonus: { rage: 0.1 }, cost: 1 },
     { id: "axeMastery", name: "Axe Mastery", text: "Axe: +1 bleed stack", bonus: { bleedStacks: 1 }, cost: 2 },
     { id: "swordMastery", name: "Sword Mastery", text: "Sword: +3% critical and parry chance", bonus: { critChance: 0.03, parryChance: 0.03 }, cost: 2 },
-    { id: "clubMastery", name: "Club Mastery", text: "Club: +4% stun chance", bonus: { stunChance: 0.04 }, cost: 2 }
+    { id: "clubMastery", name: "Club Mastery", text: "Club: +3% stun chance", bonus: { stunChance: 0.03 }, cost: 1 },
+    { id: "executioner", name: "Executioner", text: "Sword: +8% critical damage", bonus: { critPower: 0.08 }, cost: 1 },
+    { id: "concussion", name: "Concussion", text: "Club: hits deal +4% damage", bonus: { clubPower: 0.04 }, cost: 1 }
   ],
 
   milestones: [
@@ -70,7 +81,8 @@ classes.barbarian = {
       perks: [
         { id: "butcher", name: "Butcher", text: "Axe: +2 bleed stacks", bonus: { bleedStacks: 2 } },
         { id: "duelist", name: "Duelist", text: "Sword: +10% critical and parry chance", bonus: { critChance: 0.1, parryChance: 0.1 } },
-        { id: "skullcracker", name: "Skullcracker", text: "Club: +15% stun chance", bonus: { stunChance: 0.15 } }
+        { id: "skullcracker", name: "Skullcracker", text: "Club: +15% stun chance", bonus: { stunChance: 0.15 } },
+        { id: "bloodrager", name: "Bloodrager", text: "+40% damage while below half health", bonus: { rage: 0.4 } }
       ]
     },
     {
@@ -107,7 +119,8 @@ classes.barbarian = {
     { id: "vampireFang", name: "Vampire Fang", text: "+8% lifesteal", bonus: { lifesteal: 0.08 } },
     { id: "serratedEdge", name: "Serrated Edge", text: "Axe: +1 bleed stack", bonus: { bleedStacks: 1 } },
     { id: "duelistsGlove", name: "Duelist's Glove", text: "Sword: +5% critical and parry chance", bonus: { critChance: 0.05, parryChance: 0.05 } },
-    { id: "giantsKnuckle", name: "Giant's Knuckle", text: "Club: +10% stun chance", bonus: { stunChance: 0.1 } }
+    { id: "giantsKnuckle", name: "Giant's Knuckle", text: "Club: +10% stun chance", bonus: { stunChance: 0.1 } },
+    { id: "berserkersTorc", name: "Berserker's Torc", text: "+25% damage while below half health", bonus: { rage: 0.25 } }
   ],
 
   // The functions below, which make the class fight its own way
@@ -132,13 +145,13 @@ function barbarianAttack() {
 
   // Critical chance past 100% adds to the critical damage instead
   if (weapon === "sword" && chance(totalBonus("critChance"))) {
-    damage = damage * (2 + overflow("critChance", 1));
+    damage = damage * (2 + totalBonus("critPower") + overflow("critChance", 1));
     say("Critical hit!");
   }
 
   // Stun chance past its limit makes the club hit harder instead
   if (weapon === "club") {
-    damage = damage * (clubHit + overflow("stunChance", maxChance));
+    damage = damage * (clubHit + totalBonus("clubPower") + overflow("stunChance", maxChance));
   }
 
   // Barbarians heal from the damage they deal
@@ -147,7 +160,11 @@ function barbarianAttack() {
 
   if (weapon === "axe") {
     addDotStack(totalBonus("bleedStacks"));
-    monsterHp = monsterHp - dotDamage();
+
+    // The bleeding feeds lifesteal as well
+    let bled = dotDamage();
+    monsterHp = monsterHp - bled;
+    healPlayer(bled * totalBonus("lifesteal"));
   }
 
   if (weapon === "club") {
@@ -185,19 +202,18 @@ function barbarianDotPerStack() {
 
 // The class's special line in the "You" panel
 function barbarianStatLine() {
-  return "Lifesteal: " + percent(totalBonus("lifesteal"));
+  return "Lifesteal: " + percent(totalBonus("lifesteal")) + ". Rage: +" + percent(totalBonus("rage")) + " damage while below half health";
 }
 
 // The description under the weapon
 function barbarianGearInfo() {
   if (weapon === "axe") {
-    return "Axe: every hit makes the enemy bleed more each turn (up to " + totalBonus("bleedStacks") + " stacks).";
+    return "Axe: every hit makes the enemy bleed more each turn (up to " + totalBonus("bleedStacks") + " stacks). The bleeding heals you through lifesteal too.";
   }
   if (weapon === "sword") {
-    return "Sword: " + percent(Math.min(1, totalBonus("critChance"))) + " chance to deal double damage and " + percent(cappedChance("parryChance")) + " chance to parry an attack."
-      + overflowNote(overflow("critChance", 1), "critical damage")
+    return "Sword: " + percent(Math.min(1, totalBonus("critChance"))) + " chance of a critical hit for x" + (2 + totalBonus("critPower") + overflow("critChance", 1)).toFixed(1) + " damage and " + percent(cappedChance("parryChance")) + " chance to parry an attack."
       + overflowNote(overflow("parryChance", maxChance), "damage resistance");
   }
-  return "Club: hits " + percent(clubHit - 1) + " harder, breaks 1 enemy armor every hit and has a " + percent(cappedChance("stunChance")) + " chance to stun."
+  return "Club: hits " + percent(clubHit - 1 + totalBonus("clubPower")) + " harder, breaks 1 enemy armor every hit and has a " + percent(cappedChance("stunChance")) + " chance to stun."
     + overflowNote(overflow("stunChance", maxChance), "damage");
 }
