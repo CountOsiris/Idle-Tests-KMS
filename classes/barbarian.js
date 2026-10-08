@@ -100,21 +100,32 @@ classes.barbarian = {
       floor: 50,
       perks: [
         { id: "juggernaut", name: "Juggernaut", text: "+50% health and +5 armor", bonus: { healthPercent: 0.5, armor: 5 } },
-        { id: "berserker", name: "Berserker", text: "+30% attack and +10% lifesteal", bonus: { attackPercent: 0.3, lifesteal: 0.1 } }
+        { id: "berserker", name: "Berserker", text: "+30% attack and +10% lifesteal", bonus: { attackPercent: 0.3, lifesteal: 0.1 } },
+        { id: "flayer", name: "Flayer", text: "Axe: +15% attack, +3 bleed stacks and bleeding deals +30% damage", bonus: { attackPercent: 0.15, bleedStacks: 3, dotPower: 0.3 } },
+        { id: "swordmaster", name: "Swordmaster", text: "Sword: +15% attack, +10% critical and parry chance, +30% critical damage", bonus: { attackPercent: 0.15, critChance: 0.1, parryChance: 0.1, critPower: 0.3 } },
+        { id: "bonebreaker", name: "Bonebreaker", text: "Club: +15% attack, +10% stun chance and hits deal +20% damage", bonus: { attackPercent: 0.15, stunChance: 0.1, clubPower: 0.2 } },
+        { id: "frenzy", name: "Frenzy", text: "+15% attack and +60% damage while below half health", bonus: { attackPercent: 0.15, rage: 0.6 } }
       ]
     },
     {
       floor: 75,
       perks: [
         { id: "warlord", name: "Warlord", text: "+50% attack", bonus: { attackPercent: 0.5 } },
-        { id: "unbreakable", name: "Unbreakable", text: "+100% health", bonus: { healthPercent: 1 } }
+        { id: "unbreakable", name: "Unbreakable", text: "+100% health", bonus: { healthPercent: 1 } },
+        { id: "bloodletter", name: "Bloodletter", text: "Axe: +25% attack, +4 bleed stacks and bleeding deals +50% damage", bonus: { attackPercent: 0.25, bleedStacks: 4, dotPower: 0.5 } },
+        { id: "blademaster", name: "Blademaster", text: "Sword: +25% attack, +10% critical and parry chance, +60% critical damage", bonus: { attackPercent: 0.25, critChance: 0.1, parryChance: 0.1, critPower: 0.6 } },
+        { id: "earthshaker", name: "Earthshaker", text: "Club: +25% attack, +10% stun chance and hits deal +40% damage", bonus: { attackPercent: 0.25, stunChance: 0.1, clubPower: 0.4 } },
+        { id: "bloodrage", name: "Blood Rage", text: "+25% attack and +100% damage while below half health", bonus: { attackPercent: 0.25, rage: 1 } }
       ]
     },
     {
       floor: 100,
       perks: [
         { id: "bloodGod", name: "Blood God", text: "+15% lifesteal and +20% rage damage", bonus: { lifesteal: 0.15, rage: 0.2 } },
-        { id: "titan", name: "Titan", text: "+150% health and +10 armor", bonus: { healthPercent: 1.5, armor: 10 } }
+        { id: "titan", name: "Titan", text: "+150% health and +10 armor", bonus: { healthPercent: 1.5, armor: 10 } },
+        { id: "reaver", name: "Reaver", text: "Axe: +35% attack, +6 bleed stacks and bleeding deals +80% damage", bonus: { attackPercent: 0.35, bleedStacks: 6, dotPower: 0.8 } },
+        { id: "swordSaint", name: "Sword Saint", text: "Sword: +35% attack, +15% critical and parry chance, +100% critical damage", bonus: { attackPercent: 0.35, critChance: 0.15, parryChance: 0.15, critPower: 1 } },
+        { id: "worldbreaker", name: "Worldbreaker", text: "Club: +35% attack, +15% stun chance and hits deal +60% damage", bonus: { attackPercent: 0.35, stunChance: 0.15, clubPower: 0.6 } }
       ]
     }
   ],

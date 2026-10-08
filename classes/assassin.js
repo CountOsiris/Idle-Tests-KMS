@@ -90,21 +90,31 @@ classes.assassin = {
       floor: 50,
       perks: [
         { id: "nightStalker", name: "Night Stalker", text: "+24% attack and +10% dodge", bonus: { attackPercent: 0.24, dodge: 0.1 } },
-        { id: "deathMark", name: "Death Mark", text: "+50% ambush damage and +40% health", bonus: { ambush: 0.5, healthPercent: 0.4 } }
+        { id: "deathMark", name: "Death Mark", text: "+50% ambush damage and +40% health", bonus: { ambush: 0.5, healthPercent: 0.4 } },
+        { id: "plaguebringer", name: "Plaguebringer", text: "Venom Dagger: +15% attack, +3 poison stacks and poison deals +30% damage", bonus: { attackPercent: 0.15, poisonStacks: 3, dotPower: 0.3 } },
+        { id: "throatCutter", name: "Throat Cutter", text: "Stiletto: +15% attack, +8% critical chance and +40% critical damage", bonus: { attackPercent: 0.15, critChance: 0.08, critPower: 0.4 } },
+        { id: "shade", name: "Shade", text: "Shadow Blade: +15% attack and +60% damage after a dodge", bonus: { attackPercent: 0.15, counter: 0.6 } }
       ]
     },
     {
       floor: 75,
       perks: [
         { id: "killer", name: "Killer", text: "+44% attack", bonus: { attackPercent: 0.44 } },
-        { id: "survivor", name: "Survivor", text: "+90% health", bonus: { healthPercent: 0.9 } }
+        { id: "survivor", name: "Survivor", text: "+90% health", bonus: { healthPercent: 0.9 } },
+        { id: "venomancer", name: "Venomancer", text: "Venom Dagger: +25% attack, +4 poison stacks and poison deals +50% damage", bonus: { attackPercent: 0.25, poisonStacks: 4, dotPower: 0.5 } },
+        { id: "heartseeker", name: "Heartseeker", text: "Stiletto: +25% attack, +10% critical chance and +70% critical damage", bonus: { attackPercent: 0.25, critChance: 0.1, critPower: 0.7 } },
+        { id: "nightblade", name: "Nightblade", text: "Shadow Blade: +25% attack, +8% dodge and +100% damage after a dodge", bonus: { attackPercent: 0.25, dodge: 0.08, counter: 1 } },
+        { id: "ghost", name: "Ghost", text: "+25% attack, +80% ambush damage and +5% chance each turn to hide again", bonus: { attackPercent: 0.25, ambush: 0.8, vanishChance: 0.05 } }
       ]
     },
     {
       floor: 100,
       perks: [
         { id: "shadowMaster", name: "Shadow Master", text: "+40% attack and +10% dodge", bonus: { attackPercent: 0.4, dodge: 0.1 } },
-        { id: "grimReaper", name: "Grim Reaper", text: "+100% ambush damage and +125% health", bonus: { ambush: 1, healthPercent: 1.25 } }
+        { id: "grimReaper", name: "Grim Reaper", text: "+100% ambush damage and +125% health", bonus: { ambush: 1, healthPercent: 1.25 } },
+        { id: "blightlord", name: "Blightlord", text: "Venom Dagger: +35% attack, +6 poison stacks and poison deals +80% damage", bonus: { attackPercent: 0.35, poisonStacks: 6, dotPower: 0.8 } },
+        { id: "kingslayer", name: "Kingslayer", text: "Stiletto: +35% attack, +12% critical chance and +110% critical damage", bonus: { attackPercent: 0.35, critChance: 0.12, critPower: 1.1 } },
+        { id: "umbra", name: "Umbra", text: "Shadow Blade: +35% attack and +150% damage after a dodge", bonus: { attackPercent: 0.35, counter: 1.5 } }
       ]
     }
   ],

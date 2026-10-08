@@ -94,21 +94,30 @@ classes.warlock = {
       floor: 50,
       perks: [
         { id: "cataclysm", name: "Cataclysm", text: "+40% attack and +50% critical damage", bonus: { attackPercent: 0.4, critPower: 0.5 } },
-        { id: "lichForm", name: "Lich Form", text: "+50% health and +5 armor", bonus: { healthPercent: 0.5, armor: 5 } }
+        { id: "lichForm", name: "Lich Form", text: "+50% health and +5 armor", bonus: { healthPercent: 0.5, armor: 5 } },
+        { id: "hungeringVoid", name: "Hungering Void", text: "Void Tome: +20% attack, +5 void power and every spell heals 0.5% more of your health", bonus: { attackPercent: 0.2, voidRend: 0.05, voidHeal: 0.005 } },
+        { id: "runicStorm", name: "Runic Storm", text: "Rune Tome: +20% attack, +15% chance to cast twice and echoes deal +30% damage", bonus: { attackPercent: 0.2, echoChance: 0.15, echoPower: 0.3 } },
+        { id: "soulCollector", name: "Soul Collector", text: "+20% attack, +30% damage for every 100 souls and +25% chance of an extra soul", bonus: { attackPercent: 0.2, soulPower: 0.3, soulChance: 0.25 } }
       ]
     },
     {
       floor: 75,
       perks: [
         { id: "arcaneMight", name: "Arcane Might", text: "+60% attack", bonus: { attackPercent: 0.6 } },
-        { id: "arcaneBarrier", name: "Arcane Barrier", text: "+90% health", bonus: { healthPercent: 0.9 } }
+        { id: "arcaneBarrier", name: "Arcane Barrier", text: "+90% health", bonus: { healthPercent: 0.9 } },
+        { id: "spellblade", name: "Spellblade", text: "Arcane Tome: +35% attack, +10% critical chance and +80% critical damage", bonus: { attackPercent: 0.35, critChance: 0.1, critPower: 0.8 } },
+        { id: "abyss", name: "Abyss", text: "Void Tome: +35% attack and +8 void power", bonus: { attackPercent: 0.35, voidRend: 0.08 } },
+        { id: "glyphmaster", name: "Glyphmaster", text: "Rune Tome: +35% attack, +20% chance to cast twice and echoes deal +50% damage", bonus: { attackPercent: 0.35, echoChance: 0.2, echoPower: 0.5 } },
+        { id: "soulEater", name: "Soul Eater", text: "+35% attack and +50% damage for every 100 souls", bonus: { attackPercent: 0.35, soulPower: 0.5 } }
       ]
     },
     {
       floor: 100,
       perks: [
         { id: "annihilation", name: "Annihilation", text: "+40% attack and +100% critical damage", bonus: { attackPercent: 0.4, critPower: 1 } },
-        { id: "voidLord", name: "Void Lord", text: "+125% health and Void Tome: +6 void power", bonus: { healthPercent: 1.25, voidRend: 0.06 } }
+        { id: "voidLord", name: "Void Lord", text: "+125% health and Void Tome: +6 void power", bonus: { healthPercent: 1.25, voidRend: 0.06 } },
+        { id: "runeLord", name: "Rune Lord", text: "Rune Tome: +45% attack, +30% chance to cast twice and echoes deal +80% damage", bonus: { attackPercent: 0.45, echoChance: 0.3, echoPower: 0.8 } },
+        { id: "deathsHarvest", name: "Death's Harvest", text: "+45% attack, +80% damage for every 100 souls and +50% chance of an extra soul", bonus: { attackPercent: 0.45, soulPower: 0.8, soulChance: 0.5 } }
       ]
     }
   ],

@@ -9,6 +9,9 @@
 //   quickShot    shortbow: chance of one more arrow               (0.1 means +10%;
 //                every full 1 is an arrow for certain)
 //   arrowPower   shortbow: extra damage of every arrow            (0.01 means +1%)
+//   bodkin       shortbow: share of the enemy's armor its arrows
+//                ignore. It can never ignore all of it.           (0.25 means a quarter)
+//   huntersMark  extra damage against bosses and rare monsters    (0.04 means +4%)
 //   boltPower    crossbow: extra damage of every bolt             (0.1 means +10%)
 //   boltPierce   crossbow: penetration its bolts have             (0.1 means +10%)
 //
@@ -44,16 +47,18 @@ classes.ranger = {
     { id: "quickDraw", name: "Quick Draw", text: "+3 attack", bonus: { attack: 3 } },
     { id: "eagleEye", name: "Eagle Eye", text: "Longbow: +5% critical shot chance", bonus: { aimChance: 0.05 } },
     { id: "rapidFire", name: "Rapid Fire", text: "Shortbow: +10% chance of an extra arrow", bonus: { quickShot: 0.1 } },
-    { id: "heavyBolts", name: "Heavy Bolts", text: "Crossbow: bolts deal +8% damage", bonus: { boltPower: 0.08 } }
+    { id: "heavyBolts", name: "Heavy Bolts", text: "Crossbow: bolts deal +8% damage", bonus: { boltPower: 0.08 } },
+    { id: "steadyHand", name: "Steady Hand", text: "Longbow: critical shots deal +15% damage", bonus: { aimPower: 0.15 } },
+    { id: "bodkinPoints", name: "Bodkin Points", text: "Shortbow: arrows ignore more of the enemy's armor", bonus: { bodkin: 0.15 } }
   ],
 
   // One skill for each bow
   skills: [
     { id: "marksmanship", name: "Marksmanship", text: "+3% attack", bonus: { attackPercent: 0.03 }, cost: 1 },
     { id: "endurance", name: "Endurance", text: "+3% health", bonus: { healthPercent: 0.03 }, cost: 1 },
-    { id: "openingVolley", name: "Opening Volley", text: "The enemy misses 1 more turn at the start of a fight", bonus: { firstStrike: 1 }, cost: 5 },
-    { id: "longbowMastery", name: "Longbow Mastery", text: "Longbow: arrows deal +4% damage and +0.5% critical shot chance", bonus: { heavyShot: 0.04, aimChance: 0.005 }, cost: 1 },
-    { id: "shortbowMastery", name: "Shortbow Mastery", text: "Shortbow: +3% chance of an extra arrow and arrows deal +1% damage", bonus: { quickShot: 0.03, arrowPower: 0.01 }, cost: 1 },
+    { id: "huntersMark", name: "Hunter's Mark", text: "+4% damage against bosses and rare monsters", bonus: { huntersMark: 0.04 }, cost: 1 },
+    { id: "longbowMastery", name: "Longbow Mastery", text: "Longbow: arrows deal +4% damage and critical shots deal +3% more", bonus: { heavyShot: 0.04, aimPower: 0.03 }, cost: 1 },
+    { id: "shortbowMastery", name: "Shortbow Mastery", text: "Shortbow: +3% chance of an extra arrow, arrows deal +1% damage and ignore a little more armor", bonus: { quickShot: 0.03, arrowPower: 0.01, bodkin: 0.02 }, cost: 1 },
     { id: "crossbowMastery", name: "Crossbow Mastery", text: "Crossbow: bolts deal +3% damage and gain +10% penetration", bonus: { boltPower: 0.03, boltPierce: 0.1 }, cost: 1 }
   ],
 
@@ -90,28 +95,40 @@ classes.ranger = {
     {
       floor: 50,
       perks: [
-        { id: "hawksVolley", name: "Hawk's Volley", text: "+30% attack and the enemy misses 1 more turn", bonus: { attackPercent: 0.3, firstStrike: 1 } },
-        { id: "forestGuardian", name: "Forest Guardian", text: "+50% health and +4 armor", bonus: { healthPercent: 0.5, armor: 4 } }
+        { id: "hawksVolley", name: "Opening Volley", text: "+30% attack and the enemy misses 1 more turn", bonus: { attackPercent: 0.3, firstStrike: 1 } },
+        { id: "forestGuardian", name: "Forest Guardian", text: "+50% health and +4 armor", bonus: { healthPercent: 0.5, armor: 4 } },
+        { id: "longshot", name: "Longshot", text: "Longbow: +20% attack and critical shots deal +60% damage", bonus: { attackPercent: 0.2, aimPower: 0.6 } },
+        { id: "volleyer", name: "Volleyer", text: "Shortbow: +20% attack, +25% chance of an extra arrow, and arrows ignore more armor", bonus: { attackPercent: 0.2, quickShot: 0.25, bodkin: 0.5 } },
+        { id: "siegeArcher", name: "Siege Archer", text: "Crossbow: +20% attack, bolts deal +25% damage and gain +100% penetration", bonus: { attackPercent: 0.2, boltPower: 0.25, boltPierce: 1 } }
       ]
     },
     {
       floor: 75,
       perks: [
         { id: "deadeye", name: "Deadeye", text: "+50% attack", bonus: { attackPercent: 0.5 } },
-        { id: "wildHeart", name: "Wild Heart", text: "+100% health", bonus: { healthPercent: 1 } }
+        { id: "wildHeart", name: "Wild Heart", text: "+100% health", bonus: { healthPercent: 1 } },
+        { id: "eagleOfTheWood", name: "Eagle of the Wood", text: "Longbow: +30% attack, +10% critical shot chance and critical shots deal +100% damage", bonus: { attackPercent: 0.3, aimChance: 0.1, aimPower: 1 } },
+        { id: "hailOfArrows", name: "Hail of Arrows", text: "Shortbow: +30% attack and +60% chance of an extra arrow", bonus: { attackPercent: 0.3, quickShot: 0.6 } },
+        { id: "ironbreaker", name: "Ironbreaker", text: "Crossbow: +30% attack, bolts deal +45% damage and gain +150% penetration", bonus: { attackPercent: 0.3, boltPower: 0.45, boltPierce: 1.5 } }
       ]
     },
     {
       floor: 100,
       perks: [
         { id: "stormOfArrows", name: "Storm of Arrows", text: "+60% attack and the enemy misses 1 more turn", bonus: { attackPercent: 0.6, firstStrike: 1 } },
-        { id: "spiritLord", name: "Warden of the Wood", text: "+125% health and +6 armor", bonus: { healthPercent: 1.25, armor: 6 } }
+        { id: "wardenOfTheWood", name: "Warden of the Wood", text: "+125% health and +6 armor", bonus: { healthPercent: 1.25, armor: 6 } },
+        { id: "oneShot", name: "One Shot", text: "Longbow: +40% attack, +15% critical shot chance and critical shots deal +160% damage", bonus: { attackPercent: 0.4, aimChance: 0.15, aimPower: 1.6 } },
+        { id: "arrowStorm", name: "Arrow Storm", text: "Shortbow: +40% attack, +100% chance of an extra arrow, and arrows ignore far more armor", bonus: { attackPercent: 0.4, quickShot: 1, bodkin: 1 } },
+        { id: "siegeMaster", name: "Siege Master", text: "Crossbow: +40% attack, bolts deal +70% damage and gain +250% penetration", bonus: { attackPercent: 0.4, boltPower: 0.7, boltPierce: 2.5 } }
       ]
     }
   ],
 
   relics: [
-    { id: "hawkFeather", name: "Hawk Feather", text: "Longbow: +10% critical shot chance", bonus: { aimChance: 0.1 } },
+    { id: "hawkFeather", name: "Goose Feather Fletching", text: "Longbow: +10% critical shot chance", bonus: { aimChance: 0.1 } },
+    { id: "yewStave", name: "Yew Stave", text: "Longbow: critical shots deal +30% damage", bonus: { aimPower: 0.3 } },
+    { id: "bodkinQuiver", name: "Bodkin Quiver", text: "Shortbow: arrows ignore more of the enemy's armor", bonus: { bodkin: 0.3 } },
+    { id: "windlass", name: "Windlass", text: "Crossbow: bolts gain +100% penetration", bonus: { boltPierce: 1 } },
     { id: "fletchersGlove", name: "Fletcher's Glove", text: "Shortbow: +15% chance of an extra arrow", bonus: { quickShot: 0.15 } },
     { id: "steelBolts", name: "Steel Bolts", text: "Crossbow: bolts deal +12% damage", bonus: { boltPower: 0.12 } }
   ],
@@ -147,6 +164,12 @@ function rangerPenetration() {
   return 0;
 }
 
+// Shortbow: how much of the enemy's armor still counts against an arrow (1 is all of it).
+// Bodkin always takes more away, but less and less, so some armor always remains.
+function bodkinArmorShare() {
+  return 1 / (1 + totalBonus("bodkin"));
+}
+
 // How many more turns the enemy is still too far away to attack
 let rangerFreeTurns = 0;
 
@@ -172,6 +195,11 @@ function rangerAttack() {
   }
   let damage = playerAttack * opening;
 
+  // Hunter's Mark: more damage against the things worth hunting
+  if (encounterType === "boss" || monsterIsRare) {
+    damage = damage * (1 + totalBonus("huntersMark"));
+  }
+
   // LONGBOW: one heavy arrow every second turn. The turn between is spent drawing.
   // Critical chance past 100% adds to the critical damage instead.
   if (weapon === "longbow") {
@@ -196,7 +224,7 @@ function rangerAttack() {
       arrows = arrows + 1;
     }
     for (let i = 0; i < arrows; i++) {
-      hitMonster(damage * (shortbowHit + totalBonus("arrowPower")), "piercing");
+      hitMonster(damage * (shortbowHit + totalBonus("arrowPower")), "piercing", bodkinArmorShare());
     }
   }
 
@@ -217,7 +245,8 @@ function rangerDotPerStack() {
 
 function rangerStatLine() {
   return "Range: the enemy misses its first " + Math.min(maxFreeTurns, totalBonus("firstStrike")) + " turn(s) of every fight."
-    + overflowNote(overflow("firstStrike", maxFreeTurns) * extraOpeningDamage, "damage on those turns");
+    + overflowNote(overflow("firstStrike", maxFreeTurns) * extraOpeningDamage, "damage on those turns")
+    + " Hunter's Mark: +" + percent(totalBonus("huntersMark")) + " damage against bosses and rare monsters.";
 }
 
 function rangerGearInfo() {
@@ -227,7 +256,7 @@ function rangerGearInfo() {
   }
   if (weapon === "shortbow") {
     return "Shortbow: fast and light. " + shortbowArrows + " arrows every turn for " + percent(shortbowHit + totalBonus("arrowPower")) + " of your attack each, and a "
-      + percent(totalBonus("quickShot")) + " chance of another. Armor is taken off every arrow.";
+      + percent(totalBonus("quickShot")) + " chance of another. " + percent(bodkinArmorShare()) + " of the enemy's armor is taken off every arrow.";
   }
   return "Crossbow: punches through. One bolt a turn for " + percent(crossbowHit + totalBonus("boltPower")) + " of your attack that ignores armor, and "
     + percent(totalBonus("boltPierce")) + " penetration: what a monster resists is cut to " + percent(1 / (1 + totalBonus("boltPierce") + totalBonus("penetration") + fameAdd("penetration"))) + " of its usual strength.";

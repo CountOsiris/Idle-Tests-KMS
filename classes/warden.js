@@ -100,21 +100,33 @@ classes.warden = {
       floor: 50,
       perks: [
         { id: "bastion", name: "Bastion", text: "+60% health and +6 armor", bonus: { healthPercent: 0.6, armor: 6 } },
-        { id: "retribution", name: "Retribution", text: "+25% attack and +25% shield damage", bonus: { attackPercent: 0.25, shieldPower: 0.25 } }
+        { id: "retribution", name: "Retribution", text: "+25% attack and +25% shield damage", bonus: { attackPercent: 0.25, shieldPower: 0.25 } },
+        { id: "thornwall", name: "Thornwall", text: "Spiked: +40% reflect and +30% shield damage", bonus: { reflect: 0.4, shieldPower: 0.3 } },
+        { id: "phalanxCaptain", name: "Phalanx Captain", text: "Tower: +15% attack, +8% block chance and +30% spear damage", bonus: { attackPercent: 0.15, blockChance: 0.08, spearPower: 0.3 } },
+        { id: "razorDisc", name: "Razor Disc", text: "Bladed: +20% shield damage, and throws hit for one and a half times your armor more", bonus: { shieldPower: 0.2, throwPower: 1.5 } },
+        { id: "bloodDebt", name: "Blood Debt", text: "+30% vengeance, and +30% more against bosses and rare monsters", bonus: { vengeance: 0.3, spite: 0.3 } }
       ]
     },
     {
       floor: 75,
       perks: [
         { id: "fortress", name: "Fortress", text: "+125% health", bonus: { healthPercent: 1.25 } },
-        { id: "mirrorWall", name: "Mirror Wall", text: "+40% attack and +40% shield damage", bonus: { attackPercent: 0.4, shieldPower: 0.4 } }
+        { id: "mirrorWall", name: "Mirror Wall", text: "+40% attack and +40% shield damage", bonus: { attackPercent: 0.4, shieldPower: 0.4 } },
+        { id: "ironBramble", name: "Iron Bramble", text: "Spiked: +60% reflect and +50% shield damage", bonus: { reflect: 0.6, shieldPower: 0.5 } },
+        { id: "spearWall", name: "Spear Wall", text: "Tower: +25% attack, +10% block chance and +50% spear damage", bonus: { attackPercent: 0.25, blockChance: 0.1, spearPower: 0.5 } },
+        { id: "whirlingEdge", name: "Whirling Edge", text: "Bladed: +40% shield damage, and throws hit for two and a half times your armor more", bonus: { shieldPower: 0.4, throwPower: 2.5 } },
+        { id: "unforgiving", name: "Unforgiving", text: "+50% vengeance, and +50% more against bosses and rare monsters", bonus: { vengeance: 0.5, spite: 0.5 } }
       ]
     },
     {
       floor: 100,
       perks: [
         { id: "unyielding", name: "Unyielding", text: "+100% health and +12 armor", bonus: { healthPercent: 1, armor: 12 } },
-        { id: "vengeance", name: "Vengeance", text: "+50% attack and +50% shield damage", bonus: { attackPercent: 0.5, shieldPower: 0.5 } }
+        { id: "vengeance", name: "Vengeance", text: "+50% attack and +50% shield damage", bonus: { attackPercent: 0.5, shieldPower: 0.5 } },
+        { id: "crownOfThorns", name: "Crown of Thorns", text: "Spiked: +90% reflect and +70% shield damage", bonus: { reflect: 0.9, shieldPower: 0.7 } },
+        { id: "lastLine", name: "Last Line", text: "Tower: +35% attack, +12% block chance and +80% spear damage", bonus: { attackPercent: 0.35, blockChance: 0.12, spearPower: 0.8 } },
+        { id: "stormOfSteel", name: "Storm of Steel", text: "Bladed: +60% shield damage, and throws hit for four times your armor more", bonus: { shieldPower: 0.6, throwPower: 4 } },
+        { id: "reckoning", name: "Reckoning", text: "+80% vengeance, and +80% more against bosses and rare monsters", bonus: { vengeance: 0.8, spite: 0.8 } }
       ]
     }
   ],

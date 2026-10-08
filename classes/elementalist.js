@@ -102,21 +102,33 @@ classes.elementalist = {
       floor: 50,
       perks: [
         { id: "avatarOfStorms", name: "Avatar of Storms", text: "+36% attack", bonus: { attackPercent: 0.36 } },
-        { id: "avatarOfStone", name: "Avatar of Stone", text: "+55% health and +5 armor", bonus: { healthPercent: 0.55, armor: 5 } }
+        { id: "avatarOfStone", name: "Avatar of Stone", text: "+55% health and +5 armor", bonus: { healthPercent: 0.55, armor: 5 } },
+        { id: "inferno", name: "Inferno", text: "Fire: +15% attack, +3 burn stacks and burning deals +30% damage", bonus: { attackPercent: 0.15, burnStacks: 3, dotPower: 0.3 } },
+        { id: "glacier", name: "Glacier", text: "Ice: +15% attack, +8% critical chance and +50% critical damage", bonus: { attackPercent: 0.15, critChance: 0.08, critPower: 0.5 } },
+        { id: "tempest", name: "Tempest", text: "Lightning: +15% attack, +40% chance of an extra bolt and bolts deal +5% damage", bonus: { attackPercent: 0.15, extraBolts: 0.4, boltPower: 0.05 } },
+        { id: "mountain", name: "Mountain", text: "Earth: +15% attack, boulders deal +60% damage and +6% stun chance", bonus: { attackPercent: 0.15, crush: 0.6, stunChance: 0.06 } }
       ]
     },
     {
       floor: 75,
       perks: [
         { id: "elementalFury", name: "Elemental Fury", text: "+50% attack", bonus: { attackPercent: 0.5 } },
-        { id: "elementalShield", name: "Elemental Shield", text: "+100% health", bonus: { healthPercent: 1 } }
+        { id: "elementalShield", name: "Elemental Shield", text: "+100% health", bonus: { healthPercent: 1 } },
+        { id: "firestorm", name: "Firestorm", text: "Fire: +25% attack, +4 burn stacks and burning deals +50% damage", bonus: { attackPercent: 0.25, burnStacks: 4, dotPower: 0.5 } },
+        { id: "absoluteZero", name: "Absolute Zero", text: "Ice: +25% attack, +10% critical chance and +80% critical damage", bonus: { attackPercent: 0.25, critChance: 0.1, critPower: 0.8 } },
+        { id: "chainLightning", name: "Chain Lightning", text: "Lightning: +25% attack, +60% chance of an extra bolt and bolts deal +8% damage", bonus: { attackPercent: 0.25, extraBolts: 0.6, boltPower: 0.08 } },
+        { id: "avalanche", name: "Avalanche", text: "Earth: +25% attack, boulders deal +100% damage and +8% stun chance", bonus: { attackPercent: 0.25, crush: 1, stunChance: 0.08 } }
       ]
     },
     {
       floor: 100,
       perks: [
         { id: "masterOfElements", name: "Master of Elements", text: "+70% attack", bonus: { attackPercent: 0.7 } },
-        { id: "avatarOfTides", name: "Avatar of Tides", text: "+150% health and +6 armor", bonus: { healthPercent: 1.5, armor: 6 } }
+        { id: "avatarOfTides", name: "Avatar of Tides", text: "+150% health and +6 armor", bonus: { healthPercent: 1.5, armor: 6 } },
+        { id: "phoenixFlame", name: "Phoenix Flame", text: "Fire: +35% attack, +6 burn stacks and burning deals +80% damage", bonus: { attackPercent: 0.35, burnStacks: 6, dotPower: 0.8 } },
+        { id: "iceAge", name: "Ice Age", text: "Ice: +35% attack, +12% critical chance and +120% critical damage", bonus: { attackPercent: 0.35, critChance: 0.12, critPower: 1.2 } },
+        { id: "thunderGod", name: "Thunder God", text: "Lightning: +35% attack, +100% chance of an extra bolt and bolts deal +12% damage", bonus: { attackPercent: 0.35, extraBolts: 1, boltPower: 0.12 } },
+        { id: "earthquake", name: "Earthquake", text: "Earth: +35% attack, boulders deal +160% damage and +10% stun chance", bonus: { attackPercent: 0.35, crush: 1.6, stunChance: 0.1 } }
       ]
     }
   ],

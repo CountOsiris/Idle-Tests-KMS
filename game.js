@@ -223,14 +223,20 @@ function typeMultiplier(type) {
 
 // A normal hit: the monster's armor is taken off it.
 // "type" is the damage type, for example "slashing".
-function hitMonster(damage, type) {
+// "armorShare" can be left out. It is how much of the armor counts against this hit:
+// 1 is all of it, 0.5 is half (for a hit that pierces armor).
+function hitMonster(damage, type, armorShare) {
+  if (armorShare === undefined) {
+    armorShare = 1;
+  }
+
   // A weapon swing can miss a flying monster. Arrows and spells cannot.
   if (monsterFlying && currentClass().ranged !== true && chance(flyingMissChance)) {
     missedHits = missedHits + 1;
     return 0;
   }
 
-  damage = Math.max(1, Math.round(damage * typeMultiplier(type)) - monsterArmor);
+  damage = Math.max(1, Math.round(damage * typeMultiplier(type)) - Math.round(monsterArmor * armorShare));
   monsterHp = monsterHp - damage;
   return damage;
 }

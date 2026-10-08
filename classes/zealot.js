@@ -91,21 +91,31 @@ classes.zealot = {
       floor: 50,
       perks: [
         { id: "avenger", name: "Avenger", text: "+30% attack and +30% holy damage", bonus: { attackPercent: 0.3, smite: 0.3 } },
-        { id: "saint", name: "Saint", text: "+50% health and +2% healing every turn", bonus: { healthPercent: 0.5, devotion: 0.02 } }
+        { id: "saint", name: "Saint", text: "+50% health and +2% healing every turn", bonus: { healthPercent: 0.5, devotion: 0.02 } },
+        { id: "bulwarkOfFaith", name: "Bulwark of Faith", text: "Mace and Shield: +15% attack, +8% block chance, and the blow after a block deals +40% of your attack more", bonus: { attackPercent: 0.15, blockChance: 0.08, counter: 0.4 } },
+        { id: "hierophant", name: "Hierophant", text: "Holy Tome: +15% attack, more healing every turn and wasted healing burns for +80% more", bonus: { attackPercent: 0.15, devotion: 0.01, sacredFlame: 0.8 } },
+        { id: "zealous", name: "Zealous", text: "+15% attack and +4% damage for every turn a fight lasts", bonus: { attackPercent: 0.15, crusade: 0.04 } }
       ]
     },
     {
       floor: 75,
       perks: [
         { id: "holyWrath", name: "Holy Wrath", text: "+44% attack", bonus: { attackPercent: 0.44 } },
-        { id: "divineHealth", name: "Divine Health", text: "+110% health", bonus: { healthPercent: 1.1 } }
+        { id: "divineHealth", name: "Divine Health", text: "+110% health", bonus: { healthPercent: 1.1 } },
+        { id: "inquisitor", name: "Inquisitor", text: "Holy Mace: +25% attack, +40% holy damage and every third hit deals +80% more", bonus: { attackPercent: 0.25, smite: 0.4, judgement: 0.8 } },
+        { id: "shieldOfTheFaithful", name: "Shield of the Faithful", text: "Mace and Shield: +25% attack, +10% block chance, and the blow after a block deals +70% of your attack more", bonus: { attackPercent: 0.25, blockChance: 0.1, counter: 0.7 } },
+        { id: "lightbringer", name: "Lightbringer", text: "Holy Tome: +25% attack and wasted healing burns for +120% more", bonus: { attackPercent: 0.25, sacredFlame: 1.2 } },
+        { id: "crusadeEternal", name: "Eternal Crusade", text: "+25% attack and +6% damage for every turn a fight lasts", bonus: { attackPercent: 0.25, crusade: 0.06 } }
       ]
     },
     {
       floor: 100,
       perks: [
         { id: "handOfGod", name: "Hand of God", text: "+60% attack and Holy Mace: +40% holy damage", bonus: { attackPercent: 0.6, smite: 0.4 } },
-        { id: "martyr", name: "Martyr", text: "+150% health and +2% healing every turn", bonus: { healthPercent: 1.5, devotion: 0.02 } }
+        { id: "martyr", name: "Martyr", text: "+150% health and +2% healing every turn", bonus: { healthPercent: 1.5, devotion: 0.02 } },
+        { id: "aegisOfHeaven", name: "Aegis of Heaven", text: "Mace and Shield: +35% attack, +12% block chance, and the blow after a block deals +110% of your attack more", bonus: { attackPercent: 0.35, blockChance: 0.12, counter: 1.1 } },
+        { id: "voiceOfGod", name: "Voice of God", text: "Holy Tome: +35% attack, more healing every turn and wasted healing burns for +200% more", bonus: { attackPercent: 0.35, devotion: 0.02, sacredFlame: 2 } },
+        { id: "lastCrusade", name: "Last Crusade", text: "+35% attack and +10% damage for every turn a fight lasts", bonus: { attackPercent: 0.35, crusade: 0.1 } }
       ]
     }
   ],
