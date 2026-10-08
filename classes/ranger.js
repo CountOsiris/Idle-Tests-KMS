@@ -63,7 +63,7 @@ classes.ranger = {
     { id: "longbowMastery", name: "Longbow Mastery", text: "Longbow: +1.5% aimed shot chance and aimed shots deal +3% damage", bonus: { aimChance: 0.015, aimPower: 0.03 }, cost: 1 },
     { id: "spiritMastery", name: "Spirit Mastery", text: "Spirit Bow: +1 spirit and spirits deal +8% damage", bonus: { spirits: 1, dotPower: 0.08 }, cost: 1 },
     { id: "bloomMastery", name: "Bloom Mastery", text: "Bloom Bow: more healing per shot and thorns deal +8% damage", bonus: { regrowth: 0.005, thornPower: 0.08 }, cost: 1 },
-    { id: "beastBond", name: "Beast Bond", text: "Your companion deals +10% damage, whichever it is. Companions grow with your level, not your attack", bonus: { bond: 0.1 }, cost: 1 },
+    { id: "beastBond", name: "Beast Bond", text: "Your companion deals +10% damage, whichever it is. Companions grow with your level and a little with your bow, not with your attack", bonus: { bond: 0.1 }, cost: 1 },
     { id: "instinct", name: "Animal Instinct", text: "Sharpens your companion's own trick: Wolf +4% chance to bite again, Bear +2% chance to take a hit for you, Hawk +2% dive chance", bonus: { packChance: 0.04, guardChance: 0.02, diveChance: 0.02 }, cost: 1 }
   ],
 
@@ -195,17 +195,19 @@ function bloomHealing() {
 // The numbers behind the companions. Change these to retune them.
 //
 // A companion has its OWN strength. It grows with your level and with Beast Bond,
-// and NOT with your attack: a beast tamer does not have to build attack as well.
+// and a little with the power of your bow, but NOT with your attack: a beast tamer
+// does not have to build attack as well.
 // (Whatever multiplies attack from outside a run, like the Might fame upgrade,
 // multiplies the companion too, so ascending makes it stronger like everything else.)
 const companionBase = 10;       // a companion's strength at level 1
 const companionPerLevel = 2;    // and what every level adds to it
+const companionBowShare = 0.5;  // how much of your bow's power it gains (0.5 means half)
 const wolfBite = 0.6;           // the wolf bites for this share of its strength every turn
 const bearMaul = 0.3;           // the bear mauls for this share of its strength every turn
 const hawkDive = 2;             // a hawk's dive hits for this many times its strength
 
 function companionStrength() {
-  let strength = companionBase + (level - 1) * companionPerLevel;
+  let strength = companionBase + (level - 1) * companionPerLevel + weaponPower * companionBowShare;
   return strength * (1 + totalBonus("bond")) * multiplier("attack");
 }
 
