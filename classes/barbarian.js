@@ -11,6 +11,12 @@
 //   stunChance   club stun chance                    (0.15 means +15%)
 //   clubPower    club: extra damage of every hit     (0.04 means +4%)
 //
+// Words a perk can MULTIPLY (see "multiply" in data.js). These are the big ones:
+//   bleed      all bleeding damage            (2 means bleeding deals double)
+//   swordCrit  the damage of a sword's critical hits
+//   club       every hit with a club
+//   rage       the bonus damage below half health
+//
 // The four ways to build a Barbarian:
 //   Bleeder   (axe)   - stacks bleeding, which also feeds lifesteal. Long fights and bosses.
 //   Duelist   (sword) - critical hits and parries. Burst damage and avoided hits.
@@ -99,35 +105,45 @@ classes.barbarian = {
     {
       floor: 50,
       perks: [
-        { id: "juggernaut", name: "Juggernaut", text: "+50% health and +5 armor", bonus: { healthPercent: 0.5, armor: 5 } },
+        { id: "juggernaut", name: "Juggernaut", text: "health x1.5 and +5 armor", bonus: { armor: 5 }, multiply: { health: 1.5 } },
         { id: "berserker", name: "Berserker", text: "+30% attack and +10% lifesteal", bonus: { attackPercent: 0.3, lifesteal: 0.1 } },
-        { id: "flayer", name: "Flayer", text: "Axe: +15% attack, +3 bleed stacks and bleeding deals +30% damage", bonus: { attackPercent: 0.15, bleedStacks: 3, dotPower: 0.3 } },
-        { id: "swordmaster", name: "Swordmaster", text: "Sword: +15% attack, +10% critical and parry chance, +30% critical damage", bonus: { attackPercent: 0.15, critChance: 0.1, parryChance: 0.1, critPower: 0.3 } },
-        { id: "bonebreaker", name: "Bonebreaker", text: "Club: +15% attack, +10% stun chance and hits deal +20% damage", bonus: { attackPercent: 0.15, stunChance: 0.1, clubPower: 0.2 } },
-        { id: "frenzy", name: "Frenzy", text: "+15% attack and +60% damage while below half health", bonus: { attackPercent: 0.15, rage: 0.6 } }
+        { id: "flayer", name: "Flayer", text: "Axe: bleeding deals x2.5 damage", multiply: { bleed: 2.5 } },
+        { id: "swordmaster", name: "Swordmaster", text: "Sword: critical hits deal x1.5 damage", multiply: { swordCrit: 1.5 } },
+        { id: "bonebreaker", name: "Bonebreaker", text: "Club: every hit deals x1.6 damage", multiply: { club: 1.6 } },
+        { id: "frenzy", name: "Frenzy", text: "Rage is TRIPLED: far more bonus damage below half health", multiply: { rage: 3 } }
       ]
     },
     {
       floor: 75,
       perks: [
         { id: "warlord", name: "Warlord", text: "+50% attack", bonus: { attackPercent: 0.5 } },
-        { id: "unbreakable", name: "Unbreakable", text: "+100% health", bonus: { healthPercent: 1 } },
+        { id: "unbreakable", name: "Unbreakable", text: "health x1.75", multiply: { health: 1.75 } },
         { id: "bloodletter", name: "Bloodletter", text: "Axe: +25% attack, +4 bleed stacks and bleeding deals +50% damage", bonus: { attackPercent: 0.25, bleedStacks: 4, dotPower: 0.5 } },
         { id: "blademaster", name: "Blademaster", text: "Sword: +25% attack, +10% critical and parry chance, +60% critical damage", bonus: { attackPercent: 0.25, critChance: 0.1, parryChance: 0.1, critPower: 0.6 } },
         { id: "earthshaker", name: "Earthshaker", text: "Club: +25% attack, +10% stun chance and hits deal +40% damage", bonus: { attackPercent: 0.25, stunChance: 0.1, clubPower: 0.4 } },
-        { id: "bloodrage", name: "Blood Rage", text: "+25% attack and +100% damage while below half health", bonus: { attackPercent: 0.25, rage: 1 } }
+        { id: "bloodrage", name: "Blood Rage", text: "+25% attack and +100% damage while below half health", bonus: { attackPercent: 0.25, rage: 1 } },
+        { id: "scarredHide", name: "Scarred Hide", text: "You take 25% less damage", multiply: { damageTaken: 0.75 } }
       ]
     },
     {
       floor: 100,
       perks: [
-        { id: "bloodGod", name: "Blood God", text: "+15% lifesteal and +20% rage damage", bonus: { lifesteal: 0.15, rage: 0.2 } },
-        { id: "titan", name: "Titan", text: "+150% health and +10 armor", bonus: { healthPercent: 1.5, armor: 10 } },
-        { id: "reaver", name: "Reaver", text: "Axe: +35% attack, +6 bleed stacks and bleeding deals +80% damage", bonus: { attackPercent: 0.35, bleedStacks: 6, dotPower: 0.8 } },
-        { id: "swordSaint", name: "Sword Saint", text: "Sword: +35% attack, +15% critical and parry chance, +100% critical damage", bonus: { attackPercent: 0.35, critChance: 0.15, parryChance: 0.15, critPower: 1 } },
-        { id: "worldbreaker", name: "Worldbreaker", text: "Club: +35% attack, +15% stun chance and hits deal +60% damage", bonus: { attackPercent: 0.35, stunChance: 0.15, clubPower: 0.6 } }
+        { id: "bloodGod", name: "Blood God", text: "+15% lifesteal, and rage is TRIPLED again", bonus: { lifesteal: 0.15 }, multiply: { rage: 3 } },
+        { id: "titan", name: "Titan", text: "health x2 and +10 armor", bonus: { armor: 10 }, multiply: { health: 2 } },
+        { id: "reaver", name: "Reaver", text: "Axe: bleeding deals x2.5 damage again", multiply: { bleed: 2.5 } },
+        { id: "swordSaint", name: "Sword Saint", text: "Sword: critical hits deal x1.5 damage again", multiply: { swordCrit: 1.5 } },
+        { id: "worldbreaker", name: "Worldbreaker", text: "Club: every hit deals x1.6 damage again", multiply: { club: 1.6 } }
       ]
     }
+  ],
+
+  // Extra choices at every BREAKTHROUGH (floor 150 and beyond), beside the ones every
+  // class has. One for each build: it multiplies that build's own damage again.
+  breakthroughs: [
+    { id: "deeperWounds", name: "Deeper Wounds", text: "Axe: bleeding x1.5", multiply: { bleed: 1.5 } },
+    { id: "keenerEdge", name: "Keener Edge", text: "Sword: critical hits x1.5", multiply: { swordCrit: 1.5 } },
+    { id: "heavierClub", name: "Heavier Club", text: "Club: hits x1.4", multiply: { club: 1.4 } },
+    { id: "redMist", name: "Red Mist", text: "Rage x1.5", multiply: { rage: 1.5 } }
   ],
 
   relics: [
@@ -167,18 +183,18 @@ function barbarianAttack() {
   let damage = playerAttack;
 
   if (playerHp < playerMaxHp / 2) {
-    damage = damage * (1 + totalBonus("rage"));
+    damage = damage * (1 + totalBonus("rage") * multiplier("rage"));
   }
 
   // Critical chance past 100% adds to the critical damage instead
   if (weapon === "sword" && chance(totalBonus("critChance"))) {
-    damage = damage * (2 + totalBonus("critPower") + overflow("critChance", 1));
+    damage = damage * (2 + totalBonus("critPower") + overflow("critChance", 1)) * multiplier("swordCrit");
     say("Critical hit!");
   }
 
   // Stun chance past its limit makes the club hit harder instead
   if (weapon === "club") {
-    damage = damage * (clubHit + totalBonus("clubPower") + overflow("stunChance", maxChance));
+    damage = damage * (clubHit + totalBonus("clubPower") + overflow("stunChance", maxChance)) * multiplier("club");
   }
 
   // Barbarians heal from the damage they deal
@@ -229,12 +245,12 @@ function barbarianDamageDivider() {
 
 // Damage per turn of one bleed stack
 function barbarianDotPerStack() {
-  return Math.max(1, Math.round(playerAttack * 0.12));
+  return Math.max(1, Math.round(playerAttack * 0.12 * multiplier("bleed")));
 }
 
 // The class's special line in the "You" panel
 function barbarianStatLine() {
-  return "Lifesteal: " + percent(totalBonus("lifesteal")) + ". Rage: +" + percent(totalBonus("rage")) + " damage while below half health";
+  return "Lifesteal: " + percent(totalBonus("lifesteal")) + ". Rage: +" + percent(totalBonus("rage") * multiplier("rage")) + " damage while below half health";
 }
 
 // The description under the weapon

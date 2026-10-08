@@ -15,6 +15,11 @@
 //   boltPower    crossbow: extra damage of every bolt             (0.1 means +10%)
 //   boltPierce   crossbow: penetration its bolts have             (0.1 means +10%)
 //
+// Words a perk can MULTIPLY (see "multiply" in data.js):
+//   longbowCrit  the damage of a longbow's critical shots
+//   shortbow     every shortbow arrow
+//   crossbow     every crossbow bolt
+//
 // The three bows are three ways to shoot. Nothing to set up: pick up a bow and it works.
 //   Longbow  - SLOW AND HEAVY. One arrow every second turn that hits very hard and can
 //              strike a critical shot. The burst weapon.
@@ -96,32 +101,41 @@ classes.ranger = {
       floor: 50,
       perks: [
         { id: "hawksVolley", name: "Opening Volley", text: "+30% attack and the enemy misses 1 more turn", bonus: { attackPercent: 0.3, firstStrike: 1 } },
-        { id: "forestGuardian", name: "Forest Guardian", text: "+50% health and +4 armor", bonus: { healthPercent: 0.5, armor: 4 } },
-        { id: "longshot", name: "Longshot", text: "Longbow: +20% attack and critical shots deal +60% damage", bonus: { attackPercent: 0.2, aimPower: 0.6 } },
-        { id: "volleyer", name: "Volleyer", text: "Shortbow: +20% attack, +25% chance of an extra arrow, and arrows ignore more armor", bonus: { attackPercent: 0.2, quickShot: 0.25, bodkin: 0.5 } },
-        { id: "siegeArcher", name: "Siege Archer", text: "Crossbow: +20% attack, bolts deal +25% damage and gain +100% penetration", bonus: { attackPercent: 0.2, boltPower: 0.25, boltPierce: 1 } }
+        { id: "forestGuardian", name: "Forest Guardian", text: "health x1.5 and +4 armor", bonus: { armor: 4 }, multiply: { health: 1.5 } },
+        { id: "longshot", name: "Longshot", text: "Longbow: critical shots deal x1.6 damage, and +10% critical shot chance", bonus: { aimChance: 0.1 }, multiply: { longbowCrit: 1.6 } },
+        { id: "volleyer", name: "Volleyer", text: "Shortbow: every arrow deals x1.6 damage", multiply: { shortbow: 1.6 } },
+        { id: "siegeArcher", name: "Siege Archer", text: "Crossbow: every bolt deals x1.6 damage", multiply: { crossbow: 1.6 } }
       ]
     },
     {
       floor: 75,
       perks: [
         { id: "deadeye", name: "Deadeye", text: "+50% attack", bonus: { attackPercent: 0.5 } },
-        { id: "wildHeart", name: "Wild Heart", text: "+100% health", bonus: { healthPercent: 1 } },
+        { id: "wildHeart", name: "Wild Heart", text: "health x1.75", multiply: { health: 1.75 } },
         { id: "eagleOfTheWood", name: "Eagle of the Wood", text: "Longbow: +30% attack, +10% critical shot chance and critical shots deal +100% damage", bonus: { attackPercent: 0.3, aimChance: 0.1, aimPower: 1 } },
         { id: "hailOfArrows", name: "Hail of Arrows", text: "Shortbow: +30% attack and +60% chance of an extra arrow", bonus: { attackPercent: 0.3, quickShot: 0.6 } },
-        { id: "ironbreaker", name: "Ironbreaker", text: "Crossbow: +30% attack, bolts deal +45% damage and gain +150% penetration", bonus: { attackPercent: 0.3, boltPower: 0.45, boltPierce: 1.5 } }
+        { id: "ironbreaker", name: "Ironbreaker", text: "Crossbow: +30% attack, bolts deal +45% damage and gain +150% penetration", bonus: { attackPercent: 0.3, boltPower: 0.45, boltPierce: 1.5 } },
+        { id: "outOfReach", name: "Out of Reach", text: "You take 25% less damage", multiply: { damageTaken: 0.75 } }
       ]
     },
     {
       floor: 100,
       perks: [
         { id: "stormOfArrows", name: "Storm of Arrows", text: "+60% attack and the enemy misses 1 more turn", bonus: { attackPercent: 0.6, firstStrike: 1 } },
-        { id: "wardenOfTheWood", name: "Warden of the Wood", text: "+125% health and +6 armor", bonus: { healthPercent: 1.25, armor: 6 } },
-        { id: "oneShot", name: "One Shot", text: "Longbow: +40% attack, +15% critical shot chance and critical shots deal +160% damage", bonus: { attackPercent: 0.4, aimChance: 0.15, aimPower: 1.6 } },
-        { id: "arrowStorm", name: "Arrow Storm", text: "Shortbow: +40% attack, +100% chance of an extra arrow, and arrows ignore far more armor", bonus: { attackPercent: 0.4, quickShot: 1, bodkin: 1 } },
-        { id: "siegeMaster", name: "Siege Master", text: "Crossbow: +40% attack, bolts deal +70% damage and gain +250% penetration", bonus: { attackPercent: 0.4, boltPower: 0.7, boltPierce: 2.5 } }
+        { id: "wardenOfTheWood", name: "Warden of the Wood", text: "health x2 and +6 armor", bonus: { armor: 6 }, multiply: { health: 2 } },
+        { id: "oneShot", name: "One Shot", text: "Longbow: critical shots deal x1.6 damage again", multiply: { longbowCrit: 1.6 } },
+        { id: "arrowStorm", name: "Arrow Storm", text: "Shortbow: every arrow deals x1.6 damage again", multiply: { shortbow: 1.6 } },
+        { id: "siegeMaster", name: "Siege Master", text: "Crossbow: every bolt deals x1.6 damage again", multiply: { crossbow: 1.6 } }
       ]
     }
+  ],
+
+  // Extra choices at every BREAKTHROUGH (floor 150 and beyond), beside the ones every
+  // class has. One for each build: it multiplies that build's own damage again.
+  breakthroughs: [
+    { id: "truerAim", name: "Truer Aim", text: "Longbow: critical shots x1.5", multiply: { longbowCrit: 1.5 } },
+    { id: "fasterHands", name: "Faster Hands", text: "Shortbow: arrows x1.4", multiply: { shortbow: 1.4 } },
+    { id: "heavierBolts", name: "Heavier Bolts", text: "Crossbow: bolts x1.4", multiply: { crossbow: 1.4 } }
   ],
 
   relics: [
@@ -209,7 +223,7 @@ function rangerAttack() {
       rangerDrawn = false;
       damage = damage * (longbowHit + totalBonus("heavyShot"));
       if (chance(totalBonus("aimChance"))) {
-        damage = damage * (longbowCrit + totalBonus("aimPower") + overflow("aimChance", 1));
+        damage = damage * (longbowCrit + totalBonus("aimPower") + overflow("aimChance", 1)) * multiplier("longbowCrit");
         say("A critical shot!");
       }
       hitMonster(damage, "piercing");
@@ -224,13 +238,13 @@ function rangerAttack() {
       arrows = arrows + 1;
     }
     for (let i = 0; i < arrows; i++) {
-      hitMonster(damage * (shortbowHit + totalBonus("arrowPower")), "piercing", bodkinArmorShare());
+      hitMonster(damage * (shortbowHit + totalBonus("arrowPower")) * multiplier("shortbow"), "piercing", bodkinArmorShare());
     }
   }
 
   // CROSSBOW: one bolt that armor does nothing to
   if (weapon === "crossbow") {
-    magicHitMonster(damage * (crossbowHit + totalBonus("boltPower")), "piercing");
+    magicHitMonster(damage * (crossbowHit + totalBonus("boltPower")) * multiplier("crossbow"), "piercing");
   }
 }
 

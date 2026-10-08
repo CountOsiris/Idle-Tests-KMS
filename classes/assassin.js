@@ -11,6 +11,12 @@
 //   vanishChance chance each turn to hide again, so the next
 //                hit is another ambush                        (0.02 means +2%)
 //
+// Words a perk can MULTIPLY (see "multiply" in data.js):
+//   poison        all poison damage
+//   stilettoCrit  the damage of a stiletto's critical hits
+//   counter       the extra damage of the hit after a dodge
+//   ambush        the extra damage of an ambush
+//
 // The four ways to build an Assassin:
 //   Poisoner      (venom dagger) - stacks poison that ignores armor. Long fights and bosses.
 //   Cutthroat     (stiletto)     - critical hits for triple damage and more.
@@ -90,33 +96,45 @@ classes.assassin = {
       floor: 50,
       perks: [
         { id: "nightStalker", name: "Night Stalker", text: "+24% attack and +10% dodge", bonus: { attackPercent: 0.24, dodge: 0.1 } },
-        { id: "deathMark", name: "Death Mark", text: "+50% ambush damage and +40% health", bonus: { ambush: 0.5, healthPercent: 0.4 } },
-        { id: "plaguebringer", name: "Plaguebringer", text: "Venom Dagger: +15% attack, +3 poison stacks and poison deals +30% damage", bonus: { attackPercent: 0.15, poisonStacks: 3, dotPower: 0.3 } },
-        { id: "throatCutter", name: "Throat Cutter", text: "Stiletto: +15% attack, +8% critical chance and +40% critical damage", bonus: { attackPercent: 0.15, critChance: 0.08, critPower: 0.4 } },
-        { id: "shade", name: "Shade", text: "Shadow Blade: +15% attack and +60% damage after a dodge", bonus: { attackPercent: 0.15, counter: 0.6 } }
+        { id: "deathMark", name: "Death Mark", text: "Ambush damage is DOUBLED, and health x1.4", multiply: { ambush: 2, health: 1.4 } },
+        { id: "plaguebringer", name: "Plaguebringer", text: "Venom Dagger: poison deals TRIPLE damage", multiply: { poison: 3 } },
+        { id: "throatCutter", name: "Throat Cutter", text: "Stiletto: critical hits deal DOUBLE damage", multiply: { stilettoCrit: 2 } },
+        { id: "shade", name: "Shade", text: "Shadow Blade: the hit after a dodge is TRIPLED, and +8% dodge", bonus: { dodge: 0.08 }, multiply: { counter: 3 } },
+        { id: "ironNerves", name: "Iron Nerves", text: "health x1.5 and +5% dodge", bonus: { dodge: 0.05 }, multiply: { health: 1.5 } }
       ]
     },
     {
       floor: 75,
       perks: [
         { id: "killer", name: "Killer", text: "+44% attack", bonus: { attackPercent: 0.44 } },
-        { id: "survivor", name: "Survivor", text: "+90% health", bonus: { healthPercent: 0.9 } },
+        { id: "survivor", name: "Survivor", text: "health x1.75", multiply: { health: 1.75 } },
         { id: "venomancer", name: "Venomancer", text: "Venom Dagger: +25% attack, +4 poison stacks and poison deals +50% damage", bonus: { attackPercent: 0.25, poisonStacks: 4, dotPower: 0.5 } },
         { id: "heartseeker", name: "Heartseeker", text: "Stiletto: +25% attack, +10% critical chance and +70% critical damage", bonus: { attackPercent: 0.25, critChance: 0.1, critPower: 0.7 } },
         { id: "nightblade", name: "Nightblade", text: "Shadow Blade: +25% attack, +8% dodge and +100% damage after a dodge", bonus: { attackPercent: 0.25, dodge: 0.08, counter: 1 } },
-        { id: "ghost", name: "Ghost", text: "+25% attack, +80% ambush damage and +5% chance each turn to hide again", bonus: { attackPercent: 0.25, ambush: 0.8, vanishChance: 0.05 } }
+        { id: "ghost", name: "Ghost", text: "+25% attack, +80% ambush damage and +5% chance each turn to hide again", bonus: { attackPercent: 0.25, ambush: 0.8, vanishChance: 0.05 } },
+        { id: "slippery", name: "Slippery", text: "You take 25% less damage", multiply: { damageTaken: 0.75 } }
       ]
     },
     {
       floor: 100,
       perks: [
         { id: "shadowMaster", name: "Shadow Master", text: "+40% attack and +10% dodge", bonus: { attackPercent: 0.4, dodge: 0.1 } },
-        { id: "grimReaper", name: "Grim Reaper", text: "+100% ambush damage and +125% health", bonus: { ambush: 1, healthPercent: 1.25 } },
-        { id: "blightlord", name: "Blightlord", text: "Venom Dagger: +35% attack, +6 poison stacks and poison deals +80% damage", bonus: { attackPercent: 0.35, poisonStacks: 6, dotPower: 0.8 } },
-        { id: "kingslayer", name: "Kingslayer", text: "Stiletto: +35% attack, +12% critical chance and +110% critical damage", bonus: { attackPercent: 0.35, critChance: 0.12, critPower: 1.1 } },
-        { id: "umbra", name: "Umbra", text: "Shadow Blade: +35% attack and +150% damage after a dodge", bonus: { attackPercent: 0.35, counter: 1.5 } }
+        { id: "grimReaper", name: "Grim Reaper", text: "Ambush damage is DOUBLED again, and health x1.6", multiply: { ambush: 2, health: 1.6 } },
+        { id: "blightlord", name: "Blightlord", text: "Venom Dagger: poison deals TRIPLE damage again", multiply: { poison: 3 } },
+        { id: "kingslayer", name: "Kingslayer", text: "Stiletto: critical hits deal DOUBLE damage again", multiply: { stilettoCrit: 2 } },
+        { id: "umbra", name: "Umbra", text: "Shadow Blade: the hit after a dodge is TRIPLED again, and +8% dodge", bonus: { dodge: 0.08 }, multiply: { counter: 3 } },
+        { id: "untouchable", name: "Untouchable", text: "health x2 and +10% dodge", bonus: { dodge: 0.1 }, multiply: { health: 2 } }
       ]
     }
+  ],
+
+  // Extra choices at every BREAKTHROUGH (floor 150 and beyond), beside the ones every
+  // class has. One for each build: it multiplies that build's own damage again.
+  breakthroughs: [
+    { id: "strongerVenom", name: "Stronger Venom", text: "Venom Dagger: poison x1.5", multiply: { poison: 1.5 } },
+    { id: "finerPoint", name: "Finer Point", text: "Stiletto: critical hits x1.5", multiply: { stilettoCrit: 1.5 } },
+    { id: "deeperShadow", name: "Deeper Shadow", text: "Shadow Blade: the hit after a dodge x1.5", multiply: { counter: 1.5 } },
+    { id: "perfectAmbush", name: "Perfect Ambush", text: "Ambush damage x1.5", multiply: { ambush: 1.5 } }
   ],
 
   relics: [
@@ -171,12 +189,12 @@ function assassinAttack() {
 
   if (weapon === "stiletto" && chance(totalBonus("critChance"))) {
     // Critical chance past 100% adds to the critical damage instead
-    damage = damage * (3 + totalBonus("critPower") + overflow("critChance", 1));
+    damage = damage * (3 + totalBonus("critPower") + overflow("critChance", 1)) * multiplier("stilettoCrit");
     say("A deadly critical hit!");
   }
 
   if (weapon === "shadow" && assassinCounterReady) {
-    damage = damage * (1 + totalBonus("counter"));
+    damage = damage * (1 + totalBonus("counter") * multiplier("counter"));
     assassinCounterReady = false;
   }
 
@@ -202,7 +220,7 @@ function assassinAttack() {
 
 // The extra damage of an ambush
 function assassinAmbush() {
-  return totalBonus("ambush") + overflow("vanishChance", maxChance);
+  return (totalBonus("ambush") + overflow("vanishChance", maxChance)) * multiplier("ambush");
 }
 
 function assassinDodgeChance() {
@@ -233,7 +251,7 @@ function assassinWhenAttacked() {
 }
 
 function assassinDotPerStack() {
-  return Math.max(1, Math.round(playerAttack * 0.1));
+  return Math.max(1, Math.round(playerAttack * 0.1 * multiplier("poison")));
 }
 
 function assassinStatLine() {
@@ -247,5 +265,5 @@ function assassinGearInfo() {
   if (weapon === "stiletto") {
     return "Stiletto: " + percent(Math.min(1, totalBonus("critChance"))) + " chance of a critical hit for x" + (3 + totalBonus("critPower") + overflow("critChance", 1)).toFixed(1) + " damage.";
   }
-  return "Shadow Blade: +10% dodge, and your next hit after a dodge deals +" + percent(totalBonus("counter")) + " damage.";
+  return "Shadow Blade: +10% dodge, and your next hit after a dodge deals +" + percent(totalBonus("counter") * multiplier("counter")) + " damage.";
 }

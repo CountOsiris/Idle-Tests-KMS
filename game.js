@@ -312,7 +312,7 @@ function allMilestones() {
   // Every breakthrough reached so far, plus the next one to aim for
   let number = 0;
   while (true) {
-    let breakthrough = { floor: breakthroughFloor(number), perks: breakthroughPerks };
+    let breakthrough = { floor: breakthroughFloor(number), perks: breakthroughPerks.concat(currentClass().breakthroughs || []) };
     milestoneList.push(breakthrough);
     if (breakthrough.floor > bestFloor) {
       break;
@@ -2885,6 +2885,11 @@ function spawnMonster(isBoss) {
   monsterText = type.text;
   // How many times stronger than floor 1 the monsters are here (see data.js)
   let growth = Math.pow(1 + monsterGrowth * (floor - 1), monsterCurve);
+
+  // The deep tower: every floor past deepFloor multiplies it again
+  if (floor > deepFloor) {
+    growth = growth * Math.pow(deepGrowth, floor - deepFloor);
+  }
   monsterMaxHp = Math.round(monsterHealth * growth * type.hp);
   monsterAttack = Math.round(monsterDamage * growth * type.attack);
   monsterArmor = Math.floor(floor * monsterArmorPerFloor * type.armor);
@@ -3106,7 +3111,7 @@ function monsterAttacks() {
   // Your armor works the same way as the monster's, but poison goes straight through it
   let damage = Math.max(1, monsterAttack - totalArmor());
   damage = damage + Math.round(monsterAttack * monsterPoison);
-  damage = Math.max(1, Math.round(damage / damageDivider()));
+  damage = Math.max(1, Math.round(damage / damageDivider() * multiplier("damageTaken")));
   playerHp = playerHp - damage;
 
   if (playerHp <= 0) {

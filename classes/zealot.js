@@ -11,6 +11,12 @@
 //   sacredFlame  holy tome: extra damage from wasted healing   (0.1 means +10%)
 //   crusade      extra damage for every turn a fight lasts     (0.01 means +1%)    
 //
+// Words a perk can MULTIPLY (see "multiply" in data.js):
+//   mace           the holy mace's holy damage and its Judgements
+//   shieldCounter  the blow that answers a block
+//   sacred         the damage of wasted healing with a holy tome
+//   crusade        the damage gained for every turn a fight lasts
+//
 // The four ways to build a Zealot:
 //   Justicar (holy mace)       - the big bonk. Holy damage on every hit, and every third
 //                                hit is a Judgement that lands far harder.
@@ -90,34 +96,44 @@ classes.zealot = {
     {
       floor: 50,
       perks: [
-        { id: "avenger", name: "Avenger", text: "+30% attack and +30% holy damage", bonus: { attackPercent: 0.3, smite: 0.3 } },
-        { id: "saint", name: "Saint", text: "+50% health and +2% healing every turn", bonus: { healthPercent: 0.5, devotion: 0.02 } },
-        { id: "bulwarkOfFaith", name: "Bulwark of Faith", text: "Mace and Shield: +15% attack, +8% block chance, and the blow after a block deals +40% of your attack more", bonus: { attackPercent: 0.15, blockChance: 0.08, counter: 0.4 } },
-        { id: "hierophant", name: "Hierophant", text: "Holy Tome: +15% attack, more healing every turn and wasted healing burns for +80% more", bonus: { attackPercent: 0.15, devotion: 0.01, sacredFlame: 0.8 } },
-        { id: "zealous", name: "Zealous", text: "+15% attack and +4% damage for every turn a fight lasts", bonus: { attackPercent: 0.15, crusade: 0.04 } }
+        { id: "avenger", name: "Avenger", text: "Holy Mace: holy damage and Judgements are DOUBLED, and +15% attack", bonus: { attackPercent: 0.15 }, multiply: { mace: 2 } },
+        { id: "saint", name: "Saint", text: "health x1.5 and more healing every turn", bonus: { devotion: 0.02 }, multiply: { health: 1.5 } },
+        { id: "bulwarkOfFaith", name: "Bulwark of Faith", text: "Mace and Shield: the blow after a block is DOUBLED, and +10% block chance", bonus: { blockChance: 0.1 }, multiply: { shieldCounter: 2 } },
+        { id: "hierophant", name: "Hierophant", text: "Holy Tome: wasted healing burns for x2.5, and more healing every turn", bonus: { devotion: 0.01 }, multiply: { sacred: 2.5 } },
+        { id: "zealous", name: "Zealous", text: "Crusade is TRIPLED: three times the damage for every turn a fight lasts", multiply: { crusade: 3 } }
       ]
     },
     {
       floor: 75,
       perks: [
         { id: "holyWrath", name: "Holy Wrath", text: "+44% attack", bonus: { attackPercent: 0.44 } },
-        { id: "divineHealth", name: "Divine Health", text: "+110% health", bonus: { healthPercent: 1.1 } },
+        { id: "divineHealth", name: "Divine Health", text: "health x1.75", multiply: { health: 1.75 } },
         { id: "inquisitor", name: "Inquisitor", text: "Holy Mace: +25% attack, +40% holy damage and every third hit deals +80% more", bonus: { attackPercent: 0.25, smite: 0.4, judgement: 0.8 } },
         { id: "shieldOfTheFaithful", name: "Shield of the Faithful", text: "Mace and Shield: +25% attack, +10% block chance, and the blow after a block deals +70% of your attack more", bonus: { attackPercent: 0.25, blockChance: 0.1, counter: 0.7 } },
         { id: "lightbringer", name: "Lightbringer", text: "Holy Tome: +25% attack and wasted healing burns for +120% more", bonus: { attackPercent: 0.25, sacredFlame: 1.2 } },
-        { id: "crusadeEternal", name: "Eternal Crusade", text: "+25% attack and +6% damage for every turn a fight lasts", bonus: { attackPercent: 0.25, crusade: 0.06 } }
+        { id: "crusadeEternal", name: "Eternal Crusade", text: "+25% attack and +6% damage for every turn a fight lasts", bonus: { attackPercent: 0.25, crusade: 0.06 } },
+        { id: "divineShield", name: "Divine Shield", text: "You take 25% less damage", multiply: { damageTaken: 0.75 } }
       ]
     },
     {
       floor: 100,
       perks: [
-        { id: "handOfGod", name: "Hand of God", text: "+60% attack and Holy Mace: +40% holy damage", bonus: { attackPercent: 0.6, smite: 0.4 } },
-        { id: "martyr", name: "Martyr", text: "+150% health and +2% healing every turn", bonus: { healthPercent: 1.5, devotion: 0.02 } },
-        { id: "aegisOfHeaven", name: "Aegis of Heaven", text: "Mace and Shield: +35% attack, +12% block chance, and the blow after a block deals +110% of your attack more", bonus: { attackPercent: 0.35, blockChance: 0.12, counter: 1.1 } },
-        { id: "voiceOfGod", name: "Voice of God", text: "Holy Tome: +35% attack, more healing every turn and wasted healing burns for +200% more", bonus: { attackPercent: 0.35, devotion: 0.02, sacredFlame: 2 } },
-        { id: "lastCrusade", name: "Last Crusade", text: "+35% attack and +10% damage for every turn a fight lasts", bonus: { attackPercent: 0.35, crusade: 0.1 } }
+        { id: "handOfGod", name: "Hand of God", text: "Holy Mace: holy damage and Judgements are DOUBLED again, and +20% attack", bonus: { attackPercent: 0.2 }, multiply: { mace: 2 } },
+        { id: "martyr", name: "Martyr", text: "health x2 and more healing every turn", bonus: { devotion: 0.02 }, multiply: { health: 2 } },
+        { id: "aegisOfHeaven", name: "Aegis of Heaven", text: "Mace and Shield: the blow after a block is DOUBLED again, and +10% block chance", bonus: { blockChance: 0.1 }, multiply: { shieldCounter: 2 } },
+        { id: "voiceOfGod", name: "Voice of God", text: "Holy Tome: wasted healing burns for x2.5 again, and more healing every turn", bonus: { devotion: 0.02 }, multiply: { sacred: 2.5 } },
+        { id: "lastCrusade", name: "Last Crusade", text: "Crusade is TRIPLED again", multiply: { crusade: 3 } }
       ]
     }
+  ],
+
+  // Extra choices at every BREAKTHROUGH (floor 150 and beyond), beside the ones every
+  // class has. One for each build: it multiplies that build's own damage again.
+  breakthroughs: [
+    { id: "brighterLight", name: "Brighter Light", text: "Holy Mace: holy damage and Judgements x1.5", multiply: { mace: 1.5 } },
+    { id: "swifterAnswer", name: "Swifter Answer", text: "Mace and Shield: the blow after a block x1.5", multiply: { shieldCounter: 1.5 } },
+    { id: "hotterFaith", name: "Hotter Faith", text: "Holy Tome: wasted healing burns for x1.5", multiply: { sacred: 1.5 } },
+    { id: "longerCrusade", name: "Longer Crusade", text: "Crusade x1.5", multiply: { crusade: 1.5 } }
   ],
 
   relics: [
@@ -178,7 +194,7 @@ function zealotHealing() {
 
 // Crusade: all damage grows with every turn the fight has lasted
 function zealotCrusade() {
-  return 1 + (fightTurns - 1) * totalBonus("crusade");
+  return 1 + (fightTurns - 1) * totalBonus("crusade") * multiplier("crusade");
 }
 
 function zealotAttack() {
@@ -194,7 +210,7 @@ function zealotAttack() {
     // Holy magic ignores armor
     spellHitMonster(damage * tomeHit, "holy");
     if (wasted > 0) {
-      spellHitMonster(wasted * (1 + totalBonus("sacredFlame")) * zealotCrusade(), "holy");
+      spellHitMonster(wasted * (1 + totalBonus("sacredFlame")) * multiplier("sacred") * zealotCrusade(), "holy");
     }
   }
 
@@ -206,13 +222,13 @@ function zealotAttack() {
     // Every third hit is a Judgement
     zealotHits = zealotHits + 1;
     if (zealotHits % judgementEvery === 0) {
-      damage = damage * (1 + totalBonus("judgement"));
+      damage = damage * (1 + totalBonus("judgement") * multiplier("mace"));
       say("Judgement falls!");
     }
     hitMonster(damage, "crushing");
 
     // The mace adds holy damage that ignores armor
-    spellHitMonster(damage * totalBonus("smite"), "holy");
+    spellHitMonster(damage * totalBonus("smite") * multiplier("mace"), "holy");
   }
 }
 
@@ -228,7 +244,7 @@ function zealotWhenAttacked() {
   if (weapon === "shield" && chance(cappedChance("blockChance"))) {
     // A block is answered with a blow of the mace
     say("You block the attack and strike back!");
-    hitMonster(playerAttack * totalBonus("counter") * zealotCrusade(), "crushing");
+    hitMonster(playerAttack * totalBonus("counter") * multiplier("shieldCounter") * zealotCrusade(), "crushing");
     return true;
   }
   return false;

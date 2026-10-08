@@ -16,6 +16,15 @@ const monsterDamage = 3;
 const monsterGrowth = 0.35;
 const monsterCurve = 2;
 
+// THE DEEP TOWER. Past this floor, monsters also get stronger by a fixed percentage
+// every floor (1.03 means 3% more health and attack per floor, on top of the above).
+// Without it a run that is going well snowballs: relics, gear and souls pile up faster
+// than the monsters grow, and the run never ends. With it there is always a wall
+// ahead, and the way through is the next milestone, breakthrough or ascension.
+// Floors up to deepFloor are exactly as they were.
+const deepFloor = 50;
+const deepGrowth = 1.03;
+
 // Monster armor grows steadily instead: this much per floor
 const monsterArmorPerFloor = 0.5;
 
@@ -99,13 +108,20 @@ const breakthroughFirstFloor = 150;
 const breakthroughSpacing = 1.5;
 
 // Every breakthrough offers the same choice, and the player picks one each time.
+// (A class adds one more choice for each of its builds: see "breakthroughs" in its file.)
 // "multiply" works like the fame upgrades. It can multiply:
 //   attack, health, armor, experience, gold, gear, and fame (all fame earned)
+//   damageTaken (0.8 means you take 20% less damage)
+//   and a class's own build words, like "bleed" or "reflect" (listed in each class file)
+//
+// MILESTONE PERKS in the class files can use "multiply" in exactly the same way.
+// A perk can have a "bonus", a "multiply", or both.
 const breakthroughPerks = [
   { id: "conqueror", name: "Conqueror", text: "attack x1.5", multiply: { attack: 1.5 } },
   { id: "colossus", name: "Colossus", text: "health and armor x1.5", multiply: { health: 1.5, armor: 1.5 } },
   { id: "scholar", name: "Scholar", text: "experience x1.5", multiply: { experience: 1.5 } },
-  { id: "legend", name: "Legend", text: "fame earned x1.25", multiply: { fame: 1.25 } }
+  { id: "legend", name: "Legend", text: "fame earned x1.25", multiply: { fame: 1.25 } },
+  { id: "bulwark", name: "Bulwark", text: "you take 20% less damage", multiply: { damageTaken: 0.8 } }
 ];
 
 // Pathfinder starts runs part of the way to your best floor. It can be bought forever:
