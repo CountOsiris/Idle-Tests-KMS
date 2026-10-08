@@ -1,8 +1,16 @@
 // =====================================================================
 //  data.js - the numbers and lists that every class shares.
 //  This file is loaded first. Then towers.js, then one file per class
-//  from classes/, and game.js last.
+//  from classes/, game.js, and cloud.js last.
 // =====================================================================
+
+// ----- Online saves -----
+// The address and the public key of the Supabase project that keeps players' saves.
+// Both are meant to be seen by anyone (every visitor's browser needs them), so it is
+// fine that they are in this file. Leave them as "" to switch online saves off.
+// cloud-setup.sql explains how the project is set up; cloud.js does the work.
+const cloudUrl = "";
+const cloudKey = "";
 
 // ----- The difficulty curve -----
 // A normal monster on floor 1 has this much health and attack...

@@ -375,6 +375,39 @@
           </label>
         </div>
 
+        <!-- Online saves. The buttons are in cloud.js. -->
+        <div class="card">
+          <h2>Account</h2>
+
+          <p id="account-off" class="note">Online saves are not switched on yet. The game saves in this browser.</p>
+
+          <div id="account-out" hidden>
+            <p class="note">
+              Make an account and your save is also kept online. Clear your browser, or play on another
+              device, and logging in brings it back. You only log in once on each browser.
+            </p>
+            <p>
+              <input type="text" id="account-username" placeholder="Username" maxlength="20" autocomplete="username">
+              <input type="password" id="account-password" placeholder="Password" maxlength="60" autocomplete="current-password">
+            </p>
+            <p>
+              <button onclick="logIn()">Log in</button>
+              <button onclick="createAccount()">Create account</button>
+            </p>
+            <p class="note">A username is 3 to 20 letters, numbers or underscores. There is no "forgot password", so pick one you will remember.</p>
+          </div>
+
+          <div id="account-in" hidden>
+            <p>Logged in as <strong id="account-name"></strong>. Your save is sent online about once a minute.</p>
+            <p>
+              <button onclick="cloudUpload()">Save online now</button>
+              <button class="quiet" onclick="logOut()">Log out</button>
+            </p>
+          </div>
+
+          <p id="account-message" class="note"></p>
+        </div>
+
         <div class="card">
           <h2>Your save</h2>
           <p class="note">The game saves by itself in this browser. A save code lets you keep a backup or move to another device.</p>
@@ -402,5 +435,6 @@
   <script src="classes/elementalist.js"></script>
   <script src="classes/zealot.js"></script>
   <script src="game.js"></script>
+  <script src="cloud.js"></script>
 </body>
 </html>

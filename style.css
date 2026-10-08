@@ -313,6 +313,23 @@ body[data-tab="tower"] #tab-character {
   min-width: 0;
 }
 
+/* The username and password boxes on the Account card */
+#account-out input {
+  background: rgba(0, 0, 0, 0.35);
+  border: 1px solid var(--card-edge);
+  color: inherit;
+  font: inherit;
+  padding: 8px 10px;
+  margin: 0 8px 8px 0;
+  width: 200px;
+  max-width: 100%;
+}
+
+#account-out input:focus {
+  outline: none;
+  border-color: var(--gold);
+}
+
 /* The Buy buttons and the Reset button, side by side above the skills */
 .skill-tools {
   display: flex;
