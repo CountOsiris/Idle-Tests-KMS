@@ -9,8 +9,8 @@
 // Both are meant to be seen by anyone (every visitor's browser needs them), so it is
 // fine that they are in this file. Leave them as "" to switch online saves off.
 // cloud-setup.sql explains how the project is set up; cloud.js does the work.
-const cloudUrl = "";
-const cloudKey = "";
+const cloudUrl = "https://gjrglfcknfxzwskrjysb.supabase.co";
+const cloudKey = "sb_publishable_DWJib5jsURW1dV5Q0vtMqQ_CSa4U0SF";
 
 // ----- The difficulty curve -----
 // A normal monster on floor 1 has this much health and attack...
