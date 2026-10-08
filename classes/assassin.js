@@ -117,6 +117,7 @@ classes.assassin = {
   ],
 
   startFight: assassinStartFight,
+  damageTypes: assassinDamageTypes,
   attack: assassinAttack,
   whenAttacked: assassinWhenAttacked,
   damageDivider: assassinDamageDivider,
@@ -124,6 +125,17 @@ classes.assassin = {
   statLine: assassinStatLine,
   gearInfo: assassinGearInfo
 };
+
+// The damage types this class is dealing right now (for the tower list)
+function assassinDamageTypes() {
+  if (weapon === "shadow") {
+    return ["slashing"];
+  }
+  if (weapon === "venom") {
+    return ["piercing", "affliction"];
+  }
+  return ["piercing"];
+}
 
 // Is the next hit the first of the fight?
 let assassinAmbushReady = false;

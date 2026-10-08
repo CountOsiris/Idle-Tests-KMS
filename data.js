@@ -82,6 +82,7 @@ const fameUpgrades = [
   { id: "legacy", name: "Legacy", text: "Start every ascension 2 levels higher.", unlockAt: 2, add: { startLevels: 2 }, addLabel: "starting levels", cost: 6, growth: 1.45, maxLevel: 0 },
   { id: "pathfinder", name: "Pathfinder", text: "Start every run part of the way to your best floor since ascending. Each level closes 15% of the gap to 60%.", unlockAt: 3, add: { pathfinder: 1 }, addLabel: "of the way up", cost: 10, growth: 1.45, maxLevel: 0 },
   { id: "scavenger", name: "Scavenger", text: "Multiplies the power of equipment you find by 1.15.", unlockAt: 5, multiply: { gear: 1.15 }, cost: 8, growth: 1.45, maxLevel: 0 },
+  { id: "insight", name: "Insight", text: "+25% penetration. Penetration cuts through what monsters resist, so other towers open up.", unlockAt: 4, add: { penetration: 0.25 }, addLabel: "penetration", addAsPercent: true, cost: 8, growth: 1.45, maxLevel: 0 },
   { id: "endurance", name: "Endurance", text: "Heal 3% more of your health after every kill.", unlockAt: 8, add: { healOnKill: 0.03 }, addLabel: "extra healing per kill", addAsPercent: true, cost: 10, growth: 2, maxLevel: 0 },
   { id: "mastery", name: "Mastery", text: "The upgrades you pick in upgrade areas can go 1 level higher.", unlockAt: 12, add: { upgradeCap: 1 }, addLabel: "upgrade levels", cost: 15, growth: 2, maxLevel: 0 }
 ];
@@ -252,7 +253,13 @@ const weakAmount = 0.25;            // a hit the monster is weak to deals this m
 const resistAmount = 0.4;           // a hit the monster resists deals this much less (0.4 means -40%)
 const awayResistPerFloor = 0.005;   // in another class's tower, resistance grows this much every floor
 const maxResist = 0.6;              // but never past this: nothing is ever immune
-// The bonus word "penetration" takes away from a monster's resistance (0.05 means 5% less of it)
+
+// PENETRATION cuts through resistance. It never removes it completely: what is left of
+// a resistance is divided by (1 + penetration). So 1 (shown as 100%) halves it and
+// 3 quarters it. There is always more to gain and no point where it stops working.
+// The bonus word is "penetration" (0.1 means +10%).
+
+const flyingMissChance = 0.25;      // a weapon swing misses a flying monster this often
 
 const classes = {};
 
@@ -289,6 +296,7 @@ const townUpgrades = [
   { id: "quartermaster", name: "Quartermaster", text: "Pick a favourite kind of weapon (or shield, for the Warden). You start every run with it, and your Squire only equips that kind.", bonus: { favouriteGear: 1 }, maxLevel: 1, cost: 5000, growth: 1 },
   { id: "tactician", name: "Tactician", text: "Pick a favourite upgrade. Upgrade areas give it to you straight away, with no waiting, until it reaches the level limit for upgrade areas.", bonus: { favouriteUpgrade: 1 }, maxLevel: 1, cost: 5000, growth: 1 },
   { id: "weaponsmith", name: "Weaponsmith", text: "+10% chance that a weapon you find is your favourite kind (pick it with the Quartermaster). Past 100% it makes those weapons stronger instead.", bonus: { favouriteLuck: 0.1 }, maxLevel: 0, cost: 3000, growth: 1.4 },
+  { id: "whetstone", name: "Whetstone", text: "+10% penetration. Penetration cuts through what monsters resist.", bonus: { penetration: 0.1 }, maxLevel: 0, cost: 2000, growth: 1.4 },
   { id: "armory", name: "Armory", text: "Start every run with +2 weapon power and +1 armor.", bonus: { startGear: 2 }, maxLevel: 0, cost: 1000, growth: 1.4 },
   { id: "trainingGrounds", name: "Training Grounds", text: "+5% experience.", bonus: { experience: 0.05 }, maxLevel: 0, cost: 500, growth: 1.4 },
   { id: "treasureMaps", name: "Treasure Maps", text: "+5% gold.", bonus: { gold: 0.05 }, maxLevel: 0, cost: 500, growth: 1.4 },

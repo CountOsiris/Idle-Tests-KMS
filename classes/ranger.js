@@ -47,6 +47,9 @@ classes.ranger = {
   dotLabel: "Spirit damage",
   dotType: "nature",
 
+  // The Ranger fights from range: beasts cannot lunge at it, and nothing flies out of reach
+  ranged: true,
+
   upgrades: [
     { id: "quickDraw", name: "Quick Draw", text: "+3 attack", bonus: { attack: 3 } },
     { id: "eagleEye", name: "Eagle Eye", text: "Longbow: +5% aimed shot chance", bonus: { aimChance: 0.05 } },
@@ -133,6 +136,7 @@ classes.ranger = {
   ],
 
   startFight: rangerStartFight,
+  damageTypes: rangerDamageTypes,
   attack: rangerAttack,
   whenAttacked: rangerWhenAttacked,
   damageDivider: rangerDamageDivider,
@@ -140,6 +144,12 @@ classes.ranger = {
   statLine: rangerStatLine,
   gearInfo: rangerGearInfo
 };
+
+// The damage types this class is dealing right now (for the tower list).
+// Arrows pierce; spirits, thorns and the companion are nature.
+function rangerDamageTypes() {
+  return ["piercing", "nature"];
+}
 
 // How many more turns the enemy is still too far away to attack
 let rangerFreeTurns = 0;

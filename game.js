@@ -148,6 +148,11 @@ let monsterResist = [];
 // Only used to colour the damage number on the fight screen.
 let resistedHits = 0;
 let boostedHits = 0;
+let missedHits = 0;
+
+// Does the monster being fought fly, and does it strike first?
+let monsterFlying = false;
+let monsterLunges = false;
 
 // Is this type on the list? A list can name a type ("fire") or a whole group ("elemental").
 function listHasType(list, type) {
@@ -173,14 +178,19 @@ function typeNames(list) {
 
 // How much of a resisted hit is lost right now (0.4 means 40% of it).
 // It is deeper in a tower that is not your own, never more than maxResist,
-// and penetration takes away from it.
+// and penetration cuts it down.
 function resistNow() {
   let resist = resistAmount;
   if (isAway()) {
     resist = resist + (floor - 1) * awayResistPerFloor;
   }
   resist = Math.min(maxResist, resist);
-  return Math.max(0, resist - totalBonus("penetration"));
+  return resist / (1 + penetration());
+}
+
+// Penetration cuts through resistance (see data.js). It comes from the town and from fame.
+function penetration() {
+  return totalBonus("penetration") + fameAdd("penetration");
 }
 
 // What a hit of this type is multiplied by against the monster being fought
@@ -202,6 +212,12 @@ function typeMultiplier(type) {
 // A normal hit: the monster's armor is taken off it.
 // "type" is the damage type, for example "slashing".
 function hitMonster(damage, type) {
+  // A weapon swing can miss a flying monster. Arrows and spells cannot.
+  if (monsterFlying && currentClass().ranged !== true && chance(flyingMissChance)) {
+    missedHits = missedHits + 1;
+    return 0;
+  }
+
   damage = Math.max(1, Math.round(damage * typeMultiplier(type)) - monsterArmor);
   monsterHp = monsterHp - damage;
   return damage;
@@ -1969,6 +1985,36 @@ function showTown() {
   document.getElementById("potion-btn").disabled = potions >= potionLimit() || bank < potionPrice;
 }
 
+// A sentence for the tower list: how well the damage this class is dealing RIGHT NOW
+// (with the gear and stance it has) does against the monsters of a tower
+function towerMatchup(towerName) {
+  let types = currentClass().damageTypes();
+  let place = towers[towerName];
+  let all = place.monsters.concat(place.bosses);
+  let weak = 0;
+  let resisted = 0;
+
+  for (let monster of all) {
+    for (let type of types) {
+      if (listHasType(monster.weak || [], type)) {
+        weak = weak + 1;
+      } else if (listHasType(monster.resist || [], type)) {
+        resisted = resisted + 1;
+      }
+    }
+  }
+
+  let chances = all.length * types.length;
+  let note = "Against your " + typeNames(types) + " damage: " + percent(resisted / chances) + " of it is resisted here and " + percent(weak / chances) + " hits a weakness.";
+  if (place.ward !== undefined) {
+    note = note + " Its monsters are warded against spells.";
+  }
+  if (place.lunge === true) {
+    note = note + " Its beasts strike first, unless you fight from range.";
+  }
+  return note;
+}
+
 function showTowers() {
   for (let towerName in towers) {
     let place = towers[towerName];
@@ -1983,7 +2029,7 @@ function showTowers() {
     if (towerBest[towerName] !== undefined) {
       best = towerBest[towerName];
     }
-    let text = place.text + " Your best floor here: " + best + ".";
+    let text = place.text + " " + towerMatchup(towerName) + " Your best floor here: " + best + ".";
 
     for (let trophy of place.trophies) {
       text = text + " Trophy at floor " + trophy.floor + ": " + trophy.name + " (" + trophy.text + ")";
@@ -2304,6 +2350,16 @@ function updateScreen() {
   if (inFight && monsterResist.length > 0) {
     resistNote = "Resists " + typeNames(monsterResist) + " (-" + percent(resistNow()) + ")";
   }
+  if (inFight && monsterFlying) {
+    if (currentClass().ranged === true) {
+      resistNote = resistNote + "  Flying, but you can reach it.";
+    } else {
+      resistNote = resistNote + "  Flying: your swings miss " + percent(flyingMissChance) + " of the time.";
+    }
+  }
+  if (inFight && monsterLunges && currentClass().ranged !== true) {
+    resistNote = resistNote + "  Lunges: it strikes first.";
+  }
   document.getElementById("monster-weak").textContent = weakNote;
   document.getElementById("monster-resist").textContent = resistNote;
 
@@ -2419,6 +2475,8 @@ function spawnMonster(isBoss) {
   // What it is weak to and resists (a monster with neither just leaves them out)
   monsterWeak = type.weak || [];
   monsterResist = type.resist || [];
+  monsterFlying = type.flying === true;
+  monsterLunges = type.lunge === true || towers[tower].lunge === true;
 
   // Monsters in another class's tower are stronger
   if (isAway()) {
@@ -2641,6 +2699,20 @@ function fightMonster() {
     monsterAttack = Math.ceil(monsterAttack * 1.1);
   }
 
+  // A lunging monster strikes before you can, unless your class fights from range
+  if (fightTurns === 1 && monsterLunges && currentClass().ranged !== true) {
+    let deathsAtLunge = deaths;
+    say("The " + monsterName + " lunges at you before you are ready!");
+    monsterAttacks();
+    if (deaths !== deathsAtLunge) {
+      return;
+    }
+    if (monsterHp <= 0) {
+      victory();
+      return;
+    }
+  }
+
   currentClass().attack();
 
   let deathsBefore = deaths;
@@ -2841,6 +2913,7 @@ function animatedStep() {
   let deathsBefore = deaths;
   resistedHits = 0;
   boostedHits = 0;
+  missedHits = 0;
   let monsterHpBefore = monsterHp;
   let monsterMaxHpBefore = monsterMaxHp;
   let monsterIconBefore = monsterIcon;
@@ -2931,6 +3004,9 @@ function animatedStep() {
         animate("monster-icon", "shake");
       } else if (dealt < 0) {
         floatText("monster-side", "+" + big(-dealt), "heal", false);
+      }
+      if (missedHits > 0) {
+        floatText("monster-side", "miss", "word", false);
       }
 
       // The monster's turn, a moment later

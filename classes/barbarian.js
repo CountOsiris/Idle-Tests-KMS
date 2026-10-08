@@ -125,6 +125,7 @@ classes.barbarian = {
   ],
 
   // The functions below, which make the class fight its own way
+  damageTypes: barbarianDamageTypes,
   attack: barbarianAttack,
   whenAttacked: barbarianWhenAttacked,
   damageDivider: barbarianDamageDivider,
@@ -132,6 +133,17 @@ classes.barbarian = {
   statLine: barbarianStatLine,
   gearInfo: barbarianGearInfo
 };
+
+// The damage types this class is dealing right now (for the tower list)
+function barbarianDamageTypes() {
+  if (weapon === "club") {
+    return ["crushing"];
+  }
+  if (weapon === "axe") {
+    return ["slashing", "affliction"];
+  }
+  return ["slashing"];
+}
 
 // A club is heavy: every hit with one is multiplied by this
 const clubHit = 1.2;

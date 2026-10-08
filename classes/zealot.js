@@ -118,6 +118,7 @@ classes.zealot = {
   ],
 
   startFight: zealotStartFight,
+  damageTypes: zealotDamageTypes,
   attack: zealotAttack,
   whenAttacked: zealotWhenAttacked,
   damageDivider: zealotDamageDivider,
@@ -125,6 +126,17 @@ classes.zealot = {
   statLine: zealotStatLine,
   gearInfo: zealotGearInfo
 };
+
+// The damage types this class is dealing right now (for the tower list)
+function zealotDamageTypes() {
+  if (weapon === "tome") {
+    return ["holy"];
+  }
+  if (weapon === "mace") {
+    return ["crushing", "holy"];
+  }
+  return ["crushing"];
+}
 
 // The numbers behind the weapons. Change these to retune them.
 const tomeHit = 1.15;       // a holy tome spell hits for this many times your attack

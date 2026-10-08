@@ -36,6 +36,9 @@ classes.elementalist = {
   dotLabel: "Burning",
   dotType: "fire",
 
+  // A caster's spells reach a flying monster as easily as any other
+  ranged: true,
+
   // The elements. The player picks one on the Skills tab; "stance" holds the choice.
   stanceLabel: "Element",
   stances: {
@@ -125,12 +128,18 @@ classes.elementalist = {
   ],
 
   startFight: elementalistStartFight,
+  damageTypes: elementalistDamageTypes,
   attack: elementalistAttack,
   whenAttacked: elementalistWhenAttacked,
   dotPerStack: elementalistDotPerStack,
   statLine: elementalistStatLine,
   gearInfo: elementalistGearInfo
 };
+
+// The damage types this class is dealing right now (for the tower list)
+function elementalistDamageTypes() {
+  return [stance];
+}
 
 // The numbers behind each element. Change these to retune them.
 const fireHit = 0.9;        // a fire spell hits for this share of your attack

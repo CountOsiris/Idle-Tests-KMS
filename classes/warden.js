@@ -125,6 +125,7 @@ classes.warden = {
   ],
 
   startFight: wardenStartFight,
+  damageTypes: wardenDamageTypes,
   attack: wardenAttack,
   whenAttacked: wardenWhenAttacked,
   damageDivider: wardenDamageDivider,
@@ -132,6 +133,14 @@ classes.warden = {
   statLine: wardenStatLine,
   gearInfo: wardenGearInfo
 };
+
+// The damage types this class is dealing right now (for the tower list)
+function wardenDamageTypes() {
+  if (weapon === "bladed") {
+    return ["piercing", "slashing"];
+  }
+  return ["piercing"];
+}
 
 // The numbers behind the shields. Change these to retune them.
 const bladedThrow = 2;       // a thrown shield hits for this many times your armor

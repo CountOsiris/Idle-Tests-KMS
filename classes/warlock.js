@@ -31,6 +31,9 @@ classes.warlock = {
   base: { maxHp: 60, attack: 12, critChance: 0.25, critPower: 1.5, voidRend: 0.09, echoChance: 0.4, soulPower: 0.2, voidHeal: 0.015 },
 
   gearLabel: "Tome",
+
+  // A caster's spells reach a flying monster as easily as any other
+  ranged: true,
   gearTypes: { arcane: "Arcane Tome", void: "Void Tome", rune: "Rune Tome" },
 
   upgrades: [
@@ -118,12 +121,18 @@ classes.warlock = {
 
   startRun: warlockStartRun,
   whenKill: warlockWhenKill,
+  damageTypes: warlockDamageTypes,
   attack: warlockAttack,
   whenAttacked: warlockWhenAttacked,
   dotPerStack: warlockDotPerStack,
   statLine: warlockStatLine,
   gearInfo: warlockGearInfo
 };
+
+// The damage types this class is dealing right now (for the tower list)
+function warlockDamageTypes() {
+  return ["arcane"];
+}
 
 // A kill in the tower is worth this many souls
 const soulsPerKill = 1;
