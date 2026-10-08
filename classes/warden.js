@@ -14,7 +14,7 @@ classes.warden = {
   name: "Warden",
   icon: "🛡️",
   text: "A spear and an elemental shield. Every attack against you is thrown back at the enemy.",
-  perLevel: { maxHp: 10, attack: 1.5 },
+  perLevel: { maxHp: 12, attack: 1.5 },
   base: { maxHp: 120, attack: 5, armor: 2, reflect: 0.3, burnStacks: 3, freezeChance: 0.2, stormChance: 0.25 },
 
   // The Warden's special gear is the shield, which sits in the armor slot.
@@ -34,15 +34,15 @@ classes.warden = {
   ],
 
   skills: [
-    { id: "spearThrust", name: "Spear Thrust", text: "+3% attack", bonus: { attackPercent: 0.03 }, maxLevel: 0, cost: 1 },
-    { id: "vigor", name: "Vigor", text: "+3% health", bonus: { healthPercent: 0.03 }, maxLevel: 0, cost: 1 },
-    { id: "retaliation", name: "Retaliation", text: "Reflected damage is 5% stronger", bonus: { reflectPower: 0.05 }, maxLevel: 20, cost: 1 },
-    { id: "scorch", name: "Scorch", text: "Burning deals +10% damage", bonus: { dotPower: 0.1 }, maxLevel: 20, cost: 1 },
-    { id: "plating", name: "Plating", text: "+2 armor", bonus: { armor: 2 }, maxLevel: 10, cost: 1 },
-    { id: "thornmail", name: "Thornmail", text: "+5% reflect", bonus: { reflect: 0.05 }, maxLevel: 10, cost: 1 },
-    { id: "emberMastery", name: "Ember Mastery", text: "Ember: +1 burn stack", bonus: { burnStacks: 1 }, maxLevel: 5, cost: 2 },
-    { id: "frostMastery", name: "Frost Mastery", text: "Frost: +3% freeze chance", bonus: { freezeChance: 0.03 }, maxLevel: 5, cost: 2 },
-    { id: "stormMastery", name: "Storm Mastery", text: "Storm: +4% double reflect chance", bonus: { stormChance: 0.04 }, maxLevel: 5, cost: 2 }
+    { id: "spearThrust", name: "Spear Thrust", text: "+3% attack", bonus: { attackPercent: 0.03 }, cost: 1 },
+    { id: "vigor", name: "Vigor", text: "+3% health", bonus: { healthPercent: 0.03 }, cost: 1 },
+    { id: "retaliation", name: "Retaliation", text: "Reflected damage is 10% stronger", bonus: { reflectPower: 0.1 }, cost: 1 },
+    { id: "scorch", name: "Scorch", text: "Burning deals +10% damage", bonus: { dotPower: 0.1 }, cost: 1 },
+    { id: "plating", name: "Plating", text: "+2 armor", bonus: { armor: 2 }, cost: 1 },
+    { id: "thornmail", name: "Thornmail", text: "+5% reflect", bonus: { reflect: 0.05 }, cost: 1 },
+    { id: "emberMastery", name: "Ember Mastery", text: "Ember: +1 burn stack", bonus: { burnStacks: 1 }, cost: 2 },
+    { id: "frostMastery", name: "Frost Mastery", text: "Frost: +3% freeze chance", bonus: { freezeChance: 0.03 }, cost: 2 },
+    { id: "stormMastery", name: "Storm Mastery", text: "Storm: +4% double reflect chance", bonus: { stormChance: 0.04 }, cost: 2 }
   ],
 
   milestones: [
@@ -128,9 +128,22 @@ function wardenAttack() {
 function wardenWhenAttacked() {
   let reflected = reflectDamage();
 
-  if (weapon === "storm" && chance(totalBonus("stormChance"))) {
-    reflected = reflected * 2;
-    say("Lightning strikes back twice as hard!");
+  // Storm: each full 100% of chance is one guaranteed extra strike, and what is
+  // left over is the chance of one more. So 130% is always double, sometimes triple.
+  if (weapon === "storm") {
+    let strikes = Math.floor(totalBonus("stormChance"));
+    if (chance(totalBonus("stormChance") - strikes)) {
+      strikes = strikes + 1;
+    }
+    if (strikes > 0) {
+      reflected = reflected * (1 + strikes);
+      say("Lightning strikes back " + (1 + strikes) + " times as hard!");
+    }
+  }
+
+  // Frost: freeze chance past its limit makes the reflection stronger instead
+  if (weapon === "frost") {
+    reflected = reflected * (1 + overflow("freezeChance", maxChance));
   }
   magicHitMonster(reflected);
 
@@ -160,7 +173,8 @@ function wardenGearInfo() {
     return "Ember Shield: every attack against you sets the enemy burning more each turn (up to " + totalBonus("burnStacks") + " stacks).";
   }
   if (weapon === "frost") {
-    return "Frost Shield: " + percent(cappedChance("freezeChance")) + " chance to freeze an attacker so it misses its next turn.";
+    return "Frost Shield: " + percent(cappedChance("freezeChance")) + " chance to freeze an attacker so it misses its next turn."
+      + overflowNote(overflow("freezeChance", maxChance), "reflected damage");
   }
-  return "Storm Shield: " + percent(totalBonus("stormChance")) + " chance to reflect double damage.";
+  return "Storm Shield: " + percent(totalBonus("stormChance")) + " chance of an extra reflection. Every full 100% is one extra reflection for certain.";
 }

@@ -58,13 +58,14 @@ const ascendFloorStep = 5;
 //   cost     - the price of the first level, in fame
 //   growth   - each level costs this many times more than the last (1.5 means +50%)
 //   maxLevel - how many times it can be bought. 0 means no limit, ever.
+//              Nothing here has a limit; keep it that way unless there is a good reason.
 // and one of these two:
 //   multiply - multiplies something, and every level multiplies again (they compound).
 //              It can multiply: attack, health, armor, experience, gold,
 //              gear (the power of equipment you find)
 //   add      - adds something per level. It can add:
 //                startLevels      levels kept when ascending
-//                startFloorShare  runs start this far toward your best floor (0.1 means 10%)
+//                pathfinder       levels of Pathfinder (see maxStartShare below)
 //                healOnKill       extra healing after a kill (0.03 means +3% of your health)
 //                upgradeCap       extra top levels for the upgrades picked in upgrade areas
 //              Give it an addLabel too, which is how the total is described on the page,
@@ -75,11 +76,19 @@ const fameUpgrades = [
   { id: "wisdom", name: "Wisdom", text: "Multiplies the experience you earn by 1.2.", unlockAt: 1, multiply: { experience: 1.2 }, cost: 2, growth: 1.5, maxLevel: 0 },
   { id: "fortune", name: "Fortune", text: "Multiplies the gold you earn by 1.2.", unlockAt: 1, multiply: { gold: 1.2 }, cost: 2, growth: 1.5, maxLevel: 0 },
   { id: "legacy", name: "Legacy", text: "Start every ascension 3 levels higher.", unlockAt: 2, add: { startLevels: 3 }, addLabel: "starting levels", cost: 4, growth: 1.5, maxLevel: 0 },
-  { id: "pathfinder", name: "Pathfinder", text: "Start every run 10% of the way to your best floor since ascending.", unlockAt: 3, add: { startFloorShare: 0.1 }, addLabel: "of the way up", addAsPercent: true, cost: 8, growth: 2, maxLevel: 5 },
+  { id: "pathfinder", name: "Pathfinder", text: "Start every run part of the way to your best floor since ascending. Each level closes 15% of the gap to 60%.", unlockAt: 3, add: { pathfinder: 1 }, addLabel: "of the way up", cost: 8, growth: 1.6, maxLevel: 0 },
   { id: "scavenger", name: "Scavenger", text: "Multiplies the power of equipment you find by 1.2.", unlockAt: 5, multiply: { gear: 1.2 }, cost: 6, growth: 1.5, maxLevel: 0 },
-  { id: "endurance", name: "Endurance", text: "Heal 3% more of your health after every kill.", unlockAt: 8, add: { healOnKill: 0.03 }, addLabel: "extra healing per kill", addAsPercent: true, cost: 10, growth: 2, maxLevel: 5 },
-  { id: "mastery", name: "Mastery", text: "The upgrades you pick in upgrade areas can go 1 level higher.", unlockAt: 12, add: { upgradeCap: 1 }, addLabel: "upgrade levels", cost: 15, growth: 2, maxLevel: 5 }
+  { id: "endurance", name: "Endurance", text: "Heal 3% more of your health after every kill.", unlockAt: 8, add: { healOnKill: 0.03 }, addLabel: "extra healing per kill", addAsPercent: true, cost: 10, growth: 2, maxLevel: 0 },
+  { id: "mastery", name: "Mastery", text: "The upgrades you pick in upgrade areas can go 1 level higher.", unlockAt: 12, add: { upgradeCap: 1 }, addLabel: "upgrade levels", cost: 15, growth: 2, maxLevel: 0 }
 ];
+
+// Pathfinder starts runs part of the way to your best floor. It can be bought forever:
+// every level closes this share of the remaining gap (0.85 means 15% of it is closed)...
+const pathfinderFade = 0.85;
+
+// ...to this limit, which it gets ever closer to but never reaches (0.6 means 60% of the way).
+// It must stay well below 1, or runs would start right at the wall and end at once.
+const maxStartShare = 0.6;
 
 // How much of your health comes back after every kill (0.2 means a fifth)
 const healOnKill = 0.2;
@@ -98,17 +107,36 @@ const rarities = [
   { name: "", chance: 0.6, power: 0.9 },
   { name: "Fine", chance: 0.27, power: 1.1 },
   { name: "Rare", chance: 0.1, power: 1.4 },
-  { name: "Epic", chance: 0.03, power: 1.8 }
+  { name: "Epic", chance: 0.025, power: 1.8 },
+  { name: "Legendary", chance: 0.004, power: 2.5 },
+  { name: "Mythic", chance: 0.001, power: 3.5 }
 ];
 
 // The lowest rarity a rare monster and a boss can drop.
-// 0 is ordinary, 1 is Fine, 2 is Rare, 3 is Epic.
+// 0 is ordinary, 1 is Fine, 2 is Rare, 3 is Epic...
 const rareDropRarity = 1;
 const bossDropRarity = 2;
 
+// ----- Limits, and what happens past them -----
+// Nothing can be bought only a set number of times. But a chance cannot go past
+// certain limits, so anything bought beyond a limit "overflows" into something else.
+
+// A monster cannot drop equipment more often than this (0.5 means half the time).
+// Drop chance beyond it becomes luck, which makes the better rarities more likely.
+// luckStrength says how strongly: bigger means luck matters more.
+const maxDropChance = 0.5;
+const luckStrength = 5;
+
 // No chance to dodge, parry, block, stun or freeze can go above this (0.6 means 60%),
-// however many bonuses are stacked. Without a limit a character could become unkillable.
+// or a character could become unkillable. Beyond it, dodge, parry and block reduce
+// all damage taken instead, and stun and freeze add damage instead.
+// Critical chances stop at 100%, and beyond that add critical damage.
 const maxChance = 0.6;
+
+// The Ranger's enemies cannot be kept out of reach for more than this many turns.
+// Beyond it, each extra turn bought adds this much damage to the opening shots.
+const maxFreeTurns = 3;
+const extraOpeningDamage = 0.15;
 
 // ----- Other numbers you can tune -----
 const roomsPerFloor = 4;
@@ -175,7 +203,8 @@ const classes = {};
 //   name     - what the player sees
 //   text     - a short description of what ONE level does
 //   bonus    - what one level does (each level gives the bonus again)
-//   maxLevel - how many times it can be bought
+//   maxLevel - how many times it can be bought. 1 for the helpers, which are bought once;
+//              0 for everything else, which means no limit, ever.
 //   cost     - the price of the first level
 //   growth   - each level costs this many times more than the last (2 means double)
 //
@@ -190,13 +219,13 @@ const classes = {};
 const townUpgrades = [
   { id: "autoEquip", name: "Squire", text: "Stronger equipment you find is equipped for you.", bonus: { autoEquip: 1 }, maxLevel: 1, cost: 2000, growth: 1 },
   { id: "quartermaster", name: "Quartermaster", text: "Pick a favourite kind of weapon (or shield, for the Warden). You start every run with it, and your Squire only equips that kind.", bonus: { favouriteGear: 1 }, maxLevel: 1, cost: 5000, growth: 1 },
-  { id: "tactician", name: "Tactician", text: "Pick a favourite upgrade. Upgrade areas give it to you straight away, with no waiting, until it reaches its top level.", bonus: { favouriteUpgrade: 1 }, maxLevel: 1, cost: 5000, growth: 1 },
-  { id: "armory", name: "Armory", text: "Start every run with +2 weapon power and +1 armor.", bonus: { startGear: 2 }, maxLevel: 10, cost: 1000, growth: 2 },
-  { id: "trainingGrounds", name: "Training Grounds", text: "+5% experience.", bonus: { experience: 0.05 }, maxLevel: 10, cost: 500, growth: 2 },
-  { id: "treasureMaps", name: "Treasure Maps", text: "+5% gold.", bonus: { gold: 0.05 }, maxLevel: 10, cost: 500, growth: 2 },
-  { id: "luckyCharm", name: "Lucky Charm", text: "+2% chance that a monster drops equipment.", bonus: { dropChance: 0.02 }, maxLevel: 5, cost: 1500, growth: 2 },
-  { id: "potionBelt", name: "Potion Belt", text: "Carry 1 more healing potion.", bonus: { potionSlots: 1 }, maxLevel: 5, cost: 800, growth: 2 },
-  { id: "alchemist", name: "Alchemist", text: "Healing potions heal 10% more of your health.", bonus: { potionPower: 0.1 }, maxLevel: 4, cost: 800, growth: 2 }
+  { id: "tactician", name: "Tactician", text: "Pick a favourite upgrade. Upgrade areas give it to you straight away, with no waiting, until it reaches the level limit for upgrade areas.", bonus: { favouriteUpgrade: 1 }, maxLevel: 1, cost: 5000, growth: 1 },
+  { id: "armory", name: "Armory", text: "Start every run with +2 weapon power and +1 armor.", bonus: { startGear: 2 }, maxLevel: 0, cost: 1000, growth: 1.4 },
+  { id: "trainingGrounds", name: "Training Grounds", text: "+5% experience.", bonus: { experience: 0.05 }, maxLevel: 0, cost: 500, growth: 1.4 },
+  { id: "treasureMaps", name: "Treasure Maps", text: "+5% gold.", bonus: { gold: 0.05 }, maxLevel: 0, cost: 500, growth: 1.4 },
+  { id: "luckyCharm", name: "Lucky Charm", text: "+4% chance that a monster drops equipment. Past 50% it makes better rarities more likely instead.", bonus: { dropChance: 0.04 }, maxLevel: 0, cost: 1500, growth: 1.4 },
+  { id: "potionBelt", name: "Potion Belt", text: "Carry 1 more healing potion.", bonus: { potionSlots: 1 }, maxLevel: 0, cost: 800, growth: 1.6 },
+  { id: "alchemist", name: "Alchemist", text: "Healing potions heal 10% more of your health.", bonus: { potionPower: 0.1 }, maxLevel: 0, cost: 800, growth: 1.6 }
 ];
 
 // ----- Relics every class can find -----

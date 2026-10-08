@@ -28,12 +28,12 @@ classes.warlock = {
   ],
 
   skills: [
-    { id: "intellect", name: "Intellect", text: "+3% attack", bonus: { attackPercent: 0.03 }, maxLevel: 0, cost: 1 },
-    { id: "warding", name: "Warding", text: "+3% health", bonus: { healthPercent: 0.03 }, maxLevel: 0, cost: 1 },
-    { id: "criticalFocus", name: "Critical Focus", text: "Arcane Tome: +10% critical damage", bonus: { critPower: 0.1 }, maxLevel: 20, cost: 1 },
-    { id: "arcaneMastery", name: "Arcane Mastery", text: "Arcane Tome: +3% critical chance", bonus: { critChance: 0.03 }, maxLevel: 5, cost: 2 },
-    { id: "voidMastery", name: "Void Mastery", text: "Void Tome: +0.5% of the enemy's health per hit", bonus: { voidRend: 0.005 }, maxLevel: 5, cost: 2 },
-    { id: "runeMastery", name: "Rune Mastery", text: "Rune Tome: +3% chance to cast twice", bonus: { echoChance: 0.03 }, maxLevel: 5, cost: 2 }
+    { id: "intellect", name: "Intellect", text: "+3% attack", bonus: { attackPercent: 0.03 }, cost: 1 },
+    { id: "warding", name: "Warding", text: "+3% health", bonus: { healthPercent: 0.03 }, cost: 1 },
+    { id: "criticalFocus", name: "Critical Focus", text: "Arcane Tome: +10% critical damage", bonus: { critPower: 0.1 }, cost: 1 },
+    { id: "arcaneMastery", name: "Arcane Mastery", text: "Arcane Tome: +3% critical chance", bonus: { critChance: 0.03 }, cost: 2 },
+    { id: "voidMastery", name: "Void Mastery", text: "Void Tome: +0.5% of the enemy's health per hit", bonus: { voidRend: 0.005 }, cost: 2 },
+    { id: "runeMastery", name: "Rune Mastery", text: "Rune Tome: +3% chance to cast twice", bonus: { echoChance: 0.03 }, cost: 2 }
   ],
 
   milestones: [
@@ -107,7 +107,8 @@ function warlockCast() {
   let damage = playerAttack;
 
   if (weapon === "arcane" && chance(totalBonus("critChance"))) {
-    damage = damage * (1 + totalBonus("critPower"));
+    // Critical chance past 100% adds to the critical damage instead
+    damage = damage * (1 + totalBonus("critPower") + overflow("critChance", 1));
     say("An arcane critical!");
   }
 
@@ -123,9 +124,19 @@ function warlockCast() {
 function warlockAttack() {
   warlockCast();
 
-  if (weapon === "rune" && chance(totalBonus("echoChance"))) {
-    say("The spell echoes!");
-    warlockCast();
+  // Echo: each full 100% of chance is one guaranteed extra cast, and what is
+  // left over is the chance of one more
+  if (weapon === "rune") {
+    let echoes = Math.floor(totalBonus("echoChance"));
+    if (chance(totalBonus("echoChance") - echoes)) {
+      echoes = echoes + 1;
+    }
+    if (echoes > 0) {
+      say("The spell echoes!");
+    }
+    for (let i = 0; i < echoes; i++) {
+      warlockCast();
+    }
   }
 }
 

@@ -345,7 +345,7 @@ function ascend() {
 
   // Town upgrades with several levels are lost too. The helpers you buy once are kept.
   for (let item of townUpgrades) {
-    if (item.maxLevel > 1) {
+    if (item.maxLevel !== 1) {
       delete townLevels[item.id];
     }
   }
@@ -366,9 +366,49 @@ function totalBonus(stat) {
   return baseBonus(stat) + skillBonus(stat) + perkBonus(stat) + relicBonus(stat) + upgradeBonus(stat) + trophyBonus(stat) + townBonus(stat);
 }
 
+// ----- Chances and overflow -----
+// Nothing in the game has a top level, but a chance cannot usefully go past its
+// limit. So whatever is bought beyond the limit "overflows" into something else:
+//   - critical chances past 100%          -> extra critical damage
+//   - dodge, parry and block past 60%     -> all damage taken is reduced
+//   - stun and freeze past 60%            -> extra damage
+//   - equipment drop chance past 50%      -> better rarities
+// The class files say exactly what each of their chances overflows into.
+
 // For chances that must never reach 100% (see maxChance in data.js)
 function cappedChance(stat) {
   return Math.min(maxChance, totalBonus(stat));
+}
+
+// How far a stat has gone past a limit (0 if it has not)
+function overflow(stat, limit) {
+  return Math.max(0, totalBonus(stat) - limit);
+}
+
+// A sentence for the page that says what the overflow is doing, or nothing if there is none
+function overflowNote(amount, what) {
+  if (amount <= 0) {
+    return "";
+  }
+  return " The chance beyond its limit gives +" + percent(amount) + " " + what + ".";
+}
+
+// Damage taken is divided by this. Classes that can dodge, parry or block
+// turn the overflow of that chance into it (see their damageDivider function).
+function damageDivider() {
+  if (currentClass().damageDivider !== undefined) {
+    return currentClass().damageDivider();
+  }
+  return 1;
+}
+
+// Equipment luck: the drop chance beyond its limit makes better rarities more likely
+function gearLuck() {
+  return Math.max(0, monsterDropChance + totalBonus("dropChance") - maxDropChance);
+}
+
+function townUpgradeIsMaxed(item) {
+  return item.maxLevel > 0 && townLevel(item.id) >= item.maxLevel;
 }
 
 function totalArmor() {
@@ -455,8 +495,10 @@ function slotText(slot, power, rarity) {
 // Picks a rarity by its chance (see the rarities list in data.js).
 // "least" is the lowest rarity allowed: 0 for anything, 2 for Rare or better...
 function rollRarity(least) {
-  let roll = Math.random();
-  let rarity = 0;
+  // Luck pushes the roll toward 1, where the rare end of the list is.
+  // With no luck this is a plain roll between 0 and 1.
+  let roll = Math.pow(Math.random(), 1 / (1 + gearLuck() * luckStrength));
+  let rarity = rarities.length - 1;
 
   for (let i = 0; i < rarities.length; i++) {
     if (roll < rarities[i].chance) {
@@ -596,7 +638,7 @@ function townCost(item) {
 }
 
 function buyTownUpgrade(item) {
-  if (townLevel(item.id) < item.maxLevel && bank >= townCost(item)) {
+  if (!townUpgradeIsMaxed(item) && bank >= townCost(item)) {
     bank = bank - townCost(item);
     townLevels[item.id] = townLevel(item.id) + 1;
     recalcStats();
@@ -661,7 +703,13 @@ function upgradeCap() {
 // The floor a run starts on. Normally 1; the Pathfinder fame upgrade starts runs
 // part-way to the best floor reached since the last ascension.
 function startFloor() {
-  return Math.max(1, Math.floor(ascensionBest * fameAdd("startFloorShare")));
+  return Math.max(1, Math.floor(ascensionBest * pathfinderShare()));
+}
+
+// How far up the tower Pathfinder starts a run. Every level closes part of the gap
+// to maxStartShare, so it can be bought forever but never quite gets there.
+function pathfinderShare() {
+  return maxStartShare * (1 - Math.pow(pathfinderFade, fameAdd("pathfinder")));
 }
 
 // If the player is away, a random upgrade is taken for them
@@ -703,11 +751,6 @@ function skillLevel(id) {
   return skillLevels[id];
 }
 
-// A top level of 0 means the skill can be raised forever
-function skillIsMaxed(skill) {
-  return skill.maxLevel > 0 && skillLevel(skill.id) >= skill.maxLevel;
-}
-
 // All the skill points the class has earned: some for every level after the first
 function skillPointsEarned() {
   return (level - 1) * skillPointsPerLevel;
@@ -728,7 +771,7 @@ function skillPointsLeft() {
 }
 
 function buySkill(skill) {
-  if (!skillIsMaxed(skill) && skillPointsLeft() >= skill.cost) {
+  if (skillPointsLeft() >= skill.cost) {
     skillLevels[skill.id] = skillLevel(skill.id) + 1;
     recalcStats();
     updateScreen();
@@ -1325,24 +1368,14 @@ function showSkills() {
   for (let skill of currentClass().skills) {
     let button = document.getElementById("skill-" + skill.id);
 
-    // Skills with no top level just show how far they have been raised
-    let levels = "level " + skillLevel(skill.id);
-    if (skill.maxLevel > 0) {
-      levels = skillLevel(skill.id) + " / " + skill.maxLevel;
-    }
-
     let price = skill.cost + " points";
     if (skill.cost === 1) {
       price = "1 point";
     }
 
-    if (skillIsMaxed(skill)) {
-      button.textContent = skill.name + " " + levels + " (max)";
-      button.disabled = true;
-    } else {
-      button.textContent = skill.name + " " + levels + " (" + price + ")";
-      button.disabled = skillPointsLeft() < skill.cost;
-    }
+    // Skills have no top level
+    button.textContent = skill.name + " level " + skillLevel(skill.id) + " (" + price + ")";
+    button.disabled = skillPointsLeft() < skill.cost;
   }
 }
 
@@ -1384,20 +1417,16 @@ function showTown() {
   for (let item of townUpgrades) {
     let button = document.getElementById("town-" + item.id);
 
-    if (townLevel(item.id) >= item.maxLevel) {
+    // The helpers are bought once. Everything else can be bought forever.
+    if (townUpgradeIsMaxed(item)) {
+      button.textContent = item.name + " (owned)";
       button.disabled = true;
-      if (item.maxLevel === 1) {
-        button.textContent = item.name + " (owned)";
-      } else {
-        button.textContent = item.name + " " + townLevel(item.id) + " / " + item.maxLevel + " (max)";
-      }
-    } else {
+    } else if (item.maxLevel === 1) {
+      button.textContent = item.name + " (" + big(townCost(item)) + " gold)";
       button.disabled = bank < townCost(item);
-      if (item.maxLevel === 1) {
-        button.textContent = item.name + " (" + big(townCost(item)) + " gold)";
-      } else {
-        button.textContent = item.name + " " + townLevel(item.id) + " / " + item.maxLevel + " (" + big(townCost(item)) + " gold)";
-      }
+    } else {
+      button.textContent = item.name + " level " + (townLevel(item.id) + 1) + " (" + big(townCost(item)) + " gold)";
+      button.disabled = bank < townCost(item);
     }
   }
 
@@ -1503,7 +1532,9 @@ function fameEffectText(item) {
     for (let stat in item.add) {
       // Shares like 0.1 are written as 10%
       let amount = item.add[stat] * fameLevel(item.id);
-      if (item.addAsPercent) {
+      if (stat === "pathfinder") {
+        parts.push(percent(pathfinderShare()) + " " + item.addLabel);
+      } else if (item.addAsPercent) {
         parts.push(percent(amount) + " " + item.addLabel);
       } else {
         parts.push("+" + amount + " " + item.addLabel);
@@ -1962,7 +1993,7 @@ function victory() {
     gainRelic();
   } else if (monsterIsRare) {
     findItem(rareDropRarity);
-  } else if (chance(monsterDropChance + totalBonus("dropChance"))) {
+  } else if (chance(Math.min(maxDropChance, monsterDropChance + totalBonus("dropChance")))) {
     findItem(0);
   }
   nextRoom();
@@ -1974,14 +2005,16 @@ function monsterAttacks() {
 
   let avoided = currentClass().whenAttacked();
 
-  // Nothing more happens if the attack was avoided, or thrown back hard enough to kill
-  if (avoided || monsterHp <= 0) {
+  // An avoided attack does nothing more. A reflected attack still lands, even if the
+  // reflection killed the monster: otherwise enough reflect would make a class unkillable.
+  if (avoided) {
     return;
   }
 
   // Your armor works the same way as the monster's, but poison goes straight through it
   let damage = Math.max(1, monsterAttack - totalArmor());
   damage = damage + Math.round(monsterAttack * monsterPoison);
+  damage = Math.max(1, Math.round(damage / damageDivider()));
   playerHp = playerHp - damage;
 
   if (playerHp <= 0) {
@@ -2006,6 +2039,8 @@ function fightMonster() {
 
   currentClass().attack();
 
+  let deathsBefore = deaths;
+
   if (monsterHp > 0) {
     if (monsterRegen > 0) {
       monsterHp = Math.min(monsterMaxHp, monsterHp + Math.round(monsterMaxHp * monsterRegen));
@@ -2017,6 +2052,11 @@ function fightMonster() {
     } else {
       monsterAttacks();
     }
+  }
+
+  // If that attack killed you, a new run has already started and this fight is over
+  if (deaths !== deathsBefore) {
+    return;
   }
 
   if (monsterHp <= 0) {

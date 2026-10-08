@@ -30,13 +30,13 @@ classes.elementalist = {
   ],
 
   skills: [
-    { id: "attunement", name: "Attunement", text: "+3% attack", bonus: { attackPercent: 0.03 }, maxLevel: 0, cost: 1 },
-    { id: "resilience", name: "Resilience", text: "+3% health", bonus: { healthPercent: 0.03 }, maxLevel: 0, cost: 1 },
-    { id: "conflagration", name: "Conflagration", text: "Burning deals +10% damage", bonus: { dotPower: 0.1 }, maxLevel: 20, cost: 1 },
-    { id: "waterMastery", name: "Water Mastery", text: "Water: +1% healing per spell", bonus: { tideHeal: 0.01 }, maxLevel: 5, cost: 2 },
-    { id: "fireMastery", name: "Fire Mastery", text: "Fire: +1 burn stack", bonus: { burnStacks: 1 }, maxLevel: 5, cost: 2 },
-    { id: "lightningMastery", name: "Lightning Mastery", text: "Lightning: +3% critical chance", bonus: { critChance: 0.03 }, maxLevel: 5, cost: 2 },
-    { id: "earthMastery", name: "Earth Mastery", text: "Earth: +3% stun chance and +5% damage", bonus: { stunChance: 0.03, crush: 0.05 }, maxLevel: 5, cost: 2 }
+    { id: "attunement", name: "Attunement", text: "+3% attack", bonus: { attackPercent: 0.03 }, cost: 1 },
+    { id: "resilience", name: "Resilience", text: "+3% health", bonus: { healthPercent: 0.03 }, cost: 1 },
+    { id: "conflagration", name: "Conflagration", text: "Burning deals +10% damage", bonus: { dotPower: 0.1 }, cost: 1 },
+    { id: "waterMastery", name: "Water Mastery", text: "Water: +1% healing per spell", bonus: { tideHeal: 0.01 }, cost: 2 },
+    { id: "fireMastery", name: "Fire Mastery", text: "Fire: +1 burn stack", bonus: { burnStacks: 1 }, cost: 2 },
+    { id: "lightningMastery", name: "Lightning Mastery", text: "Lightning: +3% critical chance", bonus: { critChance: 0.03 }, cost: 2 },
+    { id: "earthMastery", name: "Earth Mastery", text: "Earth: +3% stun chance and +5% damage", bonus: { stunChance: 0.03, crush: 0.05 }, cost: 2 }
   ],
 
   milestones: [
@@ -111,12 +111,14 @@ function elementalistAttack() {
   let damage = playerAttack;
 
   if (weapon === "lightning" && chance(totalBonus("critChance"))) {
-    damage = damage * 3;
+    // Critical chance past 100% adds to the critical damage instead
+    damage = damage * (3 + overflow("critChance", 1));
     say("A lightning critical!");
   }
 
   if (weapon === "earth") {
-    damage = damage * (1 + totalBonus("crush"));
+    // Stun chance past its limit adds damage instead
+    damage = damage * (1 + totalBonus("crush") + overflow("stunChance", maxChance));
     if (chance(cappedChance("stunChance"))) {
       monsterStunned = true;
       say("The ground shakes and stuns the enemy!");

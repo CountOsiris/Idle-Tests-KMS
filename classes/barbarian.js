@@ -39,14 +39,14 @@ classes.barbarian = {
   ],
 
   skills: [
-    { id: "might", name: "Might", text: "+3% attack", bonus: { attackPercent: 0.03 }, maxLevel: 0, cost: 1 },
-    { id: "toughness", name: "Toughness", text: "+3% health", bonus: { healthPercent: 0.03 }, maxLevel: 0, cost: 1 },
-    { id: "savagery", name: "Savagery", text: "Bleeding deals +10% damage", bonus: { dotPower: 0.1 }, maxLevel: 20, cost: 1 },
-    { id: "bloodletting", name: "Bloodletting", text: "+2% lifesteal", bonus: { lifesteal: 0.02 }, maxLevel: 10, cost: 1 },
-    { id: "rage", name: "Rage", text: "+10% damage while below half health", bonus: { rage: 0.1 }, maxLevel: 10, cost: 1 },
-    { id: "axeMastery", name: "Axe Mastery", text: "Axe: +1 bleed stack", bonus: { bleedStacks: 1 }, maxLevel: 5, cost: 2 },
-    { id: "swordMastery", name: "Sword Mastery", text: "Sword: +3% critical and parry chance", bonus: { critChance: 0.03, parryChance: 0.03 }, maxLevel: 5, cost: 2 },
-    { id: "clubMastery", name: "Club Mastery", text: "Club: +4% stun chance", bonus: { stunChance: 0.04 }, maxLevel: 5, cost: 2 }
+    { id: "might", name: "Might", text: "+3% attack", bonus: { attackPercent: 0.03 }, cost: 1 },
+    { id: "toughness", name: "Toughness", text: "+3% health", bonus: { healthPercent: 0.03 }, cost: 1 },
+    { id: "savagery", name: "Savagery", text: "Bleeding deals +10% damage", bonus: { dotPower: 0.1 }, cost: 1 },
+    { id: "bloodletting", name: "Bloodletting", text: "+2% lifesteal", bonus: { lifesteal: 0.02 }, cost: 1 },
+    { id: "rage", name: "Rage", text: "+10% damage while below half health", bonus: { rage: 0.1 }, cost: 1 },
+    { id: "axeMastery", name: "Axe Mastery", text: "Axe: +1 bleed stack", bonus: { bleedStacks: 1 }, cost: 2 },
+    { id: "swordMastery", name: "Sword Mastery", text: "Sword: +3% critical and parry chance", bonus: { critChance: 0.03, parryChance: 0.03 }, cost: 2 },
+    { id: "clubMastery", name: "Club Mastery", text: "Club: +4% stun chance", bonus: { stunChance: 0.04 }, cost: 2 }
   ],
 
   milestones: [
@@ -112,6 +112,7 @@ classes.barbarian = {
   // The functions below, which make the class fight its own way
   attack: barbarianAttack,
   whenAttacked: barbarianWhenAttacked,
+  damageDivider: barbarianDamageDivider,
   dotPerStack: barbarianDotPerStack,
   statLine: barbarianStatLine,
   gearInfo: barbarianGearInfo
@@ -125,9 +126,15 @@ function barbarianAttack() {
     damage = damage * (1 + totalBonus("rage"));
   }
 
+  // Critical chance past 100% adds to the critical damage instead
   if (weapon === "sword" && chance(totalBonus("critChance"))) {
-    damage = damage * 2;
+    damage = damage * (2 + overflow("critChance", 1));
     say("Critical hit!");
+  }
+
+  // Stun chance past its limit makes the club hit harder instead
+  if (weapon === "club") {
+    damage = damage * (1 + overflow("stunChance", maxChance));
   }
 
   // Barbarians heal from the damage they deal
@@ -159,6 +166,14 @@ function barbarianWhenAttacked() {
   return false;
 }
 
+// Parry chance past its limit reduces all damage taken instead (it is divided by this)
+function barbarianDamageDivider() {
+  if (weapon === "sword") {
+    return 1 + overflow("parryChance", maxChance);
+  }
+  return 1;
+}
+
 // Damage per turn of one bleed stack
 function barbarianDotPerStack() {
   return Math.max(1, Math.round(playerAttack * 0.1));
@@ -175,7 +190,10 @@ function barbarianGearInfo() {
     return "Axe: every hit makes the enemy bleed more each turn (up to " + totalBonus("bleedStacks") + " stacks).";
   }
   if (weapon === "sword") {
-    return "Sword: " + percent(totalBonus("critChance")) + " chance to deal double damage and " + percent(cappedChance("parryChance")) + " chance to parry an attack.";
+    return "Sword: " + percent(Math.min(1, totalBonus("critChance"))) + " chance to deal double damage and " + percent(cappedChance("parryChance")) + " chance to parry an attack."
+      + overflowNote(overflow("critChance", 1), "critical damage")
+      + overflowNote(overflow("parryChance", maxChance), "damage resistance");
   }
-  return "Club: every hit breaks 1 enemy armor and has a " + percent(cappedChance("stunChance")) + " chance to stun.";
+  return "Club: every hit breaks 1 enemy armor and has a " + percent(cappedChance("stunChance")) + " chance to stun."
+    + overflowNote(overflow("stunChance", maxChance), "damage");
 }

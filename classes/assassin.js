@@ -29,13 +29,13 @@ classes.assassin = {
   ],
 
   skills: [
-    { id: "lethality", name: "Lethality", text: "+3% attack", bonus: { attackPercent: 0.03 }, maxLevel: 0, cost: 1 },
-    { id: "conditioning", name: "Conditioning", text: "+3% health", bonus: { healthPercent: 0.03 }, maxLevel: 0, cost: 1 },
-    { id: "virulence", name: "Virulence", text: "Poison deals +10% damage", bonus: { dotPower: 0.1 }, maxLevel: 20, cost: 1 },
-    { id: "evasion", name: "Evasion", text: "+1% dodge", bonus: { dodge: 0.01 }, maxLevel: 5, cost: 1 },
-    { id: "ambushTraining", name: "Ambush Training", text: "+10% ambush damage", bonus: { ambush: 0.1 }, maxLevel: 5, cost: 1 },
-    { id: "venomMastery", name: "Venom Mastery", text: "Venom Dagger: +1 poison stack", bonus: { poisonStacks: 1 }, maxLevel: 5, cost: 2 },
-    { id: "stilettoMastery", name: "Stiletto Mastery", text: "Stiletto: +3% critical chance", bonus: { critChance: 0.03 }, maxLevel: 5, cost: 2 }
+    { id: "lethality", name: "Lethality", text: "+3% attack", bonus: { attackPercent: 0.03 }, cost: 1 },
+    { id: "conditioning", name: "Conditioning", text: "+3% health", bonus: { healthPercent: 0.03 }, cost: 1 },
+    { id: "virulence", name: "Virulence", text: "Poison deals +10% damage", bonus: { dotPower: 0.1 }, cost: 1 },
+    { id: "evasion", name: "Evasion", text: "+1% dodge", bonus: { dodge: 0.01 }, cost: 1 },
+    { id: "ambushTraining", name: "Ambush Training", text: "+10% ambush damage", bonus: { ambush: 0.1 }, cost: 1 },
+    { id: "venomMastery", name: "Venom Mastery", text: "Venom Dagger: +1 poison stack", bonus: { poisonStacks: 1 }, cost: 2 },
+    { id: "stilettoMastery", name: "Stiletto Mastery", text: "Stiletto: +3% critical chance", bonus: { critChance: 0.03 }, cost: 2 }
   ],
 
   milestones: [
@@ -100,6 +100,7 @@ classes.assassin = {
   startFight: assassinStartFight,
   attack: assassinAttack,
   whenAttacked: assassinWhenAttacked,
+  damageDivider: assassinDamageDivider,
   dotPerStack: assassinDotPerStack,
   statLine: assassinStatLine,
   gearInfo: assassinGearInfo
@@ -127,7 +128,8 @@ function assassinAttack() {
   }
 
   if (weapon === "stiletto" && chance(totalBonus("critChance"))) {
-    damage = damage * 3;
+    // Critical chance past 100% adds to the critical damage instead
+    damage = damage * (3 + overflow("critChance", 1));
     say("A deadly critical hit!");
   }
 
@@ -150,6 +152,15 @@ function assassinDodgeChance() {
     return Math.min(maxChance, totalBonus("dodge") + 0.1);
   }
   return cappedChance("dodge");
+}
+
+// Dodge past its limit reduces all damage taken instead (it is divided by this)
+function assassinDamageDivider() {
+  let dodge = totalBonus("dodge");
+  if (weapon === "shadow") {
+    dodge = dodge + 0.1;
+  }
+  return 1 + Math.max(0, dodge - maxChance);
 }
 
 function assassinWhenAttacked() {

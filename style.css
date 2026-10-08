@@ -336,6 +336,8 @@ button.quiet {
 .rarity-1 { color: #6fcf6f; }
 .rarity-2 { color: #5fa8ff; font-weight: bold; }
 .rarity-3 { color: #c77dff; font-weight: bold; }
+.rarity-4 { color: #ff9d3c; font-weight: bold; }
+.rarity-5 { color: #ff5c5c; font-weight: bold; }
 
 /* ----- Skills and the tower list ----- */
 .tower-row,

@@ -28,13 +28,13 @@ classes.ranger = {
   ],
 
   skills: [
-    { id: "marksmanship", name: "Marksmanship", text: "+3% attack", bonus: { attackPercent: 0.03 }, maxLevel: 0, cost: 1 },
-    { id: "endurance", name: "Endurance", text: "+3% health", bonus: { healthPercent: 0.03 }, maxLevel: 0, cost: 1 },
-    { id: "packTactics", name: "Pack Tactics", text: "Spirits deal +10% damage", bonus: { dotPower: 0.1 }, maxLevel: 20, cost: 1 },
-    { id: "openingVolley", name: "Opening Volley", text: "The enemy misses 1 more turn at the start of a fight", bonus: { firstStrike: 1 }, maxLevel: 2, cost: 5 },
-    { id: "longbowMastery", name: "Longbow Mastery", text: "Longbow: +3% aimed shot chance", bonus: { aimChance: 0.03 }, maxLevel: 5, cost: 2 },
-    { id: "spiritMastery", name: "Spirit Mastery", text: "Spirit Bow: +1 spirit", bonus: { spirits: 1 }, maxLevel: 5, cost: 2 },
-    { id: "bloomMastery", name: "Bloom Mastery", text: "Bloom Bow: +1% healing per shot", bonus: { regrowth: 0.01 }, maxLevel: 5, cost: 2 }
+    { id: "marksmanship", name: "Marksmanship", text: "+3% attack", bonus: { attackPercent: 0.03 }, cost: 1 },
+    { id: "endurance", name: "Endurance", text: "+3% health", bonus: { healthPercent: 0.03 }, cost: 1 },
+    { id: "packTactics", name: "Pack Tactics", text: "Spirits deal +10% damage", bonus: { dotPower: 0.1 }, cost: 1 },
+    { id: "openingVolley", name: "Opening Volley", text: "The enemy misses 1 more turn at the start of a fight", bonus: { firstStrike: 1 }, cost: 5 },
+    { id: "longbowMastery", name: "Longbow Mastery", text: "Longbow: +3% aimed shot chance", bonus: { aimChance: 0.03 }, cost: 2 },
+    { id: "spiritMastery", name: "Spirit Mastery", text: "Spirit Bow: +1 spirit", bonus: { spirits: 1 }, cost: 2 },
+    { id: "bloomMastery", name: "Bloom Mastery", text: "Bloom Bow: +1% healing per shot", bonus: { regrowth: 0.01 }, cost: 2 }
   ],
 
   milestones: [
@@ -109,20 +109,23 @@ let rangerFreeTurns = 0;
 
 // Runs at the start of every fight
 function rangerStartFight() {
-  rangerFreeTurns = totalBonus("firstStrike");
+  rangerFreeTurns = Math.min(maxFreeTurns, totalBonus("firstStrike"));
 }
 
 function rangerAttack() {
-  // The enemy is still out of reach, so it misses this turn
+  let damage = playerAttack;
+
+  // The enemy is still out of reach, so it misses this turn.
+  // Free turns bought past the limit make these opening shots stronger instead.
   if (rangerFreeTurns > 0) {
     rangerFreeTurns = rangerFreeTurns - 1;
     monsterStunned = true;
+    damage = damage * (1 + overflow("firstStrike", maxFreeTurns) * extraOpeningDamage);
   }
 
-  let damage = playerAttack;
-
+  // Aim chance past 100% adds to the aimed shot's damage instead
   if (weapon === "longbow" && chance(totalBonus("aimChance"))) {
-    damage = damage * 2;
+    damage = damage * (2 + overflow("aimChance", 1));
     say("An aimed shot finds a weak spot!");
   }
   hitMonster(damage);
@@ -149,7 +152,8 @@ function rangerDotPerStack() {
 }
 
 function rangerStatLine() {
-  return "Range: the enemy misses its first " + totalBonus("firstStrike") + " turn(s) of every fight";
+  return "Range: the enemy misses its first " + Math.min(maxFreeTurns, totalBonus("firstStrike")) + " turn(s) of every fight."
+    + overflowNote(overflow("firstStrike", maxFreeTurns) * extraOpeningDamage, "damage on those turns");
 }
 
 function rangerGearInfo() {

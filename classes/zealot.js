@@ -27,12 +27,12 @@ classes.zealot = {
   ],
 
   skills: [
-    { id: "zeal", name: "Zeal", text: "+3% attack", bonus: { attackPercent: 0.03 }, maxLevel: 0, cost: 1 },
-    { id: "faithful", name: "Faithful", text: "+3% health", bonus: { healthPercent: 0.03 }, maxLevel: 0, cost: 1 },
-    { id: "radiance", name: "Radiance", text: "Holy Mace: +10% holy damage", bonus: { smite: 0.1 }, maxLevel: 20, cost: 1 },
-    { id: "armorOfFaith", name: "Armor of Faith", text: "+2 armor", bonus: { armor: 2 }, maxLevel: 10, cost: 1 },
-    { id: "piety", name: "Piety", text: "+0.5% healing every turn", bonus: { devotion: 0.005 }, maxLevel: 6, cost: 2 },
-    { id: "shieldMastery", name: "Shield Mastery", text: "Mace and Shield: +3% block chance", bonus: { blockChance: 0.03 }, maxLevel: 5, cost: 2 }
+    { id: "zeal", name: "Zeal", text: "+3% attack", bonus: { attackPercent: 0.03 }, cost: 1 },
+    { id: "faithful", name: "Faithful", text: "+3% health", bonus: { healthPercent: 0.03 }, cost: 1 },
+    { id: "radiance", name: "Radiance", text: "Holy Mace: +10% holy damage", bonus: { smite: 0.1 }, cost: 1 },
+    { id: "armorOfFaith", name: "Armor of Faith", text: "+2 armor", bonus: { armor: 2 }, cost: 1 },
+    { id: "piety", name: "Piety", text: "+0.5% healing every turn", bonus: { devotion: 0.005 }, cost: 2 },
+    { id: "shieldMastery", name: "Shield Mastery", text: "Mace and Shield: +3% block chance", bonus: { blockChance: 0.03 }, cost: 2 }
   ],
 
   milestones: [
@@ -96,6 +96,7 @@ classes.zealot = {
 
   attack: zealotAttack,
   whenAttacked: zealotWhenAttacked,
+  damageDivider: zealotDamageDivider,
   dotPerStack: zealotDotPerStack,
   statLine: zealotStatLine,
   gearInfo: zealotGearInfo
@@ -125,6 +126,14 @@ function zealotAttack() {
   }
 }
 
+// Block chance past its limit reduces all damage taken instead (it is divided by this)
+function zealotDamageDivider() {
+  if (weapon === "shield") {
+    return 1 + overflow("blockChance", maxChance);
+  }
+  return 1;
+}
+
 function zealotWhenAttacked() {
   if (weapon === "shield" && chance(cappedChance("blockChance"))) {
     say("You block the attack!");
@@ -147,7 +156,8 @@ function zealotGearInfo() {
     return "Holy Mace: every hit adds " + percent(totalBonus("smite")) + " of your attack as holy damage that ignores armor.";
   }
   if (weapon === "shield") {
-    return "Mace and Shield: " + percent(cappedChance("blockChance")) + " chance to block an attack.";
+    return "Mace and Shield: " + percent(cappedChance("blockChance")) + " chance to block an attack."
+      + overflowNote(overflow("blockChance", maxChance), "damage resistance");
   }
   return "Holy Tome: your attacks ignore armor and your healing is doubled.";
 }
