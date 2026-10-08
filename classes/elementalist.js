@@ -38,7 +38,7 @@ classes.elementalist = {
   // The elements. The player picks one on the Skills tab; "stance" holds the choice.
   stanceLabel: "Element",
   stances: {
-    fire: { name: "Fire", text: "Each spell hits for 90% of your attack and adds a burn stack. Every stack burns for 23% of your attack each turn." },
+    fire: { name: "Fire", text: "Each spell hits for 90% of your attack and adds two burn stacks. Every stack burns for 23% of your attack each turn." },
     ice: { name: "Ice", text: "Each spell has a chance of a critical hit for triple damage." },
     lightning: { name: "Lightning", text: "Two bolts every turn, each for 65% of your attack. Skills add a chance of more bolts." },
     earth: { name: "Earth", text: "Every second turn, one boulder for 400% of your attack, with a chance to stun." }
@@ -52,17 +52,14 @@ classes.elementalist = {
     { id: "tremor", name: "Tremor", text: "Earth: +5% stun chance", bonus: { stunChance: 0.05 } }
   ],
 
+  // One skill per element, so there is never a question of where an element's points go
   skills: [
     { id: "attunement", name: "Attunement", text: "+3% attack", bonus: { attackPercent: 0.03 }, cost: 1 },
     { id: "resilience", name: "Resilience", text: "+3% health", bonus: { healthPercent: 0.03 }, cost: 1 },
-    { id: "fireMastery", name: "Fire Mastery", text: "Fire: +1 burn stack", bonus: { burnStacks: 1 }, cost: 2 },
-    { id: "conflagration", name: "Conflagration", text: "Fire: burning deals +10% damage", bonus: { dotPower: 0.1 }, cost: 1 },
-    { id: "iceMastery", name: "Ice Mastery", text: "Ice: +3% critical chance", bonus: { critChance: 0.03 }, cost: 1 },
-    { id: "shatter", name: "Shatter", text: "Ice: +15% critical damage", bonus: { critPower: 0.15 }, cost: 1 },
-    { id: "lightningMastery", name: "Lightning Mastery", text: "Lightning: +8% chance of an extra bolt", bonus: { extraBolts: 0.08 }, cost: 1 },
-    { id: "overload", name: "Overload", text: "Lightning: bolts deal +3% damage", bonus: { boltPower: 0.03 }, cost: 1 },
-    { id: "earthMastery", name: "Earth Mastery", text: "Earth: boulders deal +15% damage", bonus: { crush: 0.15 }, cost: 1 },
-    { id: "aftershock", name: "Aftershock", text: "Earth: +3% stun chance", bonus: { stunChance: 0.03 }, cost: 1 }
+    { id: "fireMastery", name: "Fire Mastery", text: "Fire: +1 burn stack and burning deals +8% damage", bonus: { burnStacks: 1, dotPower: 0.08 }, cost: 1 },
+    { id: "iceMastery", name: "Ice Mastery", text: "Ice: +1.5% critical chance and +5% critical damage", bonus: { critChance: 0.015, critPower: 0.05 }, cost: 1 },
+    { id: "lightningMastery", name: "Lightning Mastery", text: "Lightning: +3% chance of an extra bolt and bolts deal +1% damage", bonus: { extraBolts: 0.03, boltPower: 0.01 }, cost: 1 },
+    { id: "earthMastery", name: "Earth Mastery", text: "Earth: boulders deal +18% damage and +2% stun chance", bonus: { crush: 0.18, stunChance: 0.02 }, cost: 1 }
   ],
 
   milestones: [
@@ -155,6 +152,9 @@ function elementalistAttack() {
 
   if (stance === "fire") {
     magicHitMonster(playerAttack * fireHit);
+
+    // Fire catches quickly: every spell adds two burn stacks
+    addDotStack(totalBonus("burnStacks"));
     addDotStack(totalBonus("burnStacks"));
   }
 
