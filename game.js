@@ -196,7 +196,13 @@ function resistNow() {
 
 // Penetration cuts through resistance (see data.js). It comes from the town and from fame.
 function penetration() {
-  return totalBonus("penetration") + fameAdd("penetration");
+  let total = totalBonus("penetration") + fameAdd("penetration");
+
+  // A class can add its own (the Ranger's crossbow)
+  if (currentClass().penetration !== undefined) {
+    total = total + currentClass().penetration();
+  }
+  return total;
 }
 
 // What a hit of this type is multiplied by against the monster being fought
