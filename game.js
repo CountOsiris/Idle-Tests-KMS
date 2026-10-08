@@ -2026,6 +2026,10 @@ function showUpgrades() {
 function showSkills() {
   document.getElementById("skill-points").textContent = skillPointsLeft();
 
+  // Resetting is free and can be done at any time. The button is greyed out only
+  // when there is nothing to give back.
+  document.getElementById("reset-skills-btn").disabled = skillPointsSpent() === 0;
+
   // The x1 / x10 / Max buttons, and the saved build
   showFavourite("skill-amount-buttons", "skill-amount-" + skillBuyAmount);
   document.getElementById("apply-build-btn").disabled = !hasSavedBuild() || skillPointsLeft() < 1;

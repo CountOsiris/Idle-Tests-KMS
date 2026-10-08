@@ -63,9 +63,9 @@ classes.warden = {
     { id: "spearThrust", name: "Spear Thrust", text: "+3% attack", bonus: { attackPercent: 0.03 }, cost: 1 },
     { id: "vigor", name: "Vigor", text: "+3% health", bonus: { healthPercent: 0.03 }, cost: 1 },
     { id: "plating", name: "Plating", text: "+2 armor", bonus: { armor: 2 }, cost: 1 },
-    { id: "thornmail", name: "Spiked Mastery", text: "Spiked: +3% reflect, and all reflected damage is 4% stronger", bonus: { reflect: 0.03, shieldPower: 0.04 }, cost: 1 },
+    { id: "thornmail", name: "Spiked Mastery", text: "Spiked: +5% reflect", bonus: { reflect: 0.05 }, cost: 1 },
     { id: "phalanx", name: "Tower Mastery", text: "Tower: +1% block chance and +2.5% spear damage", bonus: { blockChance: 0.01, spearPower: 0.025 }, cost: 1 },
-    { id: "discus", name: "Bladed Mastery", text: "Bladed: throws hit for 20% of your armor more, and are 4% stronger", bonus: { throwPower: 0.2, shieldPower: 0.04 }, cost: 1 },
+    { id: "discus", name: "Bladed Mastery", text: "Bladed: throws hit for 30% of your armor more", bonus: { throwPower: 0.3 }, cost: 1 },
     { id: "grudge", name: "Grudge", text: "+4% vengeance, and +5% more against bosses and rare monsters", bonus: { vengeance: 0.04, spite: 0.05 }, cost: 1 }
   ],
 

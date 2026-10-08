@@ -313,6 +313,14 @@ body[data-tab="tower"] #tab-character {
   min-width: 0;
 }
 
+/* The Buy buttons and the Reset button, side by side above the skills */
+.skill-tools {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 12px 24px;
+}
+
 /* ----- An item of equipment: its picture, name and stats ----- */
 .item {
   display: flex;

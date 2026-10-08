@@ -241,13 +241,21 @@
             <p id="stance-note" class="note"></p>
           </div>
 
-          <!-- How many levels one click buys -->
-          <div class="picker">
-            <p class="row-title">Buy</p>
-            <div id="skill-amount-buttons" class="choices">
-              <button id="skill-amount-1" onclick="setSkillBuyAmount(1)">x1</button>
-              <button id="skill-amount-10" onclick="setSkillBuyAmount(10)">x10</button>
-              <button id="skill-amount-0" onclick="setSkillBuyAmount(0)">Max</button>
+          <!-- How many levels one click buys, and the button that gives every point back -->
+          <div class="picker skill-tools">
+            <div>
+              <p class="row-title">Buy</p>
+              <div id="skill-amount-buttons" class="choices">
+                <button id="skill-amount-1" onclick="setSkillBuyAmount(1)">x1</button>
+                <button id="skill-amount-10" onclick="setSkillBuyAmount(10)">x10</button>
+                <button id="skill-amount-0" onclick="setSkillBuyAmount(0)">Max</button>
+              </div>
+            </div>
+            <div>
+              <p class="row-title">Start over</p>
+              <div class="choices">
+                <button id="reset-skills-btn" onclick="resetSkills()">Reset skills</button>
+              </div>
             </div>
           </div>
 
@@ -264,7 +272,6 @@
             </div>
             <p class="note"><label><input type="checkbox" id="auto-build-box" onchange="setAutoBuild(this.checked)"> Spend new skill points this way by themselves</label></p>
           </div>
-          <p><button class="quiet" onclick="resetSkills()">Reset skills</button></p>
         </div>
       </div>
 
