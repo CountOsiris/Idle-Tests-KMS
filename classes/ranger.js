@@ -5,12 +5,21 @@
 //   firstStrike  turns the enemy misses at the start of a fight   (1 means +1 turn)
 //   aimChance    longbow chance of an aimed shot (x2.5 damage)    (0.1 means +10%)
 //   spirits      most spirits the spirit bow can summon           (2 means +2)
+//   aimPower     longbow: extra damage of an aimed shot           (0.1 means +10%)
 //   regrowth     health healed per shot by the bloom bow          (0.01 means +1% of your health)
+//   thornPower   bloom bow: extra damage of its thorns            (0.1 means +10%)
 //   bond         damage of your companion                         (0.1 means +10% stronger)
 //   guardChance  bear: chance it takes a hit for you              (0.02 means +2%)
 //   diveChance   hawk: chance it dives each turn                  (0.02 means +2%)
 //   packChance   wolf: chance of another bite                     (0.05 means +5%;
 //                every full 1 is a bite for certain)
+//
+// The four ways to build a Ranger:
+//   Marksman      (longbow)    - aimed shots that hit far harder than a normal one.
+//   Spirit Caller (spirit bow) - every shot summons a spirit; a pack of them does the killing.
+//   Druid         (bloom bow)  - heals with every shot, and thorns that hit as hard as you heal.
+//                                A health build.
+//   Beast Tamer   (any bow)    - the companion does the work: wolf, bear or hawk.
 //
 // The Ranger also has a COMPANION, picked on the Skills tab and free to change.
 // It fights beside you whichever bow you carry, so every bow goes with every companion.
@@ -56,7 +65,9 @@ classes.ranger = {
     { id: "beastBond", name: "Beast Bond", text: "Your companion deals +10% damage", bonus: { bond: 0.1 }, cost: 1 },
     { id: "bearMastery", name: "Bear Mastery", text: "Bear: +2% chance to take a hit for you", bonus: { guardChance: 0.02 }, cost: 1 },
     { id: "hawkMastery", name: "Hawk Mastery", text: "Hawk: +2% dive chance", bonus: { diveChance: 0.02 }, cost: 1 },
-    { id: "wolfMastery", name: "Wolf Mastery", text: "Wolf: +4% chance to bite again", bonus: { packChance: 0.04 }, cost: 1 }
+    { id: "wolfMastery", name: "Wolf Mastery", text: "Wolf: +4% chance to bite again", bonus: { packChance: 0.04 }, cost: 1 },
+    { id: "deadeyeShot", name: "Steady Aim", text: "Longbow: aimed shots deal +8% damage", bonus: { aimPower: 0.08 }, cost: 1 },
+    { id: "thornweaver", name: "Thornweaver", text: "Bloom Bow: thorns deal +10% damage", bonus: { thornPower: 0.1 }, cost: 1 }
   ],
 
   milestones: [
@@ -77,9 +88,9 @@ classes.ranger = {
     {
       floor: 20,
       perks: [
-        { id: "marksman", name: "Marksman", text: "Longbow: +10% aimed shot chance", bonus: { aimChance: 0.1 } },
-        { id: "beastmaster", name: "Beastmaster", text: "Spirit Bow: +2 spirits", bonus: { spirits: 2 } },
-        { id: "druid", name: "Druid", text: "Bloom Bow: +2% healing per shot", bonus: { regrowth: 0.02 } },
+        { id: "marksman", name: "Marksman", text: "Longbow: +10% aimed shot chance and aimed shots deal +30% damage", bonus: { aimChance: 0.1, aimPower: 0.3 } },
+        { id: "beastmaster", name: "Spirit Caller", text: "Spirit Bow: +2 spirits", bonus: { spirits: 2 } },
+        { id: "druid", name: "Druid", text: "Bloom Bow: +2% healing per shot and thorns deal +30% damage", bonus: { regrowth: 0.02, thornPower: 0.3 } },
         { id: "beastTamer", name: "Beast Tamer", text: "Your companion deals +50% damage", bonus: { bond: 0.5 } }
       ]
     },
@@ -118,7 +129,7 @@ classes.ranger = {
 
   relics: [
     { id: "hawkFeather", name: "Hawk Feather", text: "Longbow: +10% aimed shot chance", bonus: { aimChance: 0.1 } },
-    { id: "wolfTotem", name: "Wolf Totem", text: "Spirit Bow: +1 spirit", bonus: { spirits: 1 } },
+    { id: "wolfTotem", name: "Spirit Totem", text: "Spirit Bow: +1 spirit", bonus: { spirits: 1 } },
     { id: "heartwood", name: "Heartwood", text: "Bloom Bow: +2% healing per shot", bonus: { regrowth: 0.02 } },
     { id: "alphaFang", name: "Alpha Fang", text: "Your companion deals +25% damage", bonus: { bond: 0.25 } }
   ],
@@ -153,7 +164,7 @@ function rangerAttack() {
 
   // Aim chance past 100% adds to the aimed shot's damage instead
   if (weapon === "longbow" && chance(totalBonus("aimChance"))) {
-    damage = damage * (2.5 + overflow("aimChance", 1));
+    damage = damage * (2.5 + totalBonus("aimPower") + overflow("aimChance", 1));
     say("An aimed shot finds a weak spot!");
   }
   hitMonster(damage);
@@ -165,7 +176,7 @@ function rangerAttack() {
   // The bloom bow heals you, and its thorns hurt the enemy by as much, ignoring armor
   if (weapon === "bloom") {
     healPlayer(playerMaxHp * totalBonus("regrowth"));
-    magicHitMonster(playerMaxHp * totalBonus("regrowth"));
+    magicHitMonster(playerMaxHp * totalBonus("regrowth") * (1 + totalBonus("thornPower")));
   }
 
   // Every summoned spirit attacks too
@@ -239,7 +250,7 @@ function companionLine() {
 
 // The damage of one spirit each turn
 function rangerDotPerStack() {
-  return Math.max(1, Math.round(playerAttack * 0.25));
+  return Math.max(1, Math.round(playerAttack * 0.22));
 }
 
 function rangerStatLine() {
@@ -250,10 +261,10 @@ function rangerStatLine() {
 
 function rangerGearInfo() {
   if (weapon === "longbow") {
-    return "Longbow: " + percent(totalBonus("aimChance")) + " chance of an aimed shot for 2.5 times the damage.";
+    return "Longbow: " + percent(Math.min(1, totalBonus("aimChance"))) + " chance of an aimed shot for x" + (2.5 + totalBonus("aimPower") + overflow("aimChance", 1)).toFixed(1) + " damage.";
   }
   if (weapon === "spirit") {
     return "Spirit Bow: every shot summons a spirit that attacks each turn (up to " + totalBonus("spirits") + " spirits).";
   }
-  return "Bloom Bow: every shot heals you for " + percent(totalBonus("regrowth")) + " of your health, and its thorns deal the same amount as damage. Health makes this bow stronger.";
+  return "Bloom Bow: every shot heals you for " + percent(totalBonus("regrowth")) + " of your health, and its thorns deal that much damage and " + percent(totalBonus("thornPower")) + " more. Health makes this bow stronger.";
 }
