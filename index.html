@@ -209,8 +209,29 @@
             <p id="stance-note" class="note"></p>
           </div>
 
+          <!-- How many levels one click buys -->
+          <div class="picker">
+            <p class="row-title">Buy</p>
+            <div id="skill-amount-buttons" class="choices">
+              <button id="skill-amount-1" onclick="setSkillBuyAmount(1)">x1</button>
+              <button id="skill-amount-10" onclick="setSkillBuyAmount(10)">x10</button>
+              <button id="skill-amount-0" onclick="setSkillBuyAmount(0)">Max</button>
+            </div>
+          </div>
+
           <!-- The rows are made by game.js from the class's skills list -->
           <div id="skills"></div>
+
+          <!-- A remembered skill layout, to get back after ascending -->
+          <div class="picker">
+            <p class="row-title">Saved build</p>
+            <p id="saved-build-note" class="note"></p>
+            <div class="choices">
+              <button onclick="saveBuild()">Save current skills</button>
+              <button id="apply-build-btn" onclick="applySavedBuild()">Spend points this way</button>
+            </div>
+            <p class="note"><label><input type="checkbox" id="auto-build-box" onchange="setAutoBuild(this.checked)"> Spend new skill points this way by themselves</label></p>
+          </div>
           <p><button class="quiet" onclick="resetSkills()">Reset skills</button></p>
         </div>
       </div>

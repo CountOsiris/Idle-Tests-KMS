@@ -22,6 +22,8 @@ let playerHp = 0;
 
 let weapon = "";
 let stance = "";             // the fighting style picked on the Skills tab (only some classes have one)
+let savedBuild = {};        // a remembered skill layout, for example { might: 12, rage: 6 }
+let autoBuild = false;      // true = new skill points are spent following the saved build
 let runCounter = 0;         // a number a class may count up during a run (the Warlock's souls). Back to 0 on death.
 let weaponPower = 0;
 let armorPower = 0;
@@ -408,7 +410,18 @@ function ascend() {
   // The Legacy fame upgrade gives some levels back straight away.
   level = 1 + fameAdd("startLevels");
   experience = 0;
+
+  // The skills are about to be wiped. If no build was ever saved, remember this one,
+  // so that it can be had back with one click.
+  if (!hasSavedBuild()) {
+    saveBuild();
+  }
   skillLevels = {};
+
+  // Any levels kept through Legacy give skill points straight away
+  if (autoBuild) {
+    spendOnSavedBuild();
+  }
   gold = 0;
   bank = 0;
   potions = 0;
@@ -872,12 +885,96 @@ function skillPointsLeft() {
   return skillPointsEarned() - skillPointsSpent();
 }
 
+// How many levels one click on a skill buys: 1, 10, or 0 for "as many as you can afford".
+// Not saved: it goes back to 1 when the page is opened again.
+let skillBuyAmount = 1;
+
+function setSkillBuyAmount(amount) {
+  skillBuyAmount = amount;
+  updateScreen();
+}
+
 function buySkill(skill) {
-  if (skillPointsLeft() >= skill.cost) {
+  let bought = 0;
+
+  while (skillPointsLeft() >= skill.cost && (skillBuyAmount === 0 || bought < skillBuyAmount)) {
     skillLevels[skill.id] = skillLevel(skill.id) + 1;
+    bought = bought + 1;
+  }
+
+  if (bought > 0) {
     recalcStats();
     updateScreen();
   }
+}
+
+// ----- Saved builds -----
+// A saved build is a remembered skill layout. It is used as a RECIPE, not a shopping
+// list: "12 Might, 6 Rage" means "two points of Might for every one of Rage". So it
+// can be followed with 20 points or with 2,000, and never runs out.
+
+function hasSavedBuild() {
+  return Object.keys(savedBuild).length > 0;
+}
+
+// Remembers the skills as they are right now
+function saveBuild() {
+  savedBuild = {};
+  for (let skill of currentClass().skills) {
+    if (skillLevel(skill.id) > 0) {
+      savedBuild[skill.id] = skillLevel(skill.id);
+    }
+  }
+  updateScreen();
+}
+
+// Spends every point it can, following the saved build. Each point goes to the
+// skill that is furthest behind its share of the recipe.
+function spendOnSavedBuild() {
+  let spent = false;
+
+  while (true) {
+    let pick = null;
+    let pickNeed = 0;
+
+    for (let skill of currentClass().skills) {
+      let wanted = savedBuild[skill.id];
+      if (wanted === undefined || skill.cost > skillPointsLeft()) {
+        continue;
+      }
+
+      // A skill at level 0 that the recipe wants 12 of is needed more than
+      // one at level 5 that the recipe wants 6 of
+      let need = wanted / (skillLevel(skill.id) + 1);
+      if (need > pickNeed) {
+        pick = skill;
+        pickNeed = need;
+      }
+    }
+
+    if (pick === null) {
+      break;
+    }
+    skillLevels[pick.id] = skillLevel(pick.id) + 1;
+    spent = true;
+  }
+
+  if (spent) {
+    recalcStats();
+  }
+}
+
+function applySavedBuild() {
+  spendOnSavedBuild();
+  updateScreen();
+}
+
+function setAutoBuild(on) {
+  autoBuild = on;
+  if (autoBuild) {
+    spendOnSavedBuild();
+  }
+  updateScreen();
 }
 
 // Changes the fighting style (the Elementalist's element). It is free and can be done at any time.
@@ -979,6 +1076,11 @@ function levelUpWhilePossible() {
   if (gained > 0) {
     recalcStats();
     say("You reach level " + level + "!");
+
+    // New skill points are spent straight away if the player asked for that
+    if (autoBuild && hasSavedBuild()) {
+      spendOnSavedBuild();
+    }
   }
 }
 
@@ -1086,7 +1188,9 @@ function freshClass(className) {
     lastAscensionFame: 0,
     lastAscensionSeconds: 0,
     trophies: [],
-    runCounter: 0
+    runCounter: 0,
+    savedBuild: {},
+    autoBuild: false
   };
 }
 
@@ -1127,7 +1231,9 @@ function packClass() {
     lastAscensionFame: lastAscensionFame,
     lastAscensionSeconds: lastAscensionSeconds,
     trophies: trophies,
-    runCounter: runCounter
+    runCounter: runCounter,
+    savedBuild: savedBuild,
+    autoBuild: autoBuild
   };
 }
 
@@ -1188,6 +1294,8 @@ function unpackClass(saved) {
   lastAscensionSeconds = data.lastAscensionSeconds;
   trophies = data.trophies;
   runCounter = data.runCounter;
+  savedBuild = data.savedBuild;
+  autoBuild = data.autoBuild;
 
   // In case a tower or gear type was renamed or removed since the save was made
   if (towers[tower] === undefined) {
@@ -1213,6 +1321,7 @@ function unpackClass(saved) {
   // Forget anything the save remembers that is no longer in the game.
   // Skill points spent on a removed skill come back by themselves.
   skillLevels = keepKnownIds(skillLevels, currentClass().skills);
+  savedBuild = keepKnownIds(savedBuild, currentClass().skills);
   upgrades = keepKnownIds(upgrades, currentClass().upgrades);
 
   let knownRelics = [];
@@ -1673,6 +1782,24 @@ function showUpgrades() {
 
 function showSkills() {
   document.getElementById("skill-points").textContent = skillPointsLeft();
+
+  // The x1 / x10 / Max buttons, and the saved build
+  showFavourite("skill-amount-buttons", "skill-amount-" + skillBuyAmount);
+  document.getElementById("apply-build-btn").disabled = !hasSavedBuild() || skillPointsLeft() < 1;
+  document.getElementById("auto-build-box").checked = autoBuild;
+  document.getElementById("auto-build-box").disabled = !hasSavedBuild();
+
+  let recipe = [];
+  for (let skill of currentClass().skills) {
+    if (savedBuild[skill.id] !== undefined) {
+      recipe.push(skill.name + " " + savedBuild[skill.id]);
+    }
+  }
+  if (recipe.length === 0) {
+    document.getElementById("saved-build-note").textContent = "No build saved yet. Spend your points how you like, then save.";
+  } else {
+    document.getElementById("saved-build-note").textContent = "Saved: " + recipe.join(", ") + ". Points are shared out in these proportions.";
+  }
 
   // The stance picker is hidden for a class without stances
   let stances = currentClass().stances;
