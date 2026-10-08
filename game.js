@@ -2019,6 +2019,13 @@ function showSkills() {
     document.getElementById("saved-build-note").textContent = "Saved: " + recipe.join(", ") + ". Points are shared out in these proportions.";
   }
 
+  // A class can have something to say at the top of its skills
+  let noteBox = document.getElementById("skills-note");
+  noteBox.hidden = currentClass().skillsNote === undefined;
+  if (currentClass().skillsNote !== undefined) {
+    noteBox.textContent = currentClass().skillsNote();
+  }
+
   // The stance picker is hidden for a class without stances
   let stances = currentClass().stances;
   document.getElementById("stance").hidden = stances === undefined;

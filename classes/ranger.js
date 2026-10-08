@@ -10,10 +10,6 @@
 //   bloomPower   bloom bow: how much stronger it makes your
 //                companion                                        (0.05 means +5%)
 //   bond         damage of your companion, with any bow           (0.1 means +10% stronger)
-//   guardChance  bear: chance it takes a hit for you              (0.02 means +2%)
-//   diveChance   hawk: chance it dives each turn                  (0.02 means +2%)
-//   packChance   wolf: chance of another bite                     (0.05 means +5%;
-//                every full 1 is a bite for certain)
 //
 // The three bows are three different Rangers:
 //   Longbow    - the ARCHER. Arrows hit harder, and can strike a critical shot.
@@ -23,8 +19,10 @@
 //   Bloom Bow  - the BEAST TAMER. Its arrows are weak, but the bow makes your companion
 //                far stronger. The companion does the killing.
 //
-// Every Ranger has a COMPANION (wolf, bear or hawk), picked on the Skills tab and free
-// to change. It fights beside any bow; the Bloom Bow is the one built around it.
+// Every Ranger has a COMPANION that fights beside any bow. Companions are unlocked by
+// LEVEL: you start with a hawk, and stronger animals replace it as you grow, all the
+// way up to mythical beasts. The list is "companions", further down this file.
+// The Bloom Bow is the bow built around the companion.
 //
 // See classes/barbarian.js for what each list is for.
 
@@ -32,17 +30,9 @@ classes.ranger = {
   name: "Ranger",
   icon: "🏹",
   art: "art/ranger.png",
-  text: "An archer, a forest mystic or a beast tamer, depending on the bow. Shoots before the enemy can reach you, with a wolf, bear or hawk at your side.",
+  text: "An archer, a forest mystic or a beast tamer, depending on the bow. Shoots before the enemy can reach you, with an animal companion that grows mightier as you level.",
   perLevel: { maxHp: 8, attack: 2 },
-  base: { maxHp: 80, attack: 10, firstStrike: 1, aimChance: 0.3, spiritPower: 0.45, bloomPower: 0.4, guardChance: 0.2, diveChance: 0.2 },
-
-  // The companions. The player picks one on the Skills tab; "stance" holds the choice.
-  stanceLabel: "Companion",
-  stances: {
-    wolf: { name: "Wolf", text: "Bites every turn. The steady damage dealer." },
-    bear: { name: "Bear", text: "Has a chance to take a hit for you, and mauls every turn for half a wolf's bite. The protector." },
-    hawk: { name: "Hawk", text: "Has a chance each turn to dive for a heavy hit that ignores armor, and blind the enemy so it misses its turn." }
-  },
+  base: { maxHp: 80, attack: 10, firstStrike: 1, aimChance: 0.3, spiritPower: 0.45, bloomPower: 0.4 },
 
   gearLabel: "Bow",
   gearTypes: { longbow: "Longbow", spirit: "Spirit Bow", bloom: "Bloom Bow" },
@@ -59,8 +49,7 @@ classes.ranger = {
     { id: "feralBond", name: "Feral Bond", text: "Your companion deals +15% damage", bonus: { bond: 0.15 } }
   ],
 
-  // Each bow has one skill, and the companion has two that work for EVERY companion,
-  // so a Ranger can swap animal to suit the fight without wasting any points.
+  // Each bow has one skill, and Beast Bond works for whichever companion you have
   skills: [
     { id: "marksmanship", name: "Marksmanship", text: "+3% attack", bonus: { attackPercent: 0.03 }, cost: 1 },
     { id: "endurance", name: "Endurance", text: "+3% health", bonus: { healthPercent: 0.03 }, cost: 1 },
@@ -68,8 +57,7 @@ classes.ranger = {
     { id: "longbowMastery", name: "Longbow Mastery", text: "Longbow: +1.5% critical shot chance and critical shots deal +2% damage", bonus: { aimChance: 0.015, aimPower: 0.02 }, cost: 1 },
     { id: "spiritMastery", name: "Spirit Mastery", text: "Spirit Bow: spirit bolts deal +4% of your attack more", bonus: { spiritPower: 0.04 }, cost: 1 },
     { id: "bloomMastery", name: "Bloom Mastery", text: "Bloom Bow: your companion is 5% stronger", bonus: { bloomPower: 0.05 }, cost: 1 },
-    { id: "beastBond", name: "Beast Bond", text: "Your companion deals +10% damage, whichever it is and whichever bow you carry. Companions grow with your level and a little with your bow, not with your attack", bonus: { bond: 0.1 }, cost: 1 },
-    { id: "instinct", name: "Animal Instinct", text: "Sharpens your companion's own trick: Wolf +4% chance to bite again, Bear +2% chance to take a hit for you, Hawk +2% dive chance", bonus: { packChance: 0.04, guardChance: 0.02, diveChance: 0.02 }, cost: 1 }
+    { id: "beastBond", name: "Beast Bond", text: "Your companion deals +5% damage, with any bow. Companions grow with your level and a little with your bow, not with your attack", bonus: { bond: 0.05 }, cost: 1 }
   ],
 
   milestones: [
@@ -93,7 +81,7 @@ classes.ranger = {
         { id: "marksman", name: "Marksman", text: "Longbow: +10% critical shot chance and critical shots deal +30% damage", bonus: { aimChance: 0.1, aimPower: 0.3 } },
         { id: "beastmaster", name: "Mystic", text: "Spirit Bow: spirit bolts deal +30% of your attack more", bonus: { spiritPower: 0.3 } },
         { id: "druid", name: "Druid", text: "Bloom Bow: your companion is 40% stronger", bonus: { bloomPower: 0.4 } },
-        { id: "beastTamer", name: "Beast Tamer", text: "Your companion deals +30% damage with any bow, and its own trick is sharper (Wolf +20% to bite again, Bear and Hawk +8%)", bonus: { bond: 0.3, packChance: 0.2, guardChance: 0.08, diveChance: 0.08 } }
+        { id: "beastTamer", name: "Beast Tamer", text: "Your companion deals +50% damage, with any bow", bonus: { bond: 0.5 } }
       ]
     },
     {
@@ -140,7 +128,7 @@ classes.ranger = {
   damageTypes: rangerDamageTypes,
   attack: rangerAttack,
   whenAttacked: rangerWhenAttacked,
-  damageDivider: rangerDamageDivider,
+  skillsNote: rangerSkillsNote,
   dotPerStack: rangerDotPerStack,
   statLine: rangerStatLine,
   gearInfo: rangerGearInfo
@@ -158,7 +146,7 @@ function rangerDamageTypes() {
 // The numbers behind the bows. Change these to retune them.
 const longbowHit = 1.1;         // a longbow arrow hits for this many times your attack
 const longbowCrit = 2.5;        // and a critical shot multiplies that by this
-const bloomHit = 0.7;           // a bloom bow arrow hits for this share of your attack
+const bloomHit = 0.8;           // a bloom bow arrow hits for this share of your attack
 
 // How many more turns the enemy is still too far away to attack
 let rangerFreeTurns = 0;
@@ -166,6 +154,13 @@ let rangerFreeTurns = 0;
 // Runs at the start of every fight
 function rangerStartFight() {
   rangerFreeTurns = Math.min(maxFreeTurns, totalBonus("firstStrike"));
+
+  // Has a new companion been unlocked since the last fight?
+  let companion = currentCompanion();
+  if (rangerCompanionSeen !== "" && rangerCompanionSeen !== companion.id) {
+    say("A new companion joins you: the " + companion.name + "!");
+  }
+  rangerCompanionSeen = companion.id;
 }
 
 function rangerAttack() {
@@ -205,19 +200,69 @@ function rangerAttack() {
   companionAttack();
 }
 
-// The numbers behind the companions. Change these to retune them.
+// =====================================================================
+//  Companions
+// =====================================================================
+// One companion fights beside the Ranger: always the best one unlocked so far.
+// They are unlocked by LEVEL, so every ascension you earn them again from the hawk up.
 //
+// TO ADD ONE: add a line, anywhere in the list. It needs:
+//   id     - a unique name with no spaces
+//   name   - what the player sees
+//   icon   - its little picture. To use a drawing instead, add  art: "art/wolf.png"
+//   level  - the level that unlocks it
+//   power  - the share of the companion's strength it hits for every turn.
+//            Bigger is simply stronger: 0.5 is half, 1 is all of it, 2 is double.
+//   text   - a few words about it
+// Later, a companion can also be given a "bonus" (like a relic's) for rare stats.
+const companions = [
+  { id: "hawk", name: "Hawk", icon: "🦅", level: 1, power: 0.5, text: "Quick talons." },
+  { id: "wolf", name: "Wolf", icon: "🐺", level: 10, power: 0.54, text: "A loyal hunter." },
+  { id: "boar", name: "Boar", icon: "🐗", level: 25, power: 0.58, text: "All tusk and temper." },
+  { id: "bear", name: "Bear", icon: "🐻", level: 45, power: 0.62, text: "Slow to anger, hard to stop." },
+  { id: "sabertooth", name: "Sabertooth", icon: "🐯", level: 70, power: 0.66, text: "A cat from an older age." },
+  { id: "direBear", name: "Dire Bear", icon: "🐻‍❄️", level: 100, power: 0.7, text: "The bear's bigger, meaner cousin." },
+  // Mythical beasts
+  { id: "griffin", name: "Griffin", icon: "🦁", level: 140, power: 0.75, text: "Mythical: half eagle, half lion." },
+  { id: "unicorn", name: "Unicorn", icon: "🦄", level: 190, power: 0.81, text: "Mythical: its horn pierces anything." },
+  { id: "wyvern", name: "Wyvern", icon: "🐲", level: 250, power: 0.88, text: "Mythical: a dragon's lesser kin." },
+  { id: "phoenix", name: "Phoenix", icon: "🔥", level: 330, power: 0.96, text: "Mythical: reborn from its own ashes." },
+  { id: "dragon", name: "Dragon", icon: "🐉", level: 430, power: 1.05, text: "Mythical: the oldest hunter of all." }
+];
+
 // A companion has its OWN strength. It grows with your level and with Beast Bond,
 // and a little with the power of your bow, but NOT with your attack: a beast tamer
 // does not have to build attack as well.
 // (Whatever multiplies attack from outside a run, like the Might fame upgrade,
 // multiplies the companion too, so ascending makes it stronger like everything else.)
-const companionBase = 10;       // a companion's strength at level 1
+const companionBase = 20;       // a companion's strength at level 1
 const companionPerLevel = 2;    // and what every level adds to it
 const companionBowShare = 0.5;  // how much of your bow's power it gains (0.5 means half)
-const wolfBite = 0.55;          // the wolf bites for this share of its strength every turn
-const bearMaul = 0.3;           // the bear mauls for this share of its strength every turn
-const hawkDive = 2;             // a hawk's dive hits for this many times its strength
+
+// The last companion that was announced, so that a new one can be greeted
+let rangerCompanionSeen = "";
+
+// The best companion unlocked at your level
+function currentCompanion() {
+  let best = companions[0];
+  for (let companion of companions) {
+    if (level >= companion.level && companion.power >= best.power) {
+      best = companion;
+    }
+  }
+  return best;
+}
+
+// The next companion to unlock, or null if every one is unlocked
+function nextCompanion() {
+  let next = null;
+  for (let companion of companions) {
+    if (level < companion.level && (next === null || companion.level < next.level)) {
+      next = companion;
+    }
+  }
+  return next;
+}
 
 function companionStrength() {
   let strength = companionBase + (level - 1) * companionPerLevel + weaponPower * companionBowShare;
@@ -230,62 +275,47 @@ function companionStrength() {
   return strength;
 }
 
+// What the companion hits for every turn
+function companionDamage() {
+  return Math.round(companionStrength() * currentCompanion().power);
+}
+
 // The companion's part of your turn
 function companionAttack() {
-  let strength = companionStrength();
-
-  // Each full 100% of pack chance is one more bite for certain,
-  // and what is left over is the chance of another
-  if (stance === "wolf") {
-    let bites = 1 + Math.floor(totalBonus("packChance"));
-    if (chance(totalBonus("packChance") % 1)) {
-      bites = bites + 1;
-    }
-    for (let i = 0; i < bites; i++) {
-      hitMonster(strength * wolfBite, "nature");
-    }
-  }
-
-  if (stance === "bear") {
-    hitMonster(strength * bearMaul, "nature");
-  }
-
-  // Dive chance past its limit makes the dive hit harder instead
-  if (stance === "hawk" && chance(cappedChance("diveChance"))) {
-    magicHitMonster(strength * (hawkDive + overflow("diveChance", maxChance)), "nature");
-    monsterStunned = true;
-    say("Your hawk dives at the enemy's eyes!");
-  }
+  hitMonster(companionDamage(), "nature");
 }
 
 function rangerWhenAttacked() {
-  if (stance === "bear" && chance(cappedChance("guardChance"))) {
-    say("Your bear takes the blow for you!");
-    return true;
-  }
   return false;
-}
-
-// Guard chance past its limit reduces all damage taken instead (it is divided by this)
-function rangerDamageDivider() {
-  if (stance === "bear") {
-    return 1 + overflow("guardChance", maxChance);
-  }
-  return 1;
 }
 
 // What the companion is doing, for the "You" panel
 function companionLine() {
-  let strength = companionStrength();
+  let companion = currentCompanion();
+  let line = " Companion: " + companion.icon + " " + companion.name + ", hitting for " + big(companionDamage()) + " every turn.";
 
-  if (stance === "wolf") {
-    return " Wolf: bites every turn for " + big(Math.round(strength * wolfBite)) + ", with a " + percent(totalBonus("packChance")) + " chance to bite again.";
+  let next = nextCompanion();
+  if (next !== null) {
+    line = line + " Next: " + next.name + " at level " + next.level + ".";
   }
-  if (stance === "bear") {
-    return " Bear: " + percent(cappedChance("guardChance")) + " chance to take a hit for you, and mauls for " + big(Math.round(strength * bearMaul)) + " every turn."
-      + overflowNote(overflow("guardChance", maxChance), "damage resistance");
+  return line;
+}
+
+// The list of companions, for the top of the Skills tab
+function rangerSkillsNote() {
+  let parts = [];
+  let current = currentCompanion();
+
+  for (let companion of companions) {
+    if (companion.id === current.id) {
+      parts.push(companion.icon + " " + companion.name + " (with you now)");
+    } else if (level >= companion.level) {
+      parts.push(companion.icon + " " + companion.name);
+    } else {
+      parts.push(companion.name + " at level " + companion.level);
+    }
   }
-  return " Hawk: " + percent(cappedChance("diveChance")) + " chance each turn to dive for " + big(Math.round(strength * (hawkDive + overflow("diveChance", maxChance)))) + " and blind the enemy.";
+  return "Companions, weakest to mightiest: " + parts.join(" · ") + ". The best one you have unlocked fights beside you. Levels are lost when you ascend, so you earn them again each time.";
 }
 
 // The Ranger has no damage over time
