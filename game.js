@@ -21,6 +21,7 @@ let level = 1;
 let playerHp = 0;
 
 let weapon = "";
+let stance = "";             // the fighting style picked on the Skills tab (only some classes have one)
 let weaponPower = 0;
 let armorPower = 0;
 let weaponRarity = 0;
@@ -850,6 +851,13 @@ function buySkill(skill) {
   }
 }
 
+// Changes the fighting style (the Elementalist's element). It is free and can be done at any time.
+function chooseStance(id) {
+  stance = id;
+  recalcStats();
+  updateScreen();
+}
+
 // Gives every skill point back
 function resetSkills() {
   skillLevels = {};
@@ -1025,6 +1033,7 @@ function freshClass(className) {
     room: 1,
     level: 1,
     weapon: randomGearType(className),
+    stance: "",
     weaponPower: 0,
     armorPower: 0,
     weaponRarity: 0,
@@ -1064,6 +1073,7 @@ function packClass() {
     level: level,
     playerHp: playerHp,
     weapon: weapon,
+    stance: stance,
     weaponPower: weaponPower,
     armorPower: armorPower,
     weaponRarity: weaponRarity,
@@ -1106,6 +1116,7 @@ function unpackClass(saved) {
   level = data.level;
   playerHp = data.playerHp;
   weapon = data.weapon;
+  stance = data.stance;
   weaponPower = data.weaponPower;
   armorPower = data.armorPower;
   weaponRarity = data.weaponRarity;
@@ -1155,6 +1166,13 @@ function unpackClass(saved) {
   }
   if (currentClass().gearTypes[weapon] === undefined) {
     weapon = randomGearType(playerClass);
+  }
+
+  // A class with stances always has one picked: the first on its list to begin with
+  if (currentClass().stances === undefined) {
+    stance = "";
+  } else if (currentClass().stances[stance] === undefined) {
+    stance = Object.keys(currentClass().stances)[0];
   }
   if (foundItem !== null && foundItem.slot === specialSlot() && currentClass().gearTypes[foundItem.type] === undefined) {
     foundItem = null;
@@ -1483,6 +1501,17 @@ function buildClassScreen() {
     });
   }
 
+  // The stance picker on the Skills tab, for a class that has stances
+  let stanceBox = document.getElementById("stance-buttons");
+  stanceBox.innerHTML = "";
+  if (currentClass().stances !== undefined) {
+    for (let id in currentClass().stances) {
+      addFavouriteButton(stanceBox, "stance-" + id, currentClass().stances[id].name, function () {
+        chooseStance(id);
+      });
+    }
+  }
+
   let skillBox = document.getElementById("skills");
   skillBox.innerHTML = "";
 
@@ -1613,6 +1642,15 @@ function showUpgrades() {
 function showSkills() {
   document.getElementById("skill-points").textContent = skillPointsLeft();
 
+  // The stance picker is hidden for a class without stances
+  let stances = currentClass().stances;
+  document.getElementById("stance").hidden = stances === undefined;
+  if (stances !== undefined) {
+    document.getElementById("stance-label").textContent = currentClass().stanceLabel + " · " + stances[stance].name;
+    document.getElementById("stance-note").textContent = stances[stance].text;
+    showFavourite("stance-buttons", "stance-" + stance);
+  }
+
   for (let skill of currentClass().skills) {
     let price = skill.cost + " points";
     if (skill.cost === 1) {
@@ -1681,7 +1719,8 @@ function showTown() {
   }
 
   // The pickers only appear once the Quartermaster or Tactician has been hired
-  document.getElementById("favourite-gear").hidden = totalBonus("favouriteGear") < 1;
+  // (and a class with only one kind of gear has nothing to pick between)
+  document.getElementById("favourite-gear").hidden = totalBonus("favouriteGear") < 1 || Object.keys(currentClass().gearTypes).length < 2;
   document.getElementById("favourite-upgrade").hidden = totalBonus("favouriteUpgrade") < 1;
   showFavourite("favourite-gear-buttons", "favourite-gear-" + favouriteGear);
   showFavourite("favourite-upgrade-buttons", "favourite-upgrade-" + favouriteUpgrade);

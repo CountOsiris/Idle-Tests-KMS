@@ -1,12 +1,25 @@
 // =====================================================================
-//  The Elementalist - water, fire, lightning and earth
+//  The Elementalist - fire, ice, lightning and earth
 // =====================================================================
+// The Elementalist picks an ELEMENT (on the Skills tab) and can change it at any
+// time. The element decides how every spell works; the skills make an element
+// stronger. The gloves found in the tower are all the same kind and simply add
+// their power to every spell, so no pair of gloves can ever clash with a build.
+//
+//   Fire      - weaker hits that set the enemy burning; the burn stacks up, like bleeding
+//   Ice       - a chance of a critical hit for triple damage
+//   Lightning - several fast, weak bolts every turn
+//   Earth     - gathers stone for a turn, then throws one huge boulder
+//
 // Bonus words only the Elementalist uses:
-//   tideHeal     water: health healed per spell                 (0.01 means +1% of your health)
 //   burnStacks   fire: most burn stacks                         (2 means +2)
-//   critChance   lightning: critical chance (triple damage)     (0.1 means +10%)
-//   stunChance   earth: stun chance                             (0.1 means +10%)
-//   crush        earth: extra damage                            (0.1 means +10%)
+//   critChance   ice: critical chance                           (0.1 means +10%)
+//   critPower    ice: extra damage of a critical                (0.15 means +15%)
+//   extraBolts   lightning: chance of one more bolt             (0.1 means +10%;
+//                every full 1 is a bolt for certain)
+//   boltPower    lightning: extra damage of each bolt           (0.05 means +5%)
+//   crush        earth: extra damage of a boulder               (0.2 means +20%)
+//   stunChance   earth: chance a boulder stuns                  (0.1 means +10%)
 //
 // See classes/barbarian.js for what each list is for.
 
@@ -14,30 +27,42 @@ classes.elementalist = {
   name: "Elementalist",
   icon: "🧤",
   art: "art/elementalist.png",
-  text: "Commands the four elements. Each pair of elemental gloves changes how you fight, and every spell ignores armor.",
+  text: "Commands fire, ice, lightning and earth. Pick an element to change how you fight. Every spell ignores armor.",
   perLevel: { maxHp: 7, attack: 2 },
-  base: { maxHp: 75, attack: 10, tideHeal: 0.06, burnStacks: 4, critChance: 0.3, stunChance: 0.2, crush: 0.25 },
+  base: { maxHp: 75, attack: 10, burnStacks: 5, critChance: 0.22, stunChance: 0.2 },
 
   gearLabel: "Gloves",
-  gearTypes: { water: "Water Gloves", fire: "Fire Gloves", lightning: "Lightning Gloves", earth: "Earth Gloves" },
+  gearTypes: { gloves: "Elemental Gloves" },
   dotLabel: "Burning",
+
+  // The elements. The player picks one on the Skills tab; "stance" holds the choice.
+  stanceLabel: "Element",
+  stances: {
+    fire: { name: "Fire", text: "Each spell hits for 90% of your attack and adds a burn stack. Every stack burns for 20% of your attack each turn." },
+    ice: { name: "Ice", text: "Each spell has a chance of a critical hit for triple damage." },
+    lightning: { name: "Lightning", text: "Two bolts every turn, each for 65% of your attack. Skills add a chance of more bolts." },
+    earth: { name: "Earth", text: "Every second turn, one boulder for 360% of your attack, with a chance to stun." }
+  },
 
   upgrades: [
     { id: "elementalPower", name: "Elemental Power", text: "+3 attack", bonus: { attack: 3 } },
-    { id: "tidalFlow", name: "Tidal Flow", text: "Water: +1% healing per spell", bonus: { tideHeal: 0.01 } },
     { id: "wildfire", name: "Wildfire", text: "Fire: +1 burn stack", bonus: { burnStacks: 1 } },
-    { id: "conduction", name: "Conduction", text: "Lightning: +5% critical chance", bonus: { critChance: 0.05 } },
+    { id: "frostbite", name: "Frostbite", text: "Ice: +5% critical chance", bonus: { critChance: 0.05 } },
+    { id: "conduction", name: "Conduction", text: "Lightning: +10% chance of an extra bolt", bonus: { extraBolts: 0.1 } },
     { id: "tremor", name: "Tremor", text: "Earth: +5% stun chance", bonus: { stunChance: 0.05 } }
   ],
 
   skills: [
     { id: "attunement", name: "Attunement", text: "+3% attack", bonus: { attackPercent: 0.03 }, cost: 1 },
     { id: "resilience", name: "Resilience", text: "+3% health", bonus: { healthPercent: 0.03 }, cost: 1 },
-    { id: "conflagration", name: "Conflagration", text: "Burning deals +10% damage", bonus: { dotPower: 0.1 }, cost: 1 },
-    { id: "waterMastery", name: "Water Mastery", text: "Water: +1% healing per spell", bonus: { tideHeal: 0.01 }, cost: 2 },
     { id: "fireMastery", name: "Fire Mastery", text: "Fire: +1 burn stack", bonus: { burnStacks: 1 }, cost: 2 },
-    { id: "lightningMastery", name: "Lightning Mastery", text: "Lightning: +3% critical chance", bonus: { critChance: 0.03 }, cost: 2 },
-    { id: "earthMastery", name: "Earth Mastery", text: "Earth: +3% stun chance and +5% damage", bonus: { stunChance: 0.03, crush: 0.05 }, cost: 2 }
+    { id: "conflagration", name: "Conflagration", text: "Fire: burning deals +10% damage", bonus: { dotPower: 0.1 }, cost: 1 },
+    { id: "iceMastery", name: "Ice Mastery", text: "Ice: +3% critical chance", bonus: { critChance: 0.03 }, cost: 1 },
+    { id: "shatter", name: "Shatter", text: "Ice: +15% critical damage", bonus: { critPower: 0.15 }, cost: 1 },
+    { id: "lightningMastery", name: "Lightning Mastery", text: "Lightning: +8% chance of an extra bolt", bonus: { extraBolts: 0.08 }, cost: 1 },
+    { id: "overload", name: "Overload", text: "Lightning: bolts deal +3% damage", bonus: { boltPower: 0.03 }, cost: 1 },
+    { id: "earthMastery", name: "Earth Mastery", text: "Earth: boulders deal +15% damage", bonus: { crush: 0.15 }, cost: 1 },
+    { id: "aftershock", name: "Aftershock", text: "Earth: +3% stun chance", bonus: { stunChance: 0.03 }, cost: 1 }
   ],
 
   milestones: [
@@ -58,9 +83,9 @@ classes.elementalist = {
     {
       floor: 20,
       perks: [
-        { id: "tidecaller", name: "Tidecaller", text: "Water: +3% healing per spell", bonus: { tideHeal: 0.03 } },
         { id: "pyromancer", name: "Pyromancer", text: "Fire: +2 burn stacks", bonus: { burnStacks: 2 } },
-        { id: "stormcaller", name: "Stormcaller", text: "Lightning: +10% critical chance", bonus: { critChance: 0.1 } },
+        { id: "cryomancer", name: "Cryomancer", text: "Ice: +10% critical chance", bonus: { critChance: 0.1 } },
+        { id: "stormcaller", name: "Stormcaller", text: "Lightning: +25% chance of an extra bolt", bonus: { extraBolts: 0.25 } },
         { id: "geomancer", name: "Geomancer", text: "Earth: +10% stun chance", bonus: { stunChance: 0.1 } }
       ]
     },
@@ -95,12 +120,13 @@ classes.elementalist = {
   ],
 
   relics: [
-    { id: "seaPearl", name: "Sea Pearl", text: "Water: +2% healing per spell", bonus: { tideHeal: 0.02 } },
     { id: "emberCore", name: "Ember Core", text: "Fire: +1 burn stack", bonus: { burnStacks: 1 } },
-    { id: "stormCrystal", name: "Storm Crystal", text: "Lightning: +8% critical chance", bonus: { critChance: 0.08 } },
+    { id: "frostShard", name: "Frost Shard", text: "Ice: +8% critical chance", bonus: { critChance: 0.08 } },
+    { id: "stormCrystal", name: "Storm Crystal", text: "Lightning: +15% chance of an extra bolt", bonus: { extraBolts: 0.15 } },
     { id: "geode", name: "Geode", text: "Earth: +8% stun chance", bonus: { stunChance: 0.08 } }
   ],
 
+  startFight: elementalistStartFight,
   attack: elementalistAttack,
   whenAttacked: elementalistWhenAttacked,
   dotPerStack: elementalistDotPerStack,
@@ -108,34 +134,72 @@ classes.elementalist = {
   gearInfo: elementalistGearInfo
 };
 
-function elementalistAttack() {
-  let damage = playerAttack;
+// The numbers behind each element. Change these to retune them.
+const fireHit = 0.9;        // a fire spell hits for this share of your attack
+const fireBurn = 0.2;       // and each burn stack burns for this share every turn
+const iceCrit = 3;          // an ice critical multiplies the hit by this
+const lightningBolts = 2;   // lightning casts this many bolts a turn
+const lightningHit = 0.65;  // each for this share of your attack
+const earthHit = 3.6;       // a boulder hits for this many times your attack
 
-  if (weapon === "lightning" && chance(totalBonus("critChance"))) {
-    // Critical chance past 100% adds to the critical damage instead
-    damage = damage * (3 + overflow("critChance", 1));
-    say("A lightning critical!");
+// Earth: has the boulder been gathered, ready to throw this turn?
+let elementalistCharged = false;
+
+// Runs at the start of every fight
+function elementalistStartFight() {
+  elementalistCharged = false;
+}
+
+function elementalistAttack() {
+  // Every spell ignores armor (magicHitMonster)
+
+  if (stance === "fire") {
+    magicHitMonster(playerAttack * fireHit);
+    addDotStack(totalBonus("burnStacks"));
   }
 
-  if (weapon === "earth") {
-    // Stun chance past its limit adds damage instead
-    damage = damage * (1 + totalBonus("crush") + overflow("stunChance", maxChance));
-    if (chance(cappedChance("stunChance"))) {
-      monsterStunned = true;
-      say("The ground shakes and stuns the enemy!");
+  if (stance === "ice") {
+    let damage = playerAttack;
+
+    // Critical chance past 100% adds to the critical damage instead
+    if (chance(totalBonus("critChance"))) {
+      damage = damage * (iceCrit + totalBonus("critPower") + overflow("critChance", 1));
+      say("An ice shard shatters for a critical hit!");
+    }
+    magicHitMonster(damage);
+  }
+
+  if (stance === "lightning") {
+    // Each full 100% of extra-bolt chance is one bolt for certain,
+    // and what is left over is the chance of one more
+    let bolts = lightningBolts + Math.floor(totalBonus("extraBolts"));
+    if (chance(totalBonus("extraBolts") % 1)) {
+      bolts = bolts + 1;
+    }
+
+    for (let i = 0; i < bolts; i++) {
+      magicHitMonster(playerAttack * (lightningHit + totalBonus("boltPower")));
     }
   }
 
-  // Spells ignore armor
-  magicHitMonster(damage);
+  if (stance === "earth") {
+    if (!elementalistCharged) {
+      // This turn is spent gathering the boulder
+      elementalistCharged = true;
+    } else {
+      elementalistCharged = false;
 
-  if (weapon === "water") {
-    healPlayer(playerMaxHp * totalBonus("tideHeal"));
+      // Stun chance past its limit adds to the boulder's damage instead
+      magicHitMonster(playerAttack * (earthHit + totalBonus("crush") + overflow("stunChance", maxChance)));
+
+      if (chance(cappedChance("stunChance"))) {
+        monsterStunned = true;
+        say("The boulder stuns the enemy!");
+      }
+    }
   }
 
-  if (weapon === "fire") {
-    addDotStack(totalBonus("burnStacks"));
-  }
+  // Anything already burning keeps burning, whichever element is being used
   monsterHp = monsterHp - dotDamage();
 }
 
@@ -145,22 +209,23 @@ function elementalistWhenAttacked() {
 
 // Damage per turn of one burn stack
 function elementalistDotPerStack() {
-  return Math.max(1, Math.round(playerAttack * 0.15));
+  return Math.max(1, Math.round(playerAttack * fireBurn));
 }
 
+// The special line in the "You" panel: what the chosen element is doing right now
 function elementalistStatLine() {
-  return "Attunement: your spells ignore armor";
+  if (stance === "fire") {
+    return "Fire: up to " + totalBonus("burnStacks") + " burn stacks, each burning for " + percent(fireBurn * (1 + totalBonus("dotPower"))) + " of your attack a turn.";
+  }
+  if (stance === "ice") {
+    return "Ice: " + percent(Math.min(1, totalBonus("critChance"))) + " chance of a critical hit for x" + big(iceCrit + totalBonus("critPower") + overflow("critChance", 1)) + " damage.";
+  }
+  if (stance === "lightning") {
+    return "Lightning: " + lightningBolts + " bolts a turn at " + percent(lightningHit + totalBonus("boltPower")) + " of your attack, and " + percent(totalBonus("extraBolts")) + " chance of another.";
+  }
+  return "Earth: a boulder every second turn for " + percent(earthHit + totalBonus("crush") + overflow("stunChance", maxChance)) + " of your attack, with a " + percent(cappedChance("stunChance")) + " chance to stun.";
 }
 
 function elementalistGearInfo() {
-  if (weapon === "water") {
-    return "Water Gloves: every spell heals you for " + percent(totalBonus("tideHeal")) + " of your health.";
-  }
-  if (weapon === "fire") {
-    return "Fire Gloves: every spell sets the enemy burning more each turn (up to " + totalBonus("burnStacks") + " stacks).";
-  }
-  if (weapon === "lightning") {
-    return "Lightning Gloves: " + percent(totalBonus("critChance")) + " chance to deal triple damage.";
-  }
-  return "Earth Gloves: +" + percent(totalBonus("crush")) + " damage and a " + percent(cappedChance("stunChance")) + " chance to stun.";
+  return "Elemental Gloves: their power is added to every spell, whichever element you use.";
 }

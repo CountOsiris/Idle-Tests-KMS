@@ -202,6 +202,13 @@
             <p>Skill points <strong id="skill-points" class="big-number">0</strong></p>
           </div>
           <p class="note">Every level gives a skill point. Skills have no top level. They last until you ascend, and resetting them is free.</p>
+          <!-- Only shown for a class with stances (the Elementalist's elements) -->
+          <div id="stance" class="picker" hidden>
+            <p id="stance-label" class="row-title">Element</p>
+            <div id="stance-buttons" class="choices"></div>
+            <p id="stance-note" class="note"></p>
+          </div>
+
           <!-- The rows are made by game.js from the class's skills list -->
           <div id="skills"></div>
           <p><button class="quiet" onclick="resetSkills()">Reset skills</button></p>
