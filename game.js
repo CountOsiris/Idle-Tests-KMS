@@ -307,7 +307,11 @@ function allMilestones() {
     return milestoneList;
   }
 
-  milestoneList = currentClass().milestones.slice();
+  // The class's own milestones and the trials every class has, in floor order
+  milestoneList = currentClass().milestones.concat(trialMilestones);
+  milestoneList.sort(function (a, b) {
+    return a.floor - b.floor;
+  });
 
   // Every breakthrough reached so far, plus the next one to aim for
   let number = 0;
@@ -2886,6 +2890,11 @@ function spawnMonster(isBoss) {
   // How many times stronger than floor 1 the monsters are here (see data.js)
   let growth = Math.pow(1 + monsterGrowth * (floor - 1), monsterCurve);
 
+  // The climb gets steeper between midFloor and deepFloor
+  if (floor > midFloor) {
+    growth = growth * Math.pow(midGrowth, Math.min(floor, deepFloor) - midFloor);
+  }
+
   // The deep tower: every floor past deepFloor multiplies it again
   if (floor > deepFloor) {
     growth = growth * Math.pow(deepGrowth, floor - deepFloor);
@@ -2926,8 +2935,8 @@ function spawnMonster(isBoss) {
   monsterIsRare = !isBoss && Math.random() < rareChance;
 
   if (isBoss) {
-    monsterMaxHp = monsterMaxHp * 3;
-    monsterAttack = Math.round(monsterAttack * 1.5);
+    monsterMaxHp = Math.round(monsterMaxHp * bossHealth);
+    monsterAttack = Math.round(monsterAttack * bossAttack);
     say("BOSS: " + monsterName + " blocks the way!");
   } else if (monsterIsRare) {
     monsterName = "Rare " + monsterName;

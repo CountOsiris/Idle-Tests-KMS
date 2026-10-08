@@ -16,6 +16,20 @@ const monsterDamage = 3;
 const monsterGrowth = 0.35;
 const monsterCurve = 2;
 
+// THE CLIMB GETS STEEPER. From midFloor up to deepFloor, monsters also get stronger by a
+// small fixed percentage every floor (1.015 means 1.5% more health and attack per floor).
+// This is what makes progress slow down, and slow down further, until the next
+// milestone gives a jump in power and the climb speeds up again.
+// Floors up to midFloor are exactly as the formula above says.
+const midFloor = 10;
+const midGrowth = 1.02;
+
+// How much stronger a boss is than an ordinary monster of its floor.
+// A big number here makes every boss a wall: nothing happens for hours, then several
+// floors fall at once. A smaller one lets the floors themselves do the slowing down.
+const bossHealth = 2.2;
+const bossAttack = 1.3;
+
 // THE DEEP TOWER. Past this floor, monsters also get stronger by a fixed percentage
 // every floor (1.03 means 3% more health and attack per floor, on top of the above).
 // Without it a run that is going well snowballs: relics, gear and souls pile up faster
@@ -106,6 +120,55 @@ const fameUpgrades = [
 // ascending quickly: each one is a big, permanent reward, kept through every ascension.
 const breakthroughFirstFloor = 150;
 const breakthroughSpacing = 1.5;
+
+// ----- Trials -----
+// Milestones every class has, at the floors between the class's own ones. They are
+// what turns a slow stretch of the tower back into a fast one: each multiplies your
+// power, and the player picks which kind.
+// TO ADD ONE: add a block with a floor that no class milestone uses.
+// (Never change the floor of one that exists: saves remember perks by their floor.)
+const trialMilestones = [
+  {
+    floor: 15,
+    perks: [
+      { id: "trialPower", name: "Trial of Power", text: "attack x1.4", multiply: { attack: 1.4 } },
+      { id: "trialEndurance", name: "Trial of Endurance", text: "health and armor x1.4", multiply: { health: 1.4, armor: 1.4 } },
+      { id: "trialBalance", name: "Trial of Balance", text: "attack, health and armor x1.2", multiply: { attack: 1.2, health: 1.2, armor: 1.2 } }
+    ]
+  },
+  {
+    floor: 25,
+    perks: [
+      { id: "trialPower", name: "Trial of Power", text: "attack x1.5", multiply: { attack: 1.5 } },
+      { id: "trialEndurance", name: "Trial of Endurance", text: "health and armor x1.5", multiply: { health: 1.5, armor: 1.5 } },
+      { id: "trialBalance", name: "Trial of Balance", text: "attack, health and armor x1.25", multiply: { attack: 1.25, health: 1.25, armor: 1.25 } }
+    ]
+  },
+  {
+    floor: 40,
+    perks: [
+      { id: "trialPower", name: "Trial of Power", text: "attack x1.6", multiply: { attack: 1.6 } },
+      { id: "trialEndurance", name: "Trial of Endurance", text: "health and armor x1.6", multiply: { health: 1.6, armor: 1.6 } },
+      { id: "trialBalance", name: "Trial of Balance", text: "attack, health and armor x1.3", multiply: { attack: 1.3, health: 1.3, armor: 1.3 } }
+    ]
+  },
+  {
+    floor: 60,
+    perks: [
+      { id: "trialPower", name: "Trial of Power", text: "attack x1.8", multiply: { attack: 1.8 } },
+      { id: "trialEndurance", name: "Trial of Endurance", text: "health and armor x1.8", multiply: { health: 1.8, armor: 1.8 } },
+      { id: "trialBalance", name: "Trial of Balance", text: "attack, health and armor x1.35", multiply: { attack: 1.35, health: 1.35, armor: 1.35 } }
+    ]
+  },
+  {
+    floor: 90,
+    perks: [
+      { id: "trialPower", name: "Trial of Power", text: "attack x2", multiply: { attack: 2 } },
+      { id: "trialEndurance", name: "Trial of Endurance", text: "health and armor x2", multiply: { health: 2, armor: 2 } },
+      { id: "trialBalance", name: "Trial of Balance", text: "attack, health and armor x1.4", multiply: { attack: 1.4, health: 1.4, armor: 1.4 } }
+    ]
+  }
+];
 
 // Every breakthrough offers the same choice, and the player picks one each time.
 // (A class adds one more choice for each of its builds: see "breakthroughs" in its file.)
