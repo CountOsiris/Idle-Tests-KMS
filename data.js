@@ -75,13 +75,13 @@ const ascendFloorStep = 0;
 //              Give it an addLabel too, which is how the total is described on the page,
 //              and addAsPercent: true if the total should be written as a percentage.
 const fameUpgrades = [
-  { id: "might", name: "Might", text: "Multiplies your attack by 1.25.", unlockAt: 1, multiply: { attack: 1.25 }, cost: 3, growth: 1.5, maxLevel: 0 },
-  { id: "vitality", name: "Vitality", text: "Multiplies your health and armor by 1.25.", unlockAt: 1, multiply: { health: 1.25, armor: 1.25 }, cost: 3, growth: 1.5, maxLevel: 0 },
-  { id: "wisdom", name: "Wisdom", text: "Multiplies the experience you earn by 1.2.", unlockAt: 1, multiply: { experience: 1.2 }, cost: 2, growth: 1.5, maxLevel: 0 },
-  { id: "fortune", name: "Fortune", text: "Multiplies the gold you earn by 1.2.", unlockAt: 1, multiply: { gold: 1.2 }, cost: 2, growth: 1.5, maxLevel: 0 },
-  { id: "legacy", name: "Legacy", text: "Start every ascension 3 levels higher.", unlockAt: 2, add: { startLevels: 3 }, addLabel: "starting levels", cost: 4, growth: 1.5, maxLevel: 0 },
-  { id: "pathfinder", name: "Pathfinder", text: "Start every run part of the way to your best floor since ascending. Each level closes 15% of the gap to 60%.", unlockAt: 3, add: { pathfinder: 1 }, addLabel: "of the way up", cost: 8, growth: 1.6, maxLevel: 0 },
-  { id: "scavenger", name: "Scavenger", text: "Multiplies the power of equipment you find by 1.2.", unlockAt: 5, multiply: { gear: 1.2 }, cost: 6, growth: 1.5, maxLevel: 0 },
+  { id: "might", name: "Might", text: "Multiplies your attack by 1.2.", unlockAt: 1, multiply: { attack: 1.2 }, cost: 6, growth: 1.45, maxLevel: 0 },
+  { id: "vitality", name: "Vitality", text: "Multiplies your health and armor by 1.2.", unlockAt: 1, multiply: { health: 1.2, armor: 1.2 }, cost: 6, growth: 1.45, maxLevel: 0 },
+  { id: "wisdom", name: "Wisdom", text: "Multiplies the experience you earn by 1.2.", unlockAt: 1, multiply: { experience: 1.2 }, cost: 4, growth: 1.45, maxLevel: 0 },
+  { id: "fortune", name: "Fortune", text: "Multiplies the gold you earn by 1.15.", unlockAt: 1, multiply: { gold: 1.15 }, cost: 4, growth: 1.45, maxLevel: 0 },
+  { id: "legacy", name: "Legacy", text: "Start every ascension 2 levels higher.", unlockAt: 2, add: { startLevels: 2 }, addLabel: "starting levels", cost: 6, growth: 1.45, maxLevel: 0 },
+  { id: "pathfinder", name: "Pathfinder", text: "Start every run part of the way to your best floor since ascending. Each level closes 15% of the gap to 60%.", unlockAt: 3, add: { pathfinder: 1 }, addLabel: "of the way up", cost: 10, growth: 1.45, maxLevel: 0 },
+  { id: "scavenger", name: "Scavenger", text: "Multiplies the power of equipment you find by 1.15.", unlockAt: 5, multiply: { gear: 1.15 }, cost: 8, growth: 1.45, maxLevel: 0 },
   { id: "endurance", name: "Endurance", text: "Heal 3% more of your health after every kill.", unlockAt: 8, add: { healOnKill: 0.03 }, addLabel: "extra healing per kill", addAsPercent: true, cost: 10, growth: 2, maxLevel: 0 },
   { id: "mastery", name: "Mastery", text: "The upgrades you pick in upgrade areas can go 1 level higher.", unlockAt: 12, add: { upgradeCap: 1 }, addLabel: "upgrade levels", cost: 15, growth: 2, maxLevel: 0 }
 ];
