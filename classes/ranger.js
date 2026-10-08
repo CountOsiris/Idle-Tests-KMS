@@ -3,26 +3,28 @@
 // =====================================================================
 // Bonus words only the Ranger uses:
 //   firstStrike  turns the enemy misses at the start of a fight   (1 means +1 turn)
-//   aimChance    longbow chance of an aimed shot (x2.5 damage)    (0.1 means +10%)
-//   spirits      most spirits the spirit bow can summon           (2 means +2)
-//   aimPower     longbow: extra damage of an aimed shot           (0.1 means +10%)
-//   regrowth     health healed per shot by the bloom bow          (0.01 means +1% of your health)
-//   thornPower   bloom bow: extra damage of its thorns            (0.1 means +10%)
-//   bond         damage of your companion                         (0.1 means +10% stronger)
+//   aimChance    longbow: chance of a critical shot               (0.1 means +10%)
+//   aimPower     longbow: extra damage of a critical shot         (0.1 means +10%)
+//   spiritPower  spirit bow: damage of the spirit bolt that
+//                follows every arrow, as a share of your attack   (0.05 means +5%)
+//   bloomPower   bloom bow: how much stronger it makes your
+//                companion                                        (0.05 means +5%)
+//   bond         damage of your companion, with any bow           (0.1 means +10% stronger)
 //   guardChance  bear: chance it takes a hit for you              (0.02 means +2%)
 //   diveChance   hawk: chance it dives each turn                  (0.02 means +2%)
 //   packChance   wolf: chance of another bite                     (0.05 means +5%;
 //                every full 1 is a bite for certain)
 //
-// The four ways to build a Ranger:
-//   Marksman      (longbow)    - aimed shots that hit far harder than a normal one.
-//   Spirit Caller (spirit bow) - every shot summons a spirit; a pack of them does the killing.
-//   Druid         (bloom bow)  - heals with every shot, and thorns that hit as hard as you heal.
-//                                A health build.
-//   Beast Tamer   (any bow)    - the companion does the work: wolf, bear or hawk.
+// The three bows are three different Rangers:
+//   Longbow    - the ARCHER. Arrows hit harder, and can strike a critical shot.
+//                Pure weapon damage. Piercing.
+//   Spirit Bow - the MYSTIC. Its arrows are forest magic: they pass through armor, and a
+//                bolt of spirit follows each one. Nature damage.
+//   Bloom Bow  - the BEAST TAMER. Its arrows are weak, but the bow makes your companion
+//                far stronger. The companion does the killing.
 //
-// The Ranger also has a COMPANION, picked on the Skills tab and free to change.
-// It fights beside you whichever bow you carry, so every bow goes with every companion.
+// Every Ranger has a COMPANION (wolf, bear or hawk), picked on the Skills tab and free
+// to change. It fights beside any bow; the Bloom Bow is the one built around it.
 //
 // See classes/barbarian.js for what each list is for.
 
@@ -30,9 +32,9 @@ classes.ranger = {
   name: "Ranger",
   icon: "🏹",
   art: "art/ranger.png",
-  text: "A bow, forest magic and an animal companion. Shoots before the enemy can reach you, with a wolf, bear or hawk at your side.",
+  text: "An archer, a forest mystic or a beast tamer, depending on the bow. Shoots before the enemy can reach you, with a wolf, bear or hawk at your side.",
   perLevel: { maxHp: 8, attack: 2 },
-  base: { maxHp: 80, attack: 10, firstStrike: 1, aimChance: 0.35, spirits: 3, regrowth: 0.065, guardChance: 0.2, diveChance: 0.2 },
+  base: { maxHp: 80, attack: 10, firstStrike: 1, aimChance: 0.3, spiritPower: 0.45, bloomPower: 0.4, guardChance: 0.2, diveChance: 0.2 },
 
   // The companions. The player picks one on the Skills tab; "stance" holds the choice.
   stanceLabel: "Companion",
@@ -45,17 +47,15 @@ classes.ranger = {
   gearLabel: "Bow",
   gearTypes: { longbow: "Longbow", spirit: "Spirit Bow", bloom: "Bloom Bow" },
   gearIcons: { longbow: "🏹", spirit: "🏹", bloom: "🏹" },
-  dotLabel: "Spirit damage",
-  dotType: "nature",
 
   // The Ranger fights from range: beasts cannot lunge at it, and nothing flies out of reach
   ranged: true,
 
   upgrades: [
     { id: "quickDraw", name: "Quick Draw", text: "+3 attack", bonus: { attack: 3 } },
-    { id: "eagleEye", name: "Eagle Eye", text: "Longbow: +5% aimed shot chance", bonus: { aimChance: 0.05 } },
-    { id: "packLeader", name: "Pack Leader", text: "Spirit Bow: +1 spirit", bonus: { spirits: 1 } },
-    { id: "overgrowth", name: "Overgrowth", text: "Bloom Bow: +1% healing per shot", bonus: { regrowth: 0.01 } },
+    { id: "eagleEye", name: "Eagle Eye", text: "Longbow: +5% critical shot chance", bonus: { aimChance: 0.05 } },
+    { id: "packLeader", name: "Moonlit String", text: "Spirit Bow: spirit bolts deal +10% of your attack more", bonus: { spiritPower: 0.1 } },
+    { id: "overgrowth", name: "Overgrowth", text: "Bloom Bow: your companion is 10% stronger", bonus: { bloomPower: 0.1 } },
     { id: "feralBond", name: "Feral Bond", text: "Your companion deals +15% damage", bonus: { bond: 0.15 } }
   ],
 
@@ -65,10 +65,10 @@ classes.ranger = {
     { id: "marksmanship", name: "Marksmanship", text: "+3% attack", bonus: { attackPercent: 0.03 }, cost: 1 },
     { id: "endurance", name: "Endurance", text: "+3% health", bonus: { healthPercent: 0.03 }, cost: 1 },
     { id: "openingVolley", name: "Opening Volley", text: "The enemy misses 1 more turn at the start of a fight", bonus: { firstStrike: 1 }, cost: 5 },
-    { id: "longbowMastery", name: "Longbow Mastery", text: "Longbow: +1.5% aimed shot chance and aimed shots deal +3% damage", bonus: { aimChance: 0.015, aimPower: 0.03 }, cost: 1 },
-    { id: "spiritMastery", name: "Spirit Mastery", text: "Spirit Bow: +1 spirit and spirits deal +8% damage", bonus: { spirits: 1, dotPower: 0.08 }, cost: 1 },
-    { id: "bloomMastery", name: "Bloom Mastery", text: "Bloom Bow: more healing per shot and thorns deal +8% damage", bonus: { regrowth: 0.005, thornPower: 0.08 }, cost: 1 },
-    { id: "beastBond", name: "Beast Bond", text: "Your companion deals +10% damage, whichever it is. Companions grow with your level and a little with your bow, not with your attack", bonus: { bond: 0.1 }, cost: 1 },
+    { id: "longbowMastery", name: "Longbow Mastery", text: "Longbow: +1.5% critical shot chance and critical shots deal +2% damage", bonus: { aimChance: 0.015, aimPower: 0.02 }, cost: 1 },
+    { id: "spiritMastery", name: "Spirit Mastery", text: "Spirit Bow: spirit bolts deal +4% of your attack more", bonus: { spiritPower: 0.04 }, cost: 1 },
+    { id: "bloomMastery", name: "Bloom Mastery", text: "Bloom Bow: your companion is 5% stronger", bonus: { bloomPower: 0.05 }, cost: 1 },
+    { id: "beastBond", name: "Beast Bond", text: "Your companion deals +10% damage, whichever it is and whichever bow you carry. Companions grow with your level and a little with your bow, not with your attack", bonus: { bond: 0.1 }, cost: 1 },
     { id: "instinct", name: "Animal Instinct", text: "Sharpens your companion's own trick: Wolf +4% chance to bite again, Bear +2% chance to take a hit for you, Hawk +2% dive chance", bonus: { packChance: 0.04, guardChance: 0.02, diveChance: 0.02 }, cost: 1 }
   ],
 
@@ -90,10 +90,10 @@ classes.ranger = {
     {
       floor: 20,
       perks: [
-        { id: "marksman", name: "Marksman", text: "Longbow: +10% aimed shot chance and aimed shots deal +30% damage", bonus: { aimChance: 0.1, aimPower: 0.3 } },
-        { id: "beastmaster", name: "Spirit Caller", text: "Spirit Bow: +2 spirits", bonus: { spirits: 2 } },
-        { id: "druid", name: "Druid", text: "Bloom Bow: +2% healing per shot and thorns deal +30% damage", bonus: { regrowth: 0.02, thornPower: 0.3 } },
-        { id: "beastTamer", name: "Beast Tamer", text: "Your companion deals +50% damage", bonus: { bond: 0.5 } }
+        { id: "marksman", name: "Marksman", text: "Longbow: +10% critical shot chance and critical shots deal +30% damage", bonus: { aimChance: 0.1, aimPower: 0.3 } },
+        { id: "beastmaster", name: "Mystic", text: "Spirit Bow: spirit bolts deal +30% of your attack more", bonus: { spiritPower: 0.3 } },
+        { id: "druid", name: "Druid", text: "Bloom Bow: your companion is 40% stronger", bonus: { bloomPower: 0.4 } },
+        { id: "beastTamer", name: "Beast Tamer", text: "Your companion deals +30% damage with any bow, and its own trick is sharper (Wolf +20% to bite again, Bear and Hawk +8%)", bonus: { bond: 0.3, packChance: 0.2, guardChance: 0.08, diveChance: 0.08 } }
       ]
     },
     {
@@ -123,16 +123,16 @@ classes.ranger = {
       floor: 100,
       perks: [
         { id: "stormOfArrows", name: "Storm of Arrows", text: "+60% attack and the enemy misses 1 more turn", bonus: { attackPercent: 0.6, firstStrike: 1 } },
-        { id: "spiritLord", name: "Spirit Lord", text: "+100% health and Spirit Bow: +3 spirits", bonus: { healthPercent: 1, spirits: 3 } },
+        { id: "spiritLord", name: "Spirit Lord", text: "+100% health and Spirit Bow: spirit bolts deal +60% of your attack more", bonus: { healthPercent: 1, spiritPower: 0.6 } },
         { id: "lordOfTheWild", name: "Lord of the Wild", text: "Your companion deals +200% damage, and +50% health", bonus: { bond: 2, healthPercent: 0.5 } }
       ]
     }
   ],
 
   relics: [
-    { id: "hawkFeather", name: "Hawk Feather", text: "Longbow: +10% aimed shot chance", bonus: { aimChance: 0.1 } },
-    { id: "wolfTotem", name: "Spirit Totem", text: "Spirit Bow: +1 spirit", bonus: { spirits: 1 } },
-    { id: "heartwood", name: "Heartwood", text: "Bloom Bow: +2% healing per shot", bonus: { regrowth: 0.02 } },
+    { id: "hawkFeather", name: "Hawk Feather", text: "Longbow: +10% critical shot chance", bonus: { aimChance: 0.1 } },
+    { id: "wolfTotem", name: "Spirit Totem", text: "Spirit Bow: spirit bolts deal +15% of your attack more", bonus: { spiritPower: 0.15 } },
+    { id: "heartwood", name: "Heartwood", text: "Bloom Bow: your companion is 20% stronger", bonus: { bloomPower: 0.2 } },
     { id: "alphaFang", name: "Alpha Fang", text: "Your companion deals +25% damage", bonus: { bond: 0.25 } }
   ],
 
@@ -147,10 +147,18 @@ classes.ranger = {
 };
 
 // The damage types this class is dealing right now (for the tower list).
-// Arrows pierce; spirits, thorns and the companion are nature.
+// Ordinary arrows pierce; the spirit bow's are nature, and so is the companion.
 function rangerDamageTypes() {
+  if (weapon === "spirit") {
+    return ["nature"];
+  }
   return ["piercing", "nature"];
 }
+
+// The numbers behind the bows. Change these to retune them.
+const longbowHit = 1.1;         // a longbow arrow hits for this many times your attack
+const longbowCrit = 2.5;        // and a critical shot multiplies that by this
+const bloomHit = 0.7;           // a bloom bow arrow hits for this share of your attack
 
 // How many more turns the enemy is still too far away to attack
 let rangerFreeTurns = 0;
@@ -171,37 +179,30 @@ function rangerAttack() {
     damage = damage * (1 + overflow("firstStrike", maxFreeTurns) * extraOpeningDamage);
   }
 
-  // Aim chance past 100% adds to the aimed shot's damage instead
-  if (weapon === "longbow" && chance(totalBonus("aimChance"))) {
-    damage = damage * (2.5 + totalBonus("aimPower") + overflow("aimChance", 1));
-    say("An aimed shot finds a weak spot!");
+  // Longbow: a heavier arrow, and a chance of a critical shot.
+  // Critical chance past 100% adds to the critical damage instead.
+  if (weapon === "longbow") {
+    damage = damage * longbowHit;
+    if (chance(totalBonus("aimChance"))) {
+      damage = damage * (longbowCrit + totalBonus("aimPower") + overflow("aimChance", 1));
+      say("A critical shot!");
+    }
+    hitMonster(damage, "piercing");
   }
-  hitMonster(damage, "piercing");
 
+  // Spirit bow: the arrow is forest magic and passes through armor,
+  // and a bolt of spirit follows it
   if (weapon === "spirit") {
-    addDotStack(totalBonus("spirits"));
+    magicHitMonster(damage, "nature");
+    magicHitMonster(damage * totalBonus("spiritPower"), "nature");
   }
 
-  // The bloom bow heals you, and its thorns hurt the enemy by as much, ignoring armor
+  // Bloom bow: a light arrow. Its strength is in the companion (see companionStrength).
   if (weapon === "bloom") {
-    healPlayer(playerMaxHp * bloomHealing());
-    magicHitMonster(playerMaxHp * bloomHealing() * (1 + totalBonus("thornPower")), "nature");
+    hitMonster(damage * bloomHit, "piercing");
   }
-
-  // Every summoned spirit attacks too
-  monsterHp = monsterHp - dotDamage();
 
   companionAttack();
-}
-
-// Bloom bow: the share of full health healed by every shot. Regrowth always adds to
-// it, but less and less, so it creeps toward maxBloomHealing and never reaches it.
-// Without that, enough regrowth would make the Ranger impossible to kill.
-const maxBloomHealing = 0.2;
-
-function bloomHealing() {
-  let regrowth = totalBonus("regrowth");
-  return maxBloomHealing * regrowth / (regrowth + maxBloomHealing);
 }
 
 // The numbers behind the companions. Change these to retune them.
@@ -214,13 +215,19 @@ function bloomHealing() {
 const companionBase = 10;       // a companion's strength at level 1
 const companionPerLevel = 2;    // and what every level adds to it
 const companionBowShare = 0.5;  // how much of your bow's power it gains (0.5 means half)
-const wolfBite = 0.6;           // the wolf bites for this share of its strength every turn
+const wolfBite = 0.55;          // the wolf bites for this share of its strength every turn
 const bearMaul = 0.3;           // the bear mauls for this share of its strength every turn
 const hawkDive = 2;             // a hawk's dive hits for this many times its strength
 
 function companionStrength() {
   let strength = companionBase + (level - 1) * companionPerLevel + weaponPower * companionBowShare;
-  return strength * (1 + totalBonus("bond")) * multiplier("attack");
+  strength = strength * (1 + totalBonus("bond")) * multiplier("attack");
+
+  // The bloom bow is the beast tamer's bow: it makes the companion stronger still
+  if (weapon === "bloom") {
+    strength = strength * (1 + totalBonus("bloomPower"));
+  }
+  return strength;
 }
 
 // The companion's part of your turn
@@ -281,9 +288,9 @@ function companionLine() {
   return " Hawk: " + percent(cappedChance("diveChance")) + " chance each turn to dive for " + big(Math.round(strength * (hawkDive + overflow("diveChance", maxChance)))) + " and blind the enemy.";
 }
 
-// The damage of one spirit each turn
+// The Ranger has no damage over time
 function rangerDotPerStack() {
-  return Math.max(1, Math.round(playerAttack * 0.22));
+  return 0;
 }
 
 function rangerStatLine() {
@@ -294,10 +301,10 @@ function rangerStatLine() {
 
 function rangerGearInfo() {
   if (weapon === "longbow") {
-    return "Longbow: " + percent(Math.min(1, totalBonus("aimChance"))) + " chance of an aimed shot for x" + (2.5 + totalBonus("aimPower") + overflow("aimChance", 1)).toFixed(1) + " damage.";
+    return "Longbow: arrows hit " + percent(longbowHit - 1) + " harder, with a " + percent(Math.min(1, totalBonus("aimChance"))) + " chance of a critical shot for x" + (longbowCrit + totalBonus("aimPower") + overflow("aimChance", 1)).toFixed(1) + " damage. The archer's bow.";
   }
   if (weapon === "spirit") {
-    return "Spirit Bow: every shot summons a spirit that attacks each turn (up to " + totalBonus("spirits") + " spirits).";
+    return "Spirit Bow: arrows are forest magic and ignore armor, and a spirit bolt follows each one for " + percent(totalBonus("spiritPower")) + " of your attack. The mystic's bow.";
   }
-  return "Bloom Bow: every shot heals you for " + percent(bloomHealing()) + " of your health, and its thorns deal that much damage and " + percent(totalBonus("thornPower")) + " more. Health makes this bow stronger.";
+  return "Bloom Bow: arrows hit for only " + percent(bloomHit) + " of your attack, but your companion is " + percent(totalBonus("bloomPower")) + " stronger. The beast tamer's bow.";
 }
