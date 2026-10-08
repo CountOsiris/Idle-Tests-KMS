@@ -948,10 +948,69 @@ function levelUpWhilePossible() {
 // The save lives in the browser. It holds one bundle of progress per class,
 // which class is being played, and when the game last ran.
 // Nothing is shared between classes: every class has its own fame, trophies and gold.
-// Changing this name makes the game ignore every existing save and start fresh.
-// Do that after a change that old saves cannot survive.
+//
+// ===== OTHER PEOPLE NOW HAVE SAVES. Read this before changing the game. =====
+//
+// These changes are always safe. Old saves keep working with no extra effort:
+//   - changing any number in data.js, towers.js or a class file
+//   - adding a new skill, perk, relic, upgrade, monster, tower trophy or town/fame upgrade
+//   - adding a new thing to remember (add it to freshClass, packClass and unpackClass;
+//     old saves get the value from freshClass)
+//   - changing wording, layout and colours
+//
+// These changes need care, because saves remember things by their id:
+//   - RENAMING an id: the save still has the old one, so the player loses that
+//     skill level, perk choice or purchase. Change the "name" instead; nobody sees ids.
+//   - REMOVING something: whatever players spent on it is gone. (Skill points are the
+//     exception: they are worked out from the level, so they come straight back.)
+//   - MOVING a milestone to another floor: perk choices are remembered by floor.
+//   - changing what a saved value MEANS, for example gold becoming silver.
+// For any of those, add a step to upgradeSave below that rewrites old saves to match,
+// and add 1 to saveVersion.
+//
+// Changing saveName makes the game ignore every existing save: everyone starts again.
+// That is the "reset" to warn players about. Avoid it.
 const saveName = "lloegrys-idle-save-3";
+const saveVersion = 1;
 let classSaves = {};
+
+// Set when a save could not be read, so the page can tell the player
+let saveProblem = "";
+
+// Brings a save made by an older version of the game up to date, one step at a time.
+// Each step turns version N into version N + 1, so a very old save passes through them all.
+function upgradeSave(data) {
+  // Saves made before versions existed are version 1
+  if (data.version === undefined) {
+    data.version = 1;
+  }
+
+  // An example of a step, for when one is needed:
+  //
+  // if (data.version === 1) {
+  //   for (let className in data.classSaves) {
+  //     let saved = data.classSaves[className];
+  //     // ...change "saved" here, for example rename saved.skillLevels.oldId...
+  //   }
+  //   data.version = 2;
+  // }
+
+  return data;
+}
+
+// Takes out anything a save remembers that no longer exists in the game,
+// so a removed skill or relic cannot cause trouble. "known" is a list of things with ids.
+function keepKnownIds(levels, known) {
+  let kept = {};
+
+  for (let thing of known) {
+    if (levels[thing.id] !== undefined) {
+      kept[thing.id] = levels[thing.id];
+    }
+  }
+
+  return kept;
+}
 
 // What a class looks like before it has ever been played
 function freshClass(className) {
@@ -1100,6 +1159,32 @@ function unpackClass(saved) {
     foundItem = null;
   }
 
+  // Forget anything the save remembers that is no longer in the game.
+  // Skill points spent on a removed skill come back by themselves.
+  skillLevels = keepKnownIds(skillLevels, currentClass().skills);
+  upgrades = keepKnownIds(upgrades, currentClass().upgrades);
+
+  let knownRelics = [];
+  for (let id of ownedRelics) {
+    for (let relic of allRelics()) {
+      if (relic.id === id) {
+        knownRelics.push(id);
+      }
+    }
+  }
+  ownedRelics = knownRelics;
+
+  // A perk choice only counts if that milestone still has that perk
+  let knownPerks = {};
+  for (let milestone of allMilestones()) {
+    for (let perk of milestone.perks) {
+      if (chosenPerks[milestone.floor] === perk.id) {
+        knownPerks[milestone.floor] = perk.id;
+      }
+    }
+  }
+  chosenPerks = knownPerks;
+
   dotStacks = 0;
   recalcStats();
 
@@ -1110,9 +1195,15 @@ function unpackClass(saved) {
 }
 
 function saveGame() {
+  // Never write over a save that could not be read: the player may still get it back
+  if (saveProblem !== "") {
+    return;
+  }
+
   classSaves[playerClass] = packClass();
 
   let data = {
+    version: saveVersion,
     playerClass: playerClass,
     classSaves: classSaves,
     lastTick: lastTick
@@ -1125,19 +1216,62 @@ function loadGame() {
   let saved = localStorage.getItem(saveName);
 
   if (saved !== null) {
-    let data = JSON.parse(saved);
+    // If anything at all goes wrong reading the save, we end up in "catch" below
+    // instead of the game breaking
+    try {
+      let data = JSON.parse(saved);
 
-    classSaves = data.classSaves;
+      // Keep a copy of the save as it was before an update changes it
+      if (data.version !== saveVersion) {
+        localStorage.setItem(saveName + "-before-update", saved);
+      }
+      data = upgradeSave(data);
 
-    // When the game was last running, so we know how long you were away
-    lastTick = data.lastTick;
+      classSaves = data.classSaves;
 
-    if (classes[data.playerClass] !== undefined) {
-      playerClass = data.playerClass;
+      // When the game was last running, so we know how long you were away
+      lastTick = data.lastTick;
+
+      if (classes[data.playerClass] !== undefined) {
+        playerClass = data.playerClass;
+      }
+
+      unpackClass(classSaves[playerClass]);
+      return;
+    } catch (error) {
+      // Start a new game for now, but leave the old save exactly where it is
+      saveProblem = saved;
+      classSaves = {};
+      playerClass = "barbarian";
+      lastTick = Date.now();
     }
   }
 
   unpackClass(classSaves[playerClass]);
+}
+
+// Tells the player their save could not be read, and gives them its code to send in
+function showSaveProblem() {
+  if (saveProblem === "") {
+    return;
+  }
+
+  document.getElementById("save-problem").hidden = false;
+
+  // Put the unreadable save in the Save tab as a code, if it can be turned into one
+  try {
+    document.getElementById("save-code").value = btoa(saveProblem);
+  } catch (error) {
+    document.getElementById("save-code").value = saveProblem;
+  }
+}
+
+// The player gives up on the save that could not be read. A copy is still kept aside.
+function startNewSave() {
+  localStorage.setItem(saveName + "-unreadable", saveProblem);
+  saveProblem = "";
+  document.getElementById("save-problem").hidden = true;
+  saveGame();
 }
 
 function switchClass(className) {
@@ -2375,6 +2509,7 @@ buildFameList();
 buildTowerList();
 buildClassScreen();
 showTab("tower");
+showSaveProblem();
 startEncounter();
 tick();
 let timer = setInterval(tick, 1000);

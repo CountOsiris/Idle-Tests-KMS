@@ -29,6 +29,20 @@
     </div>
   </header>
 
+  <!-- Only shown if the save in this browser could not be read -->
+  <div id="save-problem" class="card highlight notice" hidden>
+    <h2>Your save could not be loaded</h2>
+    <p>
+      It has not been deleted. The game has started a new character for now, and
+      <strong>is not saving</strong>, so that your old save stays untouched.
+    </p>
+    <p class="note">
+      Your old save is on the Save tab as a code. Send that code to whoever gave you
+      the game and it can probably be repaired. Or give up on it and start saving a new game:
+    </p>
+    <button onclick="startNewSave()">Start a new save</button>
+  </div>
+
   <main class="layout">
 
     <!-- The tower and the fight. Always visible on a wide screen; a tab of its own on a narrow one. -->

@@ -147,6 +147,12 @@ p {
   border-color: var(--gold);
 }
 
+/* A message across the whole page, above everything else */
+.notice {
+  max-width: 1280px;
+  margin: 0 auto 18px;
+}
+
 /* A title on the left and a number on the right */
 .card-head {
   display: flex;
