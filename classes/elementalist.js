@@ -34,6 +34,7 @@ classes.elementalist = {
   gearLabel: "Gloves",
   gearTypes: { gloves: "Elemental Gloves" },
   dotLabel: "Burning",
+  dotType: "fire",
 
   // The elements. The player picks one on the Skills tab; "stance" holds the choice.
   stanceLabel: "Element",
@@ -151,7 +152,7 @@ function elementalistAttack() {
   // Every spell ignores armor (magicHitMonster)
 
   if (stance === "fire") {
-    magicHitMonster(playerAttack * fireHit);
+    magicHitMonster(playerAttack * fireHit, "fire");
 
     // Fire catches quickly: every spell adds two burn stacks
     addDotStack(totalBonus("burnStacks"));
@@ -166,7 +167,7 @@ function elementalistAttack() {
       damage = damage * (iceCrit + totalBonus("critPower") + overflow("critChance", 1));
       say("An ice shard shatters for a critical hit!");
     }
-    magicHitMonster(damage);
+    magicHitMonster(damage, "ice");
   }
 
   if (stance === "lightning") {
@@ -178,7 +179,7 @@ function elementalistAttack() {
     }
 
     for (let i = 0; i < bolts; i++) {
-      magicHitMonster(playerAttack * (lightningHit + totalBonus("boltPower")));
+      magicHitMonster(playerAttack * (lightningHit + totalBonus("boltPower")), "lightning");
     }
   }
 
@@ -190,7 +191,7 @@ function elementalistAttack() {
       elementalistCharged = false;
 
       // Stun chance past its limit adds to the boulder's damage instead
-      magicHitMonster(playerAttack * (earthHit + totalBonus("crush") + overflow("stunChance", maxChance)));
+      magicHitMonster(playerAttack * (earthHit + totalBonus("crush") + overflow("stunChance", maxChance)), "earth");
 
       if (chance(cappedChance("stunChance"))) {
         monsterStunned = true;

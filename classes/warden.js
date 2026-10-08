@@ -178,11 +178,11 @@ function wardenAttack() {
   if (weapon === "tower") {
     damage = damage * (1 + totalBonus("spearPower"));
   }
-  hitMonster(damage);
+  hitMonster(damage, "piercing");
 
   // The bladed shield is thrown after every thrust, and cuts through armor
   if (weapon === "bladed") {
-    magicHitMonster(throwDamage());
+    magicHitMonster(throwDamage(), "slashing");
   }
 }
 
@@ -194,7 +194,7 @@ function wardenWhenAttacked() {
 
   // The spiked shield never avoids a hit. It lands, and is thrown back.
   if (weapon === "spiked") {
-    magicHitMonster(reflectDamage());
+    magicHitMonster(reflectDamage(), "piercing");
   }
 
   // Every hit that lands is remembered, and paid back with the next thrust

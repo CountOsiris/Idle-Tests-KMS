@@ -30,6 +30,7 @@ classes.assassin = {
   gearLabel: "Blade",
   gearTypes: { venom: "Venom Dagger", stiletto: "Stiletto", shadow: "Shadow Blade" },
   dotLabel: "Poison",
+  dotType: "affliction",
 
   upgrades: [
     { id: "sharpenedEdge", name: "Sharpened Edge", text: "+3 attack", bonus: { attack: 3 } },
@@ -156,7 +157,12 @@ function assassinAttack() {
     assassinCounterReady = false;
   }
 
-  hitMonster(damage);
+  // Daggers and stilettos pierce, the shadow blade slashes
+  let type = "piercing";
+  if (weapon === "shadow") {
+    type = "slashing";
+  }
+  hitMonster(damage, type);
 
   // Poison ignores armor
   if (weapon === "venom") {

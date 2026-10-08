@@ -45,6 +45,7 @@ classes.ranger = {
   gearLabel: "Bow",
   gearTypes: { longbow: "Longbow", spirit: "Spirit Bow", bloom: "Bloom Bow" },
   dotLabel: "Spirit damage",
+  dotType: "nature",
 
   upgrades: [
     { id: "quickDraw", name: "Quick Draw", text: "+3 attack", bonus: { attack: 3 } },
@@ -164,7 +165,7 @@ function rangerAttack() {
     damage = damage * (2.5 + totalBonus("aimPower") + overflow("aimChance", 1));
     say("An aimed shot finds a weak spot!");
   }
-  hitMonster(damage);
+  hitMonster(damage, "piercing");
 
   if (weapon === "spirit") {
     addDotStack(totalBonus("spirits"));
@@ -173,7 +174,7 @@ function rangerAttack() {
   // The bloom bow heals you, and its thorns hurt the enemy by as much, ignoring armor
   if (weapon === "bloom") {
     healPlayer(playerMaxHp * bloomHealing());
-    magicHitMonster(playerMaxHp * bloomHealing() * (1 + totalBonus("thornPower")));
+    magicHitMonster(playerMaxHp * bloomHealing() * (1 + totalBonus("thornPower")), "nature");
   }
 
   // Every summoned spirit attacks too
@@ -223,17 +224,17 @@ function companionAttack() {
       bites = bites + 1;
     }
     for (let i = 0; i < bites; i++) {
-      hitMonster(strength * wolfBite);
+      hitMonster(strength * wolfBite, "nature");
     }
   }
 
   if (stance === "bear") {
-    hitMonster(strength * bearMaul);
+    hitMonster(strength * bearMaul, "nature");
   }
 
   // Dive chance past its limit makes the dive hit harder instead
   if (stance === "hawk" && chance(cappedChance("diveChance"))) {
-    magicHitMonster(strength * (hawkDive + overflow("diveChance", maxChance)));
+    magicHitMonster(strength * (hawkDive + overflow("diveChance", maxChance)), "nature");
     monsterStunned = true;
     say("Your hawk dives at the enemy's eyes!");
   }

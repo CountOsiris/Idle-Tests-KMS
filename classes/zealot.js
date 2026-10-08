@@ -169,14 +169,14 @@ function zealotAttack() {
 
   if (weapon === "tome") {
     // Holy magic ignores armor
-    magicHitMonster(damage * tomeHit);
+    magicHitMonster(damage * tomeHit, "holy");
     if (wasted > 0) {
-      magicHitMonster(wasted * (1 + totalBonus("sacredFlame")) * zealotCrusade());
+      magicHitMonster(wasted * (1 + totalBonus("sacredFlame")) * zealotCrusade(), "holy");
     }
   }
 
   if (weapon === "shield") {
-    hitMonster(damage);
+    hitMonster(damage, "crushing");
   }
 
   if (weapon === "mace") {
@@ -186,10 +186,10 @@ function zealotAttack() {
       damage = damage * (1 + totalBonus("judgement"));
       say("Judgement falls!");
     }
-    hitMonster(damage);
+    hitMonster(damage, "crushing");
 
     // The mace adds holy damage that ignores armor
-    magicHitMonster(damage * totalBonus("smite"));
+    magicHitMonster(damage * totalBonus("smite"), "holy");
   }
 }
 
@@ -205,7 +205,7 @@ function zealotWhenAttacked() {
   if (weapon === "shield" && chance(cappedChance("blockChance"))) {
     // A block is answered with a blow of the mace
     say("You block the attack and strike back!");
-    hitMonster(playerAttack * totalBonus("counter") * zealotCrusade());
+    hitMonster(playerAttack * totalBonus("counter") * zealotCrusade(), "crushing");
     return true;
   }
   return false;

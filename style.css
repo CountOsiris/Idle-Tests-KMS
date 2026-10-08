@@ -1028,6 +1028,12 @@ textarea {
 }
 
 .float.hit  { color: #e8e0cf; }
+.float.hit.weak     { color: var(--gold-bright); }   /* the monster was weak to this hit */
+.float.hit.resisted { color: #7d7566; }              /* the monster resisted this hit */
+
+/* The line under a monster that says what it is weak to and resists */
+.weak-note   { color: var(--gold-bright); margin-right: 14px; }
+.resist-note { color: #8f8777; }
 .float.hurt { color: var(--hurt); }
 .float.heal { color: var(--heal); left: 78%; }
 .float.word { color: var(--gold); }

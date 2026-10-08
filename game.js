@@ -135,15 +135,80 @@ function big(number) {
 
 // A weapon hit. The monster's armor blocks some of it, but it always does at least 1.
 // Gives back the damage that was dealt.
-function hitMonster(damage) {
-  damage = Math.max(1, Math.round(damage) - monsterArmor);
+// ----- Damage types -----
+// Every hit has a TYPE (slashing, piercing, fire...; the list is in data.js).
+// A monster can be weak to some types and resist others (see towers.js).
+
+// What the monster being fought is weak to and resists
+let monsterWeak = [];
+let monsterResist = [];
+
+// How many hits this turn were weakened or strengthened by their type.
+// Only used to colour the damage number on the fight screen.
+let resistedHits = 0;
+let boostedHits = 0;
+
+// Is this type on the list? A list can name a type ("fire") or a whole group ("elemental").
+function listHasType(list, type) {
+  for (let entry of list) {
+    if (entry === type) {
+      return true;
+    }
+    if (typeGroups[entry] !== undefined && typeGroups[entry].includes(type)) {
+      return true;
+    }
+  }
+  return false;
+}
+
+// A list of types in words, for example "slashing, piercing"
+function typeNames(list) {
+  let names = [];
+  for (let entry of list) {
+    names.push(damageTypes[entry]);
+  }
+  return names.join(", ");
+}
+
+// How much of a resisted hit is lost right now (0.4 means 40% of it).
+// It is deeper in a tower that is not your own, never more than maxResist,
+// and penetration takes away from it.
+function resistNow() {
+  let resist = resistAmount;
+  if (isAway()) {
+    resist = resist + (floor - 1) * awayResistPerFloor;
+  }
+  resist = Math.min(maxResist, resist);
+  return Math.max(0, resist - totalBonus("penetration"));
+}
+
+// What a hit of this type is multiplied by against the monster being fought
+function typeMultiplier(type) {
+  if (type === undefined) {
+    return 1;
+  }
+  if (listHasType(monsterWeak, type)) {
+    boostedHits = boostedHits + 1;
+    return 1 + weakAmount;
+  }
+  if (listHasType(monsterResist, type)) {
+    resistedHits = resistedHits + 1;
+    return 1 - resistNow();
+  }
+  return 1;
+}
+
+// A normal hit: the monster's armor is taken off it.
+// "type" is the damage type, for example "slashing".
+function hitMonster(damage, type) {
+  damage = Math.max(1, Math.round(damage * typeMultiplier(type)) - monsterArmor);
   monsterHp = monsterHp - damage;
   return damage;
 }
 
 // A magic hit ignores armor
-function magicHitMonster(damage) {
-  damage = Math.max(1, Math.round(damage));
+function magicHitMonster(damage, type) {
+  damage = Math.max(1, Math.round(damage * typeMultiplier(type)));
   monsterHp = monsterHp - damage;
   return damage;
 }
@@ -159,8 +224,13 @@ function addDotStack(most) {
   }
 }
 
+// The damage of all the bleeding, burning, poison or spirits this turn.
+// Its type is the class's dotType.
 function dotDamage() {
-  return Math.round(dotStacks * currentClass().dotPerStack() * (1 + totalBonus("dotPower")));
+  if (dotStacks === 0) {
+    return 0;
+  }
+  return Math.round(dotStacks * currentClass().dotPerStack() * (1 + totalBonus("dotPower")) * typeMultiplier(currentClass().dotType));
 }
 
 // ----- Adding up bonuses -----
@@ -2215,6 +2285,18 @@ function updateScreen() {
   document.getElementById("monster-stats").hidden = !inFight;
   document.getElementById("monster-numbers").hidden = !inFight;
 
+  // What the monster is weak to and resists, in words
+  let weakNote = "";
+  let resistNote = "";
+  if (inFight && monsterWeak.length > 0) {
+    weakNote = "Weak to " + typeNames(monsterWeak) + " (+" + percent(weakAmount) + ")";
+  }
+  if (inFight && monsterResist.length > 0) {
+    resistNote = "Resists " + typeNames(monsterResist) + " (-" + percent(resistNow()) + ")";
+  }
+  document.getElementById("monster-weak").textContent = weakNote;
+  document.getElementById("monster-resist").textContent = resistNote;
+
   // Rooms that are not fights have an emoji only, never pixel art
   let art = monsterArt;
   if (!inFight) {
@@ -2312,6 +2394,10 @@ function spawnMonster(isBoss) {
   monsterGold = type.gold;
   monsterPoison = traitOf(type, "poison");
   monsterRegen = traitOf(type, "regen");
+
+  // What it is weak to and resists (a monster with neither just leaves them out)
+  monsterWeak = type.weak || [];
+  monsterResist = type.resist || [];
 
   // Monsters in another class's tower are stronger
   if (isAway()) {
@@ -2732,6 +2818,8 @@ function animatedStep() {
   let wasBoss = encounterType === "boss";
   let roomBefore = roomCount;
   let deathsBefore = deaths;
+  resistedHits = 0;
+  boostedHits = 0;
   let monsterHpBefore = monsterHp;
   let monsterMaxHpBefore = monsterMaxHp;
   let monsterIconBefore = monsterIcon;
@@ -2804,12 +2892,21 @@ function animatedStep() {
     } else {
       // A regenerating monster can end the turn with more health than it started
       let dealt = monsterHpBefore - monsterHp;
+
+      // The number is coloured when the monster was weak to the hit, or resisted it
+      let feel = "";
+      if (boostedHits > 0 && resistedHits === 0) {
+        feel = " weak";
+      } else if (resistedHits > 0 && boostedHits === 0) {
+        feel = " resisted";
+      }
+
       if (dealt >= monsterMaxHpBefore * bigHitShare) {
-        floatText("monster-side", "-" + big(dealt), "hit big", false);
+        floatText("monster-side", "-" + big(dealt), "hit big" + feel, false);
         animate("monster-icon", "shake");
         animate("stage", "jolt");
       } else if (dealt > 0) {
-        floatText("monster-side", "-" + big(dealt), "hit", false);
+        floatText("monster-side", "-" + big(dealt), "hit" + feel, false);
         animate("monster-icon", "shake");
       } else if (dealt < 0) {
         floatText("monster-side", "+" + big(-dealt), "heal", false);

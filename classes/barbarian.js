@@ -39,6 +39,7 @@ classes.barbarian = {
   gearLabel: "Weapon",
   gearTypes: { axe: "Axe", sword: "Sword", club: "Club" },
   dotLabel: "Bleeding",
+  dotType: "affliction",
 
   upgrades: [
     { id: "bloodthirst", name: "Bloodthirst", text: "+5% lifesteal", bonus: { lifesteal: 0.05 } },
@@ -155,7 +156,12 @@ function barbarianAttack() {
   }
 
   // Barbarians heal from the damage they deal
-  let dealt = hitMonster(damage);
+  // Axes and swords slash, a club crushes
+  let type = "slashing";
+  if (weapon === "club") {
+    type = "crushing";
+  }
+  let dealt = hitMonster(damage, type);
   healPlayer(Math.max(1, dealt * totalBonus("lifesteal")));
 
   if (weapon === "axe") {

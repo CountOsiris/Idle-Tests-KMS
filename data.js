@@ -218,6 +218,42 @@ const maxLogLines = 40;
 // Every file in classes/ adds one class to this list.
 // To add a class: copy one of those files, change it, add a <script> line for it
 // in index.html (above game.js), and give it a tower of its own in towers.js.
+// ----- Damage types -----
+// Every hit has a type. Monsters can be weak to some types and resist others;
+// which ones is written on each monster in towers.js, like this:
+//   weak: ["crushing", "holy"], resist: ["piercing"]
+//
+// TO ADD A TYPE: add a line here, then use its name in a class file where the
+// class deals its damage (the second thing given to hitMonster or magicHitMonster).
+const damageTypes = {
+  slashing: "slashing",       // axes, swords, the shadow blade, a thrown bladed shield
+  piercing: "piercing",       // bows, spears, daggers, a spiked shield
+  crushing: "crushing",       // clubs and maces
+  arcane: "arcane",           // the Warlock's tomes
+  fire: "fire",               // the Elementalist's four elements
+  ice: "ice",
+  lightning: "lightning",
+  earth: "earth",
+  holy: "holy",               // the Zealot's smite, Judgement and holy tome
+  nature: "nature",           // spirits, thorns and animal companions
+  affliction: "bleed and poison",
+
+  // The groups below can be used on a monster as well, to mean every type in them
+  physical: "physical",
+  elemental: "elemental"
+};
+
+const typeGroups = {
+  physical: ["slashing", "piercing", "crushing"],
+  elemental: ["fire", "ice", "lightning", "earth"]
+};
+
+const weakAmount = 0.25;            // a hit the monster is weak to deals this much more (0.25 means +25%)
+const resistAmount = 0.4;           // a hit the monster resists deals this much less (0.4 means -40%)
+const awayResistPerFloor = 0.005;   // in another class's tower, resistance grows this much every floor
+const maxResist = 0.6;              // but never past this: nothing is ever immune
+// The bonus word "penetration" takes away from a monster's resistance (0.05 means 5% less of it)
+
 const classes = {};
 
 // ----- The town -----

@@ -180,7 +180,7 @@ function warlockCast(power) {
   }
 
   // Spells ignore armor
-  magicHitMonster(damage);
+  magicHitMonster(damage, "arcane");
 }
 
 function warlockAttack() {

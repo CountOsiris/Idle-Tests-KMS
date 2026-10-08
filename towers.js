@@ -150,17 +150,17 @@ const towers = {
     icon: "💀",
     text: "The armored dead. Steel means nothing to a spell.",
     monsters: [
-      { name: "Skeleton", text: "Old bones are hard to cut: double armor.", minFloor: 1, hp: 0.9, attack: 0.9, armor: 2, gold: 1 },
-      { name: "Armored Ghoul", icon: "🧟",text: "Somebody buried it in its plate.", minFloor: 2, hp: 1, attack: 1, armor: 2.5, gold: 1 },
-      { name: "Bone Knight", icon: "☠️",text: "Triple armor.", minFloor: 4, hp: 1.1, attack: 1.1, armor: 3, gold: 1.2 },
-      { name: "Iron Golem", icon: "🤖",text: "Slow, with four times the armor.", minFloor: 6, hp: 1.4, attack: 0.7, armor: 4, gold: 1.4 },
-      { name: "Crypt Guardian", icon: "🗿",text: "Triple armor and a lot of health.", minFloor: 9, hp: 1.5, attack: 1.1, armor: 3, gold: 1.3 },
-      { name: "Death Knight", icon: "⚰️",text: "Triple armor, and it hits back hard.", minFloor: 12, hp: 1.3, attack: 1.3, armor: 3, gold: 1.5 }
+      { name: "Skeleton", text: "Old bones are hard to cut: double armor.", minFloor: 1, hp: 0.9, attack: 0.9, armor: 2, gold: 1, weak: ["crushing", "holy"], resist: ["piercing", "slashing", "affliction"] },
+      { name: "Armored Ghoul", icon: "🧟",text: "Somebody buried it in its plate.", minFloor: 2, hp: 1, attack: 1, armor: 2.5, gold: 1, weak: ["fire", "holy"], resist: ["slashing", "affliction", "nature"] },
+      { name: "Bone Knight", icon: "☠️",text: "Triple armor.", minFloor: 4, hp: 1.1, attack: 1.1, armor: 3, gold: 1.2, weak: ["crushing", "holy"], resist: ["piercing", "slashing", "affliction"] },
+      { name: "Iron Golem", icon: "🤖",text: "Slow, with four times the armor.", minFloor: 6, hp: 1.4, attack: 0.7, armor: 4, gold: 1.4, weak: ["lightning", "arcane"], resist: ["physical", "affliction", "nature"] },
+      { name: "Crypt Guardian", icon: "🗿",text: "Triple armor and a lot of health.", minFloor: 9, hp: 1.5, attack: 1.1, armor: 3, gold: 1.3, weak: ["arcane", "earth"], resist: ["slashing", "piercing", "fire"] },
+      { name: "Death Knight", icon: "⚰️",text: "Triple armor, and it hits back hard.", minFloor: 12, hp: 1.3, attack: 1.3, armor: 3, gold: 1.5, weak: ["holy", "arcane"], resist: ["slashing", "affliction", "ice"] }
     ],
     bosses: [
-      { name: "Bone Lich", icon: "🧙",text: "Double armor, and hits harder than most.", hp: 1, attack: 1.2, armor: 2, gold: 1.2 },
-      { name: "Iron Colossus", icon: "🤖",text: "Four times the armor.", hp: 1.3, attack: 0.9, armor: 4, gold: 1.2 },
-      { name: "The Entombed King", icon: "👑",text: "Triple armor, and regenerates 2% of his health every turn.", hp: 1.1, attack: 1, armor: 3, gold: 1.5, regen: 0.02 }
+      { name: "Bone Lich", icon: "🧙",text: "Double armor, and hits harder than most.", hp: 1, attack: 1.2, armor: 2, gold: 1.2, weak: ["crushing", "holy"], resist: ["piercing", "affliction", "ice"] },
+      { name: "Iron Colossus", icon: "🤖",text: "Four times the armor.", hp: 1.3, attack: 0.9, armor: 4, gold: 1.2, weak: ["lightning", "arcane"], resist: ["physical", "affliction", "nature"] },
+      { name: "The Entombed King", icon: "👑",text: "Triple armor, and regenerates 2% of his health every turn.", hp: 1.1, attack: 1, armor: 3, gold: 1.5, regen: 0.02, weak: ["holy", "arcane"], resist: ["slashing", "piercing", "affliction"] }
     ],
     trophies: [
       { floor: 10, id: "cryptLore", name: "Crypt Lore", text: "+20% experience", bonus: { experience: 0.2 } },
