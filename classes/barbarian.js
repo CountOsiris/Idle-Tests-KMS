@@ -23,6 +23,7 @@
 classes.barbarian = {
   name: "Barbarian",
   icon: "⚔️",
+  art: "art/barbarian.png",
   text: "Two-handed weapons and lifesteal. Hits hard and heals from the damage dealt.",
   perLevel: { maxHp: 8, attack: 2 },
   base: { maxHp: 80, attack: 8, lifesteal: 0.1, bleedStacks: 3, critChance: 0.2, parryChance: 0.2, stunChance: 0.25 },

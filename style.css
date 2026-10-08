@@ -565,12 +565,61 @@ body[data-tab="tower"] #tab-character {
   filter: saturate(0.7) brightness(0.92) drop-shadow(0 4px 6px rgba(0, 0, 0, 0.8));
 }
 
-/* Pixel art, when a class or monster has some (see "art" in the class and tower files).
-   "pixelated" keeps small drawings sharp when they are shown bigger. */
+/* ----- Real art -----
+   When a class or monster has a picture (see "art" in the class and tower files),
+   game.js puts "with-art" on the fight, and everything in it is drawn taller.
+   Change artHeight to make the figures bigger or smaller. */
+.stage {
+  --art-height: 170px;
+}
+
 .icon img,
 .ghost img {
-  height: 64px;
+  height: var(--art-height);
+  display: block;
+}
+
+/* Small true pixel art is kept sharp when shown bigger (game.js adds "sharp") */
+.icon img.sharp,
+.ghost img.sharp {
   image-rendering: pixelated;
+}
+
+/* A picture is not dimmed the way the emoji are: it only gets a shadow */
+.icon.has-art {
+  height: auto;
+  line-height: 0;
+  filter: drop-shadow(0 6px 8px rgba(0, 0, 0, 0.9));
+}
+
+/* Every fighter stands in a box of the same height, feet on the floor,
+   so a tall picture and a small emoji line up along the bottom */
+.stage.with-art .mover,
+.stage.with-art .ghost {
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  height: var(--art-height);
+}
+
+.stage.with-art .mover {
+  width: 100%;
+}
+
+/* An emoji fighter is drawn bigger while it stands next to real art */
+.stage.with-art .icon:not(.has-art),
+.stage.with-art .ghost {
+  font-size: 92px;
+  line-height: 108px;
+}
+
+.stage.with-art .icon:not(.has-art) {
+  height: 108px;
+}
+
+.stage.with-art .shadow {
+  width: 110px;
+  height: 12px;
 }
 
 .icon.rare {

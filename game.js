@@ -2026,6 +2026,10 @@ function updateScreen() {
   document.getElementById("player-name").textContent = currentClass().name;
   drawPicture("monster-icon", icon, art);
 
+  // When either fighter has real art, the fight is drawn taller to make room for it
+  let anyArt = currentClass().art !== undefined || art !== "";
+  document.getElementById("stage").classList.toggle("with-art", anyArt);
+
   // Bosses and rare monsters get a coloured glow (see style.css).
   // classList.toggle switches one class on or off and leaves the animation classes alone.
   document.getElementById("monster-icon").classList.toggle("boss", encounterType === "boss");
@@ -2482,6 +2486,7 @@ function drawPicture(id, icon, art) {
 
   if (art === undefined || art === "") {
     element.dataset.art = "";
+    element.classList.remove("has-art");
     element.textContent = icon;
     return;
   }
@@ -2492,9 +2497,16 @@ function drawPicture(id, icon, art) {
     image.src = art;
     image.alt = "";
 
+    // Small drawings (true pixel art, up to 96 pixels tall) are kept sharp when
+    // shown bigger. Large detailed pictures are scaled smoothly instead.
+    image.onload = function () {
+      image.classList.toggle("sharp", image.naturalHeight <= 96);
+    };
+
     element.textContent = "";
     element.appendChild(image);
     element.dataset.art = art;
+    element.classList.add("has-art");
   }
 }
 
