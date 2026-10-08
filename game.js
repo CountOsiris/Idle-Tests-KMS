@@ -1204,8 +1204,47 @@ function importSave() {
 }
 
 // ----- Building the page -----
-// These make buttons out of the lists in data.js and classes/, so new perks,
-// upgrades, skills and classes show up without touching index.html
+// These make the lists on the page out of the lists in data.js, towers.js and classes/,
+// so new perks, upgrades, skills and classes show up without touching index.html.
+// The "build" functions make the rows once. The "show" functions further down
+// fill in the words and numbers, every second.
+
+// Makes one row of a list: a title and a note on the left, a button on the right.
+// The parts get the ids  name + "-title",  name + "-note"  and  name  (the button itself).
+function addRow(box, name, whenClicked) {
+  let row = document.createElement("div");
+  row.className = "row";
+  row.id = name + "-row";
+
+  let text = document.createElement("div");
+  text.className = "row-text";
+
+  let title = document.createElement("p");
+  title.className = "row-title";
+  title.id = name + "-title";
+  text.appendChild(title);
+
+  let note = document.createElement("p");
+  note.className = "note";
+  note.id = name + "-note";
+  text.appendChild(note);
+
+  let button = document.createElement("button");
+  button.id = name;
+  button.onclick = whenClicked;
+
+  row.appendChild(text);
+  row.appendChild(button);
+  box.appendChild(row);
+}
+
+// Writes into the three parts of a row made by addRow
+function fillRow(name, title, note, buttonText, buttonOff) {
+  document.getElementById(name + "-title").textContent = title;
+  document.getElementById(name + "-note").textContent = note;
+  document.getElementById(name).textContent = buttonText;
+  document.getElementById(name).disabled = buttonOff;
+}
 
 // Runs once, when the game starts
 function buildClassButtons() {
@@ -1214,11 +1253,22 @@ function buildClassButtons() {
   for (let className in classes) {
     let button = document.createElement("button");
     button.id = "class-" + className;
-    button.textContent = classes[className].name;
+    button.textContent = classes[className].icon + " " + classes[className].name;
     button.onclick = function () {
       switchClass(className);
     };
     box.appendChild(button);
+  }
+}
+
+// One dot for every room on a floor, shown under the floor number
+function buildRoomPips() {
+  let box = document.getElementById("room-pips");
+
+  for (let i = 1; i <= roomsPerFloor; i++) {
+    let pip = document.createElement("span");
+    pip.id = "pip-" + i;
+    box.appendChild(pip);
   }
 }
 
@@ -1236,22 +1286,9 @@ function buildTownList() {
   let box = document.getElementById("town-upgrades");
 
   for (let item of townUpgrades) {
-    let row = document.createElement("div");
-    row.className = "town-row";
-
-    let button = document.createElement("button");
-    button.id = "town-" + item.id;
-    button.onclick = function () {
+    addRow(box, "town-" + item.id, function () {
       buyTownUpgrade(item);
-    };
-    row.appendChild(button);
-
-    let text = document.createElement("p");
-    text.className = "note";
-    text.textContent = item.text;
-    row.appendChild(text);
-
-    box.appendChild(row);
+    });
   }
 }
 
@@ -1260,26 +1297,20 @@ function buildTowerList() {
   let box = document.getElementById("towers");
 
   for (let towerName in towers) {
-    let row = document.createElement("div");
-    row.className = "tower-row";
-
-    let title = document.createElement("p");
-    title.id = "tower-title-" + towerName;
-    row.appendChild(title);
-
-    let text = document.createElement("p");
-    text.className = "note";
-    text.id = "tower-text-" + towerName;
-    row.appendChild(text);
-
-    let button = document.createElement("button");
-    button.id = "tower-" + towerName;
-    button.onclick = function () {
+    addRow(box, "tower-" + towerName, function () {
       chooseTower(towerName);
-    };
-    row.appendChild(button);
+    });
+  }
+}
 
-    box.appendChild(row);
+// Runs once, when the game starts. The fame upgrades are the same for every class.
+function buildFameList() {
+  let box = document.getElementById("fame-upgrades");
+
+  for (let item of fameUpgrades) {
+    addRow(box, "fame-" + item.id, function () {
+      buyFameUpgrade(item);
+    });
   }
 }
 
@@ -1289,17 +1320,9 @@ function buildClassScreen() {
   upgradeBox.innerHTML = "";
 
   for (let upgrade of currentClass().upgrades) {
-    let row = document.createElement("p");
-
-    let button = document.createElement("button");
-    button.id = "upgrade-" + upgrade.id;
-    button.onclick = function () {
+    addRow(upgradeBox, "upgrade-" + upgrade.id, function () {
       chooseUpgrade(upgrade);
-    };
-    row.appendChild(button);
-    row.appendChild(document.createTextNode(" " + upgrade.text));
-
-    upgradeBox.appendChild(row);
+    });
   }
 
   // The favourite pickers list this class's own weapons and upgrades
@@ -1329,22 +1352,9 @@ function buildClassScreen() {
   skillBox.innerHTML = "";
 
   for (let skill of currentClass().skills) {
-    let row = document.createElement("div");
-    row.className = "skill";
-
-    let button = document.createElement("button");
-    button.id = "skill-" + skill.id;
-    button.onclick = function () {
+    addRow(skillBox, "skill-" + skill.id, function () {
       buySkill(skill);
-    };
-    row.appendChild(button);
-
-    let text = document.createElement("p");
-    text.className = "note";
-    text.textContent = skill.text + " per level";
-    row.appendChild(text);
-
-    skillBox.appendChild(row);
+    });
   }
 
   buildMilestones();
@@ -1360,8 +1370,12 @@ function buildMilestones() {
     row.className = "milestone";
 
     let title = document.createElement("p");
+    title.className = "row-title";
     title.id = "milestone-" + milestone.floor;
     row.appendChild(title);
+
+    let choices = document.createElement("div");
+    choices.className = "choices";
 
     for (let perk of milestone.perks) {
       let button = document.createElement("button");
@@ -1370,17 +1384,32 @@ function buildMilestones() {
       button.onclick = function () {
         choosePerk(milestone.floor, perk.id);
       };
-      row.appendChild(button);
+      choices.appendChild(button);
     }
 
+    row.appendChild(choices);
     milestoneBox.appendChild(row);
   }
 }
 
 // ----- Showing things on the page -----
-// On narrow screens only one section is shown at a time (the rest is done in style.css)
+// The page has tabs: Character, Skills, Town and so on. Only one is open at a time.
+// style.css shows the page whose name matches body's data-tab.
+// On a wide screen the tower is always visible beside the tabs; on a narrow
+// one it is a tab of its own.
+const tabNames = ["tower", "character", "skills", "town", "travel", "milestones", "ascension", "save"];
+
 function showTab(name) {
-  document.body.className = "show-" + name;
+  document.body.dataset.tab = name;
+
+  for (let tabName of tabNames) {
+    document.getElementById("tab-" + tabName).classList.toggle("open", tabName === name);
+  }
+}
+
+// Puts a small dot on a tab when something there needs the player's attention
+function markTab(name, needsAttention) {
+  document.getElementById("tab-" + name).classList.toggle("alert", needsAttention);
 }
 
 // Adds a line to the top of the combat log
@@ -1435,15 +1464,14 @@ function showClassButtons() {
 
 function showUpgrades() {
   for (let upgrade of currentClass().upgrades) {
-    let button = document.getElementById("upgrade-" + upgrade.id);
+    let maxed = upgradeLevel(upgrade.id) >= upgradeCap();
 
-    if (upgradeLevel(upgrade.id) >= upgradeCap()) {
-      button.textContent = upgrade.name + " (max level)";
-      button.disabled = true;
-    } else {
-      button.textContent = upgrade.name + " level " + (upgradeLevel(upgrade.id) + 1);
-      button.disabled = false;
+    let title = upgrade.name + " · level " + upgradeLevel(upgrade.id);
+    if (maxed) {
+      title = upgrade.name + " · level " + upgradeLevel(upgrade.id) + " (the most for this run)";
     }
+
+    fillRow("upgrade-" + upgrade.id, title, upgrade.text, "Choose", maxed);
   }
 }
 
@@ -1451,16 +1479,13 @@ function showSkills() {
   document.getElementById("skill-points").textContent = skillPointsLeft();
 
   for (let skill of currentClass().skills) {
-    let button = document.getElementById("skill-" + skill.id);
-
     let price = skill.cost + " points";
     if (skill.cost === 1) {
       price = "1 point";
     }
 
     // Skills have no top level
-    button.textContent = skill.name + " level " + skillLevel(skill.id) + " (" + price + ")";
-    button.disabled = skillPointsLeft() < skill.cost;
+    fillRow("skill-" + skill.id, skill.name + " · level " + skillLevel(skill.id), skill.text + " per level", price, skillPointsLeft() < skill.cost);
   }
 }
 
@@ -1475,7 +1500,9 @@ function showMilestones() {
 
     let title = "Floor " + milestone.floor;
     if (!unlocked) {
-      title = title + " (locked)";
+      title = title + " · locked";
+    } else if (chosenPerks[milestone.floor] === undefined) {
+      title = title + " · pick one";
     }
     document.getElementById("milestone-" + milestone.floor).textContent = title;
 
@@ -1505,18 +1532,16 @@ function showFavourite(boxId, favouriteButtonId) {
 
 function showTown() {
   for (let item of townUpgrades) {
-    let button = document.getElementById("town-" + item.id);
+    let name = "town-" + item.id;
+    let price = big(townCost(item)) + " gold";
 
     // The helpers are bought once. Everything else can be bought forever.
     if (townUpgradeIsMaxed(item)) {
-      button.textContent = item.name + " (owned)";
-      button.disabled = true;
+      fillRow(name, item.name, item.text, "Owned", true);
     } else if (item.maxLevel === 1) {
-      button.textContent = item.name + " (" + big(townCost(item)) + " gold)";
-      button.disabled = bank < townCost(item);
+      fillRow(name, item.name, item.text, price, bank < townCost(item));
     } else {
-      button.textContent = item.name + " level " + (townLevel(item.id) + 1) + " (" + big(townCost(item)) + " gold)";
-      button.disabled = bank < townCost(item);
+      fillRow(name, item.name + " · level " + townLevel(item.id), item.text, price, bank < townCost(item));
     }
   }
 
@@ -1527,19 +1552,19 @@ function showTown() {
   showFavourite("favourite-upgrade-buttons", "favourite-upgrade-" + favouriteUpgrade);
 
   document.getElementById("potions").textContent = potions + " / " + potionLimit();
-  document.getElementById("potion-btn").textContent = "Healing potion (" + potionPrice + " gold)";
+  document.getElementById("potion-btn").textContent = potionPrice + " gold";
   document.getElementById("potion-btn").disabled = potions >= potionLimit() || bank < potionPrice;
 }
 
 function showTowers() {
   for (let towerName in towers) {
     let place = towers[towerName];
+    let name = "tower-" + towerName;
 
-    let title = place.name + " (" + classes[towerName].name + "'s tower)";
+    let title = place.icon + " " + place.name + " · " + classes[towerName].name + "'s tower";
     if (towerName === playerClass) {
-      title = place.name + " (your home tower)";
+      title = place.icon + " " + place.name + " · your home tower";
     }
-    document.getElementById("tower-title-" + towerName).textContent = title;
 
     let best = 0;
     if (towerBest[towerName] !== undefined) {
@@ -1557,49 +1582,21 @@ function showTowers() {
         text = text + ", not won yet.";
       }
     }
-    document.getElementById("tower-text-" + towerName).textContent = text;
 
-    let button = document.getElementById("tower-" + towerName);
+    let button = document.getElementById(name);
     button.className = "";
-    button.disabled = false;
 
     if (towerName === tower && towerName === nextTower) {
-      button.textContent = "You are here";
+      fillRow(name, title, text, "You are here", true);
       button.className = "chosen";
-      button.disabled = true;
     } else if (towerName === nextTower) {
-      button.textContent = "Entering after you fall";
+      fillRow(name, title, text, "Entering after you fall", true);
       button.className = "chosen";
-      button.disabled = true;
     } else if (towerName === tower) {
-      button.textContent = "You are here (stay for the next run)";
+      fillRow(name, title, text, "Stay here", false);
     } else {
-      button.textContent = "Enter on your next run";
+      fillRow(name, title, text, "Enter next run", false);
     }
-  }
-}
-
-// Runs once, when the game starts. The fame upgrades are the same for every class.
-function buildFameList() {
-  let box = document.getElementById("fame-upgrades");
-
-  for (let item of fameUpgrades) {
-    let row = document.createElement("div");
-    row.className = "town-row";
-
-    let button = document.createElement("button");
-    button.id = "fame-" + item.id;
-    button.onclick = function () {
-      buyFameUpgrade(item);
-    };
-    row.appendChild(button);
-
-    let text = document.createElement("p");
-    text.className = "note";
-    text.id = "fame-text-" + item.id;
-    row.appendChild(text);
-
-    box.appendChild(row);
   }
 }
 
@@ -1665,36 +1662,52 @@ function showAscension() {
   }
 
   for (let item of fameUpgrades) {
-    let upgradeButton = document.getElementById("fame-" + item.id);
+    let name = "fame-" + item.id;
 
     // A locked upgrade shows only when it will appear
     if (!fameUpgradeIsUnlocked(item)) {
-      upgradeButton.textContent = item.name + " (locked)";
-      upgradeButton.disabled = true;
-
+      let when = "Unlocks after " + item.unlockAt + " ascensions.";
       if (item.unlockAt === 1) {
-        document.getElementById("fame-text-" + item.id).textContent = "Unlocks after your first ascension.";
-      } else {
-        document.getElementById("fame-text-" + item.id).textContent = "Unlocks after " + item.unlockAt + " ascensions.";
+        when = "Unlocks after your first ascension.";
       }
+      fillRow(name, item.name, when, "Locked", true);
       continue;
     }
 
-    if (fameUpgradeIsMaxed(item)) {
-      upgradeButton.textContent = item.name + " level " + fameLevel(item.id) + " (max)";
-      upgradeButton.disabled = true;
-    } else {
-      upgradeButton.textContent = item.name + " level " + (fameLevel(item.id) + 1) + " (" + big(fameCost(item)) + " fame)";
-      upgradeButton.disabled = fame < fameCost(item);
-    }
+    let title = item.name + " · level " + fameLevel(item.id);
+    let note = item.text + " So far: " + fameEffectText(item) + ".";
 
-    document.getElementById("fame-text-" + item.id).textContent = item.text + " So far: " + fameEffectText(item) + ".";
+    if (fameUpgradeIsMaxed(item)) {
+      fillRow(name, title, note, "Max", true);
+    } else {
+      fillRow(name, title, note, big(fameCost(item)) + " fame", fame < fameCost(item));
+    }
   }
 }
 
 // ----- What to do next -----
 // A short list under the tower that tells the player what needs their attention
 // and what they are working toward. At most three lines, most urgent first.
+
+// Is there an unlocked milestone with no perk picked yet?
+function hasPerkToPick() {
+  for (let milestone of allMilestones()) {
+    if (bestFloor >= milestone.floor && chosenPerks[milestone.floor] === undefined) {
+      return true;
+    }
+  }
+  return false;
+}
+
+function canBuyFameUpgrade() {
+  for (let item of fameUpgrades) {
+    if (fameUpgradeIsUnlocked(item) && !fameUpgradeIsMaxed(item) && fame >= fameCost(item)) {
+      return true;
+    }
+  }
+  return false;
+}
+
 function nextGoals() {
   let goals = [];
 
@@ -1702,11 +1715,8 @@ function nextGoals() {
   if (skillPointsLeft() > 0) {
     goals.push("You have " + skillPointsLeft() + " skill points to spend (Skills).");
   }
-  for (let milestone of allMilestones()) {
-    if (bestFloor >= milestone.floor && chosenPerks[milestone.floor] === undefined) {
-      goals.push("You have a milestone perk to pick for floor " + milestone.floor + " (Milestones).");
-      break;
-    }
+  if (hasPerkToPick()) {
+    goals.push("You have a milestone perk to pick (Milestones).");
   }
   if (foundItem !== null && isBetter(foundItem)) {
     goals.push("You found better equipment: " + itemName(foundItem) + " (Character).");
@@ -1714,11 +1724,8 @@ function nextGoals() {
   if (canAscend()) {
     goals.push("You can ascend (Ascension).");
   }
-  for (let item of fameUpgrades) {
-    if (fameUpgradeIsUnlocked(item) && !fameUpgradeIsMaxed(item) && fame >= fameCost(item)) {
-      goals.push("You have enough fame for an upgrade (Ascension).");
-      break;
-    }
+  if (canBuyFameUpgrade()) {
+    goals.push("You have enough fame for an upgrade (Ascension).");
   }
 
   // Things to aim for
@@ -1752,6 +1759,13 @@ function showGoals() {
     row.textContent = goal;
     box.appendChild(row);
   }
+
+  // The same things put a dot on their tab
+  markTab("tower", encounterType === "upgrade");
+  markTab("character", foundItem !== null && isBetter(foundItem));
+  markTab("skills", skillPointsLeft() > 0);
+  markTab("milestones", hasPerkToPick());
+  markTab("ascension", canAscend() || canBuyFameUpgrade());
 }
 
 function showRelics() {
@@ -1784,25 +1798,43 @@ function updateScreen() {
   showGoals();
   showLog();
 
-  document.getElementById("tower-name").textContent = towers[tower].name;
+  // The bar across the top
+  document.getElementById("header-icon").textContent = currentClass().icon;
+  document.getElementById("header-class").textContent = currentClass().name;
+  document.getElementById("header-level").textContent = level;
+  document.getElementById("header-level-bar").style.width = Math.min(100, experience / levelCost() * 100) + "%";
+  document.getElementById("gold").textContent = big(gold);
+  document.getElementById("bank").textContent = big(bank);
+  document.getElementById("xp").textContent = big(experience);
+  document.getElementById("fame").textContent = big(fame);
+
+  // The tower
+  document.getElementById("tower-name").textContent = towers[tower].icon + " " + towers[tower].name;
   if (isAway()) {
     document.getElementById("tower-note").textContent = "Away from home: monsters have +" + percent(awayTowerHealth) + " health and +" + percent(awayTowerAttack) + " attack, and you earn +" + percent(awayTowerExperience) + " experience.";
   } else {
     document.getElementById("tower-note").textContent = "Your home tower. " + towers[tower].text;
   }
 
-  document.getElementById("gold").textContent = big(gold);
-  document.getElementById("bank").textContent = big(bank);
-  document.getElementById("xp").textContent = big(experience);
-  document.getElementById("fame").textContent = big(fame);
   document.getElementById("floor").textContent = floor;
   document.getElementById("best-floor").textContent = bestFloor;
-  document.getElementById("room").textContent = room;
-  document.getElementById("rooms-per-floor").textContent = roomsPerFloor;
 
+  // One dot per room: gold for rooms cleared, bright for the one you are in
+  for (let i = 1; i <= roomsPerFloor; i++) {
+    let look = "";
+    if (i < room) {
+      look = "done";
+    } else if (i === room) {
+      look = "now";
+    }
+    document.getElementById("pip-" + i).className = look;
+  }
+
+  // The Character tab
   document.getElementById("class").textContent = currentClass().name;
   document.getElementById("class-text").textContent = currentClass().text;
   document.getElementById("level").textContent = level;
+  document.getElementById("health").textContent = big(playerMaxHp);
   document.getElementById("player-hp").textContent = big(playerHp) + " / " + big(playerMaxHp);
   document.getElementById("player-hp-bar").style.width = Math.max(0, playerHp / playerMaxHp * 100) + "%";
   document.getElementById("attack").textContent = big(playerAttack);
@@ -1815,6 +1847,7 @@ function updateScreen() {
   document.getElementById("level-bar").style.width = Math.min(100, experience / levelCost() * 100) + "%";
   document.getElementById("level-gain").textContent = "+" + currentClass().perLevel.attack + " attack, +" + currentClass().perLevel.maxHp + " health and " + skillPointsPerLevel + " skill point";
 
+  // The fight
   let inFight = encounterType === "monster" || encounterType === "boss";
 
   let title = monsterName;
@@ -1855,13 +1888,6 @@ function updateScreen() {
   document.getElementById("upgrade-area").hidden = encounterType !== "upgrade";
   document.getElementById("upgrade-timer").textContent = upgradeTimer;
 
-  // Flag the Tower tab when an upgrade is waiting, in case another tab is open
-  if (encounterType === "upgrade") {
-    document.getElementById("tab-tower").textContent = "Tower (!)";
-  } else {
-    document.getElementById("tab-tower").textContent = "Tower";
-  }
-
   if (inFight) {
     document.getElementById("monster-hp").textContent = big(Math.max(0, monsterHp)) + " / " + big(monsterMaxHp);
     document.getElementById("monster-hp-bar").style.width = Math.max(0, monsterHp / monsterMaxHp * 100) + "%";
@@ -1886,7 +1912,7 @@ function updateScreen() {
   document.getElementById("armor").textContent = slotText("armor", armorPower, armorRarity);
   document.getElementById("armor").className = "rarity-" + armorRarity;
   document.getElementById("weapon-info").textContent = currentClass().gearInfo();
-  document.getElementById("favourite-gear-label").textContent = "Favourite " + currentClass().gearLabel.toLowerCase() + ":";
+  document.getElementById("favourite-gear-label").textContent = "Favourite " + currentClass().gearLabel.toLowerCase();
 
   if (foundItem === null) {
     document.getElementById("found-item").textContent = "nothing";
@@ -1896,7 +1922,6 @@ function updateScreen() {
     document.getElementById("found-item").className = "rarity-" + foundItem.rarity;
   }
   document.getElementById("equip-btn").disabled = foundItem === null;
-
 }
 
 // ----- Building each room -----
@@ -2344,10 +2369,12 @@ function tick() {
 // ----- Start the game -----
 loadGame();
 buildClassButtons();
+buildRoomPips();
 buildTownList();
 buildFameList();
 buildTowerList();
 buildClassScreen();
+showTab("tower");
 startEncounter();
 tick();
 let timer = setInterval(tick, 1000);

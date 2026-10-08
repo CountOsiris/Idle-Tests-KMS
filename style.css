@@ -1,85 +1,56 @@
-/* ----- Colours (change them here and the whole page follows) ----- */
+/* =====================================================================
+   style.css - how the game looks.
+   The colours are all named here at the top: change one and the whole
+   page follows.
+   ===================================================================== */
 :root {
-  --background: #1b1b1f;
-  --panel: #26262c;
-  --border: #3a3a44;
-  --text: #f0e6d2;
-  --faded: #a89f8d;
-  --gold: #c9a227;
-  --player: #4caf6a;
-  --monster: #c0453c;
+  --background: #121218;
+  --card: #1c1c25;
+  --card-edge: #2c2c3a;
+  --inset: #14141b;
+  --text: #ece3cf;
+  --faded: #9a917f;
+  --gold: #d9ad42;
+  --gold-dark: #8a6a1c;
+  --player: #4fb873;
+  --monster: #cf5045;
+  --heal: #6fdc8c;
+  --hurt: #ff7566;
+}
+
+* {
+  box-sizing: border-box;
 }
 
 body {
-  background: var(--background);
-  color: var(--text);
-  font-family: sans-serif;
   margin: 0;
-  padding: 24px;
+  padding: 20px;
+  background: radial-gradient(circle at 50% -10%, #23202e 0%, var(--background) 55%) fixed;
+  color: var(--text);
+  font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
+  font-size: 15px;
+  line-height: 1.4;
+}
+
+h1,
+h2 {
+  font-family: Georgia, "Palatino Linotype", serif;
+  color: var(--gold);
+  margin: 0;
+  letter-spacing: 0.5px;
 }
 
 h1 {
-  text-align: center;
-  color: var(--gold);
-  margin: 0 0 16px;
+  font-size: 30px;
 }
 
 h2 {
-  font-size: 18px;
-  color: var(--gold);
-  margin: 0 0 10px;
+  font-size: 19px;
+  margin-bottom: 8px;
 }
 
 p {
   margin: 6px 0;
-}
-
-/* ----- The strip of numbers along the top ----- */
-.top-bar {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 12px;
-  margin-bottom: 16px;
-}
-
-.tile {
-  background: var(--panel);
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  padding: 8px 16px;
-  min-width: 110px;
-  text-align: center;
-  color: var(--faded);
-  font-size: 13px;
-}
-
-.tile strong {
-  display: block;
-  color: var(--text);
-  font-size: 20px;
-}
-
-/* ----- The three columns ----- */
-.columns {
-  display: grid;
-  grid-template-columns: 1fr 1.2fr 1fr;
-  gap: 16px;
-  max-width: 1200px;
-  margin: 0 auto;
-  align-items: start;
-}
-
-.panel {
-  background: var(--panel);
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  padding: 16px;
-  margin-bottom: 16px;
-}
-
-.panel.highlight {
-  border-color: var(--gold);
 }
 
 .note {
@@ -87,16 +58,370 @@ p {
   font-size: 13px;
 }
 
-.tower .panel {
+.centre {
   text-align: center;
 }
 
-/* ----- The "what to do next" list under the floor ----- */
+/* ----- The bar across the top ----- */
+.top {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  max-width: 1280px;
+  margin: 0 auto 18px;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 22px;
+}
+
+.who {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.who-icon {
+  font-size: 30px;
+}
+
+.who-text {
+  min-width: 150px;
+}
+
+.who-text p {
+  margin: 0 0 4px;
+}
+
+.tiles {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.tile {
+  background: var(--card);
+  border: 1px solid var(--card-edge);
+  border-radius: 10px;
+  padding: 7px 16px;
+  min-width: 112px;
+  text-align: center;
+}
+
+.tile span {
+  display: block;
+  color: var(--faded);
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+}
+
+.tile strong {
+  font-size: 20px;
+}
+
+/* ----- The two halves of the page ----- */
+.layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 18px;
+  max-width: 1280px;
+  margin: 0 auto;
+  align-items: start;
+}
+
+.card {
+  background: var(--card);
+  border: 1px solid var(--card-edge);
+  border-radius: 12px;
+  padding: 16px 18px;
+  margin-bottom: 16px;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.25);
+}
+
+.card.highlight {
+  border-color: var(--gold);
+}
+
+/* A title on the left and a number on the right */
+.card-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 12px;
+}
+
+.big-number {
+  font-size: 22px;
+  color: var(--gold);
+  margin-left: 6px;
+}
+
+/* ----- Tabs ----- */
+.tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 14px;
+}
+
+.tabs button {
+  position: relative;
+  flex: 1 1 auto;
+  background: var(--card);
+  border: 1px solid var(--card-edge);
+  color: var(--faded);
+  padding: 8px 12px;
+}
+
+.tabs button.open {
+  background: var(--gold);
+  border-color: var(--gold);
+  color: var(--background);
+  font-weight: bold;
+}
+
+/* A small dot on a tab that has something waiting for you */
+.tabs button.alert::after {
+  content: "";
+  position: absolute;
+  top: -4px;
+  right: -4px;
+  width: 11px;
+  height: 11px;
+  border-radius: 50%;
+  background: var(--hurt);
+  border: 2px solid var(--background);
+}
+
+/* Only the page that matches body's data-tab is shown */
+.page {
+  display: none;
+}
+
+body[data-tab="character"] #page-character,
+body[data-tab="skills"] #page-skills,
+body[data-tab="town"] #page-town,
+body[data-tab="travel"] #page-travel,
+body[data-tab="milestones"] #page-milestones,
+body[data-tab="ascension"] #page-ascension,
+body[data-tab="save"] #page-save {
+  display: block;
+}
+
+/* On a wide screen the tower is always on show, so it needs no tab of its own:
+   its tab button is hidden, and "tower" shows the Character page beside it */
+.tab-tower {
+  display: none;
+}
+
+body[data-tab="tower"] #page-character {
+  display: block;
+}
+
+body[data-tab="tower"] #tab-character {
+  background: var(--gold);
+  border-color: var(--gold);
+  color: var(--background);
+  font-weight: bold;
+}
+
+/* ----- Lists: a title and a note on the left, a button on the right ----- */
+.row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 10px 0;
+  border-top: 1px solid var(--card-edge);
+}
+
+.row-text {
+  min-width: 0;
+}
+
+.row-title {
+  font-weight: 600;
+  margin: 0;
+}
+
+.row .note {
+  margin: 2px 0 0;
+}
+
+.row button {
+  flex: none;
+  min-width: 104px;
+}
+
+/* A label on the left and its value on the right */
+.pair {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 5px 0;
+  border-bottom: 1px dashed var(--card-edge);
+}
+
+.pair span:first-child {
+  color: var(--faded);
+}
+
+.pair span:last-child {
+  text-align: right;
+}
+
+/* The four number boxes on the Character tab */
+.stats {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+  margin: 12px 0;
+}
+
+.stats div {
+  background: var(--inset);
+  border-radius: 8px;
+  padding: 8px 4px;
+  text-align: center;
+}
+
+.stats span {
+  display: block;
+  color: var(--faded);
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+}
+
+.stats strong {
+  font-size: 18px;
+}
+
+/* Groups of buttons to pick one from: classes, perks, favourites */
+.choices {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 8px;
+}
+
+.picker,
+.milestone {
+  padding: 10px 0;
+  border-top: 1px solid var(--card-edge);
+}
+
+/* ----- The tower ----- */
+.tower-head {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.floor-box {
+  flex: none;
+  text-align: center;
+  color: var(--faded);
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+}
+
+.floor-box strong {
+  display: block;
+  font-family: Georgia, serif;
+  font-size: 36px;
+  line-height: 1;
+  color: var(--text);
+}
+
+/* One dot per room on the floor */
+.pips {
+  display: flex;
+  justify-content: center;
+  gap: 5px;
+  margin: 6px 0 4px;
+}
+
+.pips span {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: var(--card-edge);
+}
+
+.pips span.done {
+  background: var(--gold-dark);
+}
+
+.pips span.now {
+  background: var(--gold);
+  box-shadow: 0 0 6px var(--gold);
+}
+
+/* The fight: you on the left, the monster on the right */
+.stage {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+  align-items: start;
+  gap: 10px;
+  margin: 14px 0 10px;
+  padding: 16px 14px;
+  border-radius: 10px;
+  background: linear-gradient(180deg, #191922 0%, var(--inset) 100%);
+  border: 1px solid var(--card-edge);
+}
+
+.fighter {
+  position: relative;
+  text-align: center;
+  min-width: 0;
+}
+
+.versus {
+  align-self: center;
+  color: var(--faded);
+  font-family: Georgia, serif;
+  font-style: italic;
+}
+
+.fighter-name {
+  font-weight: bold;
+  color: var(--gold);
+  min-height: 42px;
+}
+
+.mover {
+  display: inline-block;
+}
+
+.icon {
+  font-size: 54px;
+  line-height: 66px;
+  height: 66px;
+}
+
+.icon.rare {
+  filter: drop-shadow(0 0 8px #5fa8ff);
+}
+
+.icon.boss {
+  font-size: 66px;
+  filter: drop-shadow(0 0 10px var(--gold));
+}
+
+/* The "what to do next" list */
 .goals {
-  margin-top: 10px;
+  margin-top: 12px;
   padding: 8px 12px;
   border-left: 3px solid var(--gold);
-  text-align: left;
+  background: var(--inset);
+  border-radius: 0 8px 8px 0;
   font-size: 13px;
   color: var(--faded);
 }
@@ -105,46 +430,134 @@ p {
   margin: 3px 0;
 }
 
-/* ----- The fight: you on the left, the monster on the right ----- */
-.stage {
-  display: flex;
-  gap: 16px;
-  margin: 14px 0 10px;
-  padding: 12px;
-  border-radius: 8px;
-  background: var(--background);
+/* The "What happened" list */
+#log {
+  height: 170px;
+  overflow-y: auto;
+  font-size: 13px;
+  color: var(--faded);
 }
 
-.fighter {
-  flex: 1;
-  min-width: 0;
-  position: relative;
+#log p {
+  margin: 3px 0;
 }
 
-.fighter-name {
-  font-weight: bold;
+/* The newest line stands out */
+#log p:first-child {
   color: var(--gold);
-  min-height: 38px;
+  font-size: 14px;
 }
 
-.mover {
-  display: inline-block;
+/* ----- Bars ----- */
+.bar {
+  background: var(--inset);
+  border: 1px solid var(--card-edge);
+  border-radius: 7px;
+  height: 14px;
+  overflow: hidden;
 }
 
-.icon {
-  font-size: 52px;
-  line-height: 64px;
-  height: 64px;
+.bar.thin {
+  height: 7px;
 }
 
-.icon.rare {
-  filter: drop-shadow(0 0 8px #5fa8ff);
+.bar-text {
+  margin: 4px 0 0;
+  font-size: 13px;
+  text-align: center;
 }
 
-.icon.boss {
-  font-size: 64px;
-  filter: drop-shadow(0 0 10px var(--gold));
+.fill {
+  height: 100%;
+  width: 0;
+  transition: width 0.3s;
 }
+
+.fill.player {
+  background: linear-gradient(180deg, #6fd68f, var(--player));
+}
+
+.fill.monster {
+  background: linear-gradient(180deg, #e8695d, var(--monster));
+}
+
+.fill.level {
+  background: linear-gradient(180deg, #f0c865, var(--gold));
+}
+
+/* ----- Buttons ----- */
+button {
+  background: #2a2a37;
+  color: var(--text);
+  border: 1px solid #45455a;
+  border-radius: 8px;
+  padding: 7px 12px;
+  font: inherit;
+  font-size: 14px;
+  cursor: pointer;
+  transition: border-color 0.15s, background 0.15s;
+}
+
+button:hover {
+  border-color: var(--gold);
+  background: #323242;
+}
+
+button:disabled {
+  opacity: 0.4;
+  cursor: default;
+  border-color: #45455a;
+  background: #2a2a37;
+}
+
+/* The one picked out of a group, and anything already yours */
+button.chosen,
+button.chosen:disabled {
+  background: var(--gold);
+  border-color: var(--gold);
+  color: var(--background);
+  font-weight: bold;
+  opacity: 1;
+}
+
+/* The big button on the Ascension tab */
+button.main {
+  width: 100%;
+  padding: 11px;
+  font-size: 16px;
+  font-weight: bold;
+  border-color: var(--gold);
+  color: var(--gold);
+}
+
+button.main:disabled {
+  color: var(--faded);
+}
+
+button.quiet {
+  background: none;
+  border-color: transparent;
+  color: var(--faded);
+  text-decoration: underline;
+}
+
+textarea {
+  width: 100%;
+  background: var(--inset);
+  color: var(--text);
+  border: 1px solid var(--card-edge);
+  border-radius: 8px;
+  padding: 8px;
+  font-size: 12px;
+}
+
+/* ----- Equipment rarity colours -----
+   rarity-0 is ordinary and keeps the normal text colour */
+.rarity-1 { color: #6fcf6f; }
+.rarity-2 { color: #5fa8ff; font-weight: bold; }
+.rarity-3 { color: #c77dff; font-weight: bold; }
+.rarity-4 { color: #ff9d3c; font-weight: bold; }
+.rarity-5 { color: #ff5c5c; font-weight: bold; }
 
 /* ----- Animations -----
    game.js adds these class names when something happens (see "Animations" there).
@@ -221,8 +634,8 @@ p {
 }
 
 .float.hit  { color: #ffffff; }
-.float.hurt { color: #ff6b5e; }
-.float.heal { color: var(--player); left: 78%; }
+.float.hurt { color: var(--hurt); }
+.float.heal { color: var(--heal); left: 78%; }
 .float.word { color: var(--gold); }
 
 @keyframes float-up {
@@ -242,216 +655,10 @@ p {
   }
 }
 
-/* ----- The "What happened" list ----- */
-#log {
-  height: 180px;
-  overflow-y: auto;
-  text-align: left;
-  font-size: 13px;
-  color: var(--faded);
-}
-
-#log p {
-  margin: 3px 0;
-}
-
-/* The newest line stands out */
-#log p:first-child {
-  color: var(--gold);
-  font-size: 14px;
-}
-
-/* The tab buttons only appear on narrow screens (see the bottom of this file) */
-.tabs {
-  display: none;
-}
-
-/* ----- Health bars ----- */
-.bar {
-  background: var(--background);
-  border: 1px solid var(--border);
-  border-radius: 6px;
-  height: 14px;
-  overflow: hidden;
-}
-
-.fill {
-  height: 100%;
-  width: 0;
-  transition: width 0.3s;
-}
-
-.fill.player {
-  background: var(--player);
-}
-
-.fill.monster {
-  background: var(--monster);
-}
-
-.fill.level {
-  background: var(--gold);
-}
-
-/* ----- Buttons ----- */
-button {
-  background: var(--border);
-  color: var(--text);
-  border: 1px solid var(--faded);
-  border-radius: 6px;
-  padding: 5px 10px;
-  font-size: 14px;
-  cursor: pointer;
-}
-
-button:hover {
-  border-color: var(--gold);
-}
-
-button:disabled {
-  opacity: 0.45;
-  cursor: default;
-  border-color: var(--border);
-}
-
-button.chosen {
-  background: var(--gold);
-  color: var(--background);
-  font-weight: bold;
-}
-
-button.quiet {
-  display: block;
-  margin: 8px auto 0;
-  background: none;
-  color: var(--faded);
-}
-
-#class-buttons button {
-  margin: 0 4px 4px 0;
-}
-
-/* ----- Equipment rarity colours -----
-   rarity-0 is ordinary and keeps the normal text colour */
-.rarity-1 { color: #6fcf6f; }
-.rarity-2 { color: #5fa8ff; font-weight: bold; }
-.rarity-3 { color: #c77dff; font-weight: bold; }
-.rarity-4 { color: #ff9d3c; font-weight: bold; }
-.rarity-5 { color: #ff5c5c; font-weight: bold; }
-
-/* ----- Skills and the tower list ----- */
-.tower-row,
-.town-row {
-  border-top: 1px solid var(--border);
-  padding: 8px 0;
-}
-
-.choices button {
-  margin: 0 4px 4px 0;
-}
-
-.skill {
-  border-top: 1px solid var(--border);
-  padding: 8px 0;
-}
-
-/* ----- The save code box ----- */
-textarea {
-  width: 100%;
-  box-sizing: border-box;
-  background: var(--background);
-  color: var(--text);
-  border: 1px solid var(--border);
-  border-radius: 6px;
-  padding: 6px;
-  font-size: 12px;
-}
-
-/* ----- Milestones ----- */
-.milestone {
-  border-top: 1px solid var(--border);
-  padding: 8px 0;
-}
-
-.milestone button {
-  margin: 0 4px 6px 0;
-}
-
 /* ----- Narrow screens -----
-   Instead of three columns, show one column at a time and switch with tabs.
-   Keep this and the phone rules at the bottom of the file, so they win over the rules above */
+   One column. The tower becomes a tab like the rest, so only one thing shows at a time.
+   Keep this at the bottom of the file, so it wins over the rules above. */
 @media (max-width: 900px) {
-  .columns {
-    grid-template-columns: 1fr;
-  }
-
-  .tabs {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
-    position: sticky;
-    top: 0;
-    z-index: 1;
-    background: var(--background);
-    padding: 8px 0;
-    margin-bottom: 8px;
-  }
-
-  /* Seven tabs, wrapping onto three rows */
-  .tabs button {
-    flex: 1 1 30%;
-    padding: 10px 2px;
-    font-size: 13px;
-  }
-
-  .column {
-    display: none;
-  }
-
-  .show-tower .tower,
-  .show-character .character,
-  .show-skills .character,
-  .show-town .town,
-  .show-travel .town,
-  .show-milestones .town,
-  .show-ascension .town {
-    display: block;
-  }
-
-  /* Several tabs share the right-hand column. First hide all of its panels... */
-  .town .panel {
-    display: none;
-  }
-
-  /* ...then show only the ones that belong to the open tab */
-  .show-town .town-panel,
-  .show-travel .travel-panel,
-  .show-milestones .milestones-panel,
-  .show-ascension .ascension-panel {
-    display: block;
-  }
-
-  /* Character and Skills share the left-hand column the same way */
-  .show-character .skills-panel,
-  .show-skills .character .panel:not(.skills-panel) {
-    display: none;
-  }
-
-  .show-tower #tab-tower,
-  .show-character #tab-character,
-  .show-skills #tab-skills,
-  .show-town #tab-town,
-  .show-travel #tab-travel,
-  .show-milestones #tab-milestones,
-  .show-ascension #tab-ascension {
-    background: var(--gold);
-    color: var(--background);
-    font-weight: bold;
-  }
-}
-
-/* ----- Phones ----- */
-@media (max-width: 600px) {
   body {
     padding: 12px;
   }
@@ -460,8 +667,17 @@ textarea {
     font-size: 24px;
   }
 
-  .top-bar {
-    gap: 8px;
+  .top {
+    justify-content: center;
+  }
+
+  .brand {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .tiles {
+    width: 100%;
   }
 
   .tile {
@@ -469,18 +685,63 @@ textarea {
     min-width: 0;
   }
 
-  .panel {
-    padding: 12px;
+  .layout {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  /* The tabs come first and stay at the top of the screen */
+  .side {
+    order: -1;
+  }
+
+  .tabs {
+    position: sticky;
+    top: 0;
+    z-index: 2;
+    background: var(--background);
+    padding: 8px 0;
+    margin-bottom: 6px;
+  }
+
+  .tabs button {
+    flex: 1 1 22%;
+    padding: 9px 2px;
+    font-size: 13px;
+  }
+
+  .tab-tower {
+    display: block;
+  }
+
+  /* The tower only shows on its own tab, and the Character page only on its own */
+  .play {
+    display: none;
+  }
+
+  body[data-tab="tower"] .play {
+    display: block;
+  }
+
+  body[data-tab="tower"] #page-character {
+    display: none;
+  }
+
+  body[data-tab="tower"] #tab-character {
+    background: var(--card);
+    border-color: var(--card-edge);
+    color: var(--faded);
+    font-weight: normal;
+  }
+
+  .stats {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .row button {
+    min-width: 88px;
   }
 
   button {
-    padding: 10px 14px;
-    font-size: 15px;
-  }
-
-  .milestone button {
-    display: block;
-    width: 100%;
-    margin: 0 0 8px;
+    padding: 9px 12px;
   }
 }

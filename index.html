@@ -6,94 +6,53 @@
   <title>Tower Idle</title>
   <link rel="stylesheet" href="style.css">
 </head>
-<body class="show-tower">
-  <h1>Tower Idle</h1>
+<body data-tab="tower">
 
-  <!-- The strip of numbers along the top -->
-  <div class="top-bar">
-    <div class="tile">Gold carried<strong id="gold">0</strong></div>
-    <div class="tile">Bank<strong id="bank">0</strong></div>
-    <div class="tile">Experience<strong id="xp">0</strong></div>
-    <div class="tile">Fame<strong id="fame">0</strong></div>
-  </div>
-
-  <!-- Tabs: only shown on narrow screens, where one section is visible at a time -->
-  <div class="tabs">
-    <button id="tab-tower" onclick="showTab('tower')">Tower</button>
-    <button id="tab-character" onclick="showTab('character')">Character</button>
-    <button id="tab-skills" onclick="showTab('skills')">Skills</button>
-    <button id="tab-town" onclick="showTab('town')">Town</button>
-    <button id="tab-travel" onclick="showTab('travel')">Towers</button>
-    <button id="tab-milestones" onclick="showTab('milestones')">Milestones</button>
-    <button id="tab-ascension" onclick="showTab('ascension')">Ascension</button>
-  </div>
-
-  <div class="columns">
-
-    <!-- Left column: your character -->
-    <div class="column character">
-      <div class="panel">
-        <h2>You</h2>
-        <p>Class: <span id="class"></span></p>
-        <p id="class-text" class="note"></p>
-        <p>Level: <span id="level">1</span></p>
-        <p>Attack: <span id="attack">0</span></p>
-        <p>Armor: <span id="total-armor">0</span></p>
-        <p id="class-stat"></p>
-        <p class="note">Play as (each class keeps its own progress):</p>
-        <div id="class-buttons"></div>
-      </div>
-
-      <div class="panel">
-        <h2>Equipment</h2>
-        <p><span id="gear-label">Weapon</span>: <span id="weapon"></span></p>
-        <p><span id="armor-label">Armor</span>: <span id="armor"></span></p>
-        <p id="weapon-info" class="note"></p>
-        <p>
-          Found: <span id="found-item">nothing</span>
-          <button id="equip-btn" onclick="equipFound()">Equip</button>
-        </p>
-        <p>Relics: <span id="relics">none</span></p>
-      </div>
-
-      <div class="panel">
-        <h2>Level <span id="level-big">1</span></h2>
-        <p class="note">Experience toward the next level: <span id="level-progress">0</span></p>
-        <div class="bar"><div id="level-bar" class="fill level"></div></div>
-        <p class="note">
-          You level up by yourself when the bar fills. Every level gives
-          <span id="level-gain"></span>.
-        </p>
-      </div>
-
-      <div class="panel skills-panel">
-        <h2>Skills</h2>
-        <p>Skill points: <strong id="skill-points">0</strong></p>
-        <p class="note">Every level gives a skill point. Skills last until you ascend, and resetting them is free.</p>
-        <!-- The buttons are made by game.js from the class's skills list -->
-        <div id="skills"></div>
-        <p><button onclick="resetSkills()">Reset skills</button></p>
+  <!-- The bar across the top: who you are playing, and what you own -->
+  <header class="top">
+    <div class="brand">
+      <h1>Tower Idle</h1>
+      <div class="who">
+        <span id="header-icon" class="who-icon"></span>
+        <div class="who-text">
+          <p><strong id="header-class"></strong> &middot; level <span id="header-level">1</span></p>
+          <div class="bar thin"><div id="header-level-bar" class="fill level"></div></div>
+        </div>
       </div>
     </div>
 
-    <!-- Middle column: the tower and the fight -->
-    <div class="column tower">
-      <div id="away-report" class="panel highlight" hidden>
+    <div class="tiles">
+      <div class="tile"><span>Gold carried</span><strong id="gold">0</strong></div>
+      <div class="tile"><span>Bank</span><strong id="bank">0</strong></div>
+      <div class="tile"><span>Experience</span><strong id="xp">0</strong></div>
+      <div class="tile"><span>Fame</span><strong id="fame">0</strong></div>
+    </div>
+  </header>
+
+  <main class="layout">
+
+    <!-- The tower and the fight. Always visible on a wide screen; a tab of its own on a narrow one. -->
+    <section class="play">
+      <div id="away-report" class="card highlight" hidden>
         <h2>Welcome back</h2>
         <p id="away-text"></p>
         <button onclick="closeAwayReport()">Close</button>
       </div>
 
-      <div class="panel">
-        <h2 id="tower-name">The Tower</h2>
-        <p id="tower-note" class="note"></p>
-        <p>
-          Floor <strong id="floor">1</strong> (best: <span id="best-floor">1</span>)
-          &middot; Room <span id="room">1</span> / <span id="rooms-per-floor">4</span>
-        </p>
-
-        <!-- What needs attention and what to aim for. Filled in by game.js. -->
-        <div id="goals" class="goals"></div>
+      <div class="card">
+        <div class="tower-head">
+          <div>
+            <h2 id="tower-name">The Tower</h2>
+            <p id="tower-note" class="note"></p>
+          </div>
+          <div class="floor-box">
+            <span>Floor</span>
+            <strong id="floor">1</strong>
+            <!-- One dot for every room on the floor, made by game.js -->
+            <div id="room-pips" class="pips"></div>
+            <span>best <span id="best-floor">1</span></span>
+          </div>
+        </div>
 
         <!-- The fight: you on the left, the monster (or room) on the right.
              game.js animates the icons and floats damage numbers above them. -->
@@ -101,126 +60,225 @@
           <div id="player-side" class="fighter">
             <div id="player-mover" class="mover"><div id="player-icon" class="icon"></div></div>
             <p id="player-name" class="fighter-name"></p>
-            <p><span id="player-hp">0</span></p>
             <div class="bar"><div id="player-hp-bar" class="fill player"></div></div>
+            <p class="bar-text"><span id="player-hp">0</span></p>
           </div>
+
+          <div class="versus">vs</div>
 
           <div id="monster-side" class="fighter">
             <div id="monster-mover" class="mover"><div id="monster-icon" class="icon"></div></div>
             <p id="encounter-title" class="fighter-name">Monster</p>
             <div id="monster-stats">
-              <p><span id="monster-hp">0</span></p>
               <div class="bar"><div id="monster-hp-bar" class="fill monster"></div></div>
+              <p class="bar-text"><span id="monster-hp">0</span></p>
             </div>
           </div>
         </div>
 
-        <p id="monster-text" class="note"></p>
-        <p id="monster-numbers">
-          Attack: <span id="monster-attack">0</span>
-          &middot; Armor: <span id="monster-armor">0</span>
-          <span id="dot-part">&middot; <span id="dot-label">Bleeding</span>: <span id="monster-dot">0</span></span>
+        <p id="monster-text" class="note centre"></p>
+        <p id="monster-numbers" class="centre">
+          Attack <strong id="monster-attack">0</strong>
+          &middot; Armor <strong id="monster-armor">0</strong>
+          <span id="dot-part">&middot; <span id="dot-label">Bleeding</span> <strong id="monster-dot">0</strong></span>
         </p>
+
+        <!-- What needs attention and what to aim for. Filled in by game.js. -->
+        <div id="goals" class="goals"></div>
       </div>
 
-      <div id="upgrade-area" class="panel highlight" hidden>
+      <div id="upgrade-area" class="card highlight" hidden>
         <h2>Choose an upgrade</h2>
-        <p class="note">It lasts until you die. A random one is taken in <span id="upgrade-timer">0</span> seconds.</p>
-        <!-- The buttons are made by game.js from the class's upgrades list -->
+        <p class="note">It lasts until you fall. If you don't choose, one is taken for you in <span id="upgrade-timer">0</span> seconds.</p>
+        <!-- The rows are made by game.js from the class's upgrades list -->
         <div id="upgrades"></div>
       </div>
 
-      <div class="panel">
+      <div class="card">
         <h2>What happened</h2>
         <!-- The newest line is at the top -->
         <div id="log"></div>
       </div>
-    </div>
+    </section>
 
-    <!-- Right column: things that last beyond one run -->
-    <div class="column town">
-      <div class="panel town-panel">
-        <h2>Town</h2>
-        <p class="note">Merchants take gold from your bank. Everything except potions is kept forever.</p>
+    <!-- Everything else, one tab at a time -->
+    <section class="side">
+      <nav class="tabs">
+        <button id="tab-tower" class="tab-tower" onclick="showTab('tower')">Tower</button>
+        <button id="tab-character" onclick="showTab('character')">Character</button>
+        <button id="tab-skills" onclick="showTab('skills')">Skills</button>
+        <button id="tab-town" onclick="showTab('town')">Town</button>
+        <button id="tab-travel" onclick="showTab('travel')">Towers</button>
+        <button id="tab-milestones" onclick="showTab('milestones')">Milestones</button>
+        <button id="tab-ascension" onclick="showTab('ascension')">Ascension</button>
+        <button id="tab-save" onclick="showTab('save')">Save</button>
+      </nav>
 
-        <div class="town-row">
-          <button id="potion-btn" onclick="buyPotion()">Healing potion</button>
-          <p class="note">Drunk automatically at low health. Carrying: <span id="potions">0</span></p>
+      <!-- Character -->
+      <div class="page" id="page-character">
+        <div class="card">
+          <h2><span id="class"></span></h2>
+          <p id="class-text" class="note"></p>
+
+          <div class="stats">
+            <div><span>Level</span><strong id="level">1</strong></div>
+            <div><span>Health</span><strong id="health">0</strong></div>
+            <div><span>Attack</span><strong id="attack">0</strong></div>
+            <div><span>Armor</span><strong id="total-armor">0</strong></div>
+          </div>
+          <p id="class-stat"></p>
         </div>
 
-        <!-- Only shown once the Quartermaster or Tactician has been hired -->
-        <div id="favourite-gear" class="town-row" hidden>
-          <p id="favourite-gear-label">Favourite weapon:</p>
-          <div id="favourite-gear-buttons" class="choices"></div>
+        <div class="card">
+          <h2>Level <span id="level-big">1</span></h2>
+          <div class="bar"><div id="level-bar" class="fill level"></div></div>
+          <p class="bar-text"><span id="level-progress">0</span> experience</p>
+          <p class="note">
+            You earn experience when you fall, and level up by yourself when the bar fills.
+            Every level gives <span id="level-gain"></span>.
+          </p>
         </div>
-        <div id="favourite-upgrade" class="town-row" hidden>
-          <p>Favourite upgrade:</p>
-          <div id="favourite-upgrade-buttons" class="choices"></div>
+
+        <div class="card">
+          <h2>Equipment</h2>
+          <p class="note">Found in the tower, and lost when you fall.</p>
+          <div class="pair"><span id="gear-label">Weapon</span><span id="weapon"></span></div>
+          <div class="pair"><span id="armor-label">Armor</span><span id="armor"></span></div>
+          <p id="weapon-info" class="note"></p>
+          <div class="row">
+            <div class="row-text">
+              <p class="row-title">Found: <span id="found-item">nothing</span></p>
+            </div>
+            <button id="equip-btn" onclick="equipFound()">Equip</button>
+          </div>
+          <p class="note">Relics: <span id="relics">none</span></p>
         </div>
 
-        <!-- The rest is made by game.js from the townUpgrades list in data.js -->
-        <div id="town-upgrades"></div>
+        <div class="card">
+          <h2>Play as</h2>
+          <p class="note">Each class keeps its own progress. The others wait where you left them.</p>
+          <div id="class-buttons" class="choices"></div>
+        </div>
       </div>
 
-      <div class="panel travel-panel">
-        <h2>Towers</h2>
-        <p class="note">Every class has a home tower that suits it. Other towers are harder, but pay more experience and hold trophies: permanent bonuses for the class that wins them. A new tower is entered after your next fall.</p>
-        <!-- The list is made by game.js from towers.js -->
-        <div id="towers"></div>
+      <!-- Skills -->
+      <div class="page" id="page-skills">
+        <div class="card">
+          <div class="card-head">
+            <h2>Skills</h2>
+            <p>Skill points <strong id="skill-points" class="big-number">0</strong></p>
+          </div>
+          <p class="note">Every level gives a skill point. Skills have no top level. They last until you ascend, and resetting them is free.</p>
+          <!-- The rows are made by game.js from the class's skills list -->
+          <div id="skills"></div>
+          <p><button class="quiet" onclick="resetSkills()">Reset skills</button></p>
+        </div>
       </div>
 
-      <div class="panel ascension-panel">
-        <h2>Ascension</h2>
-        <p>Fame: <strong id="fame-owned">0</strong></p>
-        <p class="note">
-          Every floor pays 1 fame the first time you reach it. Ascending starts this class again
-          from level 1, and makes every floor pay again. Fame buys the upgrades below, which are kept forever.
-          They open up as you ascend: the first after one ascension, more after several.
-        </p>
-        <p><button id="ascend-btn" onclick="ascend()">Ascend</button></p>
-        <p class="note">
-          This ascension: <span id="this-ascension"></span><br>
-          Last ascension: <span id="last-ascension"></span>
-        </p>
-        <p class="note">
-          Early floors pay fame fast and deep floors pay it slowly. Once you are strong,
-          ascending early and often can earn more fame an hour than pushing on.
-        </p>
-        <p class="note">
-          Times ascended: <span id="ascensions">0</span> &middot;
-          Best floor since the last ascension: <span id="ascension-best">1</span> &middot;
-          Floor needed to ascend: <span id="ascend-floor">0</span>
-        </p>
-        <p class="note">
-          Lost when you ascend: level, stats, skills, experience, gold and town upgrades with levels.
-          Kept: fame and fame upgrades, best floors, milestones, trophies and the town helpers.
-        </p>
+      <!-- Town -->
+      <div class="page" id="page-town">
+        <div class="card">
+          <h2>Town</h2>
+          <p class="note">Merchants take gold from your bank. Gold is banked when you fall.</p>
 
-        <!-- The list is made by game.js from the fameUpgrades list in data.js -->
-        <div id="fame-upgrades"></div>
+          <div class="row">
+            <div class="row-text">
+              <p class="row-title">Healing potion &middot; carrying <span id="potions">0</span></p>
+              <p class="note">Drunk automatically at low health.</p>
+            </div>
+            <button id="potion-btn" onclick="buyPotion()">Buy</button>
+          </div>
+
+          <!-- Only shown once the Quartermaster or Tactician has been hired -->
+          <div id="favourite-gear" class="picker" hidden>
+            <p id="favourite-gear-label" class="row-title">Favourite weapon</p>
+            <div id="favourite-gear-buttons" class="choices"></div>
+          </div>
+          <div id="favourite-upgrade" class="picker" hidden>
+            <p class="row-title">Favourite upgrade</p>
+            <div id="favourite-upgrade-buttons" class="choices"></div>
+          </div>
+
+          <!-- The rest is made by game.js from the townUpgrades list in data.js -->
+          <div id="town-upgrades"></div>
+        </div>
       </div>
 
-      <div class="panel milestones-panel">
-        <h2>Milestones</h2>
-        <p class="note">Reach a floor once to unlock its perks forever. Pick one per milestone and change it whenever you like.</p>
-        <div id="milestones"></div>
-        <button onclick="resetPerks()">Reset all perks</button>
+      <!-- Towers -->
+      <div class="page" id="page-travel">
+        <div class="card">
+          <h2>Towers</h2>
+          <p class="note">Every class has a home tower that suits it. Other towers are harder, but pay more experience and hold trophies: permanent bonuses for the class that wins them. A new tower is entered after your next fall.</p>
+          <!-- The rows are made by game.js from towers.js -->
+          <div id="towers"></div>
+        </div>
       </div>
 
-      <div class="panel town-panel">
-        <h2>Your save</h2>
-        <p class="note">The game saves by itself in this browser. A save code lets you keep a backup or move to another device.</p>
-        <p>
-          <button onclick="exportSave()">Make save code</button>
-          <button onclick="importSave()">Load save code</button>
-        </p>
-        <textarea id="save-code" rows="3" placeholder="To load a save, paste its code here and press Load save code"></textarea>
-        <p id="save-message" class="note"></p>
-        <p><button class="quiet" onclick="resetSave()">Reset save</button></p>
+      <!-- Milestones -->
+      <div class="page" id="page-milestones">
+        <div class="card">
+          <h2>Milestones</h2>
+          <p class="note">Reach a floor once to unlock its perks forever, even through ascensions. Pick one per milestone and change it whenever you like.</p>
+          <div id="milestones"></div>
+          <p><button class="quiet" onclick="resetPerks()">Reset all perks</button></p>
+        </div>
       </div>
-    </div>
 
-  </div>
+      <!-- Ascension -->
+      <div class="page" id="page-ascension">
+        <div class="card">
+          <div class="card-head">
+            <h2>Ascension</h2>
+            <p>Fame <strong id="fame-owned" class="big-number">0</strong></p>
+          </div>
+          <p class="note">
+            Every floor pays 1 fame the first time you reach it. Ascending starts this class again
+            from level 1, and makes every floor pay again.
+          </p>
+
+          <p><button id="ascend-btn" class="main" onclick="ascend()">Ascend</button></p>
+
+          <div class="pair"><span>This ascension</span><span id="this-ascension"></span></div>
+          <div class="pair"><span>Last ascension</span><span id="last-ascension"></span></div>
+          <div class="pair"><span>Times ascended</span><span id="ascensions">0</span></div>
+          <div class="pair"><span>Best floor since ascending</span><span id="ascension-best">1</span></div>
+          <div class="pair"><span>Floor needed to ascend</span><span id="ascend-floor">0</span></div>
+
+          <p class="note">
+            Early floors pay fame fast and deep floors pay it slowly. Once you are strong,
+            ascending early and often can earn more fame an hour than pushing on.
+          </p>
+          <p class="note">
+            Lost when you ascend: level, skills, experience, gold and town upgrades with levels.
+            Kept: fame and fame upgrades, best floors, milestones, trophies and the town helpers.
+          </p>
+        </div>
+
+        <div class="card">
+          <h2>Fame upgrades</h2>
+          <p class="note">Kept forever. They open up as you ascend: the first after one ascension, more after several.</p>
+          <!-- The rows are made by game.js from the fameUpgrades list in data.js -->
+          <div id="fame-upgrades"></div>
+        </div>
+      </div>
+
+      <!-- Save -->
+      <div class="page" id="page-save">
+        <div class="card">
+          <h2>Your save</h2>
+          <p class="note">The game saves by itself in this browser. A save code lets you keep a backup or move to another device.</p>
+          <p>
+            <button onclick="exportSave()">Make save code</button>
+            <button onclick="importSave()">Load save code</button>
+          </p>
+          <textarea id="save-code" rows="4" placeholder="To load a save, paste its code here and press Load save code"></textarea>
+          <p id="save-message" class="note"></p>
+          <p><button class="quiet" onclick="resetSave()">Reset save</button></p>
+        </div>
+      </div>
+    </section>
+
+  </main>
 
   <!-- data.js first, then towers.js, then one file per class, then game.js last -->
   <script src="data.js"></script>
