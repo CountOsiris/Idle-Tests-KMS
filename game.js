@@ -1944,7 +1944,16 @@ function showTab(name) {
   for (let tabName of tabNames) {
     document.getElementById("tab-" + tabName).classList.toggle("open", tabName === name);
   }
+
+  // The tab is remembered, so that reloading the page does not throw you back to the first one
+  openTab = name;
+  saveSettings();
 }
+
+// NOTHING IN THE GAME CHANGES THE TAB BY ITSELF. Only the player does, by pressing a
+// tab button. Whatever happens in the tower (a death, a boss, an upgrade area, a
+// level) shows as a dot on a tab or a pop-up in the fight, and never moves the player
+// off the page they are reading. Keep it that way: do not call showTab from game code.
 
 // Puts a small dot on a tab when something there needs the player's attention
 function markTab(name, needsAttention) {
@@ -3275,24 +3284,39 @@ function toast(text, kind) {
 // name in the browser, and a save code does not carry them.
 const settingsName = "lloegrys-idle-settings";
 let animationsOn = true;
+let openTab = "tower";      // the tab that was open last time
+let settingsLoaded = false;
 
 function loadSettings() {
   let saved = localStorage.getItem(settingsName);
 
   if (saved !== null) {
     try {
-      animationsOn = JSON.parse(saved).animationsOn !== false;
+      let settings = JSON.parse(saved);
+      animationsOn = settings.animationsOn !== false;
+      if (tabNames.includes(settings.openTab)) {
+        openTab = settings.openTab;
+      }
     } catch (error) {
       animationsOn = true;
     }
   }
 
+  settingsLoaded = true;
+  showTab(openTab);
   showSettings();
+}
+
+function saveSettings() {
+  // Not before they have been read, or the first showTab would overwrite them
+  if (settingsLoaded) {
+    localStorage.setItem(settingsName, JSON.stringify({ animationsOn: animationsOn, openTab: openTab }));
+  }
 }
 
 function setAnimations(on) {
   animationsOn = on;
-  localStorage.setItem(settingsName, JSON.stringify({ animationsOn: animationsOn }));
+  saveSettings();
   showSettings();
 }
 
