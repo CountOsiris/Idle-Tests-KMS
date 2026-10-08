@@ -2552,6 +2552,17 @@ function showBackpack() {
   box.innerHTML = "";
   document.getElementById("backpack-empty").hidden = backpack.length > 0;
 
+  // The same spares as buttons under the fight, to swap in the middle of a run
+  let swapBox = document.getElementById("quick-swap-buttons");
+  swapBox.innerHTML = "";
+  document.getElementById("quick-swap").hidden = backpack.length === 0;
+  for (let i = 0; i < backpack.length; i++) {
+    addFavouriteButton(swapBox, "quick-swap-" + i, itemName(backpack[i]), function () {
+      equipFromBackpack(i);
+    });
+    document.getElementById("quick-swap-" + i).className = "rarity-" + backpack[i].rarity;
+  }
+
   for (let i = 0; i < backpack.length; i++) {
     let item = backpack[i];
     addRow(box, "backpack-" + i, function () {
