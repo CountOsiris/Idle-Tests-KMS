@@ -52,7 +52,7 @@ classes.warlock = {
       ]
     },
     {
-      floor: 15,
+      floor: 20,
       perks: [
         { id: "archmage", name: "Archmage", text: "Arcane Tome: +10% critical chance", bonus: { critChance: 0.1 } },
         { id: "voidCaller", name: "Void Caller", text: "Void Tome: +2% of the enemy's health per hit", bonus: { voidRend: 0.02 } },
@@ -60,31 +60,31 @@ classes.warlock = {
       ]
     },
     {
-      floor: 20,
+      floor: 35,
       perks: [
         { id: "plunderer", name: "Plunderer", text: "+50% gold", bonus: { gold: 0.5 } },
         { id: "veteran", name: "Veteran", text: "+25% experience", bonus: { experience: 0.25 } }
       ]
     },
     {
-      floor: 30,
-      perks: [
-        { id: "cataclysm", name: "Cataclysm", text: "+20 attack and +50% critical damage", bonus: { attack: 20, critPower: 0.5 } },
-        { id: "lichForm", name: "Lich Form", text: "+100 health and +5 armor", bonus: { maxHp: 100, armor: 5 } }
-      ]
-    },
-    {
-      floor: 40,
-      perks: [
-        { id: "arcaneMight", name: "Arcane Might", text: "+30 attack", bonus: { attack: 30 } },
-        { id: "arcaneBarrier", name: "Arcane Barrier", text: "+180 health", bonus: { maxHp: 180 } }
-      ]
-    },
-    {
       floor: 50,
       perks: [
-        { id: "annihilation", name: "Annihilation", text: "+20 attack and +100% critical damage", bonus: { attack: 20, critPower: 1 } },
-        { id: "voidLord", name: "Void Lord", text: "+250 health and Void Tome: +2% of the enemy's health per hit", bonus: { maxHp: 250, voidRend: 0.02 } }
+        { id: "cataclysm", name: "Cataclysm", text: "+40% attack and +50% critical damage", bonus: { attackPercent: 0.4, critPower: 0.5 } },
+        { id: "lichForm", name: "Lich Form", text: "+50% health and +5 armor", bonus: { healthPercent: 0.5, armor: 5 } }
+      ]
+    },
+    {
+      floor: 75,
+      perks: [
+        { id: "arcaneMight", name: "Arcane Might", text: "+60% attack", bonus: { attackPercent: 0.6 } },
+        { id: "arcaneBarrier", name: "Arcane Barrier", text: "+90% health", bonus: { healthPercent: 0.9 } }
+      ]
+    },
+    {
+      floor: 100,
+      perks: [
+        { id: "annihilation", name: "Annihilation", text: "+40% attack and +100% critical damage", bonus: { attackPercent: 0.4, critPower: 1 } },
+        { id: "voidLord", name: "Void Lord", text: "+125% health and Void Tome: +2% of the enemy's health per hit", bonus: { healthPercent: 1.25, voidRend: 0.02 } }
       ]
     }
   ],

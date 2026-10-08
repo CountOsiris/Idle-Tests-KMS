@@ -65,7 +65,7 @@ classes.barbarian = {
       ]
     },
     {
-      floor: 15,
+      floor: 20,
       perks: [
         { id: "butcher", name: "Butcher", text: "Axe: +2 bleed stacks", bonus: { bleedStacks: 2 } },
         { id: "duelist", name: "Duelist", text: "Sword: +10% critical and parry chance", bonus: { critChance: 0.1, parryChance: 0.1 } },
@@ -73,31 +73,31 @@ classes.barbarian = {
       ]
     },
     {
-      floor: 20,
+      floor: 35,
       perks: [
         { id: "plunderer", name: "Plunderer", text: "+50% gold", bonus: { gold: 0.5 } },
         { id: "veteran", name: "Veteran", text: "+25% experience", bonus: { experience: 0.25 } }
       ]
     },
     {
-      floor: 30,
-      perks: [
-        { id: "juggernaut", name: "Juggernaut", text: "+100 health and +5 armor", bonus: { maxHp: 100, armor: 5 } },
-        { id: "berserker", name: "Berserker", text: "+15 attack and +10% lifesteal", bonus: { attack: 15, lifesteal: 0.1 } }
-      ]
-    },
-    {
-      floor: 40,
-      perks: [
-        { id: "warlord", name: "Warlord", text: "+25 attack", bonus: { attack: 25 } },
-        { id: "unbreakable", name: "Unbreakable", text: "+200 health", bonus: { maxHp: 200 } }
-      ]
-    },
-    {
       floor: 50,
       perks: [
+        { id: "juggernaut", name: "Juggernaut", text: "+50% health and +5 armor", bonus: { healthPercent: 0.5, armor: 5 } },
+        { id: "berserker", name: "Berserker", text: "+30% attack and +10% lifesteal", bonus: { attackPercent: 0.3, lifesteal: 0.1 } }
+      ]
+    },
+    {
+      floor: 75,
+      perks: [
+        { id: "warlord", name: "Warlord", text: "+50% attack", bonus: { attackPercent: 0.5 } },
+        { id: "unbreakable", name: "Unbreakable", text: "+100% health", bonus: { healthPercent: 1 } }
+      ]
+    },
+    {
+      floor: 100,
+      perks: [
         { id: "bloodGod", name: "Blood God", text: "+15% lifesteal and +20% rage damage", bonus: { lifesteal: 0.15, rage: 0.2 } },
-        { id: "titan", name: "Titan", text: "+300 health and +10 armor", bonus: { maxHp: 300, armor: 10 } }
+        { id: "titan", name: "Titan", text: "+150% health and +10 armor", bonus: { healthPercent: 1.5, armor: 10 } }
       ]
     }
   ],

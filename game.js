@@ -166,18 +166,78 @@ function baseBonus(stat) {
   return 0;
 }
 
+// ----- Milestones and breakthroughs -----
+// A class's own milestones come from its file. After the last of them, "breakthroughs"
+// carry on forever, further and further apart (see data.js). Both work the same way:
+// reach the floor once, ever, and pick one of its perks to keep.
+
+// The floor of breakthrough number 0, 1, 2... rounded to a tidy number
+function breakthroughFloor(number) {
+  let exact = breakthroughFirstFloor * Math.pow(breakthroughSpacing, number);
+  return Math.round(exact / 25) * 25;
+}
+
+// The list is rebuilt only when the class or the best floor changes, because
+// the game asks for it many times a second
+let milestoneList = [];
+let milestoneListFor = "";
+
+function allMilestones() {
+  let key = playerClass + " " + bestFloor;
+  if (milestoneListFor === key) {
+    return milestoneList;
+  }
+
+  milestoneList = currentClass().milestones.slice();
+
+  // Every breakthrough reached so far, plus the next one to aim for
+  let number = 0;
+  while (true) {
+    let breakthrough = { floor: breakthroughFloor(number), perks: breakthroughPerks };
+    milestoneList.push(breakthrough);
+    if (breakthrough.floor > bestFloor) {
+      break;
+    }
+    number = number + 1;
+  }
+
+  milestoneListFor = key;
+  return milestoneList;
+}
+
 function perkBonus(stat) {
   let total = 0;
 
-  for (let milestone of currentClass().milestones) {
+  for (let milestone of allMilestones()) {
     for (let perk of milestone.perks) {
-      if (chosenPerks[milestone.floor] === perk.id && perk.bonus[stat] !== undefined) {
+      if (chosenPerks[milestone.floor] === perk.id && perk.bonus !== undefined && perk.bonus[stat] !== undefined) {
         total = total + perk.bonus[stat];
       }
     }
   }
 
   return total;
+}
+
+// Breakthrough perks multiply instead of adding
+function perkMultiplier(stat) {
+  let total = 1;
+
+  for (let milestone of allMilestones()) {
+    for (let perk of milestone.perks) {
+      if (chosenPerks[milestone.floor] === perk.id && perk.multiply !== undefined && perk.multiply[stat] !== undefined) {
+        total = total * perk.multiply[stat];
+      }
+    }
+  }
+
+  return total;
+}
+
+// Everything that multiplies a number: fame upgrades and breakthrough perks.
+// The stats are attack, health, armor, experience, gold, gear and fame.
+function multiplier(stat) {
+  return fameMultiplier(stat) * perkMultiplier(stat);
 }
 
 // The relics this class can find: the shared ones plus its own
@@ -423,7 +483,7 @@ function townUpgradeIsMaxed(item) {
 }
 
 function totalArmor() {
-  return Math.round((armorPower + totalBonus("armor")) * fameMultiplier("armor"));
+  return Math.round((armorPower + totalBonus("armor")) * multiplier("armor"));
 }
 
 // ----- Relics -----
@@ -526,7 +586,7 @@ function makeItem(least) {
   let rarity = rollRarity(least);
 
   // Items get stronger the higher you are in the tower, and with their rarity
-  let power = floor * gearPowerPerFloor * (1 + Math.random()) * rarities[rarity].power * fameMultiplier("gear");
+  let power = floor * gearPowerPerFloor * (1 + Math.random()) * rarities[rarity].power * multiplier("gear");
 
   let slot = "armor";
   if (Math.random() < 0.5) {
@@ -624,7 +684,7 @@ function startingGear() {
   // Starting a run part-way up the tower (the Pathfinder fame upgrade) skips the
   // floors where gear would have been found, so it comes with ordinary gear for that floor
   if (floor > 1) {
-    weaponPower = Math.max(weaponPower, Math.round(floor * gearPowerPerFloor * fameMultiplier("gear")));
+    weaponPower = Math.max(weaponPower, Math.round(floor * gearPowerPerFloor * multiplier("gear")));
   }
   armorPower = Math.ceil(weaponPower / 2);
   weaponRarity = 0;
@@ -855,8 +915,8 @@ function recalcStats() {
   let health = totalBonus("maxHp") + levelsGained * currentClass().perLevel.maxHp;
   let attack = totalBonus("attack") + levelsGained * currentClass().perLevel.attack + weaponPower;
 
-  playerMaxHp = Math.round(health * (1 + totalBonus("healthPercent")) * fameMultiplier("health"));
-  playerAttack = Math.round(attack * (1 + totalBonus("attackPercent")) * fameMultiplier("attack"));
+  playerMaxHp = Math.round(health * (1 + totalBonus("healthPercent")) * multiplier("health"));
+  playerAttack = Math.round(attack * (1 + totalBonus("attackPercent")) * multiplier("attack"));
 
   if (playerHp > playerMaxHp) {
     playerHp = playerMaxHp;
@@ -1287,10 +1347,15 @@ function buildClassScreen() {
     skillBox.appendChild(row);
   }
 
+  buildMilestones();
+}
+
+// Runs when the class changes, and again whenever a new breakthrough joins the list
+function buildMilestones() {
   let milestoneBox = document.getElementById("milestones");
   milestoneBox.innerHTML = "";
 
-  for (let milestone of currentClass().milestones) {
+  for (let milestone of allMilestones()) {
     let row = document.createElement("div");
     row.className = "milestone";
 
@@ -1300,7 +1365,7 @@ function buildClassScreen() {
 
     for (let perk of milestone.perks) {
       let button = document.createElement("button");
-      button.id = "perk-" + perk.id;
+      button.id = "perk-" + milestone.floor + "-" + perk.id;
       button.textContent = perk.name + " (" + perk.text + ")";
       button.onclick = function () {
         choosePerk(milestone.floor, perk.id);
@@ -1400,7 +1465,12 @@ function showSkills() {
 }
 
 function showMilestones() {
-  for (let milestone of currentClass().milestones) {
+  // A new breakthrough appears on the list each time one is reached
+  if (document.getElementById("milestones").children.length !== allMilestones().length) {
+    buildMilestones();
+  }
+
+  for (let milestone of allMilestones()) {
     let unlocked = bestFloor >= milestone.floor;
 
     let title = "Floor " + milestone.floor;
@@ -1410,7 +1480,7 @@ function showMilestones() {
     document.getElementById("milestone-" + milestone.floor).textContent = title;
 
     for (let perk of milestone.perks) {
-      let button = document.getElementById("perk-" + perk.id);
+      let button = document.getElementById("perk-" + milestone.floor + "-" + perk.id);
       button.disabled = !unlocked;
 
       if (chosenPerks[milestone.floor] === perk.id) {
@@ -1632,7 +1702,7 @@ function nextGoals() {
   if (skillPointsLeft() > 0) {
     goals.push("You have " + skillPointsLeft() + " skill points to spend (Skills).");
   }
-  for (let milestone of currentClass().milestones) {
+  for (let milestone of allMilestones()) {
     if (bestFloor >= milestone.floor && chosenPerks[milestone.floor] === undefined) {
       goals.push("You have a milestone perk to pick for floor " + milestone.floor + " (Milestones).");
       break;
@@ -1655,7 +1725,7 @@ function nextGoals() {
   if (!canAscend()) {
     goals.push("Reach floor " + ascendFloorNeeded() + " to ascend. Best since your last ascension: " + ascensionBest + ".");
   }
-  for (let milestone of currentClass().milestones) {
+  for (let milestone of allMilestones()) {
     if (bestFloor < milestone.floor) {
       goals.push("Reach floor " + milestone.floor + " to unlock a milestone perk.");
       break;
@@ -1959,13 +2029,13 @@ function nextRoom() {
 
     // Every floor reached for the first time since the last ascension pays fame
     if (floor > ascensionBest) {
-      fame = fame + (floor - ascensionBest);
+      fame = fame + (floor - ascensionBest) * multiplier("fame");
       ascensionBest = floor;
     }
     checkTowerProgress();
   }
 
-  for (let milestone of currentClass().milestones) {
+  for (let milestone of allMilestones()) {
     if (newBest && floor === milestone.floor) {
       say("Milestone unlocked! Pick a perk for reaching floor " + floor + ".");
     }
@@ -1976,7 +2046,7 @@ function nextRoom() {
 
 // ----- What happens in a room -----
 function die() {
-  let payout = floor * experiencePerFloor * (1 + totalBonus("experience")) * fameMultiplier("experience");
+  let payout = floor * experiencePerFloor * (1 + totalBonus("experience")) * multiplier("experience");
   if (isAway()) {
     payout = payout * (1 + awayTowerExperience);
   }
@@ -2015,7 +2085,7 @@ function victory() {
   if (monsterIsRare) {
     reward = reward * rareGold;
   }
-  reward = Math.round(reward * monsterGold * (1 + totalBonus("gold")) * fameMultiplier("gold"));
+  reward = Math.round(reward * monsterGold * (1 + totalBonus("gold")) * multiplier("gold"));
   gold = gold + reward;
 
   healPlayer(playerMaxHp * (healOnKill + fameAdd("healOnKill")));
@@ -2109,7 +2179,7 @@ function step() {
     say("You rest and recover all your health.");
     nextRoom();
   } else if (encounterType === "chest") {
-    gold = gold + Math.round(floor * goldPerFloor * chestGold * (1 + totalBonus("gold")) * fameMultiplier("gold"));
+    gold = gold + Math.round(floor * goldPerFloor * chestGold * (1 + totalBonus("gold")) * multiplier("gold"));
     findItem(0);
     nextRoom();
   } else if (encounterType === "upgrade") {

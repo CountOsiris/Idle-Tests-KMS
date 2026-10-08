@@ -53,7 +53,7 @@ classes.ranger = {
       ]
     },
     {
-      floor: 15,
+      floor: 20,
       perks: [
         { id: "marksman", name: "Marksman", text: "Longbow: +10% aimed shot chance", bonus: { aimChance: 0.1 } },
         { id: "beastmaster", name: "Beastmaster", text: "Spirit Bow: +2 spirits", bonus: { spirits: 2 } },
@@ -61,31 +61,31 @@ classes.ranger = {
       ]
     },
     {
-      floor: 20,
+      floor: 35,
       perks: [
         { id: "plunderer", name: "Plunderer", text: "+50% gold", bonus: { gold: 0.5 } },
         { id: "veteran", name: "Veteran", text: "+25% experience", bonus: { experience: 0.25 } }
       ]
     },
     {
-      floor: 30,
-      perks: [
-        { id: "hawksVolley", name: "Hawk's Volley", text: "+15 attack and the enemy misses 1 more turn", bonus: { attack: 15, firstStrike: 1 } },
-        { id: "forestGuardian", name: "Forest Guardian", text: "+100 health and +4 armor", bonus: { maxHp: 100, armor: 4 } }
-      ]
-    },
-    {
-      floor: 40,
-      perks: [
-        { id: "deadeye", name: "Deadeye", text: "+25 attack", bonus: { attack: 25 } },
-        { id: "wildHeart", name: "Wild Heart", text: "+200 health", bonus: { maxHp: 200 } }
-      ]
-    },
-    {
       floor: 50,
       perks: [
-        { id: "stormOfArrows", name: "Storm of Arrows", text: "+30 attack and the enemy misses 1 more turn", bonus: { attack: 30, firstStrike: 1 } },
-        { id: "spiritLord", name: "Spirit Lord", text: "+200 health and Spirit Bow: +3 spirits", bonus: { maxHp: 200, spirits: 3 } }
+        { id: "hawksVolley", name: "Hawk's Volley", text: "+30% attack and the enemy misses 1 more turn", bonus: { attackPercent: 0.3, firstStrike: 1 } },
+        { id: "forestGuardian", name: "Forest Guardian", text: "+50% health and +4 armor", bonus: { healthPercent: 0.5, armor: 4 } }
+      ]
+    },
+    {
+      floor: 75,
+      perks: [
+        { id: "deadeye", name: "Deadeye", text: "+50% attack", bonus: { attackPercent: 0.5 } },
+        { id: "wildHeart", name: "Wild Heart", text: "+100% health", bonus: { healthPercent: 1 } }
+      ]
+    },
+    {
+      floor: 100,
+      perks: [
+        { id: "stormOfArrows", name: "Storm of Arrows", text: "+60% attack and the enemy misses 1 more turn", bonus: { attackPercent: 0.6, firstStrike: 1 } },
+        { id: "spiritLord", name: "Spirit Lord", text: "+100% health and Spirit Bow: +3 spirits", bonus: { healthPercent: 1, spirits: 3 } }
       ]
     }
   ],

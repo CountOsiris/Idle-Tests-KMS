@@ -54,7 +54,7 @@ classes.assassin = {
       ]
     },
     {
-      floor: 15,
+      floor: 20,
       perks: [
         { id: "toxicologist", name: "Toxicologist", text: "Venom Dagger: +2 poison stacks", bonus: { poisonStacks: 2 } },
         { id: "executioner", name: "Executioner", text: "Stiletto: +10% critical chance", bonus: { critChance: 0.1 } },
@@ -62,31 +62,31 @@ classes.assassin = {
       ]
     },
     {
-      floor: 20,
+      floor: 35,
       perks: [
         { id: "plunderer", name: "Plunderer", text: "+50% gold", bonus: { gold: 0.5 } },
         { id: "veteran", name: "Veteran", text: "+25% experience", bonus: { experience: 0.25 } }
       ]
     },
     {
-      floor: 30,
-      perks: [
-        { id: "nightStalker", name: "Night Stalker", text: "+12 attack and +10% dodge", bonus: { attack: 12, dodge: 0.1 } },
-        { id: "deathMark", name: "Death Mark", text: "+50% ambush damage and +80 health", bonus: { ambush: 0.5, maxHp: 80 } }
-      ]
-    },
-    {
-      floor: 40,
-      perks: [
-        { id: "killer", name: "Killer", text: "+22 attack", bonus: { attack: 22 } },
-        { id: "survivor", name: "Survivor", text: "+180 health", bonus: { maxHp: 180 } }
-      ]
-    },
-    {
       floor: 50,
       perks: [
-        { id: "shadowMaster", name: "Shadow Master", text: "+20 attack and +10% dodge", bonus: { attack: 20, dodge: 0.1 } },
-        { id: "grimReaper", name: "Grim Reaper", text: "+100% ambush damage and +250 health", bonus: { ambush: 1, maxHp: 250 } }
+        { id: "nightStalker", name: "Night Stalker", text: "+24% attack and +10% dodge", bonus: { attackPercent: 0.24, dodge: 0.1 } },
+        { id: "deathMark", name: "Death Mark", text: "+50% ambush damage and +40% health", bonus: { ambush: 0.5, healthPercent: 0.4 } }
+      ]
+    },
+    {
+      floor: 75,
+      perks: [
+        { id: "killer", name: "Killer", text: "+44% attack", bonus: { attackPercent: 0.44 } },
+        { id: "survivor", name: "Survivor", text: "+90% health", bonus: { healthPercent: 0.9 } }
+      ]
+    },
+    {
+      floor: 100,
+      perks: [
+        { id: "shadowMaster", name: "Shadow Master", text: "+40% attack and +10% dodge", bonus: { attackPercent: 0.4, dodge: 0.1 } },
+        { id: "grimReaper", name: "Grim Reaper", text: "+100% ambush damage and +125% health", bonus: { ambush: 1, healthPercent: 1.25 } }
       ]
     }
   ],

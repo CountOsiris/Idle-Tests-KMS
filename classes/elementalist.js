@@ -55,7 +55,7 @@ classes.elementalist = {
       ]
     },
     {
-      floor: 15,
+      floor: 20,
       perks: [
         { id: "tidecaller", name: "Tidecaller", text: "Water: +3% healing per spell", bonus: { tideHeal: 0.03 } },
         { id: "pyromancer", name: "Pyromancer", text: "Fire: +2 burn stacks", bonus: { burnStacks: 2 } },
@@ -64,31 +64,31 @@ classes.elementalist = {
       ]
     },
     {
-      floor: 20,
+      floor: 35,
       perks: [
         { id: "plunderer", name: "Plunderer", text: "+50% gold", bonus: { gold: 0.5 } },
         { id: "veteran", name: "Veteran", text: "+25% experience", bonus: { experience: 0.25 } }
       ]
     },
     {
-      floor: 30,
-      perks: [
-        { id: "avatarOfStorms", name: "Avatar of Storms", text: "+18 attack", bonus: { attack: 18 } },
-        { id: "avatarOfStone", name: "Avatar of Stone", text: "+110 health and +5 armor", bonus: { maxHp: 110, armor: 5 } }
-      ]
-    },
-    {
-      floor: 40,
-      perks: [
-        { id: "elementalFury", name: "Elemental Fury", text: "+25 attack", bonus: { attack: 25 } },
-        { id: "elementalShield", name: "Elemental Shield", text: "+200 health", bonus: { maxHp: 200 } }
-      ]
-    },
-    {
       floor: 50,
       perks: [
-        { id: "masterOfElements", name: "Master of Elements", text: "+35 attack", bonus: { attack: 35 } },
-        { id: "avatarOfTides", name: "Avatar of Tides", text: "+300 health and +6 armor", bonus: { maxHp: 300, armor: 6 } }
+        { id: "avatarOfStorms", name: "Avatar of Storms", text: "+36% attack", bonus: { attackPercent: 0.36 } },
+        { id: "avatarOfStone", name: "Avatar of Stone", text: "+55% health and +5 armor", bonus: { healthPercent: 0.55, armor: 5 } }
+      ]
+    },
+    {
+      floor: 75,
+      perks: [
+        { id: "elementalFury", name: "Elemental Fury", text: "+50% attack", bonus: { attackPercent: 0.5 } },
+        { id: "elementalShield", name: "Elemental Shield", text: "+100% health", bonus: { healthPercent: 1 } }
+      ]
+    },
+    {
+      floor: 100,
+      perks: [
+        { id: "masterOfElements", name: "Master of Elements", text: "+70% attack", bonus: { attackPercent: 0.7 } },
+        { id: "avatarOfTides", name: "Avatar of Tides", text: "+150% health and +6 armor", bonus: { healthPercent: 1.5, armor: 6 } }
       ]
     }
   ],

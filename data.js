@@ -86,6 +86,27 @@ const fameUpgrades = [
   { id: "mastery", name: "Mastery", text: "The upgrades you pick in upgrade areas can go 1 level higher.", unlockAt: 12, add: { upgradeCap: 1 }, addLabel: "upgrade levels", cost: 15, growth: 2, maxLevel: 0 }
 ];
 
+// ----- Breakthroughs -----
+// Each class has its own milestones, in its file, up to floor 100. After those,
+// breakthroughs go on forever. The first is at breakthroughFirstFloor, and each one
+// after is breakthroughSpacing times further (1.5 means half as far again), so they
+// get rarer the deeper a class goes: 150, 225, 350, 500, 750, 1150...
+//
+// They are the reason to push for a new best floor now and then instead of only
+// ascending quickly: each one is a big, permanent reward, kept through every ascension.
+const breakthroughFirstFloor = 150;
+const breakthroughSpacing = 1.5;
+
+// Every breakthrough offers the same choice, and the player picks one each time.
+// "multiply" works like the fame upgrades. It can multiply:
+//   attack, health, armor, experience, gold, gear, and fame (all fame earned)
+const breakthroughPerks = [
+  { id: "conqueror", name: "Conqueror", text: "attack x1.5", multiply: { attack: 1.5 } },
+  { id: "colossus", name: "Colossus", text: "health and armor x1.5", multiply: { health: 1.5, armor: 1.5 } },
+  { id: "scholar", name: "Scholar", text: "experience x1.5", multiply: { experience: 1.5 } },
+  { id: "legend", name: "Legend", text: "fame earned x1.25", multiply: { fame: 1.25 } }
+];
+
 // Pathfinder starts runs part of the way to your best floor. It can be bought forever:
 // every level closes this share of the remaining gap (0.85 means 15% of it is closed)...
 const pathfinderFade = 0.85;

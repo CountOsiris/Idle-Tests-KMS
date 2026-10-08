@@ -61,7 +61,7 @@ classes.warden = {
       ]
     },
     {
-      floor: 15,
+      floor: 20,
       perks: [
         { id: "pyre", name: "Pyre", text: "Ember: +2 burn stacks", bonus: { burnStacks: 2 } },
         { id: "permafrost", name: "Permafrost", text: "Frost: +10% freeze chance", bonus: { freezeChance: 0.1 } },
@@ -69,31 +69,31 @@ classes.warden = {
       ]
     },
     {
-      floor: 20,
+      floor: 35,
       perks: [
         { id: "plunderer", name: "Plunderer", text: "+50% gold", bonus: { gold: 0.5 } },
         { id: "veteran", name: "Veteran", text: "+25% experience", bonus: { experience: 0.25 } }
       ]
     },
     {
-      floor: 30,
+      floor: 50,
       perks: [
-        { id: "bastion", name: "Bastion", text: "+120 health and +6 armor", bonus: { maxHp: 120, armor: 6 } },
-        { id: "retribution", name: "Retribution", text: "+25% reflect and +8 attack", bonus: { reflect: 0.25, attack: 8 } }
+        { id: "bastion", name: "Bastion", text: "+60% health and +6 armor", bonus: { healthPercent: 0.6, armor: 6 } },
+        { id: "retribution", name: "Retribution", text: "+25% reflect and +16% attack", bonus: { reflect: 0.25, attackPercent: 0.16 } }
       ]
     },
     {
-      floor: 40,
+      floor: 75,
       perks: [
-        { id: "fortress", name: "Fortress", text: "+250 health", bonus: { maxHp: 250 } },
+        { id: "fortress", name: "Fortress", text: "+125% health", bonus: { healthPercent: 1.25 } },
         { id: "mirrorWall", name: "Mirror Wall", text: "+30% reflect", bonus: { reflect: 0.3 } }
       ]
     },
     {
-      floor: 50,
+      floor: 100,
       perks: [
-        { id: "unyielding", name: "Unyielding", text: "+200 health and +12 armor", bonus: { maxHp: 200, armor: 12 } },
-        { id: "vengeance", name: "Vengeance", text: "+50% reflect and +15 attack", bonus: { reflect: 0.5, attack: 15 } }
+        { id: "unyielding", name: "Unyielding", text: "+100% health and +12 armor", bonus: { healthPercent: 1, armor: 12 } },
+        { id: "vengeance", name: "Vengeance", text: "+50% reflect and +30% attack", bonus: { reflect: 0.5, attackPercent: 0.3 } }
       ]
     }
   ],
@@ -115,7 +115,7 @@ classes.warden = {
 // The damage thrown back each time the enemy attacks.
 // A stronger shield throws back more, and it ignores the enemy's armor.
 function reflectDamage() {
-  let reflected = monsterAttack * totalBonus("reflect") + armorPower * fameMultiplier("armor");
+  let reflected = monsterAttack * totalBonus("reflect") + armorPower * multiplier("armor");
   return Math.round(reflected * (1 + totalBonus("reflectPower")));
 }
 
@@ -165,7 +165,7 @@ function wardenDotPerStack() {
 }
 
 function wardenStatLine() {
-  return "Reflect: " + percent(totalBonus("reflect")) + " of the enemy's attack + " + big(Math.round(armorPower * fameMultiplier("armor")));
+  return "Reflect: " + percent(totalBonus("reflect")) + " of the enemy's attack + " + big(Math.round(armorPower * multiplier("armor")));
 }
 
 function wardenGearInfo() {

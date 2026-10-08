@@ -51,7 +51,7 @@ classes.zealot = {
       ]
     },
     {
-      floor: 15,
+      floor: 20,
       perks: [
         { id: "crusader", name: "Crusader", text: "Holy Mace: +20% holy damage", bonus: { smite: 0.2 } },
         { id: "templar", name: "Templar", text: "Mace and Shield: +10% block chance", bonus: { blockChance: 0.1 } },
@@ -59,31 +59,31 @@ classes.zealot = {
       ]
     },
     {
-      floor: 20,
+      floor: 35,
       perks: [
         { id: "plunderer", name: "Plunderer", text: "+50% gold", bonus: { gold: 0.5 } },
         { id: "veteran", name: "Veteran", text: "+25% experience", bonus: { experience: 0.25 } }
       ]
     },
     {
-      floor: 30,
-      perks: [
-        { id: "avenger", name: "Avenger", text: "+15 attack and +30% holy damage", bonus: { attack: 15, smite: 0.3 } },
-        { id: "saint", name: "Saint", text: "+100 health and +2% healing every turn", bonus: { maxHp: 100, devotion: 0.02 } }
-      ]
-    },
-    {
-      floor: 40,
-      perks: [
-        { id: "holyWrath", name: "Holy Wrath", text: "+22 attack", bonus: { attack: 22 } },
-        { id: "divineHealth", name: "Divine Health", text: "+220 health", bonus: { maxHp: 220 } }
-      ]
-    },
-    {
       floor: 50,
       perks: [
-        { id: "handOfGod", name: "Hand of God", text: "+30 attack and Holy Mace: +40% holy damage", bonus: { attack: 30, smite: 0.4 } },
-        { id: "martyr", name: "Martyr", text: "+300 health and +2% healing every turn", bonus: { maxHp: 300, devotion: 0.02 } }
+        { id: "avenger", name: "Avenger", text: "+30% attack and +30% holy damage", bonus: { attackPercent: 0.3, smite: 0.3 } },
+        { id: "saint", name: "Saint", text: "+50% health and +2% healing every turn", bonus: { healthPercent: 0.5, devotion: 0.02 } }
+      ]
+    },
+    {
+      floor: 75,
+      perks: [
+        { id: "holyWrath", name: "Holy Wrath", text: "+44% attack", bonus: { attackPercent: 0.44 } },
+        { id: "divineHealth", name: "Divine Health", text: "+110% health", bonus: { healthPercent: 1.1 } }
+      ]
+    },
+    {
+      floor: 100,
+      perks: [
+        { id: "handOfGod", name: "Hand of God", text: "+60% attack and Holy Mace: +40% holy damage", bonus: { attackPercent: 0.6, smite: 0.4 } },
+        { id: "martyr", name: "Martyr", text: "+150% health and +2% healing every turn", bonus: { healthPercent: 1.5, devotion: 0.02 } }
       ]
     }
   ],
