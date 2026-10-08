@@ -169,9 +169,9 @@ function zealotAttack() {
 
   if (weapon === "tome") {
     // Holy magic ignores armor
-    magicHitMonster(damage * tomeHit, "holy");
+    spellHitMonster(damage * tomeHit, "holy");
     if (wasted > 0) {
-      magicHitMonster(wasted * (1 + totalBonus("sacredFlame")) * zealotCrusade(), "holy");
+      spellHitMonster(wasted * (1 + totalBonus("sacredFlame")) * zealotCrusade(), "holy");
     }
   }
 
@@ -189,7 +189,7 @@ function zealotAttack() {
     hitMonster(damage, "crushing");
 
     // The mace adds holy damage that ignores armor
-    magicHitMonster(damage * totalBonus("smite"), "holy");
+    spellHitMonster(damage * totalBonus("smite"), "holy");
   }
 }
 

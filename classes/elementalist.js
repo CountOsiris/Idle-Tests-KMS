@@ -149,10 +149,11 @@ function elementalistStartFight() {
 }
 
 function elementalistAttack() {
-  // Every spell ignores armor (magicHitMonster)
+  // Every spell ignores armor, but the monster's ward is taken off it (spellHitMonster).
+  // Many small bolts lose more to ward than one big boulder does.
 
   if (stance === "fire") {
-    magicHitMonster(playerAttack * fireHit, "fire");
+    spellHitMonster(playerAttack * fireHit, "fire");
 
     // Fire catches quickly: every spell adds two burn stacks
     addDotStack(totalBonus("burnStacks"));
@@ -167,7 +168,7 @@ function elementalistAttack() {
       damage = damage * (iceCrit + totalBonus("critPower") + overflow("critChance", 1));
       say("An ice shard shatters for a critical hit!");
     }
-    magicHitMonster(damage, "ice");
+    spellHitMonster(damage, "ice");
   }
 
   if (stance === "lightning") {
@@ -179,7 +180,7 @@ function elementalistAttack() {
     }
 
     for (let i = 0; i < bolts; i++) {
-      magicHitMonster(playerAttack * (lightningHit + totalBonus("boltPower")), "lightning");
+      spellHitMonster(playerAttack * (lightningHit + totalBonus("boltPower")), "lightning");
     }
   }
 
@@ -191,7 +192,7 @@ function elementalistAttack() {
       elementalistCharged = false;
 
       // Stun chance past its limit adds to the boulder's damage instead
-      magicHitMonster(playerAttack * (earthHit + totalBonus("crush") + overflow("stunChance", maxChance)), "earth");
+      spellHitMonster(playerAttack * (earthHit + totalBonus("crush") + overflow("stunChance", maxChance)), "earth");
 
       if (chance(cappedChance("stunChance"))) {
         monsterStunned = true;

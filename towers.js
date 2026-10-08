@@ -28,6 +28,12 @@
 //   minFloor  - the first floor it can appear on
 //   hp, attack, armor, gold - multipliers (1 is normal, 2 is double, 0.5 is half)
 // and it can have any of these special traits:
+//   ward: 2      - how much is taken off every SPELL that hits it, the way armor is
+//                  taken off a weapon swing (1 is the same as a normal armor, 2 is double).
+//                  Written on a tower it counts for every monster in it; a monster
+//                  can have its own. Left out, there is no ward.
+//   weak: ["crushing", "holy"]   - damage types it takes 25% more from
+//   resist: ["piercing"]         - damage types it takes 40% less from (see data.js for the list)
 //   poison: 0.3  - 30% of its attack ignores your armor
 //   regen: 0.04  - heals 4% of its health every turn
 //   enrage: 0.1  - its attack grows by 10% every turn
@@ -46,6 +52,7 @@
 const towers = {
   barbarian: {
     name: "Orc Stronghold",
+    ward: 2,          // shamans' charms: spells lose twice what a normal armor would take
     sky: "#4d2e1a",
     icon: "👹",
     text: "Big, loud and lightly armored. Plenty of flesh to steal life from.",
@@ -71,6 +78,7 @@ const towers = {
 
   warden: {
     name: "Raider's Pass",
+    ward: 2.5,
     sky: "#3a3f4d",
     icon: "🤺",
     text: "Reckless raiders who hit hard and fall quickly. Every blow they land comes straight back.",
@@ -96,6 +104,7 @@ const towers = {
 
   ranger: {
     name: "Wildwood",
+    ward: 3,          // old forest magic: the hardest place for a caster
     sky: "#1d4028",
     icon: "🐗",
     text: "Slow, heavy beasts. They take a long time to reach an archer.",
@@ -121,6 +130,7 @@ const towers = {
 
   assassin: {
     name: "The Undercity",
+    ward: 2,
     sky: "#2e2244",
     icon: "🐀",
     text: "Thugs and vermin in the dark. Frail enough to fall to one well-placed blade.",

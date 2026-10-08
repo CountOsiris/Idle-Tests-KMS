@@ -179,8 +179,8 @@ function warlockCast(power) {
     healPlayer(playerMaxHp * totalBonus("voidHeal"));
   }
 
-  // Spells ignore armor
-  magicHitMonster(damage, "arcane");
+  // Spells ignore armor, but not ward
+  spellHitMonster(damage, "arcane");
 }
 
 function warlockAttack() {

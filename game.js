@@ -77,6 +77,7 @@ let monsterMaxHp = 0;
 let monsterHp = 0;
 let monsterAttack = 0;
 let monsterArmor = 0;
+let monsterWard = 0;        // like armor, but against spells
 let monsterGold = 1;
 let monsterPoison = 0;
 let monsterRegen = 0;
@@ -206,7 +207,16 @@ function hitMonster(damage, type) {
   return damage;
 }
 
-// A magic hit ignores armor
+// A spell ignores armor, but the monster's WARD is taken off it instead.
+// Ward is to a caster what armor is to a fighter.
+function spellHitMonster(damage, type) {
+  damage = Math.max(1, Math.round(damage * typeMultiplier(type)) - monsterWard);
+  monsterHp = monsterHp - damage;
+  return damage;
+}
+
+// A hit that nothing is taken off: not armor, not ward. For damage that is not
+// a weapon swing or a spell (a reflected blow, thorns, a thrown shield).
 function magicHitMonster(damage, type) {
   damage = Math.max(1, Math.round(damage * typeMultiplier(type)));
   monsterHp = monsterHp - damage;
@@ -2325,6 +2335,7 @@ function updateScreen() {
     document.getElementById("monster-hp-trail").style.width = Math.max(0, monsterHp / monsterMaxHp * 100) + "%";
     document.getElementById("monster-attack").textContent = big(monsterAttack);
     document.getElementById("monster-armor").textContent = big(monsterArmor);
+    document.getElementById("monster-ward").textContent = big(monsterWard);
     document.getElementById("monster-dot").textContent = big(dotDamage());
   }
 
@@ -2391,6 +2402,16 @@ function spawnMonster(isBoss) {
   monsterMaxHp = Math.round(monsterHealth * growth * type.hp);
   monsterAttack = Math.round(monsterDamage * growth * type.attack);
   monsterArmor = Math.floor(floor * monsterArmorPerFloor * type.armor);
+
+  // Ward works like armor. A monster can have its own, or it uses its tower's.
+  // A tower with none written has no ward at all.
+  let ward = 0;
+  if (type.ward !== undefined) {
+    ward = type.ward;
+  } else if (towers[tower].ward !== undefined) {
+    ward = towers[tower].ward;
+  }
+  monsterWard = Math.floor(floor * monsterArmorPerFloor * ward);
   monsterGold = type.gold;
   monsterPoison = traitOf(type, "poison");
   monsterRegen = traitOf(type, "regen");
