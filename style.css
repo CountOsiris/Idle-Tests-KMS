@@ -312,6 +312,60 @@ body[data-tab="tower"] #tab-character {
   min-width: 0;
 }
 
+/* ----- An item of equipment: its picture, name and stats ----- */
+.item {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  padding: 12px 0;
+  border-top: 1px solid var(--card-edge);
+}
+
+.item-icon {
+  flex: none;
+  width: 46px;
+  height: 46px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 26px;
+  background: rgba(0, 0, 0, 0.35);
+  border: 1px solid var(--card-edge);
+}
+
+.item-icon img {
+  max-width: 100%;
+  max-height: 100%;
+}
+
+.item-text {
+  flex: 1;
+  min-width: 0;
+}
+
+.item-text p {
+  margin: 0 0 3px;
+}
+
+.item-slot {
+  font-size: 0.8em;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #8f8777;
+}
+
+.item-stats {
+  color: var(--gold-bright);
+}
+
+.item-stats .up   { color: var(--heal); }
+.item-stats .down { color: var(--hurt); }
+
+.item button {
+  flex: none;
+  align-self: center;
+}
+
 .row-title {
   font-weight: 600;
   color: #e3dac6;

@@ -29,6 +29,7 @@ classes.assassin = {
 
   gearLabel: "Blade",
   gearTypes: { venom: "Venom Dagger", stiletto: "Stiletto", shadow: "Shadow Blade" },
+  gearIcons: { venom: "🗡️", stiletto: "🗡️", shadow: "🗡️" },
   dotLabel: "Poison",
   dotType: "affliction",
 

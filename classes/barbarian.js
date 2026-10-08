@@ -38,6 +38,9 @@ classes.barbarian = {
 
   gearLabel: "Weapon",
   gearTypes: { axe: "Axe", sword: "Sword", club: "Club" },
+  // The little picture of each kind. To use a drawing instead, add for example
+  //   gearArt: { axe: "art/axe.png" }
+  gearIcons: { axe: "🪓", sword: "⚔️", club: "🏏" },
   dotLabel: "Bleeding",
   dotType: "affliction",
 

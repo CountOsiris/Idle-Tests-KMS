@@ -44,6 +44,7 @@ classes.ranger = {
 
   gearLabel: "Bow",
   gearTypes: { longbow: "Longbow", spirit: "Spirit Bow", bloom: "Bloom Bow" },
+  gearIcons: { longbow: "🏹", spirit: "🏹", bloom: "🏹" },
   dotLabel: "Spirit damage",
   dotType: "nature",
 

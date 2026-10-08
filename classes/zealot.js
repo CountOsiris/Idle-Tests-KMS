@@ -32,6 +32,7 @@ classes.zealot = {
 
   gearLabel: "Holy weapon",
   gearTypes: { mace: "Holy Mace", shield: "Mace and Shield", tome: "Holy Tome" },
+  gearIcons: { mace: "🔨", shield: "🛡️", tome: "📖" },
 
   upgrades: [
     { id: "fervor", name: "Fervor", text: "+3 attack", bonus: { attack: 3 } },

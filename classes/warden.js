@@ -40,6 +40,8 @@ classes.warden = {
   plainLabel: "Spear",
   gearLabel: "Shield",
   gearTypes: { spiked: "Spiked Shield", tower: "Tower Shield", bladed: "Bladed Shield" },
+  gearIcons: { spiked: "🛡️", tower: "🛡️", bladed: "🛡️" },
+  plainIcon: "🔱",
 
   upgrades: [
     { id: "spearhead", name: "Spearhead", text: "+3 attack", bonus: { attack: 3 } },

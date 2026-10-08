@@ -33,6 +33,7 @@ classes.elementalist = {
 
   gearLabel: "Gloves",
   gearTypes: { gloves: "Elemental Gloves" },
+  gearIcons: { gloves: "🧤" },
   dotLabel: "Burning",
   dotType: "fire",
 

@@ -2525,14 +2525,6 @@ function updateScreen() {
     document.getElementById("dot-label").textContent = currentClass().dotLabel;
   }
 
-  // The two equipment rows. The colour of the text shows the rarity (see style.css).
-  document.getElementById("gear-label").textContent = slotLabel("weapon");
-  document.getElementById("weapon").textContent = slotText("weapon", weaponPower, weaponRarity);
-  document.getElementById("weapon").className = "rarity-" + weaponRarity;
-  document.getElementById("armor-label").textContent = slotLabel("armor");
-  document.getElementById("armor").textContent = slotText("armor", armorPower, armorRarity);
-  document.getElementById("armor").className = "rarity-" + armorRarity;
-  document.getElementById("weapon-info").textContent = currentClass().gearInfo();
   document.getElementById("favourite-gear-label").textContent = "Favourite " + currentClass().gearLabel.toLowerCase();
 
   showBackpack();
@@ -2542,11 +2534,18 @@ function updateScreen() {
 let backpackShown = "";
 
 function showBackpack() {
-  let key = playerClass + JSON.stringify(backpack) + weapon + weaponPower + armorPower;
+  // (the effect texts hold numbers that skills and upgrades change, so they are part of the key)
+  let key = playerClass + JSON.stringify(backpack) + weapon + stance + weaponPower + armorPower + weaponRarity + armorRarity + currentClass().gearInfo();
   if (key === backpackShown) {
     return;
   }
   backpackShown = key;
+
+  // What is being worn, as two item cards
+  let wornBox = document.getElementById("worn");
+  wornBox.innerHTML = "";
+  wornBox.appendChild(itemCard(wornItem("weapon"), true, null));
+  wornBox.appendChild(itemCard(wornItem("armor"), true, null));
 
   let box = document.getElementById("backpack");
   box.innerHTML = "";
@@ -2561,24 +2560,136 @@ function showBackpack() {
       equipFromBackpack(i);
     });
     document.getElementById("quick-swap-" + i).className = "rarity-" + backpack[i].rarity;
+    document.getElementById("quick-swap-" + i).title = itemStat(backpack[i]) + ". " + itemEffect(backpack[i]);
   }
 
   for (let i = 0; i < backpack.length; i++) {
-    let item = backpack[i];
-    addRow(box, "backpack-" + i, function () {
+    box.appendChild(itemCard(backpack[i], false, function () {
       equipFromBackpack(i);
-    });
-
-    let note = "A different " + currentClass().gearLabel.toLowerCase() + ": equipping it changes how you fight.";
-    if (isSameKind(item)) {
-      note = "Stronger than the one you are using.";
-    } else if (!isBetter(item)) {
-      note = note + " Weaker than what you are using.";
-    }
-
-    fillRow("backpack-" + i, itemName(item), note, "Equip", false);
-    document.getElementById("backpack-" + i + "-title").className = "row-title rarity-" + item.rarity;
+    }));
   }
+}
+
+// ----- Describing an item: its picture, its stats and what it does -----
+
+// The little picture of an item. A class can give each kind of its gear an icon
+// (gearIcons) or a drawing (gearArt); anything without one gets a plain icon.
+function itemIcon(item) {
+  let icons = currentClass().gearIcons;
+  if (item.slot === specialSlot() && icons !== undefined && icons[item.type] !== undefined) {
+    return icons[item.type];
+  }
+  if (item.slot !== specialSlot() && currentClass().plainIcon !== undefined) {
+    return currentClass().plainIcon;
+  }
+  if (item.slot === "weapon") {
+    return "⚔️";
+  }
+  return "🥋";
+}
+
+function itemArt(item) {
+  let art = currentClass().gearArt;
+  if (item.slot === specialSlot() && art !== undefined && art[item.type] !== undefined) {
+    return art[item.type];
+  }
+  return "";
+}
+
+// The number an item gives: "+12 attack" or "+6 armor"
+function itemStat(item) {
+  if (item.slot === "weapon") {
+    return "+" + big(item.power) + " attack";
+  }
+  return "+" + big(item.power) + " armor";
+}
+
+// What a kind of gear does, in words. The class's own description is written for
+// the gear being worn, so this borrows it by pretending for a moment to wear this one.
+function itemEffect(item) {
+  if (item.slot !== specialSlot()) {
+    return "";
+  }
+
+  let wearing = weapon;
+  weapon = item.type;
+  let text = currentClass().gearInfo();
+  let types = typeNames(currentClass().damageTypes());
+  weapon = wearing;
+
+  return text + " Damage: " + types + ".";
+}
+
+// Builds the card for one item. "worn" is true for something being worn;
+// "whenEquipped" is what the Equip button does (null for no button).
+function itemCard(item, worn, whenEquipped) {
+  let card = document.createElement("div");
+  card.className = "item";
+
+  let icon = document.createElement("div");
+  icon.className = "item-icon";
+  if (itemArt(item) !== "") {
+    let image = document.createElement("img");
+    image.src = itemArt(item);
+    image.alt = "";
+    icon.appendChild(image);
+  } else {
+    icon.textContent = itemIcon(item);
+  }
+  card.appendChild(icon);
+
+  let text = document.createElement("div");
+  text.className = "item-text";
+
+  let slot = document.createElement("p");
+  slot.className = "item-slot";
+  slot.textContent = slotLabel(item.slot);
+  if (!worn) {
+    slot.textContent = slot.textContent + " · in your backpack";
+  }
+  text.appendChild(slot);
+
+  let name = document.createElement("p");
+  name.className = "row-title rarity-" + item.rarity;
+  name.textContent = itemName(item);
+  text.appendChild(name);
+
+  // The stat, and for a spare how it compares with what is worn
+  let stats = document.createElement("p");
+  stats.className = "item-stats";
+  stats.textContent = itemStat(item);
+  if (!worn) {
+    let difference = item.power - wornItem(item.slot).power;
+    let compare = document.createElement("span");
+    if (difference > 0) {
+      compare.className = "up";
+      compare.textContent = "  ▲ " + big(difference) + " more than you are wearing";
+    } else if (difference < 0) {
+      compare.className = "down";
+      compare.textContent = "  ▼ " + big(-difference) + " less than you are wearing";
+    } else {
+      compare.textContent = "  the same as you are wearing";
+    }
+    stats.appendChild(compare);
+  }
+  text.appendChild(stats);
+
+  if (itemEffect(item) !== "") {
+    let effect = document.createElement("p");
+    effect.className = "note";
+    effect.textContent = itemEffect(item);
+    text.appendChild(effect);
+  }
+  card.appendChild(text);
+
+  if (whenEquipped !== null) {
+    let button = document.createElement("button");
+    button.textContent = "Equip";
+    button.onclick = whenEquipped;
+    card.appendChild(button);
+  }
+
+  return card;
 }
 
 // ----- Building each room -----

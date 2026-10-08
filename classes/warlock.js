@@ -35,6 +35,7 @@ classes.warlock = {
   // A caster's spells reach a flying monster as easily as any other
   ranged: true,
   gearTypes: { arcane: "Arcane Tome", void: "Void Tome", rune: "Rune Tome" },
+  gearIcons: { arcane: "📘", void: "📓", rune: "📕" },
 
   upgrades: [
     { id: "arcanePower", name: "Arcane Power", text: "+4 attack", bonus: { attack: 4 } },
