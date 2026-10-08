@@ -1,12 +1,17 @@
 // =====================================================================
-//  The Warden - a spear to attack with, and a shield that reflects damage
+//  The Warden - a spear, and a shield that decides how you fight
 // =====================================================================
+// The three shields are three different ways to play:
+//   Spiked Shield - throws every attack back at the enemy. The enemy kills itself.
+//   Tower Shield  - blocks attacks and steadies the spear arm. The spear does the killing.
+//   Bladed Shield - is thrown every turn, and hits as hard as you are armored.
+//
 // Bonus words only the Warden uses:
-//   reflect      enemy attack thrown back        (0.1 means +10%)
-//   reflectPower all reflected damage            (0.1 means +10% stronger)
-//   burnStacks   most ember shield burn stacks   (2 means +2)
-//   freezeChance frost shield freeze chance      (0.1 means +10%)
-//   stormChance  storm shield double reflect     (0.1 means +10%)
+//   reflect      spiked: enemy attack thrown back          (0.1 means +10%)
+//   shieldPower  all shield damage, reflected or thrown    (0.1 means +10% stronger)
+//   blockChance  tower: chance to block an attack          (0.05 means +5%)
+//   spearPower   tower: extra spear damage                 (0.1 means +10%)
+//   throwPower   bladed: extra armor in every throw        (1 means one more time your armor)
 //
 // See classes/barbarian.js for what each list is for.
 
@@ -14,36 +19,34 @@ classes.warden = {
   name: "Warden",
   icon: "🛡️",
   art: "art/warden.png",
-  text: "A spear and an elemental shield. Every attack against you is thrown back at the enemy.",
+  text: "A spear and a shield. The shield you carry decides how you fight: throwing attacks back, blocking them, or being thrown itself.",
   perLevel: { maxHp: 12, attack: 1.5 },
-  base: { maxHp: 120, attack: 5, armor: 2, reflect: 0.3, burnStacks: 3, freezeChance: 0.2, stormChance: 0.25 },
+  base: { maxHp: 120, attack: 5, armor: 2, reflect: 0.3, blockChance: 0.25, spearPower: 0.5 },
 
   // The Warden's special gear is the shield, which sits in the armor slot.
   // The weapon slot holds a plain spear.
   specialSlot: "armor",
   plainLabel: "Spear",
   gearLabel: "Shield",
-  gearTypes: { ember: "Ember Shield", frost: "Frost Shield", storm: "Storm Shield" },
-  dotLabel: "Burning",
+  gearTypes: { spiked: "Spiked Shield", tower: "Tower Shield", bladed: "Bladed Shield" },
 
   upgrades: [
-    { id: "thorns", name: "Thorns", text: "+10% reflect", bonus: { reflect: 0.1 } },
+    { id: "spearhead", name: "Spearhead", text: "+3 attack", bonus: { attack: 3 } },
     { id: "bulwark", name: "Bulwark", text: "+2 armor", bonus: { armor: 2 } },
-    { id: "kindling", name: "Kindling", text: "Ember: +1 burn stack", bonus: { burnStacks: 1 } },
-    { id: "deepChill", name: "Deep Chill", text: "Frost: +5% freeze chance", bonus: { freezeChance: 0.05 } },
-    { id: "overcharge", name: "Overcharge", text: "Storm: +5% double reflect chance", bonus: { stormChance: 0.05 } }
+    { id: "thorns", name: "Thorns", text: "Spiked: +10% reflect", bonus: { reflect: 0.1 } },
+    { id: "shieldWall", name: "Shield Wall", text: "Tower: +4% block chance", bonus: { blockChance: 0.04 } },
+    { id: "sharpRim", name: "Sharp Rim", text: "Bladed: throws hit for half your armor more", bonus: { throwPower: 0.5 } }
   ],
 
   skills: [
     { id: "spearThrust", name: "Spear Thrust", text: "+3% attack", bonus: { attackPercent: 0.03 }, cost: 1 },
     { id: "vigor", name: "Vigor", text: "+3% health", bonus: { healthPercent: 0.03 }, cost: 1 },
-    { id: "retaliation", name: "Retaliation", text: "Reflected damage is 10% stronger", bonus: { reflectPower: 0.1 }, cost: 1 },
-    { id: "scorch", name: "Scorch", text: "Burning deals +10% damage", bonus: { dotPower: 0.1 }, cost: 1 },
     { id: "plating", name: "Plating", text: "+2 armor", bonus: { armor: 2 }, cost: 1 },
-    { id: "thornmail", name: "Thornmail", text: "+5% reflect", bonus: { reflect: 0.05 }, cost: 1 },
-    { id: "emberMastery", name: "Ember Mastery", text: "Ember: +1 burn stack", bonus: { burnStacks: 1 }, cost: 2 },
-    { id: "frostMastery", name: "Frost Mastery", text: "Frost: +3% freeze chance", bonus: { freezeChance: 0.03 }, cost: 2 },
-    { id: "stormMastery", name: "Storm Mastery", text: "Storm: +4% double reflect chance", bonus: { stormChance: 0.04 }, cost: 2 }
+    { id: "retaliation", name: "Retaliation", text: "Shield damage (reflected or thrown) is 10% stronger", bonus: { shieldPower: 0.1 }, cost: 1 },
+    { id: "thornmail", name: "Thornmail", text: "Spiked: +5% reflect", bonus: { reflect: 0.05 }, cost: 1 },
+    { id: "phalanx", name: "Phalanx", text: "Tower: +2% block chance", bonus: { blockChance: 0.02 }, cost: 1 },
+    { id: "impale", name: "Impale", text: "Tower: +8% spear damage", bonus: { spearPower: 0.08 }, cost: 1 },
+    { id: "discus", name: "Discus", text: "Bladed: throws hit for a quarter of your armor more", bonus: { throwPower: 0.25 }, cost: 1 }
   ],
 
   milestones: [
@@ -51,7 +54,7 @@ classes.warden = {
       floor: 5,
       perks: [
         { id: "stalwart", name: "Stalwart", text: "+40 health", bonus: { maxHp: 40 } },
-        { id: "spikedPlating", name: "Spiked Plating", text: "+10% reflect", bonus: { reflect: 0.1 } }
+        { id: "spikedPlating", name: "Spiked Plating", text: "+10% shield damage and +3 attack", bonus: { shieldPower: 0.1, attack: 3 } }
       ]
     },
     {
@@ -64,9 +67,9 @@ classes.warden = {
     {
       floor: 20,
       perks: [
-        { id: "pyre", name: "Pyre", text: "Ember: +2 burn stacks", bonus: { burnStacks: 2 } },
-        { id: "permafrost", name: "Permafrost", text: "Frost: +10% freeze chance", bonus: { freezeChance: 0.1 } },
-        { id: "thunderhead", name: "Thunderhead", text: "Storm: +15% double reflect chance", bonus: { stormChance: 0.15 } }
+        { id: "bramble", name: "Bramble", text: "Spiked: +25% reflect", bonus: { reflect: 0.25 } },
+        { id: "sentinel", name: "Sentinel", text: "Tower: +10% block chance", bonus: { blockChance: 0.1 } },
+        { id: "sawblade", name: "Sawblade", text: "Bladed: throws hit for one more time your armor", bonus: { throwPower: 1 } }
       ]
     },
     {
@@ -80,102 +83,113 @@ classes.warden = {
       floor: 50,
       perks: [
         { id: "bastion", name: "Bastion", text: "+60% health and +6 armor", bonus: { healthPercent: 0.6, armor: 6 } },
-        { id: "retribution", name: "Retribution", text: "+25% reflect and +16% attack", bonus: { reflect: 0.25, attackPercent: 0.16 } }
+        { id: "retribution", name: "Retribution", text: "+25% attack and +25% shield damage", bonus: { attackPercent: 0.25, shieldPower: 0.25 } }
       ]
     },
     {
       floor: 75,
       perks: [
         { id: "fortress", name: "Fortress", text: "+125% health", bonus: { healthPercent: 1.25 } },
-        { id: "mirrorWall", name: "Mirror Wall", text: "+30% reflect", bonus: { reflect: 0.3 } }
+        { id: "mirrorWall", name: "Mirror Wall", text: "+40% attack and +40% shield damage", bonus: { attackPercent: 0.4, shieldPower: 0.4 } }
       ]
     },
     {
       floor: 100,
       perks: [
         { id: "unyielding", name: "Unyielding", text: "+100% health and +12 armor", bonus: { healthPercent: 1, armor: 12 } },
-        { id: "vengeance", name: "Vengeance", text: "+50% reflect and +30% attack", bonus: { reflect: 0.5, attackPercent: 0.3 } }
+        { id: "vengeance", name: "Vengeance", text: "+50% attack and +50% shield damage", bonus: { attackPercent: 0.5, shieldPower: 0.5 } }
       ]
     }
   ],
 
   relics: [
-    { id: "mirrorShard", name: "Mirror Shard", text: "+15% reflect", bonus: { reflect: 0.15 } },
-    { id: "everburningCoal", name: "Everburning Coal", text: "Ember: +1 burn stack", bonus: { burnStacks: 1 } },
-    { id: "frozenHeart", name: "Frozen Heart", text: "Frost: +5% freeze chance", bonus: { freezeChance: 0.05 } },
-    { id: "stormcallersRod", name: "Stormcaller's Rod", text: "Storm: +10% double reflect chance", bonus: { stormChance: 0.1 } }
+    { id: "mirrorShard", name: "Mirror Shard", text: "Spiked: +15% reflect", bonus: { reflect: 0.15 } },
+    { id: "bulwarkCrest", name: "Bulwark Crest", text: "Tower: +6% block chance", bonus: { blockChance: 0.06 } },
+    { id: "razorRim", name: "Razor Rim", text: "Bladed: throws hit for half your armor more", bonus: { throwPower: 0.5 } }
   ],
 
   attack: wardenAttack,
   whenAttacked: wardenWhenAttacked,
+  damageDivider: wardenDamageDivider,
   dotPerStack: wardenDotPerStack,
   statLine: wardenStatLine,
   gearInfo: wardenGearInfo
 };
 
-// The damage thrown back each time the enemy attacks.
+// The numbers behind the shields. Change these to retune them.
+const bladedThrow = 5;      // a thrown shield hits for this many times your armor
+
+// Spiked: the damage thrown back each time the enemy attacks.
 // A stronger shield throws back more, and it ignores the enemy's armor.
 function reflectDamage() {
   let reflected = monsterAttack * totalBonus("reflect") + armorPower * multiplier("armor");
-  return Math.round(reflected * (1 + totalBonus("reflectPower")));
+  return Math.round(reflected * (1 + totalBonus("shieldPower")));
+}
+
+// Bladed: the damage of one throw
+function throwDamage() {
+  return Math.round(totalArmor() * (bladedThrow + totalBonus("throwPower")) * (1 + totalBonus("shieldPower")));
 }
 
 function wardenAttack() {
-  // A spear thrust, then any burning does its damage
-  hitMonster(playerAttack);
-  monsterHp = monsterHp - dotDamage();
+  let damage = playerAttack;
+
+  // Behind a tower shield the spear hits harder
+  if (weapon === "tower") {
+    damage = damage * (1 + totalBonus("spearPower"));
+  }
+  hitMonster(damage);
+
+  // The bladed shield is thrown after every thrust, and cuts through armor
+  if (weapon === "bladed") {
+    magicHitMonster(throwDamage());
+  }
 }
 
 function wardenWhenAttacked() {
-  let reflected = reflectDamage();
-
-  // Storm: each full 100% of chance is one guaranteed extra strike, and what is
-  // left over is the chance of one more. So 130% is always double, sometimes triple.
-  if (weapon === "storm") {
-    let strikes = Math.floor(totalBonus("stormChance"));
-    if (chance(totalBonus("stormChance") - strikes)) {
-      strikes = strikes + 1;
-    }
-    if (strikes > 0) {
-      reflected = reflected * (1 + strikes);
-      say("Lightning strikes back " + (1 + strikes) + " times as hard!");
-    }
+  if (weapon === "tower" && chance(cappedChance("blockChance"))) {
+    say("You block the attack!");
+    return true;
   }
 
-  // Frost: freeze chance past its limit makes the reflection stronger instead
-  if (weapon === "frost") {
-    reflected = reflected * (1 + overflow("freezeChance", maxChance));
+  // The spiked shield never avoids a hit. It lands, and is thrown back.
+  if (weapon === "spiked") {
+    magicHitMonster(reflectDamage());
   }
-  magicHitMonster(reflected);
-
-  if (weapon === "ember") {
-    addDotStack(totalBonus("burnStacks"));
-  }
-
-  if (weapon === "frost" && chance(cappedChance("freezeChance"))) {
-    monsterStunned = true;
-    say("The enemy is frozen and will miss its next turn!");
-  }
-
-  // The Warden never dodges, the hit still lands
   return false;
 }
 
+// Block chance past its limit reduces all damage taken instead (it is divided by this)
+function wardenDamageDivider() {
+  if (weapon === "tower") {
+    return 1 + overflow("blockChance", maxChance);
+  }
+  return 1;
+}
+
+// The Warden has no damage over time
 function wardenDotPerStack() {
-  return Math.max(1, Math.round(totalArmor() * 0.2));
+  return 0;
 }
 
 function wardenStatLine() {
-  return "Reflect: " + percent(totalBonus("reflect")) + " of the enemy's attack + " + big(Math.round(armorPower * multiplier("armor")));
+  if (weapon === "spiked") {
+    return "Reflect: " + percent(totalBonus("reflect")) + " of the enemy's attack + " + big(Math.round(armorPower * multiplier("armor")))
+      + ", made " + percent(totalBonus("shieldPower")) + " stronger";
+  }
+  if (weapon === "tower") {
+    return "Block: " + percent(cappedChance("blockChance")) + ". Spear: +" + percent(totalBonus("spearPower")) + " damage";
+  }
+  return "Shield throw: " + big(throwDamage()) + " damage every turn";
 }
 
 function wardenGearInfo() {
-  if (weapon === "ember") {
-    return "Ember Shield: every attack against you sets the enemy burning more each turn (up to " + totalBonus("burnStacks") + " stacks).";
+  if (weapon === "spiked") {
+    return "Spiked Shield: every attack against you is thrown back at the enemy, ignoring its armor.";
   }
-  if (weapon === "frost") {
-    return "Frost Shield: " + percent(cappedChance("freezeChance")) + " chance to freeze an attacker so it misses its next turn."
-      + overflowNote(overflow("freezeChance", maxChance), "reflected damage");
+  if (weapon === "tower") {
+    return "Tower Shield: " + percent(cappedChance("blockChance")) + " chance to block an attack, and your spear deals +" + percent(totalBonus("spearPower")) + " damage."
+      + overflowNote(overflow("blockChance", maxChance), "damage resistance");
   }
-  return "Storm Shield: " + percent(totalBonus("stormChance")) + " chance of an extra reflection. Every full 100% is one extra reflection for certain.";
+  return "Bladed Shield: thrown every turn for " + (bladedThrow + totalBonus("throwPower")) + " times your armor, ignoring the enemy's armor.";
 }

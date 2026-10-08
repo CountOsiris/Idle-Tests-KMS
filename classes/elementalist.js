@@ -38,10 +38,10 @@ classes.elementalist = {
   // The elements. The player picks one on the Skills tab; "stance" holds the choice.
   stanceLabel: "Element",
   stances: {
-    fire: { name: "Fire", text: "Each spell hits for 90% of your attack and adds a burn stack. Every stack burns for 20% of your attack each turn." },
+    fire: { name: "Fire", text: "Each spell hits for 90% of your attack and adds a burn stack. Every stack burns for 23% of your attack each turn." },
     ice: { name: "Ice", text: "Each spell has a chance of a critical hit for triple damage." },
     lightning: { name: "Lightning", text: "Two bolts every turn, each for 65% of your attack. Skills add a chance of more bolts." },
-    earth: { name: "Earth", text: "Every second turn, one boulder for 360% of your attack, with a chance to stun." }
+    earth: { name: "Earth", text: "Every second turn, one boulder for 400% of your attack, with a chance to stun." }
   },
 
   upgrades: [
@@ -136,11 +136,11 @@ classes.elementalist = {
 
 // The numbers behind each element. Change these to retune them.
 const fireHit = 0.9;        // a fire spell hits for this share of your attack
-const fireBurn = 0.2;       // and each burn stack burns for this share every turn
+const fireBurn = 0.23;      // and each burn stack burns for this share every turn
 const iceCrit = 3;          // an ice critical multiplies the hit by this
 const lightningBolts = 2;   // lightning casts this many bolts a turn
 const lightningHit = 0.65;  // each for this share of your attack
-const earthHit = 3.6;       // a boulder hits for this many times your attack
+const earthHit = 4;         // a boulder hits for this many times your attack
 
 // Earth: has the boulder been gathered, ready to throw this turn?
 let elementalistCharged = false;

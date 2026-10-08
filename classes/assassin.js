@@ -15,7 +15,7 @@ classes.assassin = {
   art: "art/assassin.png",
   text: "Stealth and poison. Opens every fight with an ambush and slips away from attacks.",
   perLevel: { maxHp: 7, attack: 2 },
-  base: { maxHp: 65, attack: 7, dodge: 0.1, ambush: 0.5, poisonStacks: 3, critChance: 0.2 },
+  base: { maxHp: 65, attack: 7, dodge: 0.1, ambush: 0.5, poisonStacks: 4, critChance: 0.2 },
 
   gearLabel: "Blade",
   gearTypes: { venom: "Venom Dagger", stiletto: "Stiletto", shadow: "Shadow Blade" },
@@ -176,7 +176,7 @@ function assassinWhenAttacked() {
 }
 
 function assassinDotPerStack() {
-  return Math.max(1, Math.round(playerAttack * 0.06));
+  return Math.max(1, Math.round(playerAttack * 0.08));
 }
 
 function assassinStatLine() {

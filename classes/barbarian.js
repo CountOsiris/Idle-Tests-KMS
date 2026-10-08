@@ -26,7 +26,7 @@ classes.barbarian = {
   art: "art/barbarian.png",
   text: "Two-handed weapons and lifesteal. Hits hard and heals from the damage dealt.",
   perLevel: { maxHp: 8, attack: 2 },
-  base: { maxHp: 80, attack: 8, lifesteal: 0.1, bleedStacks: 3, critChance: 0.2, parryChance: 0.2, stunChance: 0.25 },
+  base: { maxHp: 80, attack: 8, lifesteal: 0.1, bleedStacks: 4, critChance: 0.2, parryChance: 0.2, stunChance: 0.3 },
 
   gearLabel: "Weapon",
   gearTypes: { axe: "Axe", sword: "Sword", club: "Club" },
@@ -119,6 +119,9 @@ classes.barbarian = {
   gearInfo: barbarianGearInfo
 };
 
+// A club is heavy: every hit with one is multiplied by this
+const clubHit = 1.2;
+
 // The class's turn, once per second
 function barbarianAttack() {
   let damage = playerAttack;
@@ -135,7 +138,7 @@ function barbarianAttack() {
 
   // Stun chance past its limit makes the club hit harder instead
   if (weapon === "club") {
-    damage = damage * (1 + overflow("stunChance", maxChance));
+    damage = damage * (clubHit + overflow("stunChance", maxChance));
   }
 
   // Barbarians heal from the damage they deal
@@ -177,7 +180,7 @@ function barbarianDamageDivider() {
 
 // Damage per turn of one bleed stack
 function barbarianDotPerStack() {
-  return Math.max(1, Math.round(playerAttack * 0.1));
+  return Math.max(1, Math.round(playerAttack * 0.12));
 }
 
 // The class's special line in the "You" panel
@@ -195,6 +198,6 @@ function barbarianGearInfo() {
       + overflowNote(overflow("critChance", 1), "critical damage")
       + overflowNote(overflow("parryChance", maxChance), "damage resistance");
   }
-  return "Club: every hit breaks 1 enemy armor and has a " + percent(cappedChance("stunChance")) + " chance to stun."
+  return "Club: hits " + percent(clubHit - 1) + " harder, breaks 1 enemy armor every hit and has a " + percent(cappedChance("stunChance")) + " chance to stun."
     + overflowNote(overflow("stunChance", maxChance), "damage");
 }

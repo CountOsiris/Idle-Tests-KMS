@@ -3,7 +3,7 @@
 // =====================================================================
 // Bonus words only the Ranger uses:
 //   firstStrike  turns the enemy misses at the start of a fight   (1 means +1 turn)
-//   aimChance    longbow chance of an aimed shot (double damage)  (0.1 means +10%)
+//   aimChance    longbow chance of an aimed shot (x2.5 damage)    (0.1 means +10%)
 //   spirits      most spirits the spirit bow can summon           (2 means +2)
 //   regrowth     health healed per shot by the bloom bow          (0.01 means +1% of your health)
 //
@@ -15,7 +15,7 @@ classes.ranger = {
   art: "art/ranger.png",
   text: "A bow and forest magic. Shoots before the enemy can reach you, and calls spirits to fight.",
   perLevel: { maxHp: 8, attack: 2 },
-  base: { maxHp: 80, attack: 10, firstStrike: 1, aimChance: 0.3, spirits: 3, regrowth: 0.05 },
+  base: { maxHp: 80, attack: 10, firstStrike: 1, aimChance: 0.35, spirits: 3, regrowth: 0.065 },
 
   gearLabel: "Bow",
   gearTypes: { longbow: "Longbow", spirit: "Spirit Bow", bloom: "Bloom Bow" },
@@ -126,7 +126,7 @@ function rangerAttack() {
 
   // Aim chance past 100% adds to the aimed shot's damage instead
   if (weapon === "longbow" && chance(totalBonus("aimChance"))) {
-    damage = damage * (2 + overflow("aimChance", 1));
+    damage = damage * (2.5 + overflow("aimChance", 1));
     say("An aimed shot finds a weak spot!");
   }
   hitMonster(damage);
@@ -135,8 +135,10 @@ function rangerAttack() {
     addDotStack(totalBonus("spirits"));
   }
 
+  // The bloom bow heals you, and its thorns hurt the enemy by as much, ignoring armor
   if (weapon === "bloom") {
     healPlayer(playerMaxHp * totalBonus("regrowth"));
+    magicHitMonster(playerMaxHp * totalBonus("regrowth"));
   }
 
   // Every summoned spirit attacks too
@@ -159,10 +161,10 @@ function rangerStatLine() {
 
 function rangerGearInfo() {
   if (weapon === "longbow") {
-    return "Longbow: " + percent(totalBonus("aimChance")) + " chance of an aimed shot for double damage.";
+    return "Longbow: " + percent(totalBonus("aimChance")) + " chance of an aimed shot for 2.5 times the damage.";
   }
   if (weapon === "spirit") {
     return "Spirit Bow: every shot summons a spirit that attacks each turn (up to " + totalBonus("spirits") + " spirits).";
   }
-  return "Bloom Bow: every shot heals you for " + percent(totalBonus("regrowth")) + " of your health.";
+  return "Bloom Bow: every shot heals you for " + percent(totalBonus("regrowth")) + " of your health, and its thorns deal the same amount as damage. Health makes this bow stronger.";
 }

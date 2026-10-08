@@ -14,7 +14,7 @@ classes.zealot = {
   art: "art/zealot.png",
   text: "A holy crusader. Heals every turn, and fights with a mace, a shield or holy magic.",
   perLevel: { maxHp: 10, attack: 2 },
-  base: { maxHp: 100, attack: 7, armor: 1, devotion: 0.03, smite: 0.3, blockChance: 0.25 },
+  base: { maxHp: 100, attack: 7, armor: 1, devotion: 0.03, smite: 0.2, blockChance: 0.3 },
 
   gearLabel: "Holy weapon",
   gearTypes: { mace: "Holy Mace", shield: "Mace and Shield", tome: "Holy Tome" },
@@ -30,10 +30,10 @@ classes.zealot = {
   skills: [
     { id: "zeal", name: "Zeal", text: "+3% attack", bonus: { attackPercent: 0.03 }, cost: 1 },
     { id: "faithful", name: "Faithful", text: "+3% health", bonus: { healthPercent: 0.03 }, cost: 1 },
-    { id: "radiance", name: "Radiance", text: "Holy Mace: +10% holy damage", bonus: { smite: 0.1 }, cost: 1 },
+    { id: "radiance", name: "Radiance", text: "Holy Mace: +6% holy damage", bonus: { smite: 0.06 }, cost: 1 },
     { id: "armorOfFaith", name: "Armor of Faith", text: "+2 armor", bonus: { armor: 2 }, cost: 1 },
-    { id: "piety", name: "Piety", text: "+0.5% healing every turn", bonus: { devotion: 0.005 }, cost: 2 },
-    { id: "shieldMastery", name: "Shield Mastery", text: "Mace and Shield: +3% block chance", bonus: { blockChance: 0.03 }, cost: 2 }
+    { id: "piety", name: "Piety", text: "+0.5% healing every turn", bonus: { devotion: 0.005 }, cost: 1 },
+    { id: "shieldMastery", name: "Shield Mastery", text: "Mace and Shield: +3% block chance", bonus: { blockChance: 0.03 }, cost: 1 }
   ],
 
   milestones: [
@@ -103,6 +103,9 @@ classes.zealot = {
   gearInfo: zealotGearInfo
 };
 
+const tomeHit = 1.3;        // a holy tome spell hits for this many times your attack
+const shieldCounter = 1;    // a block strikes back for this many times your attack
+
 // How much the Zealot heals every turn. The Holy Tome doubles it.
 function zealotHealing() {
   if (weapon === "tome") {
@@ -116,7 +119,7 @@ function zealotAttack() {
 
   if (weapon === "tome") {
     // Holy magic ignores armor
-    magicHitMonster(playerAttack);
+    magicHitMonster(playerAttack * tomeHit);
   } else {
     hitMonster(playerAttack);
   }
@@ -137,7 +140,9 @@ function zealotDamageDivider() {
 
 function zealotWhenAttacked() {
   if (weapon === "shield" && chance(cappedChance("blockChance"))) {
-    say("You block the attack!");
+    // A block is answered with a blow of the mace
+    say("You block the attack and strike back!");
+    hitMonster(playerAttack * shieldCounter);
     return true;
   }
   return false;
@@ -157,8 +162,8 @@ function zealotGearInfo() {
     return "Holy Mace: every hit adds " + percent(totalBonus("smite")) + " of your attack as holy damage that ignores armor.";
   }
   if (weapon === "shield") {
-    return "Mace and Shield: " + percent(cappedChance("blockChance")) + " chance to block an attack."
+    return "Mace and Shield: " + percent(cappedChance("blockChance")) + " chance to block an attack and strike back."
       + overflowNote(overflow("blockChance", maxChance), "damage resistance");
   }
-  return "Holy Tome: your attacks ignore armor and your healing is doubled.";
+  return "Holy Tome: your spells hit " + percent(tomeHit - 1) + " harder and ignore armor, and your healing is doubled.";
 }

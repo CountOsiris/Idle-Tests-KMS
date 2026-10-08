@@ -207,6 +207,7 @@ const maxLogLines = 40;
 //   dotPower       damage of bleeding, burning,
 //                  poison and spirits                 (0.1 means +10%)
 //   armor        damage blocked per hit         (3 means +3)
+//   armorPercent armor, as a percentage         (0.04 means +4%)
 //   gold         extra gold earned              (0.5 means +50%)
 //   experience   extra experience on death      (0.25 means +25%)
 //

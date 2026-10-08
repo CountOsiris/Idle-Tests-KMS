@@ -485,7 +485,7 @@ function townUpgradeIsMaxed(item) {
 }
 
 function totalArmor() {
-  return Math.round((armorPower + totalBonus("armor")) * multiplier("armor"));
+  return Math.round((armorPower + totalBonus("armor")) * (1 + totalBonus("armorPercent")) * multiplier("armor"));
 }
 
 // ----- Relics -----
