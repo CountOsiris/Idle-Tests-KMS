@@ -26,13 +26,15 @@
 // What each list is for:
 //   base       - the numbers the class starts with
 //   perLevel   - the health and attack every level adds by itself
-//   gearTypes  - the kinds of weapon the class can find in the tower
-//   upgrades   - choices in an upgrade area. Lost on death. Each level gives the bonus again.
+//   gearTypes  - the kinds of weapon the class can fight with (picked at the blacksmith)
+//   upgrades   - every boss gives one. Lost on death. Each level gives the bonus again.
+//                build: "axe" means it is only given while fighting with an axe.
+//                (For the Elementalist, build is an element instead.) No build = any weapon.
 //   skills     - bought with skill points (one per level). Kept until the class ascends.
 //                Each level of a skill gives the bonus again and costs "cost" points.
 //                maxLevel is how far it can be raised; 0 means there is no limit.
 //   milestones - kept forever. The player picks ONE perk per milestone.
-//   relics     - boss drops only this class can find. Lost on death.
+//   relics     - boss drops only this class can find. Lost on death. "build" works as above.
 
 classes.barbarian = {
   name: "Barbarian",
@@ -52,9 +54,9 @@ classes.barbarian = {
 
   upgrades: [
     { id: "bloodthirst", name: "Bloodthirst", text: "+5% lifesteal", bonus: { lifesteal: 0.05 } },
-    { id: "deepWounds", name: "Deep Wounds", text: "Axe: +1 bleed stack", bonus: { bleedStacks: 1 } },
-    { id: "precision", name: "Precision", text: "Sword: +5% critical and parry chance", bonus: { critChance: 0.05, parryChance: 0.05 } },
-    { id: "heavyBlows", name: "Heavy Blows", text: "Club: +5% stun chance", bonus: { stunChance: 0.05 } },
+    { id: "deepWounds", name: "Deep Wounds", text: "Axe: +1 bleed stack", build: "axe", bonus: { bleedStacks: 1 } },
+    { id: "precision", name: "Precision", text: "Sword: +5% critical and parry chance", build: "sword", bonus: { critChance: 0.05, parryChance: 0.05 } },
+    { id: "heavyBlows", name: "Heavy Blows", text: "Club: +5% stun chance", build: "club", bonus: { stunChance: 0.05 } },
     { id: "fury", name: "Fury", text: "+15% damage while below half health", bonus: { rage: 0.15 } }
   ],
 
@@ -145,9 +147,9 @@ classes.barbarian = {
 
   relics: [
     { id: "vampireFang", name: "Vampire Fang", text: "+8% lifesteal", bonus: { lifesteal: 0.08 } },
-    { id: "serratedEdge", name: "Serrated Edge", text: "Axe: +1 bleed stack", bonus: { bleedStacks: 1 } },
-    { id: "duelistsGlove", name: "Duelist's Glove", text: "Sword: +5% critical and parry chance", bonus: { critChance: 0.05, parryChance: 0.05 } },
-    { id: "giantsKnuckle", name: "Giant's Knuckle", text: "Club: +10% stun chance", bonus: { stunChance: 0.1 } },
+    { id: "serratedEdge", name: "Serrated Edge", text: "Axe: +1 bleed stack", build: "axe", bonus: { bleedStacks: 1 } },
+    { id: "duelistsGlove", name: "Duelist's Glove", text: "Sword: +5% critical and parry chance", build: "sword", bonus: { critChance: 0.05, parryChance: 0.05 } },
+    { id: "giantsKnuckle", name: "Giant's Knuckle", text: "Club: +10% stun chance", build: "club", bonus: { stunChance: 0.1 } },
     { id: "berserkersTorc", name: "Berserker's Torc", text: "+25% damage while below half health", bonus: { rage: 0.25 } }
   ],
 

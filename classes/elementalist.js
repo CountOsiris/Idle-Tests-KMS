@@ -3,8 +3,9 @@
 // =====================================================================
 // The Elementalist picks an ELEMENT (on the Skills tab) and can change it at any
 // time. The element decides how every spell works; the skills make an element
-// stronger. The gloves found in the tower are all the same kind and simply add
-// their power to every spell, so no pair of gloves can ever clash with a build.
+// stronger. There is only one kind of gloves, improved at the blacksmith, and they
+// simply add their power to every spell, so the gloves can never clash with a build.
+// Bosses give upgrades and relics that suit the element being used when they fall.
 //
 //   Fire      - weaker hits that set the enemy burning; the burn stacks up, like bleeding
 //   Ice       - a chance of a critical hit for triple damage
@@ -40,6 +41,9 @@ classes.elementalist = {
   gearLabel: "Gloves",
   gearTypes: { gloves: "Elemental Gloves" },
   gearIcons: { gloves: "🧤" },
+  // Gloves are not made of bronze: these are the names of their tiers at the blacksmith
+  // (see gearTiers in data.js; keep the list the same length as that one)
+  gearTiers: ["Cloth", "Silk", "Spellwoven", "Runed", "Stormforged", "Primal"],
   dotLabel: "Burning",
   dotType: "fire",
 
@@ -57,10 +61,11 @@ classes.elementalist = {
 
   upgrades: [
     { id: "elementalPower", name: "Elemental Power", text: "+3 attack", bonus: { attack: 3 } },
-    { id: "wildfire", name: "Wildfire", text: "Fire: +1 burn stack", bonus: { burnStacks: 1 } },
-    { id: "frostbite", name: "Frostbite", text: "Ice: +5% critical chance", bonus: { critChance: 0.05 } },
-    { id: "conduction", name: "Conduction", text: "Lightning: +10% chance of an extra bolt", bonus: { extraBolts: 0.1 } },
-    { id: "tremor", name: "Tremor", text: "Earth: +5% stun chance", bonus: { stunChance: 0.05 } }
+    { id: "attunement", name: "Attunement", text: "+15 health", bonus: { maxHp: 15 } },
+    { id: "wildfire", name: "Wildfire", text: "Fire: +1 burn stack", build: "fire", bonus: { burnStacks: 1 } },
+    { id: "frostbite", name: "Frostbite", text: "Ice: +5% critical chance", build: "ice", bonus: { critChance: 0.05 } },
+    { id: "conduction", name: "Conduction", text: "Lightning: +10% chance of an extra bolt", build: "lightning", bonus: { extraBolts: 0.1 } },
+    { id: "tremor", name: "Tremor", text: "Earth: +5% stun chance", build: "earth", bonus: { stunChance: 0.05 } }
   ],
 
   // One skill per element, so there is never a question of where an element's points go
@@ -150,10 +155,10 @@ classes.elementalist = {
   ],
 
   relics: [
-    { id: "emberCore", name: "Ember Core", text: "Fire: +1 burn stack", bonus: { burnStacks: 1 } },
-    { id: "frostShard", name: "Frost Shard", text: "Ice: +8% critical chance", bonus: { critChance: 0.08 } },
-    { id: "stormCrystal", name: "Storm Crystal", text: "Lightning: +15% chance of an extra bolt", bonus: { extraBolts: 0.15 } },
-    { id: "geode", name: "Geode", text: "Earth: +8% stun chance", bonus: { stunChance: 0.08 } }
+    { id: "emberCore", name: "Ember Core", text: "Fire: +1 burn stack", build: "fire", bonus: { burnStacks: 1 } },
+    { id: "frostShard", name: "Frost Shard", text: "Ice: +8% critical chance", build: "ice", bonus: { critChance: 0.08 } },
+    { id: "stormCrystal", name: "Storm Crystal", text: "Lightning: +15% chance of an extra bolt", build: "lightning", bonus: { extraBolts: 0.15 } },
+    { id: "geode", name: "Geode", text: "Earth: +8% stun chance", build: "earth", bonus: { stunChance: 0.08 } }
   ],
 
   startFight: elementalistStartFight,

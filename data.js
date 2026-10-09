@@ -14,23 +14,29 @@ const cloudKey = "sb_publishable_DWJib5jsURW1dV5Q0vtMqQ_CSa4U0SF";
 
 // ----- The difficulty curve -----
 // A normal monster on floor 1 has this much health and attack...
-const monsterHealth = 30;
-const monsterDamage = 3;
+const monsterHealth = 38;
+const monsterDamage = 3.8;
 
 // ...and both get multiplied on every floor after that:
 //   strength on floor F  =  (1 + monsterGrowth x (F - 1)) to the power of monsterCurve
 // monsterGrowth decides how long the whole game takes: raise it and every floor
 // becomes a bigger wall, lower it and players climb faster.
-const monsterGrowth = 0.35;
+//
+// THE PACING THESE NUMBERS GIVE (a bot playing a fresh class, measured October 2026):
+//   floor 10 in about 20 minutes, 15 in 45 minutes (the first ascension), 20 in 1.5 hours,
+//   30 in 2.5 to 4 hours, then the first wall at 35, reached after 4 to 7 hours and
+//   broken at 9 to 13. Floors 40 and 45 follow quickly, and the next wall is at 50.
+// The first hours must never stall: if you change the numbers, keep it that way.
+const monsterGrowth = 0.22;
 const monsterCurve = 2;
 
 // THE CLIMB GETS STEEPER. From midFloor up to deepFloor, monsters also get stronger by a
-// small fixed percentage every floor (1.015 means 1.5% more health and attack per floor).
+// small fixed percentage every floor (1.04 means 4% more health and attack per floor).
 // This is what makes progress slow down, and slow down further, until the next
 // milestone gives a jump in power and the climb speeds up again.
 // Floors up to midFloor are exactly as the formula above says.
-const midFloor = 10;
-const midGrowth = 1.02;
+const midFloor = 20;
+const midGrowth = 1.04;
 
 // How much stronger a boss is than an ordinary monster of its floor.
 // A big number here makes every boss a wall: nothing happens for hours, then several
@@ -47,6 +53,21 @@ const bossAttack = 1.3;
 const deepFloor = 50;
 const deepGrowth = 1.03;
 
+// THE WALLS. An idle game should speed up, hit a wall, and speed up again once the
+// wall is broken. These are the walls: from each floor here on, every monster in the
+// tower is this many times stronger (1.5 means +50% health and attack), all at once.
+// Between two walls the climb is quick; at a wall it stops until the class has grown
+// (levels, the blacksmith, fame), and the milestones just past it are the reward.
+//
+// TO MOVE OR ADD A WALL: change this list. Keep the first one deep enough that nobody
+// meets it in their first few hours. They stack: floor 60 is past the first two.
+const towerWalls = [
+  { floor: 35, strength: 1.5 },
+  { floor: 50, strength: 2 },
+  { floor: 75, strength: 2 },
+  { floor: 100, strength: 2 }
+];
+
 // Monster armor grows steadily instead: this much per floor
 const monsterArmorPerFloor = 0.5;
 
@@ -56,7 +77,7 @@ const monsterArmorPerFloor = 0.5;
 const goldPerFloor = 1;
 const bossGold = 5;
 const rareGold = 3;
-const chestGold = 2;
+const chestGold = 4;
 
 // Dying pays this much experience per floor reached, and going from
 // level N to the next costs N times levelCostPerLevel. Levels are bought
@@ -67,8 +88,9 @@ const levelCostPerLevel = 50;
 const skillPointsPerLevel = 1;
 
 // ----- Ascension -----
-// Fame is the ascension currency. Each class earns and spends its own.
-// Every floor pays 1 fame the first time it is reached since the last ascension.
+// Fame is the ascension currency. It belongs to the ACCOUNT: every class earns into
+// the same fame, and what fame buys makes every class stronger.
+// Every floor pays 1 fame the first time a class reaches it since that class last ascended.
 // Ascending starts the class again from level 1 and makes every floor pay again.
 //
 // To ascend, a class must first reach floor ascendFirstFloor. That floor stays the
@@ -78,44 +100,55 @@ const skillPointsPerLevel = 1;
 //
 // ascendFloorStep raises the floor needed by that much after every ascension.
 // It is 0, which means "never". Set it above 0 only if ascending should get harder.
-const ascendFirstFloor = 10;
+const ascendFirstFloor = 15;
 const ascendFloorStep = 0;
 
-// What fame buys. These are kept forever, through every ascension.
-// They are locked behind ascensions: nothing can be bought before the first
-// ascension, and more upgrades appear the more times a class has ascended.
+// BOSS FAME: the reliable way to earn fame. From floor fameBossFloor up, every boss
+// pays fame EVERY time it is beaten, so there is always fame to be had, even when a
+// class is stuck at a wall and no floor is new. Deeper bosses pay more:
+//   fame from the boss on floor F  =  bossFame x (F / fameBossFloor) to the power of bossFameCurve
+// With the numbers below: floor 15 pays 0.3, floor 30 pays 0.7, floor 50 pays 1.3, floor 100 pays 2.9.
+// Raise bossFame for more fame from every boss; raise bossFameCurve to reward depth more.
+const fameBossFloor = 15;
+const bossFame = 0.3;
+const bossFameCurve = 1.2;
+
+// What fame buys. These are kept forever, through every ascension, by every class.
+// EVERY ONE IS A STRAIGHT MULTIPLIER that works the same for every class and every
+// build, and every level multiplies again (three levels of x1.2 is x1.73).
 //
 // TO ADD ONE: add a line. It needs:
 //   id       - a unique name with no spaces (used in the save)
 //   name     - what the player sees
 //   text     - a short description of what ONE level does
-//   unlockAt - how many times the class must have ascended before it appears
+//   unlockAt - how many ascensions the account needs (all classes added together)
+//              before it appears
 //   cost     - the price of the first level, in fame
-//   growth   - each level costs this many times more than the last (1.5 means +50%)
+//   growth   - each level costs this many times more than the last (1.45 means +45%)
 //   maxLevel - how many times it can be bought. 0 means no limit, ever.
-//              Nothing here has a limit; keep it that way unless there is a good reason.
-// and one of these two:
-//   multiply - multiplies something, and every level multiplies again (they compound).
-//              It can multiply: attack, health, armor, experience, gold,
-//              gear (the power of equipment you find)
-//   add      - adds something per level. It can add:
-//                startLevels      levels kept when ascending
-//                pathfinder       levels of Pathfinder (see maxStartShare below)
-//                healOnKill       extra healing after a kill (0.03 means +3% of your health)
-//                upgradeCap       extra top levels for the upgrades picked in upgrade areas
-//              Give it an addLabel too, which is how the total is described on the page,
-//              and addAsPercent: true if the total should be written as a percentage.
+//   multiply - what it multiplies. It can multiply:
+//                damage      everything the class deals: weapon hits, spells, reflected
+//                            blows, bleeding, burning and poison. Use this, not attack,
+//                            for anything meant to help every build.
+//                health, armor, experience, gold
+//                gear        the power of the weapon and armor
+//                attack      the attack number only (some builds barely use it)
+//
+// CATCHING UP: a class gets the full power of only as many levels of each upgrade as
+// it has ascended ITSELF. Levels beyond that work at this share of their power until
+// the class catches up (0.25 means a quarter; 1 would mean no catching up at all).
+// A class that has ascended once gets level 1 of everything in full, and so on.
+const fameCatchUpShare = 0.25;
+
+// (Legacy, Pathfinder, Insight, Endurance and Mastery were sold here before fame was
+// shared. They added things instead of multiplying, so they are gone, and the fame
+// spent on them was given back: see upgradeSave in game.js. Don't reuse their ids.)
 const fameUpgrades = [
-  { id: "might", name: "Might", text: "Multiplies your attack by 1.2.", unlockAt: 1, multiply: { attack: 1.2 }, cost: 6, growth: 1.45, maxLevel: 0 },
+  { id: "might", name: "Might", text: "Multiplies all the damage you deal by 1.2.", unlockAt: 1, multiply: { damage: 1.2 }, cost: 6, growth: 1.45, maxLevel: 0 },
   { id: "vitality", name: "Vitality", text: "Multiplies your health and armor by 1.2.", unlockAt: 1, multiply: { health: 1.2, armor: 1.2 }, cost: 6, growth: 1.45, maxLevel: 0 },
   { id: "wisdom", name: "Wisdom", text: "Multiplies the experience you earn by 1.2.", unlockAt: 1, multiply: { experience: 1.2 }, cost: 4, growth: 1.45, maxLevel: 0 },
   { id: "fortune", name: "Fortune", text: "Multiplies the gold you earn by 1.15.", unlockAt: 1, multiply: { gold: 1.15 }, cost: 4, growth: 1.45, maxLevel: 0 },
-  { id: "legacy", name: "Legacy", text: "Start every ascension 2 levels higher.", unlockAt: 2, add: { startLevels: 2 }, addLabel: "starting levels", cost: 6, growth: 1.45, maxLevel: 0 },
-  { id: "pathfinder", name: "Pathfinder", text: "Start every run part of the way to your best floor since ascending. Each level closes 15% of the gap to 60%.", unlockAt: 3, add: { pathfinder: 1 }, addLabel: "of the way up", cost: 10, growth: 1.45, maxLevel: 0 },
-  { id: "scavenger", name: "Scavenger", text: "Multiplies the power of equipment you find by 1.15.", unlockAt: 5, multiply: { gear: 1.15 }, cost: 8, growth: 1.45, maxLevel: 0 },
-  { id: "insight", name: "Insight", text: "+25% penetration. Penetration cuts through what monsters resist, so other towers open up.", unlockAt: 4, add: { penetration: 0.25 }, addLabel: "penetration", addAsPercent: true, cost: 8, growth: 1.45, maxLevel: 0 },
-  { id: "endurance", name: "Endurance", text: "Heal 3% more of your health after every kill.", unlockAt: 8, add: { healOnKill: 0.03 }, addLabel: "extra healing per kill", addAsPercent: true, cost: 10, growth: 2, maxLevel: 0 },
-  { id: "mastery", name: "Mastery", text: "The upgrades you pick in upgrade areas can go 1 level higher.", unlockAt: 12, add: { upgradeCap: 1 }, addLabel: "upgrade levels", cost: 15, growth: 2, maxLevel: 0 }
+  { id: "scavenger", name: "Craftsmanship", text: "Multiplies the power of your weapon and armor by 1.15.", unlockAt: 2, multiply: { gear: 1.15 }, cost: 8, growth: 1.45, maxLevel: 0 }
 ];
 
 // ----- Breakthroughs -----
@@ -195,6 +228,8 @@ const breakthroughPerks = [
   { id: "bulwark", name: "Bulwark", text: "you take 20% less damage", multiply: { damageTaken: 0.8 } }
 ];
 
+// (Not in use: no fame upgrade starts runs part-way up any more. If one is added again
+// with add: { pathfinder: 1 }, these two numbers shape it.)
 // Pathfinder starts runs part of the way to your best floor. It can be bought forever:
 // every level closes this share of the remaining gap (0.85 means 15% of it is closed)...
 const pathfinderFade = 0.85;
@@ -206,39 +241,33 @@ const maxStartShare = 0.6;
 // How much of your health comes back after every kill (0.2 means a fifth)
 const healOnKill = 0.2;
 
-// A weapon found on floor F has between F and 2 x F times this much power.
+// ----- The blacksmith -----
+// Equipment is never found and never lost. A class has one weapon and one piece of
+// armor, and the blacksmith in town improves them for banked gold, one step at a time:
+//   Bronze Axe, Bronze Axe +1 ... Bronze Axe +9, then Iron Axe, Iron Axe +1 ...
+//
+// TO ADD A TIER: add a name to the end of this list. (Past the last tier the number
+// just keeps climbing: +10, +11... so there is never a top.)
+// The colours are in style.css: rarity-0 is the first tier here, rarity-1 the second...
+const gearTiers = ["Bronze", "Iron", "Steel", "Mithril", "Adamant", "Runic"];
+
+// How many steps a tier has before the next one begins (10 means +0 to +9)
+const forgeStepsPerTier = 10;
+
+// The first step costs forgeCost gold, and every step after costs forgeCostGrowth
+// times more than the last (1.3 means +30%).
+const forgeCost = 25;
+const forgeCostGrowth = 1.3;
+
+// A weapon's attack: forgePowerPerStep for every step it has, and the whole of it is
+// multiplied by forgeTierPower for every tier above the first, so a new tier is a jump.
 // Armor has half of that.
-const gearPowerPerFloor = 0.5;
-
-// ----- Equipment rarity -----
-// Every piece of equipment found has one of these rarities.
-//   name   - goes in front of the item's name ("" means nothing, for ordinary items)
-//   chance - how often it turns up. The chances must add up to 1.
-//   power  - the item's power is multiplied by this
-// The colours are in style.css: rarity-0 is the first line here, rarity-1 the second...
-const rarities = [
-  { name: "", chance: 0.6, power: 0.9 },
-  { name: "Fine", chance: 0.27, power: 1.1 },
-  { name: "Rare", chance: 0.1, power: 1.4 },
-  { name: "Epic", chance: 0.025, power: 1.8 },
-  { name: "Legendary", chance: 0.004, power: 2.5 },
-  { name: "Mythic", chance: 0.001, power: 3.5 }
-];
-
-// The lowest rarity a rare monster and a boss can drop.
-// 0 is ordinary, 1 is Fine, 2 is Rare, 3 is Epic...
-const rareDropRarity = 1;
-const bossDropRarity = 2;
+const forgePowerPerStep = 1;
+const forgeTierPower = 1.2;
 
 // ----- Limits, and what happens past them -----
 // Nothing can be bought only a set number of times. But a chance cannot go past
 // certain limits, so anything bought beyond a limit "overflows" into something else.
-
-// A monster cannot drop equipment more often than this (0.5 means half the time).
-// Drop chance beyond it becomes luck, which makes the better rarities more likely.
-// luckStrength says how strongly: bigger means luck matters more.
-const maxDropChance = 0.5;
-const luckStrength = 5;
 
 // No chance to dodge, parry, block, stun or freeze can go above this (0.6 means 60%),
 // or a character could become unkillable. Beyond it, dodge, parry and block reduce
@@ -254,9 +283,8 @@ const extraOpeningDamage = 0.15;
 // ----- Other numbers you can tune -----
 const roomsPerFloor = 4;
 
-// Rare monsters are tougher, but pay more gold and always drop an item
+// Rare monsters are tougher, but pay more gold
 const rareChance = 0.1;
-const monsterDropChance = 0.1;
 
 // After this many turns a fight "drags on" and the monster hits harder
 // every turn, so that no fight can last forever
@@ -268,8 +296,14 @@ const awayTowerHealth = 1;
 const awayTowerAttack = 0.5;
 const awayTowerExperience = 0.5;
 
+// Every boss gives one upgrade that suits the weapon being used. This is how many
+// levels one upgrade can reach in a run.
 const maxUpgradeLevel = 5;
-const upgradeWaitTime = 15;
+
+// As well as what it says, every level of every boss upgrade held makes the class
+// this much stronger for the rest of the run (0.1 means +10% attack and health each).
+// This is what makes a boss kill felt straight away, whatever the upgrade was.
+const bossUpgradePower = 0.1;
 
 // The most time away that counts, and how long away before you get a report
 const maxAwaySeconds = 8 * 60 * 60;
@@ -365,35 +399,25 @@ const classes = {};
 //   growth   - each level costs this many times more than the last (2 means double)
 //
 // As well as the bonus words every class understands, the town can use:
-//   startGear        power of the weapon you start a run with (armor starts at half)
 //   potionSlots      extra potions you can carry              (1 means +1)
 //   potionPower      extra potion healing                     (0.1 means +10% of your health)
-//   dropChance       extra chance a monster drops an item     (0.02 means +2%)
-//   autoEquip        1 = stronger equipment is equipped for you
-//   favouriteGear    1 = you may pick a favourite kind of weapon
 //   favouriteUpgrade 1 = you may pick a favourite upgrade
-//   favouriteLuck    chance a found weapon is the favourite kind (0.1 means +10%)
-
-// Favourite luck past 100% makes the favourite kind stronger instead:
-// each extra 100% adds this much power (0.5 means +50%)
-const favouritePowerPerLuck = 0.5;
+//
+// (The Squire, Quartermaster, Weaponsmith, Armory and Lucky Charm were sold here while
+// equipment was still found in the tower. They are gone, and what players paid for
+// them was given back: see upgradeSave in game.js. Don't reuse their ids.)
 
 const townUpgrades = [
-  { id: "autoEquip", name: "Squire", text: "Equips stronger equipment for you when it is the same kind you are using. Other kinds go in your backpack.", bonus: { autoEquip: 1 }, maxLevel: 1, cost: 2000, growth: 1 },
-  { id: "quartermaster", name: "Quartermaster", text: "Pick a favourite kind of weapon (or shield, for the Warden). You start every run with it, and your Squire switches you to it if you are using another kind.", bonus: { favouriteGear: 1 }, maxLevel: 1, cost: 5000, growth: 1 },
-  { id: "tactician", name: "Tactician", text: "Pick a favourite upgrade. Upgrade areas give it to you straight away, with no waiting, until it reaches the level limit for upgrade areas.", bonus: { favouriteUpgrade: 1 }, maxLevel: 1, cost: 5000, growth: 1 },
-  { id: "weaponsmith", name: "Weaponsmith", text: "+10% chance that a weapon you find is your favourite kind (pick it with the Quartermaster). Past 100% it makes those weapons stronger instead.", bonus: { favouriteLuck: 0.1 }, maxLevel: 0, cost: 3000, growth: 1.4 },
+  { id: "tactician", name: "Tactician", text: "Pick a favourite upgrade. Bosses give you that one, whenever it suits your weapon, until it reaches its level limit.", bonus: { favouriteUpgrade: 1 }, maxLevel: 1, cost: 5000, growth: 1 },
   { id: "whetstone", name: "Whetstone", text: "+10% penetration. Penetration cuts through what monsters resist.", bonus: { penetration: 0.1 }, maxLevel: 0, cost: 2000, growth: 1.4 },
-  { id: "armory", name: "Armory", text: "Start every run with +2 weapon power and +1 armor.", bonus: { startGear: 2 }, maxLevel: 0, cost: 1000, growth: 1.4 },
   { id: "trainingGrounds", name: "Training Grounds", text: "+5% experience.", bonus: { experience: 0.05 }, maxLevel: 0, cost: 500, growth: 1.4 },
   { id: "treasureMaps", name: "Treasure Maps", text: "+5% gold.", bonus: { gold: 0.05 }, maxLevel: 0, cost: 500, growth: 1.4 },
-  { id: "luckyCharm", name: "Lucky Charm", text: "+4% chance that a monster drops equipment. Past 50% it makes better rarities more likely instead.", bonus: { dropChance: 0.04 }, maxLevel: 0, cost: 1500, growth: 1.4 },
   { id: "potionBelt", name: "Potion Belt", text: "Carry 1 more healing potion.", bonus: { potionSlots: 1 }, maxLevel: 0, cost: 800, growth: 1.6 },
   { id: "alchemist", name: "Alchemist", text: "Healing potions heal 10% more of your health.", bonus: { potionPower: 0.1 }, maxLevel: 0, cost: 800, growth: 1.6 }
 ];
 
 // ----- Relics every class can find -----
-// Every boss you kill gives one random relic. Relics are lost when you die.
+// Every boss you kill gives one random relic that suits your weapon. Relics are lost when you die.
 // You can get the same relic more than once, and the bonuses stack.
 // Each class also has relics of its own, in its file.
 //

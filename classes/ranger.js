@@ -44,17 +44,21 @@ classes.ranger = {
   gearLabel: "Bow",
   gearTypes: { longbow: "Longbow", shortbow: "Shortbow", crossbow: "Crossbow" },
   gearIcons: { longbow: "🏹", shortbow: "🏹", crossbow: "🎯" },
+  // Bows are not made of bronze: these are the names of their tiers at the blacksmith
+  // (see gearTiers in data.js; keep the list the same length as that one)
+  gearTiers: ["Ash", "Elm", "Yew", "Ironwood", "Heartwood", "Elderwood"],
 
   // The Ranger fights from range: beasts cannot lunge at it, and nothing flies out of reach
   ranged: true,
 
   upgrades: [
     { id: "quickDraw", name: "Quick Draw", text: "+3 attack", bonus: { attack: 3 } },
-    { id: "eagleEye", name: "Eagle Eye", text: "Longbow: +5% critical shot chance", bonus: { aimChance: 0.05 } },
-    { id: "rapidFire", name: "Rapid Fire", text: "Shortbow: +10% chance of an extra arrow", bonus: { quickShot: 0.1 } },
-    { id: "heavyBolts", name: "Heavy Bolts", text: "Crossbow: bolts deal +8% damage", bonus: { boltPower: 0.08 } },
-    { id: "steadyHand", name: "Steady Hand", text: "Longbow: critical shots deal +15% damage", bonus: { aimPower: 0.15 } },
-    { id: "bodkinPoints", name: "Bodkin Points", text: "Shortbow: arrows ignore more of the enemy's armor", bonus: { bodkin: 0.15 } }
+    { id: "eagleEye", name: "Eagle Eye", text: "Longbow: +5% critical shot chance", build: "longbow", bonus: { aimChance: 0.05 } },
+    { id: "rapidFire", name: "Rapid Fire", text: "Shortbow: +10% chance of an extra arrow", build: "shortbow", bonus: { quickShot: 0.1 } },
+    { id: "heavyBolts", name: "Heavy Bolts", text: "Crossbow: bolts deal +8% damage", build: "crossbow", bonus: { boltPower: 0.08 } },
+    { id: "cranequin", name: "Cranequin", text: "Crossbow: bolts gain +25% penetration", build: "crossbow", bonus: { boltPierce: 0.25 } },
+    { id: "steadyHand", name: "Steady Hand", text: "Longbow: critical shots deal +15% damage", build: "longbow", bonus: { aimPower: 0.15 } },
+    { id: "bodkinPoints", name: "Bodkin Points", text: "Shortbow: arrows ignore more of the enemy's armor", build: "shortbow", bonus: { bodkin: 0.15 } }
   ],
 
   // One skill for each bow
@@ -139,12 +143,12 @@ classes.ranger = {
   ],
 
   relics: [
-    { id: "hawkFeather", name: "Goose Feather Fletching", text: "Longbow: +10% critical shot chance", bonus: { aimChance: 0.1 } },
-    { id: "yewStave", name: "Yew Stave", text: "Longbow: critical shots deal +30% damage", bonus: { aimPower: 0.3 } },
-    { id: "bodkinQuiver", name: "Bodkin Quiver", text: "Shortbow: arrows ignore more of the enemy's armor", bonus: { bodkin: 0.3 } },
-    { id: "windlass", name: "Windlass", text: "Crossbow: bolts gain +100% penetration", bonus: { boltPierce: 1 } },
-    { id: "fletchersGlove", name: "Fletcher's Glove", text: "Shortbow: +15% chance of an extra arrow", bonus: { quickShot: 0.15 } },
-    { id: "steelBolts", name: "Steel Bolts", text: "Crossbow: bolts deal +12% damage", bonus: { boltPower: 0.12 } }
+    { id: "hawkFeather", name: "Goose Feather Fletching", text: "Longbow: +10% critical shot chance", build: "longbow", bonus: { aimChance: 0.1 } },
+    { id: "yewStave", name: "Yew Stave", text: "Longbow: critical shots deal +30% damage", build: "longbow", bonus: { aimPower: 0.3 } },
+    { id: "bodkinQuiver", name: "Bodkin Quiver", text: "Shortbow: arrows ignore more of the enemy's armor", build: "shortbow", bonus: { bodkin: 0.3 } },
+    { id: "windlass", name: "Windlass", text: "Crossbow: bolts gain +100% penetration", build: "crossbow", bonus: { boltPierce: 1 } },
+    { id: "fletchersGlove", name: "Fletcher's Glove", text: "Shortbow: +15% chance of an extra arrow", build: "shortbow", bonus: { quickShot: 0.15 } },
+    { id: "steelBolts", name: "Steel Bolts", text: "Crossbow: bolts deal +12% damage", build: "crossbow", bonus: { boltPower: 0.12 } }
   ],
 
   startFight: rangerStartFight,

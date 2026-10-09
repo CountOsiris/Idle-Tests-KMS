@@ -119,19 +119,18 @@
           <span id="dot-part">&middot; <span id="dot-label">Bleeding</span> <strong id="monster-dot">0</strong></span>
         </p>
 
-        <!-- Swap to a spare from the backpack without leaving the fight. Made by game.js. -->
-        <div id="quick-swap" class="picker" hidden>
-          <p class="row-title">Swap gear <span class="note">(what you take off goes back in your backpack)</span></p>
-          <div id="quick-swap-buttons" class="choices"></div>
-        </div>
-
         <!-- What needs attention and what to aim for. Filled in by game.js. -->
         <div id="goals" class="goals"></div>
       </div>
 
-      <div id="upgrade-area" class="card highlight" hidden>
-        <h2>Choose an upgrade</h2>
-        <p class="note">It lasts until you fall. If you don't choose, one is taken for you in <span id="upgrade-timer">0</span> seconds.</p>
+      <!-- The upgrades bosses have given this run. Always on the page, so there is no hurry to read them. -->
+      <div class="card">
+        <div class="card-head">
+          <h2>Upgrades this run</h2>
+          <p><strong id="upgrade-count" class="big-number">0</strong> held</p>
+        </div>
+        <p class="note">Every boss you defeat gives one upgrade for the weapon you are using. They last until you fall. Each one also makes you stronger all round: right now <strong id="upgrade-boost">+0%</strong> attack and health.</p>
+        <p id="upgrades-empty" class="note">None yet. The first boss is on floor 5.</p>
         <!-- The rows are made by game.js from the class's upgrades list -->
         <div id="upgrades"></div>
       </div>
@@ -189,27 +188,13 @@
         </div>
       </div>
 
-      <!-- Inventory: everything carried this run. All of it is lost when you fall. -->
+      <!-- Inventory: the equipment, which is kept, and the relics, which last one run -->
       <div class="page" id="page-inventory">
         <div class="card">
           <h2>Wearing</h2>
-          <p class="note">Equipment is found in the tower and lost when you fall.</p>
+          <p class="note">Your equipment is yours to keep: you never lose it when you fall. The blacksmith in town makes it stronger, and is where you pick another kind of weapon.</p>
           <!-- The cards are made by game.js -->
           <div id="worn"></div>
-        </div>
-
-        <div class="card">
-          <div class="card-head">
-            <h2>Backpack</h2>
-            <p><strong id="backpack-count" class="big-number">0</strong> <span id="backpack-size"></span></p>
-          </div>
-          <p class="note">
-            The backpack has one slot for each kind of gear your class can use.
-            A find goes into its slot if the slot is empty or holds something weaker, which it replaces.
-            A find that is no better than what you already have is left behind.
-            Equipping a spare puts what you take off in its place.
-          </p>
-          <div id="backpack"></div>
         </div>
 
         <div class="card">
@@ -217,7 +202,7 @@
             <h2>Relics</h2>
             <p><strong id="relic-count" class="big-number">0</strong> held</p>
           </div>
-          <p class="note">Every boss you defeat gives one relic. They last until you fall, and the same relic can be held more than once.</p>
+          <p class="note">Every boss you defeat gives one relic that suits your weapon. They last until you fall, and the same relic can be held more than once.</p>
           <p id="relics-empty" class="note">None yet. The first boss is on floor 5.</p>
           <div id="relics"></div>
         </div>
@@ -278,6 +263,24 @@
       <!-- Town -->
       <div class="page" id="page-town">
         <div class="card">
+          <h2>Blacksmith</h2>
+          <p class="note">Improves your equipment for gold from your bank, one step at a time. After +9 it becomes the next tier. You keep it when you fall, but not when you ascend.</p>
+
+          <!-- Hidden for a class with only one kind of weapon. The buttons are made by game.js. -->
+          <div id="weapon-picker" class="picker" hidden>
+            <p class="row-title">Fight with</p>
+            <div id="weapon-buttons" class="choices"></div>
+            <p id="weapon-picker-note" class="note"></p>
+          </div>
+
+          <!-- One row for the weapon and one for the armor, made by game.js -->
+          <div id="forge"></div>
+          <div class="choices">
+            <button id="forge-all" onclick="upgradeAllGear()">Buy all I can afford</button>
+          </div>
+        </div>
+
+        <div class="card">
           <h2>Town</h2>
           <p class="note">Merchants take gold from your bank. Gold is banked when you fall.</p>
 
@@ -289,11 +292,7 @@
             <button id="potion-btn" onclick="buyPotion()">Buy</button>
           </div>
 
-          <!-- Only shown once the Quartermaster or Tactician has been hired -->
-          <div id="favourite-gear" class="picker" hidden>
-            <p id="favourite-gear-label" class="row-title">Favourite weapon</p>
-            <div id="favourite-gear-buttons" class="choices"></div>
-          </div>
+          <!-- Only shown once the Tactician has been hired -->
           <div id="favourite-upgrade" class="picker" hidden>
             <p class="row-title">Favourite upgrade</p>
             <div id="favourite-upgrade-buttons" class="choices"></div>
@@ -333,14 +332,16 @@
           </div>
           <p class="note">
             Every floor pays 1 fame the first time you reach it. Ascending starts this class again
-            from level 1, and makes every floor pay again.
+            from level 1, and makes every floor pay again. From floor 15 up, every boss also pays fame each time you beat it, and deeper bosses pay more. Fame is shared by all your classes:
+            whichever class earns it, what it buys makes every one of them stronger.
           </p>
 
           <p><button id="ascend-btn" class="main" onclick="ascend()">Ascend</button></p>
 
           <div class="pair"><span>This ascension</span><span id="this-ascension"></span></div>
           <div class="pair"><span>Last ascension</span><span id="last-ascension"></span></div>
-          <div class="pair"><span>Times ascended</span><span id="ascensions">0</span></div>
+          <div class="pair"><span>Times this class has ascended</span><span id="ascensions">0</span></div>
+          <div class="pair"><span>Times all your classes have ascended</span><span id="account-ascensions">0</span></div>
           <div class="pair"><span>Best floor since ascending</span><span id="ascension-best">1</span></div>
           <div class="pair"><span>Floor needed to ascend</span><span id="ascend-floor">0</span></div>
 
@@ -349,14 +350,14 @@
             ascending early and often can earn more fame an hour than pushing on.
           </p>
           <p class="note">
-            Lost when you ascend: level, skills, experience, gold and town upgrades with levels.
+            Lost when you ascend: level, skills, experience, gold, the blacksmith's work and town upgrades with levels.
             Kept: fame and fame upgrades, best floors, milestones, trophies and the town helpers.
           </p>
         </div>
 
         <div class="card">
           <h2>Fame upgrades</h2>
-          <p class="note">Kept forever. They open up as you ascend: the first after one ascension, more after several.</p>
+          <p class="note">Kept forever, and shared by all your classes. Every one is a straight multiplier, and every level multiplies again. They open up as you ascend. A class gets the full power of as many levels as it has ascended itself (this one: <strong id="catch-up-count">0</strong>); levels beyond that work at <span id="catch-up-share">25%</span> until it catches up.</p>
           <!-- The rows are made by game.js from the fameUpgrades list in data.js -->
           <div id="fame-upgrades"></div>
         </div>

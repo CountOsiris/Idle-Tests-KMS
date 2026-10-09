@@ -12,7 +12,6 @@
 let gold = 0;
 let bank = 0;
 let experience = 0;
-let fame = 0;
 let floor = 1;
 let bestFloor = 1;
 let room = 1;
@@ -25,27 +24,27 @@ let stance = "";             // the fighting style picked on the Skills tab (onl
 let savedBuild = {};        // a remembered skill layout, for example { might: 12, rage: 6 }
 let autoBuild = false;      // true = new skill points are spent following the saved build
 let runCounter = 0;         // a number a class may count up during a run (the Warlock's souls). Back to 0 on death.
+
+// The kind of weapon picked at the blacksmith. It is taken up at the start of the
+// next run, so "weapon" (what is being used now) only changes after a fall.
+let nextWeapon = "";
+
+// How many steps the blacksmith has improved each piece of equipment,
+// for example { weapon: 12, armor: 4 }. Step 12 is the second tier at +2.
+let forgeLevels = { weapon: 0, armor: 0 };
+
+// What the equipment gives right now. Worked out from forgeLevels (see recalcStats).
 let weaponPower = 0;
 let armorPower = 0;
-let weaponRarity = 0;
-let armorRarity = 0;
-// The backpack: spare equipment found this run. It only ever holds the best spare
-// of each kind (one spare axe, one spare sword...), so it never needs tidying.
-// Each item looks like { slot: "weapon", type: "axe", power: 12, rarity: 1 }.
-let backpack = [];
-
-// The last thing that went into the backpack, for the pop-up message. Not saved.
-let lastFound = null;
 
 let upgrades = {};
 let skillLevels = {};
 let chosenPerks = {};
 let ownedRelics = [];
 
-// What has been bought in town, for example { armory: 3, autoEquip: 1 },
-// and the favourites picked with the Quartermaster and Tactician ("" means none)
+// What has been bought in town, for example { whetstone: 3, tactician: 1 },
+// and the favourite upgrade picked with the Tactician ("" means none)
 let townLevels = {};
-let favouriteGear = "";
 let favouriteUpgrade = "";
 let potions = 0;
 
@@ -55,21 +54,27 @@ let tower = "";
 let nextTower = "";
 let towerBest = {};
 
-// Ascension: how many times the class has ascended, the best floor it has reached
-// since the last one (floors above it pay fame), and the fame upgrades it has bought,
-// for example { might: 3, vitality: 2 }. "fame" above is the fame it has left to spend.
+// Ascension: how many times the class has ascended, and the best floor it has reached
+// since the last one (floors above it pay fame).
 let ascensions = 0;
 let ascensionBest = 1;
-let fameLevels = {};
 
 // How long the current ascension has lasted, in seconds of play, and how the last one
 // went. Shown on the page so the player can judge when it is time to ascend again.
 let ascensionSeconds = 0;
+let ascensionFame = 0;       // fame this class has earned since it last ascended
 let lastAscensionFame = 0;
 let lastAscensionSeconds = 0;
 
 // The ids of the trophies this class has won in other towers (see towers.js)
 let trophies = [];
+
+// ----- The account -----
+// Fame, and what it has bought, belong to the ACCOUNT: every class earns into the
+// same fame and every class is made stronger by the same fame upgrades,
+// for example { might: 3, vitality: 2 }. Everything else is kept per class.
+let fame = 0;
+let fameLevels = {};
 
 // ----- Numbers the game works out as it goes (not saved) -----
 let playerClass = "barbarian";
@@ -99,7 +104,6 @@ let roomCount = 0;
 
 // Damage over time on the monster: bleeding, burning, poison or spirits, depending on the class
 let dotStacks = 0;
-let upgradeTimer = 0;
 
 // For working out progress made while the game was closed or in the background
 let lastTick = Date.now();
@@ -194,7 +198,7 @@ function resistNow() {
   return resist / (1 + penetration());
 }
 
-// Penetration cuts through resistance (see data.js). It comes from the town and from fame.
+// Penetration cuts through resistance (see data.js). It comes from the town.
 function penetration() {
   let total = totalBonus("penetration") + fameAdd("penetration");
 
@@ -221,6 +225,10 @@ function typeMultiplier(type) {
   return 1;
 }
 
+// Every kind of hit below, and damage over time, is multiplied by multiplier("damage").
+// That is what makes the Might fame upgrade work for every class and every build,
+// whether the damage comes from a weapon, a spell, a reflected blow or a bleed.
+
 // A normal hit: the monster's armor is taken off it.
 // "type" is the damage type, for example "slashing".
 // "armorShare" can be left out. It is how much of the armor counts against this hit:
@@ -236,7 +244,7 @@ function hitMonster(damage, type, armorShare) {
     return 0;
   }
 
-  damage = Math.max(1, Math.round(damage * typeMultiplier(type)) - Math.round(monsterArmor * armorShare));
+  damage = Math.max(1, Math.round(damage * multiplier("damage") * typeMultiplier(type)) - Math.round(monsterArmor * armorShare));
   monsterHp = monsterHp - damage;
   return damage;
 }
@@ -244,7 +252,7 @@ function hitMonster(damage, type, armorShare) {
 // A spell ignores armor, but the monster's WARD is taken off it instead.
 // Ward is to a caster what armor is to a fighter.
 function spellHitMonster(damage, type) {
-  damage = Math.max(1, Math.round(damage * typeMultiplier(type)) - monsterWard);
+  damage = Math.max(1, Math.round(damage * multiplier("damage") * typeMultiplier(type)) - monsterWard);
   monsterHp = monsterHp - damage;
   return damage;
 }
@@ -252,7 +260,7 @@ function spellHitMonster(damage, type) {
 // A hit that nothing is taken off: not armor, not ward. For damage that is not
 // a weapon swing or a spell (a reflected blow, thorns, a thrown shield).
 function magicHitMonster(damage, type) {
-  damage = Math.max(1, Math.round(damage * typeMultiplier(type)));
+  damage = Math.max(1, Math.round(damage * multiplier("damage") * typeMultiplier(type)));
   monsterHp = monsterHp - damage;
   return damage;
 }
@@ -274,7 +282,7 @@ function dotDamage() {
   if (dotStacks === 0) {
     return 0;
   }
-  return Math.round(dotStacks * currentClass().dotPerStack() * (1 + totalBonus("dotPower")) * typeMultiplier(currentClass().dotType));
+  return Math.round(dotStacks * currentClass().dotPerStack() * (1 + totalBonus("dotPower")) * multiplier("damage") * typeMultiplier(currentClass().dotType));
 }
 
 // ----- Adding up bonuses -----
@@ -358,7 +366,7 @@ function perkMultiplier(stat) {
 }
 
 // Everything that multiplies a number: fame upgrades and breakthrough perks.
-// The stats are attack, health, armor, experience, gold, gear and fame.
+// The stats are damage, attack, health, armor, experience, gold, gear and fame.
 function multiplier(stat) {
   return fameMultiplier(stat) * perkMultiplier(stat);
 }
@@ -433,9 +441,11 @@ function townBonus(stat) {
 }
 
 // ----- Fame and ascension -----
-// Fame is the ascension currency. Each class earns and spends its own.
+// Fame is the ascension currency. It belongs to the account: every class earns into
+// the same fame, and what it buys makes every class stronger.
 //
 //   - Reaching a floor for the first time SINCE THE LAST ASCENSION pays 1 fame.
+//   - Every boss from floor fameBossFloor up pays fame each time it is beaten (bossFameAt).
 //   - Ascending starts the class again from level 1, and makes every floor pay again.
 //   - Fame buys permanent upgrades (the fameUpgrades list in data.js) that survive
 //     ascending. Most have no top level, so a class can grow stronger forever.
@@ -444,6 +454,22 @@ function fameLevel(id) {
     return 0;
   }
   return fameLevels[id];
+}
+
+// All fame is earned through here, so the page can say how fast it is coming in
+function gainFame(amount) {
+  fame = fame + amount;
+  ascensionFame = ascensionFame + amount;
+}
+
+// BOSS FAME: the reliable income. Every boss on floor fameBossFloor or deeper pays
+// fame EVERY time it is beaten, not only the first time, and deeper bosses pay more
+// (see data.js). So a class stuck at a wall still earns fame on every run.
+function bossFameAt(bossFloor) {
+  if (bossFloor < fameBossFloor) {
+    return 0;
+  }
+  return bossFame * Math.pow(bossFloor / fameBossFloor, bossFameCurve) * multiplier("fame");
 }
 
 // Each level costs "growth" times more than the last
@@ -458,7 +484,20 @@ function fameUpgradeIsMaxed(item) {
 
 // Fame upgrades are locked behind ascensions: each one appears after a certain number
 function fameUpgradeIsUnlocked(item) {
-  return ascensions >= item.unlockAt;
+  return totalAscensions() >= item.unlockAt;
+}
+
+// How many times the account has ascended: every class's ascensions added together
+function totalAscensions() {
+  let total = ascensions;
+
+  for (let className in classSaves) {
+    if (className !== playerClass && classSaves[className].ascensions !== undefined) {
+      total = total + classSaves[className].ascensions;
+    }
+  }
+
+  return total;
 }
 
 function buyFameUpgrade(item) {
@@ -470,6 +509,21 @@ function buyFameUpgrade(item) {
   }
 }
 
+// CATCHING UP. Fame upgrades are bought once for the whole account, but a class only
+// gets the full power of as many levels as it has ascended itself. The levels beyond
+// that count for a share (fameCatchUpShare in data.js, a quarter) until it catches up.
+//   Might at level 5, and this class has ascended twice:
+//   2 levels at full power + 3 levels at a quarter = as good as level 2.75
+// So a new class on an old account gets a head start, not a free ride past every wall.
+function fameLevelsAtFull(id) {
+  return Math.min(fameLevel(id), ascensions);
+}
+
+function fameLevelInEffect(id) {
+  let full = fameLevelsAtFull(id);
+  return full + (fameLevel(id) - full) * fameCatchUpShare;
+}
+
 // How many times bigger the fame upgrades make something: attack, health, armor,
 // experience or gold. Every level of an upgrade multiplies again, so they compound:
 // three levels of "x1.25 attack" is 1.25 x 1.25 x 1.25 = x1.95.
@@ -478,7 +532,7 @@ function fameMultiplier(stat) {
 
   for (let item of fameUpgrades) {
     if (item.multiply !== undefined && item.multiply[stat] !== undefined) {
-      total = total * Math.pow(item.multiply[stat], fameLevel(item.id));
+      total = total * Math.pow(item.multiply[stat], fameLevelInEffect(item.id));
     }
   }
 
@@ -512,12 +566,13 @@ function ascend() {
   if (!canAscend()) {
     return;
   }
-  if (!confirm("Ascend? You start again from level 1, and every floor pays fame again.")) {
+  if (!confirm("Ascend? This class starts again from level 1, and every floor pays fame again.")) {
     return;
   }
 
   // Remember how this ascension went, to compare the next one against
-  lastAscensionFame = ascensionBest - 1;
+  lastAscensionFame = ascensionFame;
+  ascensionFame = 0;
   lastAscensionSeconds = ascensionSeconds;
   ascensionSeconds = 0;
 
@@ -525,7 +580,7 @@ function ascend() {
   ascensionBest = 1;
 
   // What is lost: levels, stats, skills, experience, gold and the run in progress.
-  // The Legacy fame upgrade gives some levels back straight away.
+  // (No fame upgrade adds starting levels at the moment; fameAdd is 0 unless one does.)
   level = 1 + fameAdd("startLevels");
   experience = 0;
 
@@ -536,7 +591,7 @@ function ascend() {
   }
   skillLevels = {};
 
-  // Any levels kept through Legacy give skill points straight away
+  // Any starting levels give skill points straight away
   if (autoBuild) {
     spendOnSavedBuild();
   }
@@ -556,8 +611,11 @@ function ascend() {
     }
   }
 
+  // So is the blacksmith's work, which was paid for with gold: back to the first tier
+  forgeLevels = { weapon: 0, armor: 0 };
+
   // What is kept: fame and fame upgrades, best floors, milestones and perks, trophies and town helpers
-  startingGear();
+  startRunGear();
   playerHp = playerMaxHp;
   logLines = [];
   say("You ascend! Every floor will pay fame again.");
@@ -578,7 +636,6 @@ function totalBonus(stat) {
 //   - critical chances past 100%          -> extra critical damage
 //   - dodge, parry and block past 60%     -> all damage taken is reduced
 //   - stun and freeze past 60%            -> extra damage
-//   - equipment drop chance past 50%      -> better rarities
 // The class files say exactly what each of their chances overflows into.
 
 // For chances that must never reach 100% (see maxChance in data.js)
@@ -608,11 +665,6 @@ function damageDivider() {
   return 1;
 }
 
-// Equipment luck: the drop chance beyond its limit makes better rarities more likely
-function gearLuck() {
-  return Math.max(0, monsterDropChance + totalBonus("dropChance") - maxDropChance);
-}
-
 function townUpgradeIsMaxed(item) {
   return item.maxLevel > 0 && townLevel(item.id) >= item.maxLevel;
 }
@@ -621,9 +673,24 @@ function totalArmor() {
   return Math.round((armorPower + totalBonus("armor")) * (1 + totalBonus("armorPercent")) * multiplier("armor"));
 }
 
+// ----- Builds -----
+// An upgrade or a relic can belong to one build: build: "axe" in the class file.
+// It is then only given while that weapon is being used (or that stance, for a class
+// whose builds are stances, like the Elementalist's elements). One with no build
+// suits every weapon.
+function fitsBuild(thing) {
+  return thing.build === undefined || thing.build === weapon || thing.build === stance;
+}
+
 // ----- Relics -----
+// A boss never gives a relic that only works with another weapon
 function gainRelic() {
-  let choices = allRelics();
+  let choices = [];
+  for (let relic of allRelics()) {
+    if (fitsBuild(relic)) {
+      choices.push(relic);
+    }
+  }
   let relic = choices[Math.floor(Math.random() * choices.length)];
 
   ownedRelics.push(relic.id);
@@ -632,7 +699,8 @@ function gainRelic() {
 }
 
 // ----- Equipment -----
-// Equipment is found inside the tower and is lost when you die.
+// Equipment is never found in the tower and never lost. A class has one weapon and
+// one piece of armor, and the blacksmith in town makes them stronger for banked gold.
 //
 // There are two slots, "weapon" and "armor". One of them holds the class's SPECIAL
 // gear, which comes in several kinds (axe / sword / club, or the Warden's three shields)
@@ -641,6 +709,7 @@ function gainRelic() {
 //   - For the Warden the special gear is the shield (in the armor slot), and the
 //     plain piece is the spear (in the weapon slot).
 // The variable "weapon" holds the KIND of special gear being used, whichever slot it is in.
+// The kind is picked at the blacksmith and changes at the start of the next run.
 function specialSlot() {
   if (currentClass().specialSlot !== undefined) {
     return currentClass().specialSlot;
@@ -669,296 +738,110 @@ function randomGearType(className) {
   return types[Math.floor(Math.random() * types.length)];
 }
 
-// For example "Sword +4", "Rare Ember Shield +7" or "Fine Armor +2"
-function gearName(slot, type, power, rarity) {
-  let name = plainLabel();
-  if (slot === specialSlot()) {
-    name = currentClass().gearTypes[type];
+// How many steps the blacksmith has improved a slot ("weapon" or "armor")
+function forgeLevel(slot) {
+  if (forgeLevels[slot] === undefined) {
+    return 0;
   }
-
-  if (rarities[rarity].name !== "") {
-    name = rarities[rarity].name + " " + name;
-  }
-  return name + " +" + power;
+  return forgeLevels[slot];
 }
 
-function itemName(item) {
-  return gearName(item.slot, item.type, item.power, item.rarity);
+// Which tier a step is in: 0 for the first on the gearTiers list, 1 for the second...
+// It never goes past the last tier on the list.
+function tierOfStep(step) {
+  return Math.min(gearTiers.length - 1, Math.floor(step / forgeStepsPerTier));
 }
 
-// What is written after a slot's label on the page. The plain piece leaves out
-// its own name there, so that it reads "Armor: Fine +2" and not "Armor: Fine Armor +2".
-function slotText(slot, power, rarity) {
-  if (slot === specialSlot()) {
-    return gearName(slot, weapon, power, rarity);
-  }
-  if (rarities[rarity].name !== "") {
-    return rarities[rarity].name + " +" + power;
-  }
-  return "+" + power;
-}
-
-// Picks a rarity by its chance (see the rarities list in data.js).
-// "least" is the lowest rarity allowed: 0 for anything, 2 for Rare or better...
-function rollRarity(least) {
-  // Luck pushes the roll toward 1, where the rare end of the list is.
-  // With no luck this is a plain roll between 0 and 1.
-  let roll = Math.pow(Math.random(), 1 / (1 + gearLuck() * luckStrength));
-  let rarity = rarities.length - 1;
-
-  for (let i = 0; i < rarities.length; i++) {
-    if (roll < rarities[i].chance) {
-      rarity = i;
-      break;
-    }
-    roll = roll - rarities[i].chance;
-  }
-
-  return Math.max(rarity, least);
-}
-
-// The kind of special gear the player is after: the favourite, or the only
-// kind there is for a class with just one (the Elementalist's gloves)
-function wantedGear() {
-  let types = Object.keys(currentClass().gearTypes);
-  if (types.length === 1) {
-    return types[0];
-  }
-  return favouriteGear;
-}
-
-// Favourite luck that is not needed to find the favourite kind. It makes that
-// kind stronger instead. A class with one kind of gear needs none, so all of it is spare.
-function favouriteLuckSpare() {
-  if (Object.keys(currentClass().gearTypes).length === 1) {
-    return totalBonus("favouriteLuck");
-  }
-  return overflow("favouriteLuck", 1);
-}
-
-function makeItem(least) {
-  let rarity = rollRarity(least);
-
-  // Items get stronger the higher you are in the tower, and with their rarity
-  let power = floor * gearPowerPerFloor * (1 + Math.random()) * rarities[rarity].power * multiplier("gear");
-
-  let slot = "armor";
-  if (Math.random() < 0.5) {
-    slot = "weapon";
-  }
+// The attack a weapon gives, or the armor a piece of armor gives, at a step.
+// Every step adds the same amount, and every tier multiplies the whole of it.
+// (Past the last named tier the multiplying carries on, so there is no top.)
+function forgePower(slot, step) {
+  let power = forgePowerPerStep * (step + 1) * Math.pow(forgeTierPower, Math.floor(step / forgeStepsPerTier));
 
   // Armor has half the power of a weapon
   if (slot === "armor") {
     power = power / 2;
   }
 
-  let type = "plain";
+  return Math.max(1, Math.round(power * multiplier("gear")));
+}
+
+// The price of the next step, in banked gold
+function forgeCostOf(slot) {
+  return Math.round(forgeCost * Math.pow(forgeCostGrowth, forgeLevel(slot)));
+}
+
+function upgradeGear(slot) {
+  if (bank >= forgeCostOf(slot)) {
+    bank = bank - forgeCostOf(slot);
+    forgeLevels[slot] = forgeLevel(slot) + 1;
+    recalcStats();
+    say("The blacksmith hands you your " + gearName(slot, forgeLevel(slot)) + ".");
+    updateScreen();
+  }
+}
+
+// The "Buy all I can afford" button: keeps buying whichever step is cheaper
+// until the bank cannot pay for either
+function upgradeAllGear() {
+  let bought = 0;
+
+  while (canAffordForge()) {
+    let slot = "weapon";
+    if (forgeCostOf("armor") < forgeCostOf("weapon")) {
+      slot = "armor";
+    }
+    bank = bank - forgeCostOf(slot);
+    forgeLevels[slot] = forgeLevel(slot) + 1;
+    bought = bought + 1;
+  }
+
+  if (bought > 0) {
+    recalcStats();
+    say("The blacksmith improves your equipment " + bought + " times: " + gearName("weapon", forgeLevel("weapon")) + " and " + gearName("armor", forgeLevel("armor")) + ".");
+    updateScreen();
+  }
+}
+
+// For example "Bronze Axe", "Iron Ember Shield +7" or "Steel Armor +2".
+// "step" is how far the blacksmith has taken it.
+function gearName(slot, step) {
+  let name = plainLabel();
   if (slot === specialSlot()) {
-    type = randomGearType(playerClass);
-
-    // The Weaponsmith in town makes the favourite kind turn up more often
-    if (favouriteGear !== "" && chance(totalBonus("favouriteLuck"))) {
-      type = favouriteGear;
-    }
-    if (type === wantedGear()) {
-      power = power * (1 + favouriteLuckSpare() * favouritePowerPerLuck);
-    }
+    name = currentClass().gearTypes[weapon];
   }
 
-  return { slot: slot, type: type, power: Math.max(1, Math.round(power)), rarity: rarity };
+  // A class can name the tiers of its own special gear (a bow is not made of bronze)
+  let tierNames = gearTiers;
+  if (slot === specialSlot() && currentClass().gearTiers !== undefined) {
+    tierNames = currentClass().gearTiers;
+  }
+
+  let tier = tierOfStep(step);
+  name = tierNames[Math.min(tier, tierNames.length - 1)] + " " + name;
+
+  let plus = step - tier * forgeStepsPerTier;
+  if (plus > 0) {
+    name = name + " +" + plus;
+  }
+  return name;
 }
 
-function isBetter(item) {
-  if (item.slot === "weapon") {
-    return item.power > weaponPower;
-  }
-  return item.power > armorPower;
-}
-
-function equipItem(item) {
-  if (item.slot === "weapon") {
-    weaponPower = item.power;
-    weaponRarity = item.rarity;
-  } else {
-    armorPower = item.power;
-    armorRarity = item.rarity;
-  }
-
-  // Changing the kind of special gear changes how the class fights
-  if (item.slot === specialSlot()) {
-    weapon = item.type;
-    dotStacks = 0;
-  }
-
-  recalcStats();
-}
-
-// Is this item the same kind as the one being worn in its slot?
-// (A sword when you carry a sword. Plain pieces are always the same kind.)
-function isSameKind(item) {
-  if (item.slot !== specialSlot()) {
-    return true;
-  }
-  return item.type === weapon;
-}
-
-// The item being worn in a slot, as an item
-function wornItem(slot) {
-  if (slot === "weapon") {
-    return { slot: "weapon", type: slotType("weapon"), power: weaponPower, rarity: weaponRarity };
-  }
-  return { slot: "armor", type: slotType("armor"), power: armorPower, rarity: armorRarity };
-}
-
-// The kind of thing in a slot: the special gear's kind, or "plain"
-function slotType(slot) {
-  if (slot === specialSlot()) {
-    return weapon;
-  }
-  return "plain";
-}
-
-// Should the Squire equip this item for you?
-// The Squire only ever puts on something BETTER OF THE SAME KIND. It never changes
-// the kind of weapon you fight with, because that would change your build. The one
-// exception is a favourite kind: the Squire will switch to it once, if you are not
-// already using it.
-function squireWants(item) {
-  if (totalBonus("autoEquip") < 1) {
-    return false;
-  }
-
-  if (item.slot === specialSlot() && favouriteGear !== "" && item.type === favouriteGear && weapon !== favouriteGear) {
-    return true;
-  }
-
-  return isSameKind(item) && isBetter(item);
-}
-
-// Puts an item in the backpack, unless a better spare of that kind is already there.
-// Returns true if it went in.
-function stow(item) {
-  for (let i = 0; i < backpack.length; i++) {
-    if (backpack[i].slot === item.slot && backpack[i].type === item.type) {
-      if (backpack[i].power >= item.power) {
-        return false;
-      }
-      backpack[i] = item;
-      return true;
-    }
-  }
-
-  backpack.push(item);
-  return true;
-}
-
-// Is there any point keeping this item? Not if it is the kind you are wearing and no stronger.
-function worthKeeping(item) {
-  return !isSameKind(item) || isBetter(item);
-}
-
-// "least" is the lowest rarity the item can be (0 for anything)
-function findItem(least) {
-  let item = makeItem(least);
-
-  if (squireWants(item)) {
-    // What comes off goes into the backpack if it is a different kind (so it can be had back)
-    let old = wornItem(item.slot);
-    equipItem(item);
-    if (worthKeeping(old)) {
-      stow(old);
-    }
-    say("You found and equipped " + itemName(item) + "!");
-  } else if (worthKeeping(item) && stow(item)) {
-    lastFound = item;
-    say("You found " + itemName(item) + ". It is in your backpack.");
-  } else {
-    say("You found " + itemName(item) + ", but it is no better than what you have.");
-  }
-
-  squireChecksBackpack();
-}
-
-// Swaps what is worn for the item at this place in the backpack
-function swapWithBackpack(index) {
-  let item = backpack[index];
-  let old = wornItem(item.slot);
-
-  backpack.splice(index, 1);
-  equipItem(item);
-  if (worthKeeping(old)) {
-    stow(old);
-  }
-
-  // Spares that are now no better than what is worn are thrown away
-  let kept = [];
-  for (let spare of backpack) {
-    if (worthKeeping(spare)) {
-      kept.push(spare);
-    }
-  }
-  backpack = kept;
-}
-
-// The Equip button on a backpack row
-function equipFromBackpack(index) {
-  if (backpack[index] === undefined) {
-    return;
-  }
-  swapWithBackpack(index);
-  squireChecksBackpack();
+// Picks the kind of weapon to fight with. It is taken up at the start of the next run.
+function chooseWeapon(type) {
+  nextWeapon = type;
   updateScreen();
 }
 
-// The Squire also keeps an eye on the backpack: if a spare is the same kind as what
-// you are using and stronger, it is put on. (This happens when you change kind and a
-// better one of the new kind was already in there.)
-function squireChecksBackpack() {
-  if (totalBonus("autoEquip") < 1) {
-    return;
+// Runs at the start of every run: the weapon picked at the blacksmith is taken up
+function startRunGear() {
+  if (currentClass().gearTypes[nextWeapon] === undefined) {
+    nextWeapon = weapon;
   }
-
-  let looking = true;
-  while (looking) {
-    looking = false;
-    for (let i = 0; i < backpack.length; i++) {
-      if (isSameKind(backpack[i]) && isBetter(backpack[i])) {
-        swapWithBackpack(i);
-        looking = true;
-        break;
-      }
-    }
+  if (nextWeapon !== weapon) {
+    weapon = nextWeapon;
+    say("You take up your " + gearName(specialSlot(), forgeLevel(specialSlot())) + ".");
   }
-}
-
-// Is something in the backpack simply better than what is worn (same kind, stronger)?
-function backpackHasBetter() {
-  for (let item of backpack) {
-    if (isSameKind(item) && isBetter(item)) {
-      return true;
-    }
-  }
-  return false;
-}
-
-function startingGear() {
-  weapon = randomGearType(playerClass);
-  if (favouriteGear !== "") {
-    weapon = favouriteGear;
-  }
-
-  // The Armory in town gives every run a head start
-  weaponPower = totalBonus("startGear");
-
-  // Starting a run part-way up the tower (the Pathfinder fame upgrade) skips the
-  // floors where gear would have been found, so it comes with ordinary gear for that floor
-  if (floor > 1) {
-    weaponPower = Math.max(weaponPower, Math.round(floor * gearPowerPerFloor * multiplier("gear")));
-  }
-  armorPower = Math.ceil(weaponPower / 2);
-  weaponRarity = 0;
-  armorRarity = 0;
-  backpack = [];
   dotStacks = 0;
   recalcStats();
 }
@@ -986,12 +869,6 @@ function buyTownUpgrade(item) {
   }
 }
 
-// Pass "" to go back to having no favourite
-function chooseFavouriteGear(type) {
-  favouriteGear = type;
-  updateScreen();
-}
-
 function chooseFavouriteUpgrade(id) {
   favouriteUpgrade = id;
   updateScreen();
@@ -1009,8 +886,10 @@ function buyPotion() {
   }
 }
 
-// ----- Upgrade areas -----
-// Upgrades are free, you pick one per area, and they only last until you die
+// ----- Boss upgrades -----
+// Every boss gives one upgrade, straight away, with nothing to click and nothing to
+// wait for. It is always one that suits the weapon being used (see fitsBuild), and
+// it lasts until you die. What a run has collected is listed under the fight.
 function upgradeLevel(id) {
   if (upgrades[id] === undefined) {
     return 0;
@@ -1018,29 +897,26 @@ function upgradeLevel(id) {
   return upgrades[id];
 }
 
-function chooseUpgrade(upgrade) {
-  if (encounterType !== "upgrade" || upgradeLevel(upgrade.id) >= upgradeCap()) {
-    return;
+// How many levels of upgrades bosses have given this run, all added together
+function upgradesHeld() {
+  let total = 0;
+  for (let upgrade of currentClass().upgrades) {
+    total = total + upgradeLevel(upgrade.id);
   }
-
-  upgrades[upgrade.id] = upgradeLevel(upgrade.id) + 1;
-  recalcStats();
-  say("You chose " + upgrade.name + " (level " + upgrades[upgrade.id] + ").");
-  nextRoom();
-  updateScreen();
+  return total;
 }
 
-// Is there a favourite upgrade, and can it still be levelled up?
-function favouriteIsAvailable() {
-  return favouriteUpgrade !== "" && upgradeLevel(favouriteUpgrade) < upgradeCap();
+// Every level held also multiplies attack and health (see bossUpgradePower in data.js)
+function upgradeBoost() {
+  return 1 + bossUpgradePower * upgradesHeld();
 }
 
-// The top level of the upgrades picked in upgrade areas. The Mastery fame upgrade raises it.
+// The top level of the upgrades that bosses give
 function upgradeCap() {
   return maxUpgradeLevel + fameAdd("upgradeCap");
 }
 
-// The floor a run starts on. Normally 1; the Pathfinder fame upgrade starts runs
+// The floor a run starts on. It is 1 now: nothing sold at the moment starts runs
 // part-way to the best floor reached since the last ascension.
 function startFloor() {
   return Math.max(1, Math.floor(ascensionBest * pathfinderShare()));
@@ -1052,33 +928,38 @@ function pathfinderShare() {
   return maxStartShare * (1 - Math.pow(pathfinderFade, fameAdd("pathfinder")));
 }
 
-// If the player is away, a random upgrade is taken for them
-function takeRandomUpgrade() {
+// The last upgrade a boss gave, for the pop-up message. Not saved.
+let lastUpgrade = null;
+
+// Runs when a boss is defeated
+function gainBossUpgrade() {
   let choices = [];
   for (let upgrade of currentClass().upgrades) {
-    if (upgradeLevel(upgrade.id) < upgradeCap()) {
+    if (fitsBuild(upgrade) && upgradeLevel(upgrade.id) < upgradeCap()) {
       choices.push(upgrade);
     }
   }
 
-  if (choices.length > 0) {
-    let upgrade = choices[Math.floor(Math.random() * choices.length)];
+  // Everything that suits this weapon is already at its limit
+  if (choices.length === 0) {
+    return;
+  }
 
-    // The Tactician takes your favourite instead, as long as it is not at its limit
+  let upgrade = choices[Math.floor(Math.random() * choices.length)];
+
+  // The Tactician gets you your favourite instead, as long as it is one of the choices
+  if (totalBonus("favouriteUpgrade") >= 1) {
     for (let choice of choices) {
       if (choice.id === favouriteUpgrade) {
         upgrade = choice;
       }
     }
-
-    upgrades[upgrade.id] = upgradeLevel(upgrade.id) + 1;
-    recalcStats();
-    if (upgrade.id === favouriteUpgrade) {
-      say("You took your favourite upgrade: " + upgrade.name + " (level " + upgrades[upgrade.id] + ").");
-    } else {
-      say("Time ran out, so you took " + upgrade.name + " (level " + upgrades[upgrade.id] + ").");
-    }
   }
+
+  upgrades[upgrade.id] = upgradeLevel(upgrade.id) + 1;
+  lastUpgrade = upgrade;
+  recalcStats();
+  say("The boss leaves you an upgrade: " + upgrade.name + ", level " + upgrades[upgrade.id] + " (" + upgrade.text + ").");
 }
 
 // ----- Skills -----
@@ -1268,15 +1149,19 @@ function checkTowerProgress() {
 // Health and attack are built up in three steps:
 //   1. the flat numbers: the class's base, what its levels give, equipment, perks, relics...
 //   2. times the percentages from skills (attackPercent and healthPercent)
-//   3. times the fame upgrades
+//   3. times the fame upgrades, and the boost from boss upgrades held this run
 function recalcStats() {
   let levelsGained = level - 1;
+
+  // What the blacksmith's work is worth right now
+  weaponPower = forgePower("weapon", forgeLevel("weapon"));
+  armorPower = forgePower("armor", forgeLevel("armor"));
 
   let health = totalBonus("maxHp") + levelsGained * currentClass().perLevel.maxHp;
   let attack = totalBonus("attack") + levelsGained * currentClass().perLevel.attack + weaponPower;
 
-  playerMaxHp = Math.round(health * (1 + totalBonus("healthPercent")) * multiplier("health"));
-  playerAttack = Math.round(attack * (1 + totalBonus("attackPercent")) * multiplier("attack"));
+  playerMaxHp = Math.round(health * (1 + totalBonus("healthPercent")) * multiplier("health") * upgradeBoost());
+  playerAttack = Math.round(attack * (1 + totalBonus("attackPercent")) * multiplier("attack") * upgradeBoost());
 
   if (playerHp > playerMaxHp) {
     playerHp = playerMaxHp;
@@ -1312,7 +1197,8 @@ function levelUpWhilePossible() {
 // ----- Saving and loading -----
 // The save lives in the browser. It holds one bundle of progress per class,
 // which class is being played, and when the game last ran.
-// Nothing is shared between classes: every class has its own fame, trophies and gold.
+// Fame and the fame upgrades are shared by the whole account. Nothing else is:
+// every class has its own levels, gold, equipment, milestones and trophies.
 //
 // ===== OTHER PEOPLE NOW HAVE SAVES. Read this before changing the game. =====
 //
@@ -1336,7 +1222,7 @@ function levelUpWhilePossible() {
 // Changing saveName makes the game ignore every existing save: everyone starts again.
 // That is the "reset" to warn players about. Avoid it.
 const saveName = "lloegrys-idle-save-3";
-const saveVersion = 1;
+const saveVersion = 3;
 let classSaves = {};
 
 // Set when a save could not be read, so the page can tell the player
@@ -1350,18 +1236,129 @@ function upgradeSave(data) {
     data.version = 1;
   }
 
-  // An example of a step, for when one is needed:
+  // Version 2: equipment is no longer found in the tower. The blacksmith improves it
+  // instead, and the kind of weapon is simply picked. Five town upgrades had no job
+  // left, so every class gets back the gold it spent on them.
+  if (data.version === 1) {
+    for (let className in data.classSaves) {
+      let saved = data.classSaves[className];
+
+      if (saved.townLevels !== undefined) {
+        if (saved.bank === undefined) {
+          saved.bank = 0;
+        }
+        for (let item of removedTownUpgrades) {
+          let bought = saved.townLevels[item.id];
+          if (bought !== undefined) {
+            for (let i = 0; i < bought; i++) {
+              saved.bank = saved.bank + Math.round(item.cost * Math.pow(item.growth, i));
+            }
+            delete saved.townLevels[item.id];
+          }
+        }
+      }
+
+      // The Quartermaster's favourite weapon becomes the weapon picked at the blacksmith
+      if (saved.favouriteGear !== undefined && saved.favouriteGear !== "") {
+        saved.nextWeapon = saved.favouriteGear;
+      }
+
+      // Found equipment and the backpack are gone
+      delete saved.favouriteGear;
+      delete saved.backpack;
+      delete saved.foundItem;
+      delete saved.weaponPower;
+      delete saved.armorPower;
+      delete saved.weaponRarity;
+      delete saved.armorRarity;
+    }
+    data.version = 2;
+  }
+
+  // Version 3: fame and the fame upgrades belong to the account instead of to each
+  // class, and the upgrades are all straight multipliers now. Rather than guess how
+  // seven classes' purchases should merge, every class's fame is given back, spent
+  // and unspent, into the one account, to be spent again.
+  if (data.version === 2) {
+    let total = 0;
+
+    for (let className in data.classSaves) {
+      let saved = data.classSaves[className];
+
+      if (saved.fame !== undefined) {
+        total = total + saved.fame;
+      }
+      if (saved.fameLevels !== undefined) {
+        for (let item of oldFameUpgrades) {
+          let bought = saved.fameLevels[item.id];
+          if (bought !== undefined) {
+            for (let i = 0; i < bought; i++) {
+              total = total + Math.ceil(item.cost * Math.pow(item.growth, i));
+            }
+          }
+        }
+      }
+
+      delete saved.fame;
+      delete saved.fameLevels;
+    }
+
+    data.fame = total;
+    data.fameLevels = {};
+    if (total > 0) {
+      fameWasRefunded = true;
+    }
+    data.version = 3;
+  }
+
+  // A save with no fame written at the top has none
+  if (data.fame === undefined) {
+    data.fame = 0;
+  }
+  if (data.fameLevels === undefined) {
+    data.fameLevels = {};
+  }
+
+  // An example of a step, for when another is needed:
   //
-  // if (data.version === 1) {
+  // if (data.version === 3) {
   //   for (let className in data.classSaves) {
   //     let saved = data.classSaves[className];
   //     // ...change "saved" here, for example rename saved.skillLevels.oldId...
   //   }
-  //   data.version = 2;
+  //   data.version = 4;
   // }
 
   return data;
 }
+
+// The fame upgrades as they were priced before version 3, so that upgradeSave can
+// give the fame back
+const oldFameUpgrades = [
+  { id: "might", cost: 6, growth: 1.45 },
+  { id: "vitality", cost: 6, growth: 1.45 },
+  { id: "wisdom", cost: 4, growth: 1.45 },
+  { id: "fortune", cost: 4, growth: 1.45 },
+  { id: "legacy", cost: 6, growth: 1.45 },
+  { id: "pathfinder", cost: 10, growth: 1.45 },
+  { id: "scavenger", cost: 8, growth: 1.45 },
+  { id: "insight", cost: 8, growth: 1.45 },
+  { id: "endurance", cost: 10, growth: 2 },
+  { id: "mastery", cost: 15, growth: 2 }
+];
+
+// Set when an update has just given fame back, so the player can be told
+let fameWasRefunded = false;
+
+// Town upgrades that were removed in version 2, with the prices they had,
+// so that upgradeSave can give the gold back
+const removedTownUpgrades = [
+  { id: "autoEquip", cost: 2000, growth: 1 },
+  { id: "quartermaster", cost: 5000, growth: 1 },
+  { id: "weaponsmith", cost: 3000, growth: 1.4 },
+  { id: "armory", cost: 1000, growth: 1.4 },
+  { id: "luckyCharm", cost: 1500, growth: 1.4 }
+];
 
 // Takes out anything a save remembers that no longer exists in the game,
 // so a removed skill or relic cannot cause trouble. "known" is a list of things with ids.
@@ -1383,24 +1380,19 @@ function freshClass(className) {
     gold: 0,
     bank: 0,
     experience: 0,
-    fame: 0,
     floor: 1,
     bestFloor: 1,
     room: 1,
     level: 1,
     weapon: randomGearType(className),
+    nextWeapon: "",
     stance: "",
-    weaponPower: 0,
-    armorPower: 0,
-    weaponRarity: 0,
-    armorRarity: 0,
-    backpack: [],
+    forgeLevels: { weapon: 0, armor: 0 },
     upgrades: {},
     skillLevels: {},
     chosenPerks: {},
     ownedRelics: [],
     townLevels: {},
-    favouriteGear: "",
     favouriteUpgrade: "",
     potions: 0,
     tower: className,
@@ -1408,8 +1400,8 @@ function freshClass(className) {
     towerBest: {},
     ascensions: 0,
     ascensionBest: 1,
-    fameLevels: {},
     ascensionSeconds: 0,
+    ascensionFame: 0,
     lastAscensionFame: 0,
     lastAscensionSeconds: 0,
     trophies: [],
@@ -1425,25 +1417,20 @@ function packClass() {
     gold: gold,
     bank: bank,
     experience: experience,
-    fame: fame,
     floor: floor,
     bestFloor: bestFloor,
     room: room,
     level: level,
     playerHp: playerHp,
     weapon: weapon,
+    nextWeapon: nextWeapon,
     stance: stance,
-    weaponPower: weaponPower,
-    armorPower: armorPower,
-    weaponRarity: weaponRarity,
-    armorRarity: armorRarity,
-    backpack: backpack,
+    forgeLevels: forgeLevels,
     upgrades: upgrades,
     skillLevels: skillLevels,
     chosenPerks: chosenPerks,
     ownedRelics: ownedRelics,
     townLevels: townLevels,
-    favouriteGear: favouriteGear,
     favouriteUpgrade: favouriteUpgrade,
     potions: potions,
     tower: tower,
@@ -1451,8 +1438,8 @@ function packClass() {
     towerBest: towerBest,
     ascensions: ascensions,
     ascensionBest: ascensionBest,
-    fameLevels: fameLevels,
     ascensionSeconds: ascensionSeconds,
+    ascensionFame: ascensionFame,
     lastAscensionFame: lastAscensionFame,
     lastAscensionSeconds: lastAscensionSeconds,
     trophies: trophies,
@@ -1471,39 +1458,24 @@ function unpackClass(saved) {
   gold = data.gold;
   bank = data.bank;
   experience = data.experience;
-  fame = data.fame;
   floor = data.floor;
   bestFloor = data.bestFloor;
   room = data.room;
   level = data.level;
   playerHp = data.playerHp;
   weapon = data.weapon;
+  nextWeapon = data.nextWeapon;
   stance = data.stance;
-  weaponPower = data.weaponPower;
-  armorPower = data.armorPower;
-  weaponRarity = data.weaponRarity;
-  armorRarity = data.armorRarity;
-  backpack = data.backpack;
-
-  // Saves from before the backpack remembered a single found item
-  if (saved !== undefined && saved.foundItem !== undefined && saved.foundItem !== null) {
-    backpack.push(saved.foundItem);
-  }
-
+  forgeLevels = data.forgeLevels;
   upgrades = data.upgrades;
   skillLevels = data.skillLevels;
   chosenPerks = data.chosenPerks;
   ownedRelics = data.ownedRelics;
   townLevels = data.townLevels;
-  favouriteGear = data.favouriteGear;
   favouriteUpgrade = data.favouriteUpgrade;
   potions = data.potions;
 
   // In case a favourite was renamed or removed since the save was made
-  if (currentClass().gearTypes[favouriteGear] === undefined) {
-    favouriteGear = "";
-  }
-
   let favouriteExists = false;
   for (let upgrade of currentClass().upgrades) {
     if (upgrade.id === favouriteUpgrade) {
@@ -1518,9 +1490,14 @@ function unpackClass(saved) {
   towerBest = data.towerBest;
   ascensions = data.ascensions;
   ascensionBest = data.ascensionBest;
-  fameLevels = data.fameLevels;
   ascensionSeconds = data.ascensionSeconds;
   lastAscensionFame = data.lastAscensionFame;
+  ascensionFame = data.ascensionFame;
+
+  // Saves from before this was counted: until then, fame only came from new floors
+  if (saved !== undefined && saved.ascensionFame === undefined) {
+    ascensionFame = ascensionBest - 1;
+  }
   lastAscensionSeconds = data.lastAscensionSeconds;
   trophies = data.trophies;
   runCounter = data.runCounter;
@@ -1538,19 +1515,17 @@ function unpackClass(saved) {
     weapon = randomGearType(playerClass);
   }
 
+  // With nothing else picked at the blacksmith, the next run uses the same weapon
+  if (currentClass().gearTypes[nextWeapon] === undefined) {
+    nextWeapon = weapon;
+  }
+
   // A class with stances always has one picked: the first on its list to begin with
   if (currentClass().stances === undefined) {
     stance = "";
   } else if (currentClass().stances[stance] === undefined) {
     stance = Object.keys(currentClass().stances)[0];
   }
-  let knownItems = [];
-  for (let item of backpack) {
-    if (item.slot !== specialSlot() || currentClass().gearTypes[item.type] !== undefined) {
-      knownItems.push(item);
-    }
-  }
-  backpack = knownItems;
 
   // Forget anything the save remembers that is no longer in the game.
   // Skill points spent on a removed skill come back by themselves.
@@ -1600,6 +1575,8 @@ function saveGame() {
     version: saveVersion,
     playerClass: playerClass,
     classSaves: classSaves,
+    fame: fame,
+    fameLevels: fameLevels,
     lastTick: lastTick
   };
 
@@ -1622,6 +1599,8 @@ function loadGame() {
       data = upgradeSave(data);
 
       classSaves = data.classSaves;
+      fame = data.fame;
+      fameLevels = keepKnownIds(data.fameLevels, fameUpgrades);
 
       // When the game was last running, so we know how long you were away
       lastTick = data.lastTick;
@@ -1636,6 +1615,8 @@ function loadGame() {
       // Start a new game for now, but leave the old save exactly where it is
       saveProblem = saved;
       classSaves = {};
+      fame = 0;
+      fameLevels = {};
       playerClass = "barbarian";
       lastTick = Date.now();
     }
@@ -1800,7 +1781,7 @@ function buildRoomPips() {
   }
 }
 
-// A button that marks a favourite. Used for the Quartermaster and the Tactician.
+// A button that marks a choice. Used for the blacksmith's weapons and the Tactician.
 function addFavouriteButton(box, id, label, whenClicked) {
   let button = document.createElement("button");
   button.id = id;
@@ -1816,6 +1797,14 @@ function buildTownList() {
   for (let item of townUpgrades) {
     addRow(box, "town-" + item.id, function () {
       buyTownUpgrade(item);
+    });
+  }
+
+  // The blacksmith has one row for the weapon and one for the armor
+  let forgeBox = document.getElementById("forge");
+  for (let slot of ["weapon", "armor"]) {
+    addRow(forgeBox, "forge-" + slot, function () {
+      upgradeGear(slot);
     });
   }
 }
@@ -1844,24 +1833,12 @@ function buildFameList() {
 
 // Runs when the game starts and every time the class changes
 function buildClassScreen() {
-  let upgradeBox = document.getElementById("upgrades");
-  upgradeBox.innerHTML = "";
-
-  for (let upgrade of currentClass().upgrades) {
-    addRow(upgradeBox, "upgrade-" + upgrade.id, function () {
-      chooseUpgrade(upgrade);
-    });
-  }
-
-  // The favourite pickers list this class's own weapons and upgrades
-  let gearBox = document.getElementById("favourite-gear-buttons");
+  // The blacksmith's weapon picker lists this class's own kinds of weapon
+  let gearBox = document.getElementById("weapon-buttons");
   gearBox.innerHTML = "";
-  addFavouriteButton(gearBox, "favourite-gear-", "Any", function () {
-    chooseFavouriteGear("");
-  });
   for (let type in currentClass().gearTypes) {
-    addFavouriteButton(gearBox, "favourite-gear-" + type, currentClass().gearTypes[type], function () {
-      chooseFavouriteGear(type);
+    addFavouriteButton(gearBox, "weapon-" + type, currentClass().gearTypes[type], function () {
+      chooseWeapon(type);
     });
   }
 
@@ -1951,7 +1928,7 @@ function showTab(name) {
 }
 
 // NOTHING IN THE GAME CHANGES THE TAB BY ITSELF. Only the player does, by pressing a
-// tab button. Whatever happens in the tower (a death, a boss, an upgrade area, a
+// tab button. Whatever happens in the tower (a death, a boss, an upgrade, a
 // level) shows as a dot on a tab or a pop-up in the fight, and never moves the player
 // off the page they are reading. Keep it that way: do not call showTab from game code.
 
@@ -2010,17 +1987,54 @@ function showClassButtons() {
   }
 }
 
+// The list of upgrades collected this run. It stays on the page under the fight,
+// so there is all the time in the world to read it. Rebuilt only when it changes.
+let upgradesShown = "";
+
 function showUpgrades() {
-  for (let upgrade of currentClass().upgrades) {
-    let maxed = upgradeLevel(upgrade.id) >= upgradeCap();
+  document.getElementById("upgrade-boost").textContent = "+" + percent(upgradeBoost() - 1);
 
-    let title = upgrade.name + " · level " + upgradeLevel(upgrade.id);
-    if (maxed) {
-      title = upgrade.name + " · level " + upgradeLevel(upgrade.id) + " (the most for this run)";
-    }
-
-    fillRow("upgrade-" + upgrade.id, title, upgrade.text, "Choose", maxed);
+  let key = playerClass + JSON.stringify(upgrades) + upgradeCap();
+  if (key === upgradesShown) {
+    return;
   }
+  upgradesShown = key;
+
+  let box = document.getElementById("upgrades");
+  box.innerHTML = "";
+
+  let held = 0;
+  for (let upgrade of currentClass().upgrades) {
+    if (upgradeLevel(upgrade.id) === 0) {
+      continue;
+    }
+    held = held + upgradeLevel(upgrade.id);
+
+    let row = document.createElement("div");
+    row.className = "row";
+
+    let text = document.createElement("div");
+    text.className = "row-text";
+
+    let title = document.createElement("p");
+    title.className = "row-title";
+    title.textContent = upgrade.name + " · level " + upgradeLevel(upgrade.id);
+    if (upgradeLevel(upgrade.id) >= upgradeCap()) {
+      title.textContent = title.textContent + " (the most for one run)";
+    }
+    text.appendChild(title);
+
+    let note = document.createElement("p");
+    note.className = "note";
+    note.textContent = upgrade.text + " per level";
+    text.appendChild(note);
+
+    row.appendChild(text);
+    box.appendChild(row);
+  }
+
+  document.getElementById("upgrade-count").textContent = held;
+  document.getElementById("upgrades-empty").hidden = held > 0;
 }
 
 function showSkills() {
@@ -2131,16 +2145,58 @@ function showTown() {
     }
   }
 
-  // The pickers only appear once the Quartermaster or Tactician has been hired
-  // (and a class with only one kind of gear has nothing to pick between)
-  document.getElementById("favourite-gear").hidden = totalBonus("favouriteGear") < 1 || Object.keys(currentClass().gearTypes).length < 2;
+  // The picker only appears once the Tactician has been hired
   document.getElementById("favourite-upgrade").hidden = totalBonus("favouriteUpgrade") < 1;
-  showFavourite("favourite-gear-buttons", "favourite-gear-" + favouriteGear);
   showFavourite("favourite-upgrade-buttons", "favourite-upgrade-" + favouriteUpgrade);
+
+  showBlacksmith();
 
   document.getElementById("potions").textContent = potions + " / " + potionLimit();
   document.getElementById("potion-btn").textContent = potionPrice + " gold";
   document.getElementById("potion-btn").disabled = potions >= potionLimit() || bank < potionPrice;
+}
+
+// What a piece of equipment gives at a step: "+12 attack" or "+6 armor"
+function gearStat(slot, step) {
+  if (slot === "weapon") {
+    return "+" + big(forgePower(slot, step)) + " attack";
+  }
+  return "+" + big(forgePower(slot, step)) + " armor";
+}
+
+// Can the blacksmith's next step for either piece be paid for?
+function canAffordForge() {
+  return bank >= forgeCostOf("weapon") || bank >= forgeCostOf("armor");
+}
+
+function showBlacksmith() {
+  for (let slot of ["weapon", "armor"]) {
+    let step = forgeLevel(slot);
+    let note = gearStat(slot, step) + ". Next: " + gearName(slot, step + 1) + ", " + gearStat(slot, step + 1) + ".";
+
+    fillRow("forge-" + slot, slotLabel(slot) + " · " + gearName(slot, step), note, big(forgeCostOf(slot)) + " gold", bank < forgeCostOf(slot));
+    document.getElementById("forge-" + slot + "-title").className = "row-title rarity-" + Math.min(5, tierOfStep(step));
+  }
+
+  document.getElementById("forge-all").disabled = !canAffordForge();
+
+  // A class with only one kind of gear has nothing to pick between
+  document.getElementById("weapon-picker").hidden = Object.keys(currentClass().gearTypes).length < 2;
+  showFavourite("weapon-buttons", "weapon-" + nextWeapon);
+
+  // What the picked kind does. The class's own description is written for the gear
+  // being used, so this borrows it by pretending for a moment to use the picked one.
+  let using = weapon;
+  weapon = nextWeapon;
+  let effect = currentClass().gearInfo() + " Damage: " + typeNames(currentClass().damageTypes()) + ".";
+  weapon = using;
+
+  let types = currentClass().gearTypes;
+  if (nextWeapon === weapon) {
+    document.getElementById("weapon-picker-note").textContent = effect + " Picking another kind changes it after your next fall, and the blacksmith's work carries over.";
+  } else {
+    document.getElementById("weapon-picker-note").textContent = effect + " You are still fighting with the " + types[weapon] + ": the change is made after your next fall.";
+  }
 }
 
 // A sentence for the tower list: how well the damage this class is dealing RIGHT NOW
@@ -2224,7 +2280,7 @@ function fameEffectText(item) {
   if (item.multiply !== undefined) {
     for (let stat in item.multiply) {
       // Small multipliers keep two decimals (x1.25); huge ones use the short form
-      let times = Math.pow(item.multiply[stat], fameLevel(item.id));
+      let times = Math.pow(item.multiply[stat], fameLevelInEffect(item.id));
       if (times < 1000) {
         parts.push("x" + Math.round(times * 100) / 100 + " " + stat);
       } else {
@@ -2252,21 +2308,24 @@ function fameEffectText(item) {
 // For example "34 fame in 1h 12m (28.3 an hour)"
 function fameRateText(fameEarned, seconds) {
   if (seconds < 60) {
-    return fameEarned + " fame so far";
+    return big(fameEarned) + " fame so far";
   }
   return big(fameEarned) + " fame in " + timeText(seconds) + " (" + big(fameEarned / (seconds / 3600)) + " an hour)";
 }
 
 function showAscension() {
   document.getElementById("fame-owned").textContent = big(fame);
-  document.getElementById("this-ascension").textContent = fameRateText(ascensionBest - 1, ascensionSeconds);
+  document.getElementById("this-ascension").textContent = fameRateText(ascensionFame, ascensionSeconds);
   if (ascensions === 0) {
     document.getElementById("last-ascension").textContent = "none yet";
   } else {
     document.getElementById("last-ascension").textContent = fameRateText(lastAscensionFame, lastAscensionSeconds);
   }
   document.getElementById("ascensions").textContent = ascensions;
+  document.getElementById("account-ascensions").textContent = totalAscensions();
   document.getElementById("ascension-best").textContent = ascensionBest;
+  document.getElementById("catch-up-count").textContent = ascensions;
+  document.getElementById("catch-up-share").textContent = percent(fameCatchUpShare);
   document.getElementById("ascend-floor").textContent = ascendFloorNeeded();
 
   let button = document.getElementById("ascend-btn");
@@ -2283,16 +2342,22 @@ function showAscension() {
 
     // A locked upgrade shows only when it will appear
     if (!fameUpgradeIsUnlocked(item)) {
-      let when = "Unlocks after " + item.unlockAt + " ascensions.";
+      let when = "Unlocks after " + item.unlockAt + " ascensions, counting every class.";
       if (item.unlockAt === 1) {
-        when = "Unlocks after your first ascension.";
+        when = "Unlocks after your first ascension, with any class.";
       }
       fillRow(name, item.name, when, "Locked", true);
       continue;
     }
 
     let title = item.name + " · level " + fameLevel(item.id);
-    let note = item.text + " So far: " + fameEffectText(item) + ".";
+    let note = item.text + " For this class: " + fameEffectText(item) + ".";
+
+    // Levels this class has not caught up with yet
+    let waiting = fameLevel(item.id) - fameLevelsAtFull(item.id);
+    if (waiting > 0) {
+      note = note + " (" + fameLevelsAtFull(item.id) + " at full power, " + waiting + " at " + percent(fameCatchUpShare) + " until this class ascends more.)";
+    }
 
     if (fameUpgradeIsMaxed(item)) {
       fillRow(name, title, note, "Max", true);
@@ -2335,14 +2400,14 @@ function nextGoals() {
   if (hasPerkToPick()) {
     goals.push("You have a milestone perk to pick (Milestones).");
   }
-  if (backpackHasBetter()) {
-    goals.push("There is better equipment in your backpack (Inventory).");
-  }
   if (canAscend()) {
     goals.push("You can ascend (Ascension).");
   }
   if (canBuyFameUpgrade()) {
     goals.push("You have enough fame for an upgrade (Ascension).");
+  }
+  if (canAffordForge()) {
+    goals.push("The blacksmith can improve your equipment (Town).");
   }
 
   // Things to aim for
@@ -2378,8 +2443,7 @@ function showGoals() {
   }
 
   // The same things put a dot on their tab
-  markTab("tower", encounterType === "upgrade");
-  markTab("inventory", backpackHasBetter());
+  markTab("town", canAffordForge());
   markTab("skills", skillPointsLeft() > 0);
   markTab("milestones", hasPerkToPick());
   markTab("ascension", canAscend() || canBuyFameUpgrade());
@@ -2539,13 +2603,8 @@ function updateScreen() {
   }
   if (encounterType === "chest") {
     title = "Treasure Chest";
-    text = "Gold and a piece of equipment.";
+    text = "Gold for the blacksmith.";
     icon = "💰";
-  }
-  if (encounterType === "upgrade") {
-    title = "Upgrade Area";
-    text = "Choose an upgrade below.";
-    icon = "⭐";
   }
   document.getElementById("encounter-title").textContent = title;
   document.getElementById("monster-text").textContent = text;
@@ -2593,9 +2652,6 @@ function updateScreen() {
   document.getElementById("stage").classList.toggle("boss-fight", encounterType === "boss");
   document.getElementById("monster-icon").classList.toggle("rare", inFight && monsterIsRare);
 
-  document.getElementById("upgrade-area").hidden = encounterType !== "upgrade";
-  document.getElementById("upgrade-timer").textContent = upgradeTimer;
-
   if (inFight) {
     document.getElementById("monster-hp").textContent = big(Math.max(0, monsterHp)) + " / " + big(monsterMaxHp);
     document.getElementById("monster-hp-bar").style.width = Math.max(0, monsterHp / monsterMaxHp * 100) + "%";
@@ -2614,104 +2670,69 @@ function updateScreen() {
     document.getElementById("dot-label").textContent = currentClass().dotLabel;
   }
 
-  document.getElementById("favourite-gear-label").textContent = "Favourite " + currentClass().gearLabel.toLowerCase();
-
-  showBackpack();
+  showGear();
 }
 
-// The backpack list is rebuilt only when what is in it changes
-let backpackShown = "";
+// The two equipment cards are rebuilt only when something about them changes
+let gearShown = "";
 
-function showBackpack() {
+function showGear() {
   // (the effect texts hold numbers that skills and upgrades change, so they are part of the key)
-  let key = playerClass + JSON.stringify(backpack) + weapon + stance + weaponPower + armorPower + weaponRarity + armorRarity + currentClass().gearInfo();
-  if (key === backpackShown) {
+  let key = playerClass + weapon + stance + JSON.stringify(forgeLevels) + weaponPower + armorPower + currentClass().gearInfo();
+  if (key === gearShown) {
     return;
   }
-  backpackShown = key;
+  gearShown = key;
 
-  // What is being worn, as two item cards
   let wornBox = document.getElementById("worn");
   wornBox.innerHTML = "";
-  wornBox.appendChild(itemCard(wornItem("weapon"), true, null));
-  wornBox.appendChild(itemCard(wornItem("armor"), true, null));
-
-  let box = document.getElementById("backpack");
-  box.innerHTML = "";
-
-  // The same spares as buttons under the fight, to swap in the middle of a run
-  let swapBox = document.getElementById("quick-swap-buttons");
-  swapBox.innerHTML = "";
-  document.getElementById("quick-swap").hidden = backpack.length === 0;
-  for (let i = 0; i < backpack.length; i++) {
-    addFavouriteButton(swapBox, "quick-swap-" + i, itemName(backpack[i]), function () {
-      equipFromBackpack(i);
-    });
-    document.getElementById("quick-swap-" + i).className = "rarity-" + backpack[i].rarity;
-    document.getElementById("quick-swap-" + i).title = itemStat(backpack[i]) + ". " + itemEffect(backpack[i]);
-  }
-
-  // One slot for every kind of gear the class can use, whether or not it is filled
-  let slots = backpackSlots();
-  for (let slot of slots) {
-    let index = backpackIndex(slot.slot, slot.type);
-    if (index === -1) {
-      box.appendChild(emptySlotCard(slot));
-    } else {
-      box.appendChild(itemCard(backpack[index], false, function () {
-        equipFromBackpack(index);
-      }, function () {
-        dropFromBackpack(index);
-      }));
-    }
-  }
-
-  document.getElementById("backpack-count").textContent = backpack.length;
-  document.getElementById("backpack-size").textContent = "of " + slots.length + " slots filled";
+  wornBox.appendChild(gearCard("weapon"));
+  wornBox.appendChild(gearCard("armor"));
 }
 
-// The slots of the backpack: one for each kind of special gear, and one for the plain piece
-function backpackSlots() {
-  let slots = [];
-  for (let type in currentClass().gearTypes) {
-    slots.push({ slot: specialSlot(), type: type });
-  }
+// ----- Describing equipment: its picture and what it does -----
 
-  if (specialSlot() === "weapon") {
-    slots.push({ slot: "armor", type: "plain" });
-  } else {
-    slots.push({ slot: "weapon", type: "plain" });
+// The little picture of a piece of equipment. A class can give each kind of its gear
+// an icon (gearIcons) or a drawing (gearArt); anything without one gets a plain icon.
+function gearIcon(slot) {
+  let icons = currentClass().gearIcons;
+  if (slot === specialSlot() && icons !== undefined && icons[weapon] !== undefined) {
+    return icons[weapon];
   }
-  return slots;
+  if (slot !== specialSlot() && currentClass().plainIcon !== undefined) {
+    return currentClass().plainIcon;
+  }
+  if (slot === "weapon") {
+    return "⚔️";
+  }
+  return "🥋";
 }
 
-// Where in the backpack the spare of this kind is, or -1 if there is none
-function backpackIndex(slot, type) {
-  for (let i = 0; i < backpack.length; i++) {
-    if (backpack[i].slot === slot && backpack[i].type === type) {
-      return i;
-    }
+function gearArt(slot) {
+  let art = currentClass().gearArt;
+  if (slot === specialSlot() && art !== undefined && art[weapon] !== undefined) {
+    return art[weapon];
   }
-  return -1;
+  return "";
 }
 
-// Throws a spare away
-function dropFromBackpack(index) {
-  if (backpack[index] !== undefined) {
-    say("You leave the " + itemName(backpack[index]) + " behind.");
-    backpack.splice(index, 1);
-    updateScreen();
-  }
-}
+// Builds the card for the equipment in a slot ("weapon" or "armor")
+function gearCard(slot) {
+  let step = forgeLevel(slot);
 
-// The card for a backpack slot with nothing in it
-function emptySlotCard(slot) {
   let card = document.createElement("div");
-  card.className = "item empty";
+  card.className = "item";
 
   let icon = document.createElement("div");
   icon.className = "item-icon";
-  icon.textContent = itemIcon({ slot: slot.slot, type: slot.type });
+  if (gearArt(slot) !== "") {
+    let image = document.createElement("img");
+    image.src = gearArt(slot);
+    image.alt = "";
+    icon.appendChild(image);
+  } else {
+    icon.textContent = gearIcon(slot);
+  }
   card.appendChild(icon);
 
   let text = document.createElement("div");
@@ -2719,154 +2740,29 @@ function emptySlotCard(slot) {
 
   let label = document.createElement("p");
   label.className = "item-slot";
-  label.textContent = "Empty slot";
+  label.textContent = slotLabel(slot);
   text.appendChild(label);
 
+  // The name takes the colour of its tier
   let name = document.createElement("p");
-  name.className = "row-title";
-  if (slot.slot === specialSlot()) {
-    name.textContent = "Spare " + currentClass().gearTypes[slot.type];
-  } else {
-    name.textContent = "Spare " + plainLabel();
-  }
+  name.className = "row-title rarity-" + Math.min(5, tierOfStep(step));
+  name.textContent = gearName(slot, step);
   text.appendChild(name);
 
-  card.appendChild(text);
-  return card;
-}
-
-// ----- Describing an item: its picture, its stats and what it does -----
-
-// The little picture of an item. A class can give each kind of its gear an icon
-// (gearIcons) or a drawing (gearArt); anything without one gets a plain icon.
-function itemIcon(item) {
-  let icons = currentClass().gearIcons;
-  if (item.slot === specialSlot() && icons !== undefined && icons[item.type] !== undefined) {
-    return icons[item.type];
-  }
-  if (item.slot !== specialSlot() && currentClass().plainIcon !== undefined) {
-    return currentClass().plainIcon;
-  }
-  if (item.slot === "weapon") {
-    return "⚔️";
-  }
-  return "🥋";
-}
-
-function itemArt(item) {
-  let art = currentClass().gearArt;
-  if (item.slot === specialSlot() && art !== undefined && art[item.type] !== undefined) {
-    return art[item.type];
-  }
-  return "";
-}
-
-// The number an item gives: "+12 attack" or "+6 armor"
-function itemStat(item) {
-  if (item.slot === "weapon") {
-    return "+" + big(item.power) + " attack";
-  }
-  return "+" + big(item.power) + " armor";
-}
-
-// What a kind of gear does, in words. The class's own description is written for
-// the gear being worn, so this borrows it by pretending for a moment to wear this one.
-function itemEffect(item) {
-  if (item.slot !== specialSlot()) {
-    return "";
-  }
-
-  let wearing = weapon;
-  weapon = item.type;
-  let text = currentClass().gearInfo();
-  let types = typeNames(currentClass().damageTypes());
-  weapon = wearing;
-
-  return text + " Damage: " + types + ".";
-}
-
-// Builds the card for one item. "worn" is true for something being worn;
-// "whenEquipped" is what the Equip button does (null for no button),
-// and "whenDropped" is what the Drop button does (leave it out for no button).
-function itemCard(item, worn, whenEquipped, whenDropped) {
-  let card = document.createElement("div");
-  card.className = "item";
-
-  let icon = document.createElement("div");
-  icon.className = "item-icon";
-  if (itemArt(item) !== "") {
-    let image = document.createElement("img");
-    image.src = itemArt(item);
-    image.alt = "";
-    icon.appendChild(image);
-  } else {
-    icon.textContent = itemIcon(item);
-  }
-  card.appendChild(icon);
-
-  let text = document.createElement("div");
-  text.className = "item-text";
-
-  let slot = document.createElement("p");
-  slot.className = "item-slot";
-  slot.textContent = slotLabel(item.slot);
-  if (!worn) {
-    slot.textContent = slot.textContent + " · in your backpack";
-  }
-  text.appendChild(slot);
-
-  let name = document.createElement("p");
-  name.className = "row-title rarity-" + item.rarity;
-  name.textContent = itemName(item);
-  text.appendChild(name);
-
-  // The stat, and for a spare how it compares with what is worn
   let stats = document.createElement("p");
   stats.className = "item-stats";
-  stats.textContent = itemStat(item);
-  if (!worn) {
-    let difference = item.power - wornItem(item.slot).power;
-    let compare = document.createElement("span");
-    if (difference > 0) {
-      compare.className = "up";
-      compare.textContent = "  ▲ " + big(difference) + " more than you are wearing";
-    } else if (difference < 0) {
-      compare.className = "down";
-      compare.textContent = "  ▼ " + big(-difference) + " less than you are wearing";
-    } else {
-      compare.textContent = "  the same as you are wearing";
-    }
-    stats.appendChild(compare);
-  }
+  stats.textContent = gearStat(slot, step);
   text.appendChild(stats);
 
-  if (itemEffect(item) !== "") {
+  // The special gear also says how it makes the class fight
+  if (slot === specialSlot()) {
     let effect = document.createElement("p");
     effect.className = "note";
-    effect.textContent = itemEffect(item);
+    effect.textContent = currentClass().gearInfo() + " Damage: " + typeNames(currentClass().damageTypes()) + ".";
     text.appendChild(effect);
   }
+
   card.appendChild(text);
-
-  if (whenEquipped !== null) {
-    let buttons = document.createElement("div");
-    buttons.className = "item-buttons";
-
-    let button = document.createElement("button");
-    button.textContent = "Equip";
-    button.onclick = whenEquipped;
-    buttons.appendChild(button);
-
-    if (whenDropped !== undefined) {
-      let drop = document.createElement("button");
-      drop.className = "quiet";
-      drop.textContent = "Drop";
-      drop.onclick = whenDropped;
-      buttons.appendChild(drop);
-    }
-    card.appendChild(buttons);
-  }
-
   return card;
 }
 
@@ -2911,6 +2807,13 @@ function spawnMonster(isBoss) {
   // The deep tower: every floor past deepFloor multiplies it again
   if (floor > deepFloor) {
     growth = growth * Math.pow(deepGrowth, floor - deepFloor);
+  }
+
+  // The walls: every one at or below this floor multiplies it once more
+  for (let wall of towerWalls) {
+    if (floor >= wall.floor) {
+      growth = growth * wall.strength;
+    }
   }
   monsterMaxHp = Math.round(monsterHealth * growth * type.hp);
   monsterAttack = Math.round(monsterDamage * growth * type.attack);
@@ -2995,16 +2898,12 @@ function startEncounter() {
     }
   } else {
     let roll = Math.random();
-    if (roll < 0.65) {
+    if (roll < 0.75) {
       encounterType = "monster";
-    } else if (roll < 0.78) {
+    } else if (roll < 0.88) {
       encounterType = "rest";
-    } else if (roll < 0.9) {
-      encounterType = "chest";
     } else {
-      encounterType = "upgrade";
-      upgradeTimer = upgradeWaitTime;
-      say("You find an upgrade area. Choose an upgrade!");
+      encounterType = "chest";
     }
   }
 
@@ -3032,7 +2931,7 @@ function nextRoom() {
 
     // Every floor reached for the first time since the last ascension pays fame
     if (floor > ascensionBest) {
-      fame = fame + (floor - ascensionBest) * multiplier("fame");
+      gainFame((floor - ascensionBest) * multiplier("fame"));
       ascensionBest = floor;
     }
     checkTowerProgress();
@@ -3076,7 +2975,15 @@ function die() {
     say("You enter " + towers[tower].name + ".");
   }
 
-  startingGear();
+  // The weapon and armor are kept. Only the kind of weapon may change, if another was picked.
+  startRunGear();
+
+  // Starting a run part-way up the tower (nothing does at the moment) skips bosses.
+  // Their upgrades are not missed: you start with one for every boss you passed.
+  let bossesPassed = Math.floor((floor - 1) / 5);
+  for (let i = 0; i < bossesPassed; i++) {
+    gainBossUpgrade();
+  }
 
   // Some classes set something up at the start of a run
   if (currentClass().startRun !== undefined) {
@@ -3101,14 +3008,16 @@ function victory() {
   healPlayer(playerMaxHp * (healOnKill + fameAdd("healOnKill")));
 
   say("You defeat the " + monsterName + " and earn " + big(reward) + " gold.");
-  // Bosses and rare monsters always drop equipment, and it is better than usual
+  // Every boss leaves an upgrade and a relic, both of them suited to the weapon being used
   if (encounterType === "boss") {
-    findItem(bossDropRarity);
+    gainBossUpgrade();
     gainRelic();
-  } else if (monsterIsRare) {
-    findItem(rareDropRarity);
-  } else if (chance(Math.min(maxDropChance, monsterDropChance + totalBonus("dropChance")))) {
-    findItem(0);
+
+    let earned = bossFameAt(floor);
+    if (earned > 0) {
+      gainFame(earned);
+      say("Word of the boss's fall spreads: +" + big(earned) + " fame.");
+    }
   }
 
   // Some classes gain something from every kill
@@ -3208,17 +3117,10 @@ function step() {
     say("You rest and recover all your health.");
     nextRoom();
   } else if (encounterType === "chest") {
-    gold = gold + Math.round(floor * goldPerFloor * chestGold * (1 + totalBonus("gold")) * multiplier("gold"));
-    findItem(0);
+    let found = Math.round(floor * goldPerFloor * chestGold * (1 + totalBonus("gold")) * multiplier("gold"));
+    gold = gold + found;
+    say("You open a chest and find " + big(found) + " gold.");
     nextRoom();
-  } else if (encounterType === "upgrade") {
-    // With a favourite picked (the Tactician, in town) there is nothing to wait for.
-    // Otherwise wait a while for the player to choose, then move on by itself.
-    upgradeTimer = upgradeTimer - 1;
-    if (upgradeTimer <= 0 || favouriteIsAvailable()) {
-      takeRandomUpgrade();
-      nextRoom();
-    }
   }
 }
 
@@ -3396,9 +3298,7 @@ function animatedStep() {
   let fameBefore = fame;
   let relicsBefore = ownedRelics.length;
   let trophiesBefore = trophies.length;
-  lastFound = null;
-  let weaponBefore = weaponPower;
-  let armorBefore = armorPower;
+  lastUpgrade = null;
 
   step();
 
@@ -3438,13 +3338,11 @@ function animatedStep() {
     toast("Relic claimed!", "good");
   }
 
-  // Equipment: either the Squire put it on, or it is waiting on the Character tab
-  if (weaponPower > weaponBefore) {
-    toast("Equipped " + gearName("weapon", weapon, weaponPower, weaponRarity), "rarity-" + weaponRarity);
-  } else if (armorPower > armorBefore) {
-    toast("Equipped " + gearName("armor", weapon, armorPower, armorRarity), "rarity-" + armorRarity);
-  } else if (lastFound !== null) {
-    toast("Found " + itemName(lastFound), "rarity-" + lastFound.rarity);
+  // A boss's upgrade gets a pop-up too, but it does not need reading in a hurry:
+  // it is on the list under the fight for the rest of the run
+  if (lastUpgrade !== null) {
+    toast("Upgrade: " + lastUpgrade.name, "good");
+    animate("upgrade-count", "pop");
   }
 
   if (wasFight) {
@@ -3573,5 +3471,8 @@ showTab("tower");
 loadSettings();
 showSaveProblem();
 startEncounter();
+if (fameWasRefunded) {
+  say("Ascension has changed: fame and its upgrades are now shared by all your classes. All your fame has been given back to spend again (Ascension).");
+}
 tick();
 let timer = setInterval(tick, 1000);

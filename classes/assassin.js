@@ -43,9 +43,9 @@ classes.assassin = {
     { id: "sharpenedEdge", name: "Sharpened Edge", text: "+3 attack", bonus: { attack: 3 } },
     { id: "smokeBomb", name: "Smoke Bomb", text: "+2% dodge", bonus: { dodge: 0.02 } },
     { id: "backstab", name: "Backstab", text: "+10% ambush damage", bonus: { ambush: 0.1 } },
-    { id: "toxicCoating", name: "Toxic Coating", text: "Venom Dagger: +1 poison stack", bonus: { poisonStacks: 1 } },
-    { id: "killerInstinct", name: "Killer Instinct", text: "Stiletto: +5% critical chance", bonus: { critChance: 0.05 } },
-    { id: "shadowstep", name: "Shadowstep", text: "Shadow Blade: +15% damage after a dodge", bonus: { counter: 0.15 } }
+    { id: "toxicCoating", name: "Toxic Coating", text: "Venom Dagger: +1 poison stack", build: "venom", bonus: { poisonStacks: 1 } },
+    { id: "killerInstinct", name: "Killer Instinct", text: "Stiletto: +5% critical chance", build: "stiletto", bonus: { critChance: 0.05 } },
+    { id: "shadowstep", name: "Shadowstep", text: "Shadow Blade: +15% damage after a dodge", build: "shadow", bonus: { counter: 0.15 } }
   ],
 
   // One skill for each build, so there is never a question of where a build's points go
@@ -136,10 +136,10 @@ classes.assassin = {
 
   relics: [
     { id: "shadowCloak", name: "Shadow Cloak", text: "+3% dodge", bonus: { dodge: 0.03 } },
-    { id: "viperFang", name: "Viper Fang", text: "Venom Dagger: +1 poison stack", bonus: { poisonStacks: 1 } },
+    { id: "viperFang", name: "Viper Fang", text: "Venom Dagger: +1 poison stack", build: "venom", bonus: { poisonStacks: 1 } },
     { id: "assassinsMark", name: "Assassin's Mark", text: "+25% ambush damage", bonus: { ambush: 0.25 } },
-    { id: "needlePoint", name: "Needle Point", text: "Stiletto: +8% critical chance", bonus: { critChance: 0.08 } },
-    { id: "duskMantle", name: "Dusk Mantle", text: "Shadow Blade: +25% damage after a dodge", bonus: { counter: 0.25 } }
+    { id: "needlePoint", name: "Needle Point", text: "Stiletto: +8% critical chance", build: "stiletto", bonus: { critChance: 0.08 } },
+    { id: "duskMantle", name: "Dusk Mantle", text: "Shadow Blade: +25% damage after a dodge", build: "shadow", bonus: { counter: 0.25 } }
   ],
 
   startFight: assassinStartFight,

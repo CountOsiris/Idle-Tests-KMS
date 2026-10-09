@@ -44,8 +44,9 @@ classes.zealot = {
     { id: "fervor", name: "Fervor", text: "+3 attack", bonus: { attack: 3 } },
     { id: "blessedArmor", name: "Blessed Armor", text: "+2 armor", bonus: { armor: 2 } },
     { id: "prayer", name: "Prayer", text: "+1% healing every turn", bonus: { devotion: 0.01 } },
-    { id: "holyFire", name: "Holy Fire", text: "Holy Mace: +10% holy damage", bonus: { smite: 0.1 } },
-    { id: "aegis", name: "Aegis", text: "Mace and Shield: +5% block chance", bonus: { blockChance: 0.05 } },
+    { id: "holyFire", name: "Holy Fire", text: "Holy Mace: +10% holy damage", build: "mace", bonus: { smite: 0.1 } },
+    { id: "aegis", name: "Aegis", text: "Mace and Shield: +5% block chance", build: "shield", bonus: { blockChance: 0.05 } },
+    { id: "litany", name: "Litany", text: "Holy Tome: wasted healing burns for +15% more", build: "tome", bonus: { sacredFlame: 0.15 } },
     { id: "battleHymn", name: "Battle Hymn", text: "+2% damage for every turn a fight lasts", bonus: { crusade: 0.02 } }
   ],
 
@@ -136,9 +137,9 @@ classes.zealot = {
 
   relics: [
     { id: "holyChalice", name: "Holy Chalice", text: "+1% healing every turn", bonus: { devotion: 0.01 } },
-    { id: "sunSigil", name: "Sun Sigil", text: "Holy Mace: +15% holy damage", bonus: { smite: 0.15 } },
-    { id: "saintsBuckler", name: "Saint's Buckler", text: "Mace and Shield: +6% block chance", bonus: { blockChance: 0.06 } },
-    { id: "psalter", name: "Psalter", text: "Holy Tome: wasted healing burns for +25% more", bonus: { sacredFlame: 0.25 } },
+    { id: "sunSigil", name: "Sun Sigil", text: "Holy Mace: +15% holy damage", build: "mace", bonus: { smite: 0.15 } },
+    { id: "saintsBuckler", name: "Saint's Buckler", text: "Mace and Shield: +6% block chance", build: "shield", bonus: { blockChance: 0.06 } },
+    { id: "psalter", name: "Psalter", text: "Holy Tome: wasted healing burns for +25% more", build: "tome", bonus: { sacredFlame: 0.25 } },
     { id: "warBanner", name: "War Banner", text: "+3% damage for every turn a fight lasts", bonus: { crusade: 0.03 } }
   ],
 

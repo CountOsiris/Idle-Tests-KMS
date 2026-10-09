@@ -42,13 +42,16 @@ classes.warlock = {
   ranged: true,
   gearTypes: { arcane: "Arcane Tome", void: "Void Tome", rune: "Rune Tome" },
   gearIcons: { arcane: "📘", void: "📓", rune: "📕" },
+  // Tomes are not made of bronze: these are the names of their tiers at the blacksmith
+  // (see gearTiers in data.js; keep the list the same length as that one)
+  gearTiers: ["Tattered", "Bound", "Gilded", "Runed", "Eldritch", "Forbidden"],
 
   upgrades: [
     { id: "arcanePower", name: "Arcane Power", text: "+4 attack", bonus: { attack: 4 } },
     { id: "manaShield", name: "Mana Shield", text: "+15 health", bonus: { maxHp: 15 } },
-    { id: "focus", name: "Focus", text: "Arcane Tome: +5% critical chance", bonus: { critChance: 0.05 } },
-    { id: "devour", name: "Devour", text: "Void Tome: +2 void power", bonus: { voidRend: 0.02 } },
-    { id: "resonance", name: "Resonance", text: "Rune Tome: +5% chance to cast twice", bonus: { echoChance: 0.05 } },
+    { id: "focus", name: "Focus", text: "Arcane Tome: +5% critical chance", build: "arcane", bonus: { critChance: 0.05 } },
+    { id: "devour", name: "Devour", text: "Void Tome: +2 void power", build: "void", bonus: { voidRend: 0.02 } },
+    { id: "resonance", name: "Resonance", text: "Rune Tome: +5% chance to cast twice", build: "rune", bonus: { echoChance: 0.05 } },
     { id: "soulJar", name: "Soul Jar", text: "+25% chance of an extra soul from a kill", bonus: { soulChance: 0.25 } }
   ],
 
@@ -137,9 +140,9 @@ classes.warlock = {
   ],
 
   relics: [
-    { id: "magesEye", name: "Mage's Eye", text: "Arcane Tome: +8% critical chance", bonus: { critChance: 0.08 } },
-    { id: "voidShard", name: "Void Shard", text: "Void Tome: +2 void power", bonus: { voidRend: 0.02 } },
-    { id: "echoStone", name: "Echo Stone", text: "Rune Tome: +8% chance to cast twice", bonus: { echoChance: 0.08 } },
+    { id: "magesEye", name: "Mage's Eye", text: "Arcane Tome: +8% critical chance", build: "arcane", bonus: { critChance: 0.08 } },
+    { id: "voidShard", name: "Void Shard", text: "Void Tome: +2 void power", build: "void", bonus: { voidRend: 0.02 } },
+    { id: "echoStone", name: "Echo Stone", text: "Rune Tome: +8% chance to cast twice", build: "rune", bonus: { echoChance: 0.08 } },
     { id: "soulLantern", name: "Soul Lantern", text: "+10% damage for every 100 souls", bonus: { soulPower: 0.1 } }
   ],
 

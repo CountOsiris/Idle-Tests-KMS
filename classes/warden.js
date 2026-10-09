@@ -52,9 +52,9 @@ classes.warden = {
   upgrades: [
     { id: "spearhead", name: "Spearhead", text: "+3 attack", bonus: { attack: 3 } },
     { id: "bulwark", name: "Bulwark", text: "+2 armor", bonus: { armor: 2 } },
-    { id: "thorns", name: "Thorns", text: "Spiked: +10% reflect", bonus: { reflect: 0.1 } },
-    { id: "shieldWall", name: "Shield Wall", text: "Tower: +4% block chance", bonus: { blockChance: 0.04 } },
-    { id: "sharpRim", name: "Sharp Rim", text: "Bladed: throws hit for half your armor more", bonus: { throwPower: 0.5 } },
+    { id: "thorns", name: "Thorns", text: "Spiked: +10% reflect", build: "spiked", bonus: { reflect: 0.1 } },
+    { id: "shieldWall", name: "Shield Wall", text: "Tower: +4% block chance", build: "tower", bonus: { blockChance: 0.04 } },
+    { id: "sharpRim", name: "Sharp Rim", text: "Bladed: throws hit for half your armor more", build: "bladed", bonus: { throwPower: 0.5 } },
     { id: "oath", name: "Oath", text: "+8% vengeance", bonus: { vengeance: 0.08 } }
   ],
 
@@ -146,9 +146,9 @@ classes.warden = {
   ],
 
   relics: [
-    { id: "mirrorShard", name: "Mirror Shard", text: "Spiked: +15% reflect", bonus: { reflect: 0.15 } },
-    { id: "bulwarkCrest", name: "Bulwark Crest", text: "Tower: +6% block chance", bonus: { blockChance: 0.06 } },
-    { id: "razorRim", name: "Razor Rim", text: "Bladed: throws hit for half your armor more", bonus: { throwPower: 0.5 } },
+    { id: "mirrorShard", name: "Mirror Shard", text: "Spiked: +15% reflect", build: "spiked", bonus: { reflect: 0.15 } },
+    { id: "bulwarkCrest", name: "Bulwark Crest", text: "Tower: +6% block chance", build: "tower", bonus: { blockChance: 0.06 } },
+    { id: "razorRim", name: "Razor Rim", text: "Bladed: throws hit for half your armor more", build: "bladed", bonus: { throwPower: 0.5 } },
     { id: "grudgeStone", name: "Grudge Stone", text: "+12% vengeance", bonus: { vengeance: 0.12 } }
   ],
 
