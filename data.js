@@ -374,6 +374,21 @@ const stuckAfterRuns = 12;
 // game/abilities.js). A class opens one ability slot on each of these floors.
 const abilitySlotFloors = [10, 35, 75];
 
+// ABILITY RANKS. An ability grows with use, and keeps what it has learned for good:
+// through falls, ascensions and becoming a legend. The first rank comes after
+// abilityRankUses uses, and each rank after takes abilityRankGrowth times as many again
+// (100, then 200 more, then 400 more...). Every rank makes whatever the ability does
+// abilityRankPower stronger (0.1 means +10%): its damage, its healing, its boost, its guard.
+const abilityRankUses = 100;
+const abilityRankGrowth = 2;
+const abilityRankPower = 0.1;
+
+// ----- Watching -----
+// While the game's tab is open and on screen, the player can let it run at this many
+// steps a second instead of one (Settings). Time away is always played at one a second,
+// and so is every pacing number in this file.
+const watchSpeedFast = 2;
+
 // ----- Boss mechanics -----
 // From this floor up, a boss can have a rule of its own that changes how the fight
 // goes (the rules themselves are in game/bosses.js). Which boss has which is written

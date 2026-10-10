@@ -58,6 +58,10 @@ freeze or guard deal a little less. Boss killers deal 8 to 10 turns at once. Thi
 the weakest builds gain the most (Spiked Shield 7.0 → 4.6 hours to the first wall), and
 `midGrowth` went from 1.04 to 1.05 to keep the first wall at about 4 to 7 hours.
 
+**Ability ranks, built later the same month.** An ability gains a rank after 100 uses,
+then 200 more, then 400 more, and each rank makes everything it does 10% stronger. Ranks
+are kept for good, through ascensions and becoming a legend (`abilityUses` in the save).
+
 Each class gets **ability slots**, filled from a short list per class, that fire by
 themselves on a cooldown or a trigger. Still fully idle: the player chooses *which*,
 never *when*.
@@ -123,4 +127,6 @@ throw its own number (shield power from the blacksmith) instead of reading armor
   run") on the Character tab. Damage is sorted by its type, with the class's damage
   over time and its abilities as their own lines (`game/summary.js`).
 - Ability and boss-mechanic icons above the health bars.
-- Optional "watch mode" speed: 1x or 2x step speed while the tab is open.
+- **Built.** "Double speed while watching" in Settings: two steps a second while the
+  tab is on screen, one at all other times. Every pacing number in these files is at
+  one step a second, so a player who watches all day climbs about twice as fast.

@@ -248,6 +248,7 @@ const settingsName = "lloegrys-idle-settings";
 let animationsOn = true;
 let openTab = "tower";      // the tab that was open last time
 let seenVersion = "";       // the newest version whose Updates entry this device has opened
+let watchFast = false;      // double speed while the tab is on screen (see "Watching" in data.js)
 let settingsLoaded = false;
 
 function loadSettings() {
@@ -264,6 +265,7 @@ function loadSettings() {
       if (typeof settings.seenVersion === "string") {
         seenVersion = settings.seenVersion;
       }
+      watchFast = settings.watchFast === true;
     } catch (error) {
       animationsOn = true;
     }
@@ -277,12 +279,18 @@ function loadSettings() {
 function saveSettings() {
   // Not before they have been read, or the first showTab would overwrite them
   if (settingsLoaded) {
-    localStorage.setItem(settingsName, JSON.stringify({ animationsOn: animationsOn, momentsOn: momentsOn, openTab: openTab, seenVersion: seenVersion }));
+    localStorage.setItem(settingsName, JSON.stringify({ animationsOn: animationsOn, momentsOn: momentsOn, openTab: openTab, seenVersion: seenVersion, watchFast: watchFast }));
   }
 }
 
 function setMoments(on) {
   momentsOn = on;
+  saveSettings();
+  showSettings();
+}
+
+function setWatchFast(on) {
+  watchFast = on;
   saveSettings();
   showSettings();
 }
@@ -296,6 +304,7 @@ function setAnimations(on) {
 function showSettings() {
   document.getElementById("animations-box").checked = animationsOn;
   document.getElementById("moments-box").checked = momentsOn;
+  document.getElementById("fast-box").checked = watchFast;
 
   // style.css switches every animation off when the body has "no-motion"
   document.body.classList.toggle("no-motion", !animationsOn);

@@ -15,6 +15,52 @@
 let abilitySlots = [];       // the ids of the abilities in the slots, for example ["cleave", "execute"]
 let abilityModes = {};       // the setting of each ability that has been changed, for example { execute: "manual" }
 
+// How many times each ability has been used, ever, for example { cleave: 240 }. Ranks
+// are worked out from this (see "ABILITY RANKS" in data.js). Saved, per class, and kept
+// through everything.
+let abilityUses = {};
+
+// The ability being used right now, so that the pieces below know whose rank counts
+let abilityInUse = null;
+
+// How many ranks that many uses have earned
+function ranksFromUses(uses) {
+  let rank = 0;
+  let needed = abilityRankUses;
+  let step = abilityRankUses;
+
+  while (uses >= needed) {
+    rank = rank + 1;
+    step = step * abilityRankGrowth;
+    needed = needed + step;
+  }
+  return rank;
+}
+
+function abilityRank(id) {
+  return ranksFromUses(abilityUses[id] || 0);
+}
+
+// How many uses an ability needs in all for its next rank
+function usesForNextRank(id) {
+  let needed = abilityRankUses;
+  let step = abilityRankUses;
+
+  for (let i = 0; i < abilityRank(id); i++) {
+    step = step * abilityRankGrowth;
+    needed = needed + step;
+  }
+  return needed;
+}
+
+// What the ability in use multiplies everything it does by (1 with no rank)
+function abilityPower() {
+  if (abilityInUse === null) {
+    return 1;
+  }
+  return 1 + abilityRankPower * abilityRank(abilityInUse.id);
+}
+
 // ----- What one run remembers (not saved) -----
 let abilityCooldowns = {};   // turns left before an ability is ready again
 let abilityPressed = {};     // abilities the player pressed, to be used at the next turn
@@ -153,7 +199,14 @@ function useAbilities() {
       continue;
     }
 
+    let rankBefore = abilityRank(id);
+    abilityInUse = ability;
     ability.use();
+    abilityInUse = null;
+    abilityUses[id] = (abilityUses[id] || 0) + 1;
+    if (abilityRank(id) > rankBefore) {
+      announce("banner", ability.name + ": rank " + abilityRank(id), "Everything it does is now x" + big(1 + abilityRankPower * abilityRank(id)) + ".");
+    }
     // (the Quick Hands keystone shortens every cooldown: "quickHands")
     abilityCooldowns[id] = Math.max(1, Math.ceil(ability.cooldown * (1 - totalBonus("quickHands"))));
     abilityPressed[id] = false;
@@ -192,24 +245,24 @@ function resetAbilitiesForRun() {
 // Damage worth "turns" of your normal turns, all at once. Nothing is taken off it:
 // your armor-, ward- and resistance-beating are already in what your turns deal.
 function abilityTurns(turns) {
-  let damage = Math.max(1, Math.round(damagePerTurn() * turns));
+  let damage = Math.max(1, Math.round(damagePerTurn() * turns * abilityPower()));
   monsterHp = monsterHp - damage;
   return damage;
 }
 
 // A weapon hit for "times" your attack. Armor counts against it.
 function abilityHit(times, type, armorShare) {
-  return hitMonster(playerAttack * times, type, armorShare);
+  return hitMonster(playerAttack * times * abilityPower(), type, armorShare);
 }
 
 // A spell for "times" your attack. Ward counts against it.
 function abilitySpell(times, type) {
-  return spellHitMonster(playerAttack * times, type);
+  return spellHitMonster(playerAttack * times * abilityPower(), type);
 }
 
 // Damage that nothing is taken off: not armor, not ward. "amount" is the damage itself.
 function abilityPure(amount, type) {
-  return magicHitMonster(amount, type);
+  return magicHitMonster(amount * abilityPower(), type);
 }
 
 // Adds "count" stacks of the class's damage over time, up to its limit ("limitWord",
@@ -227,7 +280,7 @@ function abilityStun() {
 
 // Heals a share of your health. Gives back how much of it you did not need.
 function abilityHeal(share) {
-  let amount = playerMaxHp * share;
+  let amount = playerMaxHp * share * abilityPower();
   let spare = Math.max(0, amount - (playerMaxHp - playerHp));
   healPlayer(amount);
   return spare;
@@ -235,13 +288,13 @@ function abilityHeal(share) {
 
 // For "turns" turns, all your damage is +amount (0.5 means +50%)
 function abilityBoost(amount, turns) {
-  boostAmount = amount;
+  boostAmount = amount * abilityPower();
   boostTurns = turns;
 }
 
 // For "turns" turns, you take "share" less damage (1 means none at all)
 function abilityGuard(share, turns) {
-  guardShare = share;
+  guardShare = Math.min(1, share * abilityPower());
   guardTurns = turns;
 }
 
@@ -316,7 +369,8 @@ function showAbilities() {
   document.getElementById("ability-next").textContent = next;
   document.getElementById("ability-damage").textContent = big(Math.round(damagePerTurn()));
 
-  let key = playerClass + weapon + stance + JSON.stringify(abilitySlots) + JSON.stringify(abilityModes) + openAbilitySlots() + classAbilities().length;
+  let ranks = classAbilities().map(function (ability) { return abilityRank(ability.id); }).join("");
+  let key = playerClass + weapon + stance + JSON.stringify(abilitySlots) + JSON.stringify(abilityModes) + openAbilitySlots() + classAbilities().length + ranks;
   if (key === abilitiesShown) {
     return;
   }
@@ -335,10 +389,11 @@ function showAbilities() {
     words.className = "row-text";
     let title = document.createElement("p");
     title.className = "row-title";
-    title.textContent = ability.name + " · every " + ability.cooldown + " turns" + (equipped ? " · in a slot" : "");
+    let rank = abilityRank(ability.id);
+    title.textContent = ability.name + " · every " + ability.cooldown + " turns" + (rank > 0 ? " · rank " + rank + " (x" + big(1 + abilityRankPower * rank) + ")" : "") + (equipped ? " · in a slot" : "");
     let note = document.createElement("p");
     note.className = "note";
-    note.textContent = ability.text + "." + otherBuildNote(ability.text);
+    note.textContent = ability.text + ". Rank " + (rank + 1) + " after " + usesForNextRank(ability.id) + " uses: everything it does +" + percent(abilityRankPower) + "." + otherBuildNote(ability.text);
     words.appendChild(title);
     words.appendChild(note);
 

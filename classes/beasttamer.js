@@ -196,11 +196,11 @@ classes.beasttamer = {
 };
 
 // The numbers behind the companions. Change these to retune them.
-const tamerStaffHit = 0.3;    // the tamer's own staff hits for this share of your attack
+const tamerStaffHit = 0.2;    // the tamer's own staff hits for this share of your attack
 const wolfCount = 3;          // a pack starts with this many wolves
-const wolfBite = 0.27;        // each bites for this share of your attack
-const bearMaul = 1.35;        // a maul hits for this many times your attack
-const hawkDive = 1;           // a dive hits for this many times your attack...
+const wolfBite = 0.25;        // each bites for this share of your attack
+const bearMaul = 1.25;        // a maul hits for this many times your attack
+const hawkDive = 0.92;        // a dive hits for this many times your attack...
 const hawkCrit = 2.5;         // ...and a critical dive multiplies that by this
 const alphaBonus = 1.3;       // the Alpha keystone's one wolf bites for the whole pack, times this
 

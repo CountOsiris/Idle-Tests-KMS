@@ -13,6 +13,15 @@
 
 const gameUpdates = [
   {
+    version: "20261010p",
+    title: "Ability ranks and double speed",
+    changes: [
+      "Abilities gain ranks as you use them, each rank making them 10% stronger, and keep them for good.",
+      "Settings has a double speed for while you are watching the game.",
+      "The Beast Tamer's damage is a little lower, so its first wall comes at about the same time as other classes'."
+    ]
+  },
+  {
     version: "20261010o",
     title: "Fairer deep floors",
     changes: [

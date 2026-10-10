@@ -667,6 +667,53 @@ try {
   recalcStats();
   startEncounter();
 
+  // 3i. Ability ranks and double speed
+  check("ability ranks come at 100, 300 and 700 uses", ranksFromUses(99) === 0 && ranksFromUses(100) === 1 && ranksFromUses(299) === 1 && ranksFromUses(300) === 2 && ranksFromUses(700) === 3);
+  let ranked = classAbilities().find(function (ability) { return fitsBuild(ability); });
+  if (ranked !== undefined) {
+    let usesBefore = abilityUses;
+    let slotsWere = abilitySlots;
+    abilityUses = {};
+    abilityUses[ranked.id] = 99;
+    abilitySlots = [ranked.id];
+    resetAbilitiesForRun();
+    encounterType = "monster";
+    monsterMaxHp = 1e12;
+    monsterHp = 1e12;
+    recentDamage = 1000;
+    abilityPressed[ranked.id] = true;
+    useAbilities();
+    abilityInUse = ranked;
+    let hpWas = monsterHp;
+    abilityTurns(1);
+    abilityInUse = null;
+    check(ranked.name + " reaches rank 1 on its 100th use, and then does 10% more", abilityRank(ranked.id) === 1 && hpWas - monsterHp === 1100);
+    abilityUses = usesBefore;
+    abilitySlots = slotsWere;
+    resetAbilitiesForRun();
+    recentDamage = 0;
+  }
+  let stepsTaken = 0;
+  let realStep = step;
+  step = function () { stepsTaken = stepsTaken + 1; };
+  let wasFast = watchFast;
+  let animating = animationsOn;
+  animationsOn = false;
+  watchFast = true;
+  lastTick = Date.now() - 1000;
+  tick();
+  let fastSteps = stepsTaken;
+  stepsTaken = 0;
+  watchFast = false;
+  lastTick = Date.now() - 1000;
+  tick();
+  step = realStep;
+  watchFast = wasFast;
+  animationsOn = animating;
+  check("double speed: " + fastSteps + " steps a second with it on" + (document.hidden ? " (the test page is hidden, so it stays at 1)" : "") + ", " + stepsTaken + " with it off",
+    stepsTaken === 1 && fastSteps === (document.hidden ? 1 : watchSpeedFast));
+  startEncounter();
+
   // A newer tab taking over stops this one from saving
   let markBefore = localStorage.getItem(saveName);
   window.dispatchEvent(new StorageEvent("storage", { key: tabMarkName, newValue: "a newer tab" }));

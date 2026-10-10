@@ -69,9 +69,7 @@ The gaps the plan set out to close (1 to 6 are now built; what is left is below)
   though inside the target to floor 50
   ([Classes and builds](docs/design/04-classes-and-builds.md)).
 - **"Layers get distinct jobs"**: milestone perks still hand out percentages.
-- **Ability ranks**, and a watch-mode speed ([Combat](docs/design/03-combat.md)).
-- The Beast Tamer has no art, and reaches the first wall faster than the other classes
-  (3 to 4 hours against 4 to 7) when started fresh.
+- The Beast Tamer has no art.
 
 ## The plan
 

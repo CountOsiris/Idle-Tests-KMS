@@ -63,9 +63,14 @@ function tick() {
   if (seconds >= awayReportAfter) {
     playTimeAway(seconds);
   } else {
-    for (let i = 0; i < seconds; i++) {
-      // Only the last second is animated when several are played at once
-      if (i === seconds - 1) {
+    // Double speed while watching (Settings): only while the tab is really on screen
+    let steps = seconds;
+    if (watchFast && !document.hidden) {
+      steps = seconds * watchSpeedFast;
+    }
+    for (let i = 0; i < steps; i++) {
+      // Only the last step is animated when several are played at once
+      if (i === steps - 1) {
         animatedStep();
       } else {
         step();
