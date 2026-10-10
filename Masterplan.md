@@ -63,7 +63,6 @@ The gaps the plan set out to close (1 to 6 are now built; what is left is below)
 ## Still open
 
 - **Each class's own relics** are still plain numbers; only the shared ones do something.
-- **A second weapon carried into a run**, as a Legend unlock ([Progression layers](docs/design/06-progression-layers.md)).
 - **Earth and the Void Tome** are about 35% faster than their classes to floor 75,
   though inside the target to floor 50
   ([Classes and builds](docs/design/04-classes-and-builds.md)).

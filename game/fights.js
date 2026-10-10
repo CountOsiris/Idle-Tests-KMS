@@ -30,6 +30,11 @@ function traitOf(type, trait) {
 function spawnMonster(isBoss) {
   let type = pickMonsterType(isBoss);
 
+  // (the Second Weapon legend unlock: a boss is fought with the boss weapon)
+  if (isBoss) {
+    drawBossWeapon();
+  }
+
   monsterName = type.name;
   monsterText = type.text;
   // How many times stronger than floor 1 the monsters are here (see data.js)
@@ -131,6 +136,7 @@ function spawnMonster(isBoss) {
 
 function startEncounter() {
   roomCount = roomCount + 1;
+  sheatheBossWeapon();
 
   if (room === roomsPerFloor) {
     if (floor % 5 === 0) {
@@ -221,6 +227,7 @@ function die() {
   finishRun();
 
   deaths = deaths + 1;
+  sheatheBossWeapon();
 
   // Stuck at a wall? Say once where to go instead (see "Stuck at a wall" in data.js)
   runsSinceBest = runsSinceBest + 1;
@@ -299,6 +306,9 @@ function survivesDeath() {
 }
 
 function victory() {
+  // Back to the weapon the class climbs with, so that the boss's boon suits that one
+  sheatheBossWeapon();
+
   let reward = floor * goldPerFloor;
   if (encounterType === "boss") {
     reward = reward * bossGold;

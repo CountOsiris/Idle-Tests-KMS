@@ -313,6 +313,10 @@ function showBlacksmith() {
 
   document.getElementById("forge-all").disabled = !canAffordForge();
 
+  // The boss weapon: only with the legend unlock, and only for a class with a choice
+  document.getElementById("boss-weapon-picker").hidden = totalBonus("secondWeapon") < 1 || Object.keys(buildKinds()).length < 2;
+  showFavourite("boss-weapon-buttons", "boss-weapon-" + bossWeapon);
+
   // Named weapons: one button each, and one for none. Made again only when another is won.
   let named = namedWeaponsWon();
   let namedBox = document.getElementById("named-buttons");

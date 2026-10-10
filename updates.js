@@ -13,6 +13,13 @@
 
 const gameUpdates = [
   {
+    version: "20261010r",
+    title: "A second weapon",
+    changes: [
+      "A new Legend unlock lets every class carry a second weapon or element and fight bosses with it."
+    ]
+  },
+  {
     version: "20261010q",
     title: "Named weapons",
     changes: [

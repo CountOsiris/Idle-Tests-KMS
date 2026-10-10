@@ -240,7 +240,8 @@ function freshClass(className) {
     runsSinceBest: 0,
     legends: 0,
     abilityUses: {},
-    namedWeapon: ""
+    namedWeapon: "",
+    bossWeapon: ""
   };
 }
 
@@ -255,9 +256,10 @@ function packClass() {
     room: room,
     level: level,
     playerHp: playerHp,
-    weapon: weapon,
+    // (never the boss weapon while it is drawn: see game/equipment.js)
+    weapon: currentClass().stances !== undefined ? weapon : mainKind(),
     nextWeapon: nextWeapon,
-    stance: stance,
+    stance: currentClass().stances !== undefined ? mainKind() : stance,
     forgeLevels: forgeLevels,
     upgrades: upgrades,
     skillLevels: skillLevels,
@@ -289,7 +291,8 @@ function packClass() {
     runsSinceBest: runsSinceBest,
     legends: legends,
     abilityUses: abilityUses,
-    namedWeapon: namedWeapon
+    namedWeapon: namedWeapon,
+    bossWeapon: bossWeapon
   };
 }
 
@@ -350,6 +353,13 @@ function unpackClass(saved) {
   runsSinceBest = data.runsSinceBest;
   legends = data.legends;
   abilityUses = data.abilityUses;
+
+  // The boss weapon is put away whenever a class is loaded
+  swappedFrom = "";
+  bossWeapon = data.bossWeapon;
+  if (buildKinds()[bossWeapon] === undefined) {
+    bossWeapon = "";
+  }
 
   // A named weapon can only be wielded if its trophy is (still) won
   namedWeapon = data.namedWeapon;

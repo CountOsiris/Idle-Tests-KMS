@@ -681,6 +681,23 @@ try {
   check("legend unlocks: a boss leaves two boons", upgradesHeld() === boonsThen + 2);
   showTab("legend");
   updateScreen();
+  // The boss weapon: drawn for a boss, put away after, and never what gets saved
+  let kinds = Object.keys(buildKinds());
+  if (kinds.length > 1) {
+    let main = kindInHand();
+    let other = kinds.find(function (kind) { return kind !== main; });
+    chooseBossWeapon(other);
+    floor = 5;
+    room = roomsPerFloor;
+    startEncounter();
+    let drawn = encounterType === "boss" && kindInHand() === other;
+    let saved = packClass();
+    let savedMain = (currentClass().stances !== undefined ? saved.stance : saved.weapon) === main;
+    monsterHp = 0;
+    victory();
+    check("boss weapon: the " + buildKinds()[other] + " is drawn for a boss, the " + buildKinds()[main] + " is what is saved, and it comes back after", drawn && savedMain && kindInHand() === main && swappedFrom === "");
+    chooseBossWeapon("");
+  }
   check("the Legend tab opens and lists what marks buy", document.body.dataset.tab === "legend" && document.getElementById("legend-unlocks").children.length === legendUnlocks.length);
   legendMarks = marksThen;
   legendLevels = {};

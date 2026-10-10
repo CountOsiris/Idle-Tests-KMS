@@ -143,6 +143,18 @@ function buildClassScreen() {
     });
   }
 
+  // The boss weapon picker lists the same kinds (the elements, for a class with stances)
+  let bossBox = document.getElementById("boss-weapon-buttons");
+  bossBox.innerHTML = "";
+  addFavouriteButton(bossBox, "boss-weapon-", "The same", function () {
+    chooseBossWeapon("");
+  });
+  for (let kind in buildKinds()) {
+    addFavouriteButton(bossBox, "boss-weapon-" + kind, buildKinds()[kind], function () {
+      chooseBossWeapon(kind);
+    });
+  }
+
   let favouriteBox = document.getElementById("favourite-upgrade-buttons");
   favouriteBox.innerHTML = "";
   addFavouriteButton(favouriteBox, "favourite-upgrade-", "None", function () {

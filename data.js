@@ -202,12 +202,14 @@ const legendMarkRate = 1;
 //                relicSlots    relics kept when you fall
 //                startLevels   levels a class starts with after ascending or becoming a legend
 //                freePotions   healing potions every run starts with
+//                secondWeapon  1 = a second weapon for bosses (see "The boss weapon" in game/equipment.js)
 const legendUnlocks = [
   { id: "extraHand", name: "Extra Hand", text: "One more ability slot for every class, open from floor 1.", bonus: { abilitySlots: 1 }, cost: 8, growth: 1, maxLevel: 1 },
   { id: "twiceBlessed", name: "Twice Blessed", text: "Every boss leaves one more boon.", bonus: { extraBoons: 1 }, cost: 10, growth: 1, maxLevel: 1 },
   { id: "reliquary", name: "Reliquary", text: "Every class keeps 1 more relic when it falls.", bonus: { relicSlots: 1 }, cost: 5, growth: 2, maxLevel: 3 },
   { id: "oldRoads", name: "Old Roads", text: "Every class starts again 10 levels higher after ascending or becoming a legend.", bonus: { startLevels: 10 }, cost: 4, growth: 2, maxLevel: 3 },
   { id: "quartermaster", name: "Quartermaster", text: "Every run starts with 2 healing potions, free.", bonus: { freePotions: 2 }, cost: 4, growth: 1, maxLevel: 1 },
+  { id: "secondWeapon", name: "Second Weapon", text: "Every class can carry a second weapon (or element) and fight bosses with it. Pick it at the blacksmith.", bonus: { secondWeapon: 1 }, cost: 10, growth: 1, maxLevel: 1 },
   // (a class with  unlock: "beastTamer"  in its file is hidden until this is bought)
   { id: "beastTamer", name: "The Beast Tamer", text: "Opens the eighth class: a tamer who fights beside a wolf pack, a bear or a hawk.", bonus: {}, cost: 12, growth: 1, maxLevel: 1 }
 ];

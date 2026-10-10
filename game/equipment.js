@@ -155,6 +155,66 @@ function gearName(slot, step) {
   return name;
 }
 
+// ----- The boss weapon -----
+// With the Second Weapon legend unlock, a class can pick a second kind of weapon (the
+// Elementalist: a second element) and it is drawn for every boss, then put away again.
+// So a class can climb with one build and bring another to the fights that suit it.
+// Its mastery skill and its boons still have to be earned like any others.
+
+// The kinds a class chooses between: its elements if it has stances, else its weapons
+function buildKinds() {
+  if (currentClass().stances !== undefined) {
+    let kinds = {};
+    for (let id in currentClass().stances) {
+      kinds[id] = currentClass().stances[id].name;
+    }
+    return kinds;
+  }
+  return currentClass().gearTypes;
+}
+
+// The kind in hand right now, and a way to change it, whichever of the two it is
+function kindInHand() {
+  return currentClass().stances !== undefined ? stance : weapon;
+}
+
+function takeInHand(kind) {
+  if (currentClass().stances !== undefined) {
+    stance = kind;
+  } else {
+    weapon = kind;
+  }
+  recalcStats();
+}
+
+// The kind the class climbs with, even while the boss weapon is drawn (this is what is saved)
+function mainKind() {
+  return swappedFrom !== "" ? swappedFrom : kindInHand();
+}
+
+function chooseBossWeapon(kind) {
+  bossWeapon = kind;
+  updateScreen();
+}
+
+// Runs when a boss appears
+function drawBossWeapon() {
+  if (totalBonus("secondWeapon") < 1 || buildKinds()[bossWeapon] === undefined || bossWeapon === kindInHand() || swappedFrom !== "") {
+    return;
+  }
+  swappedFrom = kindInHand();
+  takeInHand(bossWeapon);
+  say("You draw your " + buildKinds()[bossWeapon] + " for the boss.");
+}
+
+// Runs when the boss is dead, when you fall, and before every new room
+function sheatheBossWeapon() {
+  if (swappedFrom !== "") {
+    takeInHand(swappedFrom);
+    swappedFrom = "";
+  }
+}
+
 // ----- Named weapons -----
 // Won at floor 100 of another class's tower (see towers.js). The class wields one at a
 // time, and only that one's passive works.

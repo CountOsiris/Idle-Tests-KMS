@@ -84,6 +84,12 @@ let lastAscensionSeconds = 0;
 // The ids of the trophies this class has won in other towers (see towers.js)
 let trophies = [];
 
+// THE BOSS WEAPON (a legend unlock): a second kind of weapon, or a second element for
+// a class with stances, that the class fights bosses with. "" means none.
+// "swappedFrom" is what it put away to draw it (not saved): "" when it is not drawn.
+let bossWeapon = "";
+let swappedFrom = "";
+
 // The named weapon the class wields: the id of a tier-100 trophy it has won, or "" for
 // none. Only the wielded one's passive works (see "NAMED WEAPON" in towers.js).
 let namedWeapon = "";
