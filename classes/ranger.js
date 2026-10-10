@@ -52,7 +52,7 @@ classes.ranger = {
   ranged: true,
 
   upgrades: [
-    { id: "quickDraw", name: "Quick Draw", text: "+3 attack", bonus: { attack: 3 } },
+    { id: "quickDraw", name: "Quick Draw", text: "+5% attack", bonus: { attackPercent: 0.05 } },
     { id: "eagleEye", name: "Eagle Eye", text: "Longbow: +5% critical shot chance", build: "longbow", bonus: { aimChance: 0.05 } },
     { id: "rapidFire", name: "Rapid Fire", text: "Shortbow: +10% chance of an extra arrow", build: "shortbow", bonus: { quickShot: 0.1 } },
     { id: "heavyBolts", name: "Heavy Bolts", text: "Crossbow: bolts deal +8% damage", build: "crossbow", bonus: { boltPower: 0.08 } },
@@ -75,8 +75,8 @@ classes.ranger = {
     {
       floor: 5,
       perks: [
-        { id: "hardy", name: "Hardy", text: "+30 health", bonus: { maxHp: 30 } },
-        { id: "keenEye", name: "Keen Eye", text: "+5 attack", bonus: { attack: 5 } }
+        { id: "hardy", name: "Hardy", text: "health x1.1", multiply: { health: 1.1 } },
+        { id: "keenEye", name: "Keen Eye", text: "attack x1.1", multiply: { attack: 1.1 } }
       ]
     },
     {
@@ -140,6 +140,23 @@ classes.ranger = {
     { id: "truerAim", name: "Truer Aim", text: "Longbow: critical shot damage x1.5", multiply: { longbowCrit: 1.5 } },
     { id: "fasterHands", name: "Faster Hands", text: "Shortbow: arrow damage x1.4", multiply: { shortbow: 1.4 } },
     { id: "heavierBolts", name: "Heavier Bolts", text: "Crossbow: bolt damage x1.4", multiply: { crossbow: 1.4 } }
+  ],
+
+  // Special moves on a cooldown, put in the slots that open on floors 10, 35 and 75
+  // (rules in game/abilities.js). "cooldown" is in turns of fighting. "build" works as
+  // for boons. A "bossKiller" starts set to "Bosses only". "use" is what it does, built
+  // from the pieces in game/abilities.js (abilityHit, abilitySpell, abilityStun...).
+  abilities: [
+    { id: "aimedShot", name: "Aimed Shot", text: "Longbow: 3 turns of your damage in one shot", build: "longbow", cooldown: 6,
+      use: function () { abilityTurns(3); } },
+    { id: "volley", name: "Volley", text: "Shortbow: a volley worth 3 turns of your damage", build: "shortbow", cooldown: 6,
+      use: function () { abilityTurns(3); } },
+    { id: "piercingBolt", name: "Piercing Bolt", text: "Crossbow: 2.5 turns of your damage in one bolt", build: "crossbow", cooldown: 5,
+      use: function () { abilityTurns(2.5); } },
+    { id: "fallBack", name: "Fall Back", text: "Step out of reach: no damage taken for 2 turns", cooldown: 14,
+      use: function () { abilityGuard(1, 2); } },
+    { id: "killingShot", name: "Killing Shot", text: "Boss killer: 10 turns of your damage in one shot", cooldown: 30, bossKiller: true,
+      use: function () { abilityTurns(10); } }
   ],
 
   relics: [

@@ -50,7 +50,7 @@ classes.warden = {
   plainIcon: "🔱",
 
   upgrades: [
-    { id: "spearhead", name: "Spearhead", text: "+3 attack", bonus: { attack: 3 } },
+    { id: "spearhead", name: "Spearhead", text: "+5% attack", bonus: { attackPercent: 0.05 } },
     { id: "bulwark", name: "Reinforced Rim", text: "+2 armor", bonus: { armor: 2 } },
     { id: "thorns", name: "Thorns", text: "Spiked Shield: reflects +10% more of the enemy's attack", build: "spiked", bonus: { reflect: 0.1 } },
     { id: "shieldWall", name: "Shield Wall", text: "Tower Shield: +4% block chance", build: "tower", bonus: { blockChance: 0.04 } },
@@ -76,15 +76,15 @@ classes.warden = {
     {
       floor: 5,
       perks: [
-        { id: "stalwart", name: "Stalwart", text: "+40 health", bonus: { maxHp: 40 } },
-        { id: "spikedPlating", name: "Shield Drill", text: "+10% shield damage (reflected or thrown) and +3 attack", bonus: { shieldPower: 0.1, attack: 3 } }
+        { id: "stalwart", name: "Stalwart", text: "health x1.1", multiply: { health: 1.1 } },
+        { id: "spikedPlating", name: "Shield Drill", text: "+10% shield damage (reflected or thrown) and attack x1.05", bonus: { shieldPower: 0.1 }, multiply: { attack: 1.05 } }
       ]
     },
     {
       floor: 10,
       perks: [
         { id: "stoneSkin", name: "Stone Skin", text: "+4 armor", bonus: { armor: 4 } },
-        { id: "shieldBash", name: "Spearman", text: "+6 attack", bonus: { attack: 6 } }
+        { id: "shieldBash", name: "Spearman", text: "attack x1.15", multiply: { attack: 1.15 } }
       ]
     },
     {
@@ -146,6 +146,23 @@ classes.warden = {
     { id: "longerSpear", name: "Longer Spear", text: "Tower Shield: spear damage x1.4", multiply: { spear: 1.4 } },
     { id: "heavierDisc", name: "Heavier Disc", text: "Bladed Shield: thrown shield damage x1.5", multiply: { throw: 1.5 } },
     { id: "oldGrudges", name: "Old Grudges", text: "Vengeance x1.5", multiply: { vengeance: 1.5 } }
+  ],
+
+  // Special moves on a cooldown, put in the slots that open on floors 10, 35 and 75
+  // (rules in game/abilities.js). "cooldown" is in turns of fighting. "build" works as
+  // for boons. A "bossKiller" starts set to "Bosses only". "use" is what it does, built
+  // from the pieces in game/abilities.js (abilityHit, abilitySpell, abilityStun...).
+  abilities: [
+    { id: "thornBurst", name: "Thorn Burst", text: "Spiked Shield: 3 turns of your damage thrown back at once", build: "spiked", cooldown: 6,
+      use: function () { abilityTurns(3); } },
+    { id: "holdTheLine", name: "Hold the Line", text: "Tower Shield: block every attack for 2 turns, and 1.5 turns of your damage in a spear thrust", build: "tower", cooldown: 7,
+      use: function () { abilityGuard(1, 2); abilityTurns(1.5); } },
+    { id: "ricochet", name: "Ricochet", text: "Bladed Shield: 3 turns of your damage in one throw", build: "bladed", cooldown: 6,
+      use: function () { abilityTurns(3); } },
+    { id: "brace", name: "Brace", text: "Take 50% less damage for 4 turns", cooldown: 12,
+      use: function () { abilityGuard(0.5, 4); } },
+    { id: "settleTheScore", name: "Settle the Score", text: "Boss killer: 8 turns of your damage in one thrust, plus twice what vengeance owes", cooldown: 30, bossKiller: true,
+      use: function () { abilityTurns(8); abilityPure(wardenOwed * 2, "piercing"); wardenOwed = 0; } }
   ],
 
   relics: [

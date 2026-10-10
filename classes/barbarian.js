@@ -74,8 +74,8 @@ classes.barbarian = {
     {
       floor: 5,
       perks: [
-        { id: "thickSkin", name: "Thick Skin", text: "+30 health", bonus: { maxHp: 30 } },
-        { id: "bruteStrength", name: "Brute Strength", text: "+5 attack", bonus: { attack: 5 } }
+        { id: "thickSkin", name: "Thick Skin", text: "health x1.1", multiply: { health: 1.1 } },
+        { id: "bruteStrength", name: "Brute Strength", text: "attack x1.1", multiply: { attack: 1.1 } }
       ]
     },
     {
@@ -143,6 +143,23 @@ classes.barbarian = {
     { id: "keenerEdge", name: "Keener Edge", text: "Sword: critical hit damage x1.5", multiply: { swordCrit: 1.5 } },
     { id: "heavierClub", name: "Heavier Club", text: "Club: damage of every hit x1.4", multiply: { club: 1.4 } },
     { id: "redMist", name: "Red Mist", text: "Rage x1.5", multiply: { rage: 1.5 } }
+  ],
+
+  // Special moves on a cooldown, put in the slots that open on floors 10, 35 and 75
+  // (rules in game/abilities.js). "cooldown" is in turns of fighting. "build" works as
+  // for boons. A "bossKiller" starts set to "Bosses only". "use" is what it does, built
+  // from the pieces in game/abilities.js (abilityHit, abilitySpell, abilityStun...).
+  abilities: [
+    { id: "cleave", name: "Cleave", text: "Axe: 2 turns of your damage at once, and 3 more bleed stacks", build: "axe", cooldown: 6,
+      use: function () { abilityTurns(2); abilityStacks(3, "bleedStacks"); } },
+    { id: "riposte", name: "Riposte", text: "Sword: 3 turns of your damage in one thrust", build: "sword", cooldown: 6,
+      use: function () { abilityTurns(3); } },
+    { id: "earthshatter", name: "Earthshatter", text: "Club: 2.5 turns of your damage in one blow, and the enemy is stunned", build: "club", cooldown: 7,
+      use: function () { abilityTurns(2.5); abilityStun(); } },
+    { id: "battleCry", name: "Battle Cry", text: "All your damage +100% for 5 turns", cooldown: 15,
+      use: function () { abilityBoost(1, 5); } },
+    { id: "execute", name: "Execute", text: "Boss killer: 8 turns of your damage in one blow, doubled against an enemy below half health", cooldown: 30, bossKiller: true,
+      use: function () { abilityTurns(monsterHp < monsterMaxHp / 2 ? 16 : 8); } }
   ],
 
   relics: [

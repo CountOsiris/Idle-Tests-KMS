@@ -11,7 +11,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&family=EB+Garamond:wght@400;500;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css?v=20261009c">
+  <link rel="stylesheet" href="style.css?v=20261010a">
 </head>
 <body data-tab="tower">
 
@@ -35,6 +35,16 @@
       <div class="tile"><span>Fame</span><strong id="fame">0</strong></div>
     </div>
   </header>
+
+  <!-- A big moment: a milestone perk to pick, a new part of the game. Filled in by the game (game/). -->
+  <div id="moment" class="moment" hidden>
+    <div class="card highlight moment-card">
+      <h2 id="moment-title"></h2>
+      <p id="moment-text"></p>
+      <div id="moment-choices"></div>
+      <p><button id="moment-close" class="main" onclick="closeMoment()">Continue</button></p>
+    </div>
+  </div>
 
   <!-- Only shown when the website has a newer version than the one running in this tab -->
   <div id="new-version" class="card highlight notice" hidden>
@@ -76,14 +86,14 @@
           <div class="floor-box">
             <span>Floor</span>
             <strong id="floor">1</strong>
-            <!-- One dot for every room on the floor, made by game.js -->
+            <!-- One dot for every room on the floor, made by the game (game/) -->
             <div id="room-pips" class="pips"></div>
             <span>best <span id="best-floor">1</span></span>
           </div>
         </div>
 
         <!-- The fight: you on the left, the monster (or room) on the right.
-             game.js animates the icons and floats damage numbers above them. -->
+             game/feel.js animates the icons and floats damage numbers above them. -->
         <div id="stage" class="stage">
           <!-- Short messages pop up here: a level gained, an item found... -->
           <div id="toasts" class="toasts"></div>
@@ -126,7 +136,10 @@
           <span id="dot-part">&middot; <span id="dot-label">Bleeding</span> <strong id="monster-dot">0</strong></span>
         </p>
 
-        <!-- What needs attention and what to aim for. Filled in by game.js. -->
+        <!-- The abilities in the class's slots. Press one to use it at the next turn. Made by game/abilities.js. -->
+        <div id="ability-bar" class="choices centre ability-bar" hidden></div>
+
+        <!-- What needs attention and what to aim for. Filled in by the game (game/). -->
         <div id="goals" class="goals"></div>
       </div>
 
@@ -138,7 +151,7 @@
         </div>
         <p class="note">Every boss you defeat gives one boon that suits the weapon you are using. Boons last until you fall. Each one also makes you stronger all round: right now <strong id="upgrade-boost">+0%</strong> attack and health.</p>
         <p id="upgrades-empty" class="note">None yet. The first boss is on floor 5.</p>
-        <!-- The rows are made by game.js from the class's upgrades list -->
+        <!-- The rows are made by the game (game/) from the class's upgrades list -->
         <div id="upgrades"></div>
       </div>
 
@@ -173,7 +186,7 @@
             <div><span>Level</span><strong id="level">1</strong></div>
             <div><span>Health</span><strong id="health">0</strong></div>
             <div><span>Attack</span><strong id="attack">0</strong></div>
-            <div><span>Armor</span><strong id="total-armor">0</strong></div>
+            <div><span>Armor</span><strong id="total-armor">0</strong><span id="armor-share" class="note"></span></div>
           </div>
           <p id="class-stat"></p>
         </div>
@@ -200,7 +213,7 @@
         <div class="card">
           <h2>Wearing</h2>
           <p class="note">Your equipment is yours to keep: you never lose it when you fall. The blacksmith in town makes it stronger, and is where you pick another kind of weapon.</p>
-          <!-- The cards are made by game.js -->
+          <!-- The cards are made by the game (game/) -->
           <div id="worn"></div>
         </div>
 
@@ -217,6 +230,21 @@
 
       <!-- Skills -->
       <div class="page" id="page-skills">
+        <div id="abilities-card" class="card" hidden>
+          <div class="card-head">
+            <h2>Abilities</h2>
+            <p>Slots <strong id="ability-slots" class="big-number">0</strong></p>
+          </div>
+          <p class="note">
+            Special moves used on a cooldown, as well as your normal attack. Each one in a slot
+            can be used by itself (Auto), only against bosses (Bosses only), or only when you
+            press its button under the fight (Manual).<span id="ability-next"></span>
+          </p>
+          <p class="note">Most abilities deal "turns of your damage": what your normal turns have
+            been doing lately, crits, bleeding and all. Yours: <strong id="ability-damage">0</strong> a turn.</p>
+          <div id="abilities"></div>
+        </div>
+
         <div class="card">
           <div class="card-head">
             <h2>Skills</h2>
@@ -251,7 +279,7 @@
             </div>
           </div>
 
-          <!-- The rows are made by game.js from the class's skills list -->
+          <!-- The rows are made by the game (game/) from the class's skills list -->
           <div id="skills"></div>
 
           <!-- A remembered skill layout, to get back after ascending -->
@@ -273,14 +301,14 @@
           <h2>Blacksmith</h2>
           <p class="note">Improves your equipment for gold from your bank, one step at a time. After +9 it becomes the next tier. You keep it when you fall, but not when you ascend.</p>
 
-          <!-- Hidden for a class with only one kind of weapon. The buttons are made by game.js. -->
+          <!-- Hidden for a class with only one kind of weapon. The buttons are made by the game (game/). -->
           <div id="weapon-picker" class="picker" hidden>
             <p class="row-title">Fight with</p>
             <div id="weapon-buttons" class="choices"></div>
             <p id="weapon-picker-note" class="note"></p>
           </div>
 
-          <!-- One row for the weapon and one for the armor, made by game.js -->
+          <!-- One row for the weapon and one for the armor, made by the game (game/) -->
           <div id="forge"></div>
           <div class="choices">
             <button id="forge-all" onclick="upgradeAllGear()">Buy all I can afford</button>
@@ -305,7 +333,7 @@
             <div id="favourite-upgrade-buttons" class="choices"></div>
           </div>
 
-          <!-- The rest is made by game.js from the townUpgrades list in data.js -->
+          <!-- The rest is made by the game (game/) from the townUpgrades list in data.js -->
           <div id="town-upgrades"></div>
         </div>
       </div>
@@ -315,7 +343,7 @@
         <div class="card">
           <h2>Towers</h2>
           <p class="note">Every class has a home tower that suits it. Other towers are harder, but pay more experience and hold trophies: permanent bonuses for the class that wins them. A new tower is entered after your next fall.</p>
-          <!-- The rows are made by game.js from towers.js -->
+          <!-- The rows are made by the game (game/) from towers.js -->
           <div id="towers"></div>
         </div>
       </div>
@@ -344,6 +372,7 @@
           </p>
 
           <p><button id="ascend-btn" class="main" onclick="ascend()">Ascend</button></p>
+          <p id="ascend-advice" class="note"></p>
 
           <div class="pair"><span>This ascension</span><span id="this-ascension"></span></div>
           <div class="pair"><span>Last ascension</span><span id="last-ascension"></span></div>
@@ -365,7 +394,7 @@
         <div class="card">
           <h2>Fame upgrades</h2>
           <p class="note">Kept forever, and shared by all your classes. Every one is a straight multiplier, and every level multiplies again. They open up as you ascend. A class gets the full power of as many levels as it has ascended itself (this one: <strong id="catch-up-count">0</strong>); levels beyond that work at <span id="catch-up-share">25%</span> until it catches up.</p>
-          <!-- The rows are made by game.js from the fameUpgrades list in data.js -->
+          <!-- The rows are made by the game (game/) from the fameUpgrades list in data.js -->
           <div id="fame-upgrades"></div>
         </div>
       </div>
@@ -379,6 +408,13 @@
             <span>
               <span class="row-title">Animations</span>
               <span class="note">Moving fighters, floating damage numbers and pop-up messages. Switch off for a still screen.</span>
+            </span>
+          </label>
+          <label class="setting">
+            <input type="checkbox" id="moments-box" onchange="setMoments(this.checked)">
+            <span>
+              <span class="row-title">Big moments</span>
+              <span class="note">A card in the middle of the page for milestones and new parts of the game, where you can pick a perk straight away. Switch off to see them as big words across the fight instead.</span>
             </span>
           </label>
         </div>
@@ -432,24 +468,35 @@
 
   </main>
 
-  <!-- data.js first, then towers.js, then one file per class, then game.js last -->
+  <!-- data.js first, then towers.js, then one file per class, then the files in game/, then cloud.js last -->
   <!-- THE VERSION. Before every upload, change it in THREE places to the same new value:
          1. gameVersion just below
          2. every ?v=... on this page (the stylesheet at the top and the scripts below)
          3. the file version.txt
        The ?v= makes browsers fetch the new files instead of old remembered ones, and
-       version.txt is how a game left open finds out it is out of date (see game.js). -->
-  <script>const gameVersion = "20261009c";</script>
-  <script src="data.js?v=20261009c"></script>
-  <script src="towers.js?v=20261009c"></script>
-  <script src="classes/barbarian.js?v=20261009c"></script>
-  <script src="classes/warden.js?v=20261009c"></script>
-  <script src="classes/ranger.js?v=20261009c"></script>
-  <script src="classes/assassin.js?v=20261009c"></script>
-  <script src="classes/warlock.js?v=20261009c"></script>
-  <script src="classes/elementalist.js?v=20261009c"></script>
-  <script src="classes/zealot.js?v=20261009c"></script>
-  <script src="game.js?v=20261009c"></script>
-  <script src="cloud.js?v=20261009c"></script>
+       version.txt is how a game left open finds out it is out of date (see game/start.js). -->
+  <script>const gameVersion = "20261010a";</script>
+  <script src="data.js?v=20261010a"></script>
+  <script src="towers.js?v=20261010a"></script>
+  <script src="classes/barbarian.js?v=20261010a"></script>
+  <script src="classes/warden.js?v=20261010a"></script>
+  <script src="classes/ranger.js?v=20261010a"></script>
+  <script src="classes/assassin.js?v=20261010a"></script>
+  <script src="classes/warlock.js?v=20261010a"></script>
+  <script src="classes/elementalist.js?v=20261010a"></script>
+  <script src="classes/zealot.js?v=20261010a"></script>
+  <!-- The game's rules, in this order (start.js last) -->
+  <script src="game/state.js?v=20261010a"></script>
+  <script src="game/bonuses.js?v=20261010a"></script>
+  <script src="game/equipment.js?v=20261010a"></script>
+  <script src="game/abilities.js?v=20261010a"></script>
+  <script src="game/skills.js?v=20261010a"></script>
+  <script src="game/save.js?v=20261010a"></script>
+  <script src="game/page-build.js?v=20261010a"></script>
+  <script src="game/page-show.js?v=20261010a"></script>
+  <script src="game/fights.js?v=20261010a"></script>
+  <script src="game/feel.js?v=20261010a"></script>
+  <script src="game/start.js?v=20261010a"></script>
+  <script src="cloud.js?v=20261010a"></script>
 </body>
 </html>

@@ -49,7 +49,8 @@
 // ----- Trophies -----
 // A trophy is a permanent bonus for the class that wins it (each class wins its own).
 // It is won the first time that class reaches the trophy's floor in a tower that is NOT its own.
-// Every trophy needs: floor, id (unique, don't rename it later), name, text, bonus.
+// Every trophy needs: floor, id (unique, don't rename it later), name, text, and a
+// multiply (like a perk's, which never fades as the class grows) or a bonus, or both.
 // The bonus can only use the words every class understands:
 //   maxHp, attack, armor, gold, experience
 
@@ -74,9 +75,9 @@ const towers = {
       { name: "Warg Mother", icon: "🐺",text: "Enrages: her attack grows by 10% every turn.", hp: 1.1, attack: 1, armor: 0.5, gold: 1.2, enrage: 0.1, weak: ["fire", "crushing"], resist: ["nature", "ice", "arcane"] }
     ],
     trophies: [
-      { floor: 10, id: "warlordsBanner", name: "Warlord's Banner", text: "+5 attack", bonus: { attack: 5 } },
-      { floor: 20, id: "warlordsAxe", name: "Warlord's Axe", text: "+8 attack", bonus: { attack: 8 } },
-      { floor: 30, id: "warlordsCrown", name: "Warlord's Crown", text: "+12 attack", bonus: { attack: 12 } }
+      { floor: 10, id: "warlordsBanner", name: "Warlord's Banner", text: "attack x1.1", multiply: { attack: 1.1 } },
+      { floor: 20, id: "warlordsAxe", name: "Warlord's Axe", text: "attack x1.15", multiply: { attack: 1.15 } },
+      { floor: 30, id: "warlordsCrown", name: "Warlord's Crown", text: "attack x1.25", multiply: { attack: 1.25 } }
     ]
   },
 
@@ -127,9 +128,9 @@ const towers = {
       { name: "Troll King", icon: "👹",text: "Regenerates 3% of his health every turn.", hp: 1.2, attack: 1, armor: 1, gold: 1.2, regen: 0.03, weak: ["fire", "nature"], resist: ["crushing", "affliction", "holy"] }
     ],
     trophies: [
-      { floor: 10, id: "heartOfTheWild", name: "Heart of the Wild", text: "+40 health", bonus: { maxHp: 40 } },
-      { floor: 20, id: "elderBark", name: "Elder Bark", text: "+60 health", bonus: { maxHp: 60 } },
-      { floor: 30, id: "trollKingsBlood", name: "Troll King's Blood", text: "+100 health", bonus: { maxHp: 100 } }
+      { floor: 10, id: "heartOfTheWild", name: "Heart of the Wild", text: "health x1.1", multiply: { health: 1.1 } },
+      { floor: 20, id: "elderBark", name: "Elder Bark", text: "health x1.15", multiply: { health: 1.15 } },
+      { floor: 30, id: "trollKingsBlood", name: "Troll King's Blood", text: "health x1.25", multiply: { health: 1.25 } }
     ]
   },
 
@@ -203,9 +204,9 @@ const towers = {
       { name: "Red Dragon", icon: "🐲",text: "Enrages: its attack grows by 10% every turn.", hp: 1.3, attack: 1, armor: 1, gold: 1.5, enrage: 0.1, weak: ["ice"], resist: ["slashing", "arcane", "affliction"], flying: true }
     ],
     trophies: [
-      { floor: 10, id: "stormShard", name: "Storm Shard", text: "+4 attack and +20 health", bonus: { attack: 4, maxHp: 20 } },
-      { floor: 20, id: "thunderFeather", name: "Thunder Feather", text: "+6 attack and +30 health", bonus: { attack: 6, maxHp: 30 } },
-      { floor: 30, id: "dragonHeart", name: "Dragon Heart", text: "+10 attack and +50 health", bonus: { attack: 10, maxHp: 50 } }
+      { floor: 10, id: "stormShard", name: "Storm Shard", text: "attack and health x1.05", multiply: { attack: 1.05, health: 1.05 } },
+      { floor: 20, id: "thunderFeather", name: "Thunder Feather", text: "attack and health x1.1", multiply: { attack: 1.1, health: 1.1 } },
+      { floor: 30, id: "dragonHeart", name: "Dragon Heart", text: "attack and health x1.15", multiply: { attack: 1.15, health: 1.15 } }
     ]
   },
 
@@ -228,9 +229,9 @@ const towers = {
       { name: "Lich Bishop", icon: "☠️",text: "Double armor, and 30% of his attack ignores yours.", hp: 1, attack: 1, armor: 2, gold: 1.2, poison: 0.3, weak: ["holy", "crushing"], resist: ["piercing", "affliction", "ice"] }
     ],
     trophies: [
-      { floor: 10, id: "abbeyBlessing", name: "Abbey Blessing", text: "+30 health and +1 armor", bonus: { maxHp: 30, armor: 1 } },
-      { floor: 20, id: "abbotsRosary", name: "Abbot's Rosary", text: "+45 health and +2 armor", bonus: { maxHp: 45, armor: 2 } },
-      { floor: 30, id: "saintsRelic", name: "Saint's Relic", text: "+75 health and +3 armor", bonus: { maxHp: 75, armor: 3 } }
+      { floor: 10, id: "abbeyBlessing", name: "Abbey Blessing", text: "health x1.1 and +1 armor", bonus: { armor: 1 }, multiply: { health: 1.1 } },
+      { floor: 20, id: "abbotsRosary", name: "Abbot's Rosary", text: "health x1.15 and +2 armor", bonus: { armor: 2 }, multiply: { health: 1.15 } },
+      { floor: 30, id: "saintsRelic", name: "Saint's Relic", text: "health x1.25 and +3 armor", bonus: { armor: 3 }, multiply: { health: 1.25 } }
     ]
   }
 };

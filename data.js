@@ -1,7 +1,7 @@
 // =====================================================================
 //  data.js - the numbers and lists that every class shares.
 //  This file is loaded first. Then towers.js, then one file per class
-//  from classes/, game.js, and cloud.js last.
+//  from classes/, the files in game/, and cloud.js last.
 // =====================================================================
 
 // ----- Online saves -----
@@ -31,12 +31,12 @@ const monsterGrowth = 0.22;
 const monsterCurve = 2;
 
 // THE CLIMB GETS STEEPER. From midFloor up to deepFloor, monsters also get stronger by a
-// small fixed percentage every floor (1.04 means 4% more health and attack per floor).
+// small fixed percentage every floor (1.05 means 5% more health and attack per floor).
 // This is what makes progress slow down, and slow down further, until the next
 // milestone gives a jump in power and the climb speeds up again.
 // Floors up to midFloor are exactly as the formula above says.
 const midFloor = 20;
-const midGrowth = 1.04;
+const midGrowth = 1.05;
 
 // How much stronger a boss is than an ordinary monster of its floor.
 // A big number here makes every boss a wall: nothing happens for hours, then several
@@ -78,6 +78,15 @@ const towerWalls = [
 // Penetration cuts through both, the same way it cuts through resistance.
 const armorPerPoint = 0.1;
 const maxArmorShare = 0.6;
+
+// YOUR ARMOR is a rating, and the share of each hit it blocks is worked out from it:
+//   share blocked  =  maxArmorShare x armor / (armor + armorHalf)
+//   armorHalf      =  armorHalfBase + armorHalfPerFloor x the floor you are on
+// So armor always helps, every point a little less than the one before, and it never
+// quite reaches maxArmorShare. Deeper floors need more armor for the same share:
+// on floor 35, 40 armor blocks about 28% and 100 armor about 41%.
+const armorHalfBase = 10;
+const armorHalfPerFloor = 1;
 
 // ----- Rewards -----
 // Gold from a normal monster is this much per floor. Bosses, rare monsters
@@ -159,7 +168,7 @@ const fameCatchUpShare = 0.25;
 
 // (Legacy, Pathfinder, Insight, Endurance and Mastery were sold here before fame was
 // shared. They added things instead of multiplying, so they are gone, and the fame
-// spent on them was given back: see upgradeSave in game.js. Don't reuse their ids.)
+// spent on them was given back: see upgradeSave in game/save.js. Don't reuse their ids.)
 const fameUpgrades = [
   { id: "might", name: "Might", text: "Multiplies all the damage you deal by 1.2.", unlockAt: 1, multiply: { damage: 1.2 }, cost: 6, growth: 1.45, maxLevel: 0 },
   { id: "vitality", name: "Vitality", text: "Multiplies your health and armor by 1.2.", unlockAt: 1, multiply: { health: 1.2, armor: 1.2 }, cost: 6, growth: 1.45, maxLevel: 0 },
@@ -245,15 +254,22 @@ const breakthroughPerks = [
   { id: "bulwark", name: "Bulwark", text: "you take 20% less damage", multiply: { damageTaken: 0.8 } }
 ];
 
-// (Not in use: no fame upgrade starts runs part-way up any more. If one is added again
-// with add: { pathfinder: 1 }, these two numbers shape it.)
-// Pathfinder starts runs part of the way to your best floor. It can be bought forever:
-// every level closes this share of the remaining gap (0.85 means 15% of it is closed)...
-const pathfinderFade = 0.85;
+// ----- Sweeping through the easy floors -----
+// Once a class is far stronger than the early floors, climbing them again every run is
+// wasted time. So a run remembers how far it got WITHOUT SLOWING DOWN: every fight won
+// in cruiseTurns turns or fewer. The next run starts on that floor, and you sweep up to
+// it at once, with the boons of the bosses you pass. Swept floors pay no gold and no
+// experience: the run that first climbed them was paid for them, and paying again on
+// every death would turn dying quickly at a wall into the fastest way to grow.
+//   - A run that slows down at its very first fight was started too high: the next one
+//     starts half as high.
+//   - After ascending, and on entering another tower, runs start on floor 1 again.
+const cruiseTurns = 2;
 
-// ...to this limit, which it gets ever closer to but never reaches (0.6 means 60% of the way).
-// It must stay well below 1, or runs would start right at the wall and end at once.
-const maxStartShare = 0.6;
+// ----- Abilities -----
+// Special moves on a cooldown (each class's list is in its file; the rules are in
+// game/abilities.js). A class opens one ability slot on each of these floors.
+const abilitySlotFloors = [10, 35, 75];
 
 // How much of your health comes back after every kill (0.2 means a fifth)
 const healOnKill = 0.2;
@@ -276,11 +292,14 @@ const forgeStepsPerTier = 10;
 const forgeCost = 25;
 const forgeCostGrowth = 1.3;
 
-// A weapon's attack: forgePowerPerStep for every step it has, and the whole of it is
-// multiplied by forgeTierPower for every tier above the first, so a new tier is a jump.
-// Armor has half of that.
-const forgePowerPerStep = 1;
-const forgeTierPower = 1.2;
+// A weapon's attack. Each tier is forgeTierPower times the one before, and each +1
+// inside a tier adds forgePlusPower of the tier's power:
+//   attack  =  forgeBasePower x forgeTierPower ^ tier x (1 + forgePlusPower x plus)
+// So +1 to +9 are small steps (+6% each), and a new tier is a JUMP: Bronze +9 gives
+// 7.7, Iron +0 gives 9.5, and Iron +9 gives 14.6. Armor has half of that.
+const forgeBasePower = 5;
+const forgeTierPower = 1.9;
+const forgePlusPower = 0.06;
 
 // ----- Limits, and what happens past them -----
 // Nothing can be bought only a set number of times. But a chance cannot go past
@@ -355,7 +374,7 @@ const maxLogLines = 40;
 // ----- The classes -----
 // Every file in classes/ adds one class to this list.
 // To add a class: copy one of those files, change it, add a <script> line for it
-// in index.html (above game.js), and give it a tower of its own in towers.js.
+// in index.html (above the game/ files), and give it a tower of its own in towers.js.
 // ----- Damage types -----
 // Every hit has a type. Monsters can be weak to some types and resist others;
 // which ones is written on each monster in towers.js, like this:
@@ -421,7 +440,7 @@ const classes = {};
 //
 // (The Squire, Quartermaster, Weaponsmith, Armory and Lucky Charm were sold here while
 // equipment was still found in the tower. They are gone, and what players paid for
-// them was given back: see upgradeSave in game.js. Don't reuse their ids.)
+// them was given back: see upgradeSave in game/save.js. Don't reuse their ids.)
 
 const townUpgrades = [
   { id: "tactician", name: "Tactician", text: "Pick a favourite boon. Bosses give you that one every time, whenever it suits your weapon.", bonus: { favouriteUpgrade: 1 }, maxLevel: 1, cost: 5000, growth: 1 },
@@ -443,8 +462,8 @@ const townUpgrades = [
 //   text  - a short description
 //   bonus - what it does
 const relics = [
-  { id: "trollHeart", name: "Troll Heart", text: "+40 health", bonus: { maxHp: 40 } },
-  { id: "whetstone", name: "Edge of Ruin", text: "+8 attack", bonus: { attack: 8 } },
+  { id: "trollHeart", name: "Troll Heart", text: "+10% health", bonus: { healthPercent: 0.1 } },
+  { id: "whetstone", name: "Edge of Ruin", text: "+10% attack", bonus: { attackPercent: 0.1 } },
   { id: "dragonscale", name: "Dragonscale", text: "+4 armor", bonus: { armor: 4 } },
   { id: "goldenIdol", name: "Golden Idol", text: "+30% gold", bonus: { gold: 0.3 } },
   { id: "tomeOfTheFallen", name: "Tome of the Fallen", text: "+20% experience", bonus: { experience: 0.2 } }

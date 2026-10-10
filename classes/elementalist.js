@@ -60,8 +60,8 @@ classes.elementalist = {
   },
 
   upgrades: [
-    { id: "elementalPower", name: "Elemental Power", text: "+3 attack", bonus: { attack: 3 } },
-    { id: "attunement", name: "Elemental Ward", text: "+15 health", bonus: { maxHp: 15 } },
+    { id: "elementalPower", name: "Elemental Power", text: "+5% attack", bonus: { attackPercent: 0.05 } },
+    { id: "attunement", name: "Elemental Ward", text: "+5% health", bonus: { healthPercent: 0.05 } },
     { id: "wildfire", name: "Wildfire", text: "Fire: +1 burn stack", build: "fire", bonus: { burnStacks: 1 } },
     { id: "frostbite", name: "Frostbite", text: "Ice: +5% critical chance", build: "ice", bonus: { critChance: 0.05 } },
     { id: "conduction", name: "Conduction", text: "Lightning: +10% chance of an extra bolt", build: "lightning", bonus: { extraBolts: 0.1 } },
@@ -82,15 +82,15 @@ classes.elementalist = {
     {
       floor: 5,
       perks: [
-        { id: "stoneWard", name: "Stone Ward", text: "+30 health", bonus: { maxHp: 30 } },
-        { id: "spellpower", name: "Spellpower", text: "+5 attack", bonus: { attack: 5 } }
+        { id: "stoneWard", name: "Stone Ward", text: "health x1.1", multiply: { health: 1.1 } },
+        { id: "spellpower", name: "Spellpower", text: "attack x1.1", multiply: { attack: 1.1 } }
       ]
     },
     {
       floor: 10,
       perks: [
         { id: "mistVeil", name: "Mist Veil", text: "+3 armor", bonus: { armor: 3 } },
-        { id: "channeling", name: "Channeling", text: "+6 attack", bonus: { attack: 6 } }
+        { id: "channeling", name: "Channeling", text: "attack x1.15", multiply: { attack: 1.15 } }
       ]
     },
     {
@@ -152,6 +152,25 @@ classes.elementalist = {
     { id: "colderIce", name: "Colder Ice", text: "Ice: critical hit damage x1.5", multiply: { iceCrit: 1.5 } },
     { id: "wilderStorm", name: "Wilder Storm", text: "Lightning: bolt damage x1.4", multiply: { bolt: 1.4 } },
     { id: "biggerBoulders", name: "Bigger Boulders", text: "Earth: boulder damage x1.4", multiply: { boulder: 1.4 } }
+  ],
+
+  // Special moves on a cooldown, put in the slots that open on floors 10, 35 and 75
+  // (rules in game/abilities.js). "cooldown" is in turns of fighting. "build" works as
+  // for boons. A "bossKiller" starts set to "Bosses only". "use" is what it does, built
+  // from the pieces in game/abilities.js (abilityHit, abilitySpell, abilityStun...).
+  abilities: [
+    { id: "fireball", name: "Fireball", text: "Fire: 2 turns of your damage at once, and 3 more burn stacks", build: "fire", cooldown: 6,
+      use: function () { abilityTurns(2); abilityStacks(3, "burnStacks"); } },
+    { id: "frostNova", name: "Frost Nova", text: "Ice: 2.5 turns of your damage at once, and the enemy is frozen for a turn", build: "ice", cooldown: 7,
+      use: function () { abilityTurns(2.5); abilityStun(); } },
+    { id: "thunderclap", name: "Thunderclap", text: "Lightning: a crash of bolts worth 3 turns of your damage", build: "lightning", cooldown: 6,
+      use: function () { abilityTurns(3); } },
+    { id: "meteor", name: "Meteor", text: "Earth: 4 turns of your damage in one falling stone", build: "earth", cooldown: 8,
+      use: function () { abilityTurns(4); } },
+    { id: "manaWard", name: "Mana Ward", text: "Take 50% less damage for 4 turns", cooldown: 12,
+      use: function () { abilityGuard(0.5, 4); } },
+    { id: "elementalStorm", name: "Elemental Storm", text: "Boss killer: 10 turns of your damage in one storm", cooldown: 30, bossKiller: true,
+      use: function () { abilityTurns(10); } }
   ],
 
   relics: [

@@ -507,6 +507,14 @@ body[data-tab="tower"] #tab-character {
   font-weight: 500;
 }
 
+/* The small line under a number, like what share of each hit your armor blocks */
+.stats span.note {
+  font-family: inherit;
+  letter-spacing: 0;
+  text-transform: none;
+  font-size: 12px;
+}
+
 /* Groups of buttons to pick one from: classes, perks, favourites */
 .choices {
   display: flex;
@@ -833,6 +841,50 @@ body[data-tab="tower"] #tab-character {
 .banner.won {
   color: var(--gold-bright);
   text-shadow: 0 0 22px rgba(184, 146, 74, 0.6);
+}
+
+/* Longer words, like "Steel Axe" or "The tower grows stronger" */
+.banner.long {
+  font-size: 24px;
+  letter-spacing: 4px;
+  text-align: center;
+  padding: 0 16px;
+}
+
+/* A big moment: a card in the middle of the page, over a darkened screen */
+.moment {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 50;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  background: rgba(0, 0, 0, 0.65);
+}
+
+.moment[hidden] {
+  display: none;
+}
+
+/* The ability buttons under the fight */
+.ability-bar {
+  justify-content: center;
+  margin-top: 8px;
+}
+
+.ability-bar[hidden] {
+  display: none;
+}
+
+.moment-card {
+  max-width: 520px;
+  width: 100%;
+  max-height: 90vh;
+  overflow-y: auto;
 }
 
 /* The "what to do next" list */

@@ -1,0 +1,414 @@
+// =====================================================================
+//  game/fights.js - Building each room, and what happens in it: fights, death, victory, one second of play.
+// =====================================================================
+
+// ----- Building each room -----
+function pickMonsterType(isBoss) {
+  if (isBoss) {
+    // Bosses come in order: floor 5 is the first, floor 10 the second...
+    let bosses = towers[tower].bosses;
+    return bosses[(floor / 5 - 1) % bosses.length];
+  }
+
+  let choices = [];
+  for (let type of towers[tower].monsters) {
+    if (type.minFloor <= floor) {
+      choices.push(type);
+    }
+  }
+  return choices[Math.floor(Math.random() * choices.length)];
+}
+
+// A monster only lists the traits it has, so a missing one counts as 0
+function traitOf(type, trait) {
+  if (type[trait] === undefined) {
+    return 0;
+  }
+  return type[trait];
+}
+
+function spawnMonster(isBoss) {
+  let type = pickMonsterType(isBoss);
+
+  monsterName = type.name;
+  monsterText = type.text;
+  // How many times stronger than floor 1 the monsters are here (see data.js)
+  let growth = Math.pow(1 + monsterGrowth * (floor - 1), monsterCurve);
+
+  // The climb gets steeper between midFloor and deepFloor
+  if (floor > midFloor) {
+    growth = growth * Math.pow(midGrowth, Math.min(floor, deepFloor) - midFloor);
+  }
+
+  // The deep tower: every floor past deepFloor multiplies it again
+  if (floor > deepFloor) {
+    growth = growth * Math.pow(deepGrowth, floor - deepFloor);
+  }
+
+  // The walls: every one at or below this floor multiplies it once more
+  for (let wall of towerWalls) {
+    if (floor >= wall.floor) {
+      growth = growth * wall.strength;
+    }
+  }
+  monsterMaxHp = Math.round(monsterHealth * growth * type.hp);
+  monsterAttack = Math.round(monsterDamage * growth * type.attack);
+  monsterArmor = Math.min(maxArmorShare, armorPerPoint * type.armor);
+
+  // Ward works like armor. A monster can have its own, or it uses its tower's.
+  // A tower with none written has no ward at all.
+  let ward = 0;
+  if (type.ward !== undefined) {
+    ward = type.ward;
+  } else if (towers[tower].ward !== undefined) {
+    ward = towers[tower].ward;
+  }
+  monsterWard = Math.min(maxArmorShare, armorPerPoint * ward);
+  monsterGold = type.gold;
+  monsterPoison = traitOf(type, "poison");
+  monsterRegen = traitOf(type, "regen");
+
+  // What it is weak to and resists (a monster with neither just leaves them out)
+  monsterWeak = type.weak || [];
+  monsterResist = type.resist || [];
+  monsterFlying = type.flying === true;
+  monsterLunges = type.lunge === true || towers[tower].lunge === true;
+
+  // Monsters in another class's tower are stronger
+  if (isAway()) {
+    monsterMaxHp = Math.round(monsterMaxHp * (1 + awayTowerHealth));
+    monsterAttack = Math.round(monsterAttack * (1 + awayTowerAttack));
+  }
+
+  monsterStunned = false;
+  dotStacks = 0;
+  fightTurns = 0;
+
+  monsterIsRare = !isBoss && Math.random() < rareChance;
+
+  if (isBoss) {
+    monsterMaxHp = Math.round(monsterMaxHp * bossHealth);
+    monsterAttack = Math.round(monsterAttack * bossAttack);
+    say("BOSS: " + monsterName + " blocks the way!");
+  } else if (monsterIsRare) {
+    monsterName = "Rare " + monsterName;
+    monsterMaxHp = monsterMaxHp * 2;
+    monsterAttack = Math.round(monsterAttack * 1.25);
+    say("A " + monsterName + " appears!");
+  } else if ("AEIOU".includes(monsterName[0])) {
+    say("An " + monsterName + " appears.");
+  } else {
+    say("A " + monsterName + " appears.");
+  }
+
+  // How much an enraging monster's attack grows each turn
+  monsterEnrageStep = Math.ceil(monsterAttack * traitOf(type, "enrage"));
+  monsterHp = monsterMaxHp;
+
+  // A monster uses its tower's picture unless it has one of its own
+  monsterIcon = towers[tower].icon;
+  if (type.icon !== undefined) {
+    monsterIcon = type.icon;
+  }
+
+  // Pixel art, if this monster has been given some ("" means it has not)
+  monsterArt = "";
+  if (type.art !== undefined) {
+    monsterArt = type.art;
+  }
+
+  // Some classes get ready at the start of a fight
+  if (currentClass().startFight !== undefined) {
+    currentClass().startFight();
+  }
+}
+
+function startEncounter() {
+  roomCount = roomCount + 1;
+
+  if (room === roomsPerFloor) {
+    if (floor % 5 === 0) {
+      encounterType = "boss";
+    } else {
+      encounterType = "monster";
+    }
+  } else {
+    let roll = Math.random();
+    if (roll < 0.75) {
+      encounterType = "monster";
+    } else if (roll < 0.88) {
+      encounterType = "rest";
+    } else {
+      encounterType = "chest";
+    }
+  }
+
+  monsterIsRare = false;
+  if (encounterType === "monster") {
+    spawnMonster(false);
+  } else if (encounterType === "boss") {
+    spawnMonster(true);
+  }
+}
+
+function nextRoom() {
+  let newBest = false;
+  room = room + 1;
+
+  if (room > roomsPerFloor) {
+    room = 1;
+    floor = floor + 1;
+    say("You climb to floor " + floor + ".");
+
+    if (floor > bestFloor) {
+      bestFloor = floor;
+      newBest = true;
+    }
+
+    if (cruising) {
+      cruiseFloor = floor;
+    }
+
+    // Every floor reached for the first time since the last ascension pays fame
+    if (floor > ascensionBest) {
+      gainFame((floor - ascensionBest) * multiplier("fame"));
+      if (ascensionBest < ascendFloorNeeded() && floor >= ascendFloorNeeded()) {
+        announce("banner", "You can ascend", "This class has reached floor " + ascendFloorNeeded() + ". Ascend whenever you like (Ascension tab).");
+      }
+      ascensionBest = floor;
+    }
+    checkTowerProgress();
+  }
+
+  for (let milestone of allMilestones()) {
+    if (newBest && floor === milestone.floor) {
+      announceMilestone(milestone);
+    }
+  }
+
+  // A new ability slot
+  if (newBest && abilitySlotFloors.includes(floor) && classAbilities().length > abilitySlots.length) {
+    announceAbilitySlot();
+  }
+
+  // A wall: from here on, every monster is stronger (see towerWalls in data.js)
+  for (let wall of towerWalls) {
+    if (newBest && floor === wall.floor) {
+      announce("banner", "The tower grows stronger", "From floor " + wall.floor + " on, every monster has x" + wall.strength + " health and attack. Milestones, the blacksmith, ascending and other towers are the way through.");
+    }
+  }
+
+  startEncounter();
+}
+
+// ----- What happens in a room -----
+function die() {
+  // Experience is for the floors this run actually climbed: the ones swept through at
+  // the start were climbed by an earlier run, which was paid for them already
+  let payout = (floor - runStartFloor + 1) * experiencePerFloor * (1 + totalBonus("experience")) * multiplier("experience");
+  if (isAway()) {
+    payout = payout * (1 + awayTowerExperience);
+  }
+  payout = Math.round(payout);
+  say("You fell on floor " + floor + ", earned " + big(payout) + " experience and banked " + big(gold) + " gold.");
+
+  deaths = deaths + 1;
+  experience = experience + payout;
+  levelUpWhilePossible();
+  bank = bank + gold;
+  gold = 0;
+  upgrades = {};
+  ownedRelics = [];
+  runCounter = 0;
+  room = 1;
+
+  // The next run starts in whichever tower was chosen, from its first floor
+  if (nextTower !== tower) {
+    tower = nextTower;
+    say("You enter " + towers[tower].name + ".");
+    runStartFloor = 1;
+    cruiseFloor = 1;
+  }
+
+  floor = startFloor();
+  runStartFloor = floor;
+  cruiseFloor = floor;
+  cruising = true;
+  if (floor > 1) {
+    say("You sweep through floors 1 to " + (floor - 1) + " without slowing down.");
+  }
+
+  // The weapon and armor are kept. Only the kind of weapon may change, if another was picked.
+  startRunGear();
+  resetAbilitiesForRun();
+
+  // Sweeping past bosses does not cost their boons: one for every boss passed
+  let bossesPassed = Math.floor((floor - 1) / 5);
+  for (let i = 0; i < bossesPassed; i++) {
+    gainBossUpgrade();
+  }
+
+  // Some classes set something up at the start of a run
+  if (currentClass().startRun !== undefined) {
+    currentClass().startRun();
+  }
+
+  playerHp = playerMaxHp;
+  startEncounter();
+}
+
+function victory() {
+  let reward = floor * goldPerFloor;
+  if (encounterType === "boss") {
+    reward = reward * bossGold;
+  }
+  if (monsterIsRare) {
+    reward = reward * rareGold;
+  }
+  reward = Math.round(reward * monsterGold * (1 + totalBonus("gold")) * multiplier("gold"));
+  gold = gold + reward;
+
+  healPlayer(playerMaxHp * (healOnKill + fameAdd("healOnKill")));
+
+  say("You defeat the " + monsterName + " and earn " + big(reward) + " gold.");
+
+  if (fightTurns > cruiseTurns) {
+    cruising = false;
+  }
+  // Every boss leaves an upgrade and a relic, both of them suited to the weapon being used
+  if (encounterType === "boss") {
+    gainBossUpgrade();
+    gainRelic();
+
+    let earned = bossFameAt(floor);
+    if (earned > 0) {
+      gainFame(earned);
+      say("Word of the boss's fall spreads: +" + big(earned) + " fame.");
+    }
+  }
+
+  // Some classes gain something from every kill
+  if (currentClass().whenKill !== undefined) {
+    currentClass().whenKill();
+  }
+  nextRoom();
+}
+
+function monsterAttacks() {
+  // Enraging monsters hit harder every turn
+  monsterAttack = monsterAttack + monsterEnrageStep;
+
+  // A full guard from an ability stops the attack before anything else happens
+  if (abilityGuardFactor() === 0) {
+    say("The " + monsterName + "'s attack is stopped by your guard.");
+    return;
+  }
+
+  let avoided = currentClass().whenAttacked();
+
+  // An avoided attack does nothing more. A reflected attack still lands, even if the
+  // reflection killed the monster: otherwise enough reflect would make a class unkillable.
+  if (avoided) {
+    return;
+  }
+
+  // Your armor blocks a share of the hit (see armorShareBlocked), but poison goes straight through it
+  let damage = Math.max(1, Math.round(monsterAttack * (1 - armorShareBlocked())));
+  damage = damage + Math.round(monsterAttack * monsterPoison);
+  damage = Math.max(1, Math.round(damage / damageDivider() * multiplier("damageTaken") * abilityGuardFactor()));
+  playerHp = playerHp - damage;
+
+  if (playerHp <= 0) {
+    die();
+  } else if (potions > 0 && playerHp <= playerMaxHp * 0.3) {
+    potions = potions - 1;
+    healPlayer(playerMaxHp * (potionHealing + totalBonus("potionPower")));
+    say("You drink a healing potion!");
+  }
+}
+
+function fightMonster() {
+  fightTurns = fightTurns + 1;
+
+  // A fight that drags on gets more dangerous, so that none can last forever
+  if (fightTurns === longFightTurns) {
+    say("The fight drags on. The " + monsterName + " grows more dangerous every turn!");
+  }
+  if (fightTurns >= longFightTurns) {
+    monsterAttack = Math.ceil(monsterAttack * 1.1);
+  }
+
+  // A lunging monster strikes before you can, unless your class fights from range
+  if (fightTurns === 1 && monsterLunges && currentClass().ranged !== true) {
+    let deathsAtLunge = deaths;
+    say("The " + monsterName + " lunges at you before you are ready!");
+    monsterAttacks();
+    if (deaths !== deathsAtLunge) {
+      return;
+    }
+    if (monsterHp <= 0) {
+      victory();
+      return;
+    }
+  }
+
+  // Abilities come first, then the normal attack
+  useAbilities();
+  if (monsterHp <= 0) {
+    tickAbilityTimers();
+    victory();
+    return;
+  }
+
+  // What your normal turn does is measured, for abilities that deal "turns of your damage"
+  let hpBeforeTurn = monsterHp;
+  currentClass().attack();
+  let dealtThisTurn = hpBeforeTurn - monsterHp;
+
+  let deathsBefore = deaths;
+
+  if (monsterHp > 0) {
+    if (monsterRegen > 0) {
+      monsterHp = Math.min(monsterMaxHp, monsterHp + Math.round(monsterMaxHp * monsterRegen));
+    }
+
+    if (monsterStunned) {
+      // A stunned, frozen or out-of-reach enemy misses its turn
+      monsterStunned = false;
+    } else {
+      let hpBeforeTheirs = monsterHp;
+      monsterAttacks();
+      dealtThisTurn = dealtThisTurn + Math.max(0, hpBeforeTheirs - monsterHp);
+    }
+  }
+  recordTurnDamage(dealtThisTurn);
+
+  // If that attack killed you, a new run has already started and this fight is over
+  if (deaths !== deathsBefore) {
+    return;
+  }
+
+  tickAbilityTimers();
+
+  if (monsterHp <= 0) {
+    victory();
+  }
+}
+
+// One second of the game
+function step() {
+  ascensionSeconds = ascensionSeconds + 1;
+
+  if (encounterType === "monster" || encounterType === "boss") {
+    fightMonster();
+  } else if (encounterType === "rest") {
+    playerHp = playerMaxHp;
+    say("You rest and recover all your health.");
+    nextRoom();
+  } else if (encounterType === "chest") {
+    let found = Math.round(floor * goldPerFloor * chestGold * (1 + totalBonus("gold")) * multiplier("gold"));
+    gold = gold + found;
+    say("You open a chest and find " + big(found) + " gold.");
+    nextRoom();
+  }
+}

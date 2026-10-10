@@ -1,7 +1,7 @@
 // =====================================================================
 //  Online saves
 // =====================================================================
-// The game always saves in the browser, exactly as before (see game.js).
+// The game always saves in the browser, exactly as before (see game/save.js).
 // This file ADDS a copy kept online, for players who make an account:
 //   - the save is sent up about once a minute, and when the tab is closed or hidden
 //   - on another device, or after the browser's data was cleared, logging in
@@ -139,7 +139,7 @@ async function cloudUpload() {
     return;
   }
 
-  // The game writes the save into the browser every second (see "tick" in game.js),
+  // The game writes the save into the browser every second (see "tick" in game/start.js),
   // so what is there is always fresh. This must NOT call saveGame itself: it also runs
   // as the page is closing or reloading, and just after a save code or an online save
   // has been loaded that would write the old game over the new save.

@@ -47,8 +47,8 @@ classes.warlock = {
   gearTiers: ["Tattered", "Bound", "Gilded", "Runed", "Eldritch", "Forbidden"],
 
   upgrades: [
-    { id: "arcanePower", name: "Arcane Power", text: "+4 attack", bonus: { attack: 4 } },
-    { id: "manaShield", name: "Mana Shield", text: "+15 health", bonus: { maxHp: 15 } },
+    { id: "arcanePower", name: "Arcane Power", text: "+6% attack", bonus: { attackPercent: 0.06 } },
+    { id: "manaShield", name: "Mana Shield", text: "+5% health", bonus: { healthPercent: 0.05 } },
     { id: "focus", name: "Focus", text: "Arcane Tome: +5% critical chance", build: "arcane", bonus: { critChance: 0.05 } },
     { id: "devour", name: "Devour", text: "Void Tome: +2 void power (every spell tears away more of the enemy's full health)", build: "void", bonus: { voidRend: 0.02 } },
     { id: "resonance", name: "Resonance", text: "Rune Tome: +5% chance to cast twice (the second cast is an echo)", build: "rune", bonus: { echoChance: 0.05 } },
@@ -69,8 +69,8 @@ classes.warlock = {
     {
       floor: 5,
       perks: [
-        { id: "ward", name: "Ward", text: "+25 health", bonus: { maxHp: 25 } },
-        { id: "surge", name: "Surge", text: "+6 attack", bonus: { attack: 6 } }
+        { id: "ward", name: "Ward", text: "health x1.1", multiply: { health: 1.1 } },
+        { id: "surge", name: "Surge", text: "attack x1.1", multiply: { attack: 1.1 } }
       ]
     },
     {
@@ -139,6 +139,23 @@ classes.warlock = {
     { id: "hungrierSouls", name: "Hungrier Souls", text: "Souls: the damage souls give x1.5", multiply: { souls: 1.5 } }
   ],
 
+  // Special moves on a cooldown, put in the slots that open on floors 10, 35 and 75
+  // (rules in game/abilities.js). "cooldown" is in turns of fighting. "build" works as
+  // for boons. A "bossKiller" starts set to "Bosses only". "use" is what it does, built
+  // from the pieces in game/abilities.js (abilityHit, abilitySpell, abilityStun...).
+  abilities: [
+    { id: "arcaneSurge", name: "Arcane Surge", text: "Arcane Tome: 3 turns of your damage in one spell", build: "arcane", cooldown: 6,
+      use: function () { abilityTurns(3); } },
+    { id: "voidRift", name: "Void Rift", text: "Void Tome: 2 turns of your damage, and tears away 6% of the enemy's full health", build: "void", cooldown: 6,
+      use: function () { abilityTurns(2); abilityPure(monsterMaxHp * 0.06, "arcane"); } },
+    { id: "runeStorm", name: "Rune Storm", text: "Rune Tome: 3.5 turns of your damage in a storm of runes", build: "rune", cooldown: 7,
+      use: function () { abilityTurns(3.5); } },
+    { id: "darkPact", name: "Dark Pact", text: "Heal 30% of your health", cooldown: 15,
+      use: function () { abilityHeal(0.3); } },
+    { id: "doom", name: "Doom", text: "Boss killer: 10 turns of your damage in one spell", cooldown: 30, bossKiller: true,
+      use: function () { abilityTurns(10); } }
+  ],
+
   relics: [
     { id: "magesEye", name: "Mage's Eye", text: "Arcane Tome: +8% critical chance", build: "arcane", bonus: { critChance: 0.08 } },
     { id: "voidShard", name: "Void Shard", text: "Void Tome: +2 void power", build: "void", bonus: { voidRend: 0.02 } },
@@ -163,7 +180,7 @@ function warlockDamageTypes() {
 
 // A kill in the tower is worth this many souls
 const soulsPerKill = 1;
-const soulsPerFloorSkipped = 3;   // souls you start with for each floor the Pathfinder skips
+const soulsPerFloorSkipped = 3;   // souls you start with for each floor a run sweeps through
 
 // The first soulSoftCap souls count in full. After that each one counts for less and
 // less: every time the souls held DOUBLE, they are worth soulSoftCap more.

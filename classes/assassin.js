@@ -40,7 +40,7 @@ classes.assassin = {
   dotType: "affliction",
 
   upgrades: [
-    { id: "sharpenedEdge", name: "Sharpened Edge", text: "+3 attack", bonus: { attack: 3 } },
+    { id: "sharpenedEdge", name: "Sharpened Edge", text: "+5% attack", bonus: { attackPercent: 0.05 } },
     { id: "smokeBomb", name: "Smoke Bomb", text: "+2% dodge", bonus: { dodge: 0.02 } },
     { id: "backstab", name: "Backstab", text: "Ambush: the first hit of a fight deals +10% more", bonus: { ambush: 0.1 } },
     { id: "toxicCoating", name: "Toxic Coating", text: "Venom Dagger: +1 poison stack", build: "venom", bonus: { poisonStacks: 1 } },
@@ -63,14 +63,14 @@ classes.assassin = {
       floor: 5,
       perks: [
         { id: "nimble", name: "Nimble", text: "+5% dodge", bonus: { dodge: 0.05 } },
-        { id: "cutthroat", name: "Cutthroat", text: "+5 attack", bonus: { attack: 5 } }
+        { id: "cutthroat", name: "Cutthroat", text: "attack x1.1", multiply: { attack: 1.1 } }
       ]
     },
     {
       floor: 10,
       perks: [
         { id: "lurker", name: "Lurker", text: "Ambush: the first hit of a fight deals +25% more", bonus: { ambush: 0.25 } },
-        { id: "leatherWraps", name: "Leather Wraps", text: "+25 health", bonus: { maxHp: 25 } }
+        { id: "leatherWraps", name: "Leather Wraps", text: "health x1.15", multiply: { health: 1.15 } }
       ]
     },
     {
@@ -132,6 +132,23 @@ classes.assassin = {
     { id: "finerPoint", name: "Finer Point", text: "Stiletto: critical hit damage x1.5", multiply: { stilettoCrit: 1.5 } },
     { id: "deeperShadow", name: "Deeper Shadow", text: "Shadow Blade: damage of the hit after a dodge x1.5", multiply: { counter: 1.5 } },
     { id: "perfectAmbush", name: "Perfect Ambush", text: "Ambush damage x1.5", multiply: { ambush: 1.5 } }
+  ],
+
+  // Special moves on a cooldown, put in the slots that open on floors 10, 35 and 75
+  // (rules in game/abilities.js). "cooldown" is in turns of fighting. "build" works as
+  // for boons. A "bossKiller" starts set to "Bosses only". "use" is what it does, built
+  // from the pieces in game/abilities.js (abilityHit, abilitySpell, abilityStun...).
+  abilities: [
+    { id: "envenom", name: "Envenom", text: "Venom Dagger: poison up to its limit at once, and 2 turns of your damage", build: "venom", cooldown: 6,
+      use: function () { abilityStacks(totalBonus("poisonStacks"), "poisonStacks"); abilityTurns(2); } },
+    { id: "lacerate", name: "Lacerate", text: "Stiletto: 3.5 turns of your damage in one strike", build: "stiletto", cooldown: 7,
+      use: function () { abilityTurns(3.5); } },
+    { id: "shadowDance", name: "Shadow Dance", text: "Shadow Blade: no damage taken for 2 turns, and 2 turns of your damage", build: "shadow", cooldown: 7,
+      use: function () { abilityGuard(1, 2); abilityTurns(2); } },
+    { id: "meltAway", name: "Melt Away", text: "Hide: no damage taken for 1 turn, and your next hit is an ambush", cooldown: 8,
+      use: function () { abilityGuard(1, 1); assassinAmbushReady = true; } },
+    { id: "assassinate", name: "Assassinate", text: "Boss killer: 10 turns of your damage in one strike", cooldown: 30, bossKiller: true,
+      use: function () { abilityTurns(10); } }
   ],
 
   relics: [

@@ -41,7 +41,7 @@ classes.zealot = {
   gearIcons: { mace: "🔨", shield: "🛡️", tome: "📖" },
 
   upgrades: [
-    { id: "fervor", name: "Fervor", text: "+3 attack", bonus: { attack: 3 } },
+    { id: "fervor", name: "Fervor", text: "+5% attack", bonus: { attackPercent: 0.05 } },
     { id: "blessedArmor", name: "Blessed Armor", text: "+2 armor", bonus: { armor: 2 } },
     { id: "prayer", name: "Prayer", text: "Devotion: +1% of your health healed every turn", bonus: { devotion: 0.01 } },
     { id: "holyFire", name: "Holy Fire", text: "Holy Mace: hits add +10% more of their damage as holy damage", build: "mace", bonus: { smite: 0.1 } },
@@ -66,8 +66,8 @@ classes.zealot = {
     {
       floor: 5,
       perks: [
-        { id: "blessing", name: "Blessing", text: "+35 health", bonus: { maxHp: 35 } },
-        { id: "righteousMight", name: "Righteous Strength", text: "+5 attack", bonus: { attack: 5 } }
+        { id: "blessing", name: "Blessing", text: "health x1.1", multiply: { health: 1.1 } },
+        { id: "righteousMight", name: "Righteous Strength", text: "attack x1.1", multiply: { attack: 1.1 } }
       ]
     },
     {
@@ -134,6 +134,23 @@ classes.zealot = {
     { id: "swifterAnswer", name: "Swifter Answer", text: "Mace and Shield: strike back damage x1.5", multiply: { shieldCounter: 1.5 } },
     { id: "hotterFaith", name: "Hotter Faith", text: "Holy Tome: the burn from healing you do not need x1.5", multiply: { sacred: 1.5 } },
     { id: "longerCrusade", name: "Longer Crusade", text: "Crusade x1.5", multiply: { crusade: 1.5 } }
+  ],
+
+  // Special moves on a cooldown, put in the slots that open on floors 10, 35 and 75
+  // (rules in game/abilities.js). "cooldown" is in turns of fighting. "build" works as
+  // for boons. A "bossKiller" starts set to "Bosses only". "use" is what it does, built
+  // from the pieces in game/abilities.js (abilityHit, abilitySpell, abilityStun...).
+  abilities: [
+    { id: "judgementDay", name: "Judgement Day", text: "Holy Mace: 3.5 turns of your damage in one holy blow", build: "mace", cooldown: 7,
+      use: function () { abilityTurns(3.5); } },
+    { id: "shieldSlam", name: "Shield Slam", text: "Mace and Shield: 2.5 turns of your damage in one bash, and the enemy is stunned", build: "shield", cooldown: 7,
+      use: function () { abilityTurns(2.5); abilityStun(); } },
+    { id: "holyLight", name: "Holy Light", text: "Holy Tome: heal 25% of your health and 2 turns of your damage; the healing you do not need burns the enemy too", build: "tome", cooldown: 6,
+      use: function () { abilityTurns(2); let spare = abilityHeal(0.25); if (spare > 0) { abilityPure(spare * (1 + totalBonus("sacredFlame")) * multiplier("sacred"), "holy"); } } },
+    { id: "righteousFury", name: "Righteous Fury", text: "All your damage +100% for 5 turns", cooldown: 15,
+      use: function () { abilityBoost(1, 5); } },
+    { id: "wrathOfGod", name: "Wrath of God", text: "Boss killer: 10 turns of your damage in one holy blow", cooldown: 30, bossKiller: true,
+      use: function () { abilityTurns(10); } }
   ],
 
   relics: [
