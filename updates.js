@@ -13,6 +13,15 @@
 
 const gameUpdates = [
   {
+    version: "20261010o",
+    title: "Fairer deep floors",
+    changes: [
+      "A reflecting boss never throws back more than a quarter of your health from one blow, so killing it in one hit no longer kills you deep in the tower.",
+      "Earth throws its first boulder on the first turn of a fight. Boulders hit for less to make up for it, and Landslide is a new keystone.",
+      "The Stiletto's critical hit is x2.75 instead of x3."
+    ]
+  },
+  {
     version: "20261010n",
     title: "A modifier every week",
     changes: [

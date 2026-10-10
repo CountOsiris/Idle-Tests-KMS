@@ -66,8 +66,19 @@ Two things were wrong with the measuring, not with the builds:
   floor 50 for five classes and made the Longbow and Earth look broken. It was found by
   asking the bot what was killing it (`killers` option), and fixed in `game/bosses.js`.
 
-The late-game gap in flaw 1 above was measured before sweeping and abilities; it has
-not been re-measured past floor 50.
+**Floor 75, measured later the same month** (hours, ascending when stuck, 2 runs of 40
+hours): Barbarian 20 to 26, Warden 14 to 19, Ranger 14 to 19, Assassin 15 to 24, Warlock
+8 to 16, Elementalist 9 to 17, Zealot 17 to 20, Beast Tamer 12 to 15. Before it,
+Barbarian and Zealot took 31 to 36 hours: their towers have reflecting bosses, and deep
+in the tower one reflected blow was most of a life, so killing such a boss in one hit
+meant dying on turn 1. One blow now throws back at most a quarter of the player's health.
+
+Earth gathered its boulder on the first turn of every fight, took a free hit for it,
+and never reached floor 75. It now throws first. That was worth far more than its
+damage: the boulder went from 400% to 220% of attack and Earth is still the fastest
+element (20% faster than its class to floor 50, about 35% to floor 75). Lowering its
+perks and its stun chance did not change that. Void Tome is the other build well ahead
+of its class late (about 35% to floor 75). Both are inside the target to floor 50.
 
 ## Proposed
 

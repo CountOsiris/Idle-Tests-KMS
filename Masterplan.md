@@ -65,10 +65,8 @@ The gaps the plan set out to close (1 to 6 are now built; what is left is below)
 - **Named weapons** from tier 100 of a challenge tower ([Equipment](docs/design/08-equipment-and-items.md)).
 - **Each class's own relics** are still plain numbers; only the shared ones do something.
 - **A second weapon carried into a run**, as a Legend unlock ([Progression layers](docs/design/06-progression-layers.md)).
-- **The Stiletto** sits on the edge of the balance target: 17% to 26% faster than the
-  Assassin's average to floor 50, depending on the run.
-- **Earth** is far behind the other elements at floor 75 without its keystone, and the
-  late game past floor 50 has not been balanced between classes
+- **Earth and the Void Tome** are about 35% faster than their classes to floor 75,
+  though inside the target to floor 50
   ([Classes and builds](docs/design/04-classes-and-builds.md)).
 - **"Layers get distinct jobs"**: milestone perks still hand out percentages.
 - **Ability ranks**, and a watch-mode speed ([Combat](docs/design/03-combat.md)).

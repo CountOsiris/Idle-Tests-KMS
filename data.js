@@ -390,14 +390,15 @@ const bossMechanicsFloor = 10;
 //   enrage   after "afterTurns" turns, its attack is multiplied by "attack"
 //   reflect  hurting it hurts you. Taking off ALL of its health costs you "attacks" of its
 //            attacks, spread over the fight; a class that fights from range takes "rangedShare" of that.
-//            Armor and damage resistance work on it. (At 3 attacks with no armor against it,
+//            Armor and damage resistance work on it, and one blow never throws back more
+//            than "mostOfHealth" of your health. (At 3 attacks with no armor against it,
 //            killing such a boss in one hit killed the player too: measured, October 2026.)
 //   armorUp  its armor blocks "perTurn" more of every weapon hit each turn, up to "most"
 const bossMechanics = {
   shield: { name: "Shield phase", icon: "🛡️", below: 0.5, blocks: 0.75, turns: 5 },
   summons: { name: "Summons", icon: "👥", at: [0.66, 0.33], health: 0.1, attack: 0.3 },
   enrage: { name: "Enrage timer", icon: "💢", afterTurns: 20, attack: 2 },
-  reflect: { name: "Reflect aura", icon: "🌵", attacks: 2, rangedShare: 0.5 },
+  reflect: { name: "Reflect aura", icon: "🌵", attacks: 2, rangedShare: 0.5, mostOfHealth: 0.25 },
   armorUp: { name: "Armor up", icon: "⛓️", perTurn: 0.04, most: 0.8 }
 };
 

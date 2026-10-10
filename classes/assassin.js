@@ -192,6 +192,11 @@ function assassinDamageTypes() {
   return ["piercing"];
 }
 
+// A stiletto's critical hit multiplies the hit by this. (It was 3 until the balance pass
+// of October 2026: the Stiletto kept measuring a quarter faster than the Assassin's
+// other two blades.)
+const stilettoCritHit = 2.75;
+
 // Is the next hit the first of the fight?
 let assassinAmbushReady = false;
 
@@ -218,7 +223,7 @@ function assassinAttack() {
 
   if (weapon === "stiletto" && chance(totalBonus("critChance"))) {
     // Critical chance past 100% adds to the critical damage instead
-    damage = damage * (3 + totalBonus("critPower") + overflow("critChance", 1)) * multiplier("stilettoCrit");
+    damage = damage * (stilettoCritHit + totalBonus("critPower") + overflow("critChance", 1)) * multiplier("stilettoCrit");
     say("A deadly critical hit!");
 
     if (totalBonus("coupDeGrace") > 0 && monsterHp < monsterMaxHp * totalBonus("coupDeGrace")) {
@@ -314,7 +319,7 @@ function assassinGearInfo() {
     return "Venom Dagger: every hit poisons the enemy more each turn (up to " + totalBonus("poisonStacks") + " stacks).";
   }
   if (weapon === "stiletto") {
-    return "Stiletto: " + percent(Math.min(1, totalBonus("critChance"))) + " chance of a critical hit for x" + (3 + totalBonus("critPower") + overflow("critChance", 1)).toFixed(1) + " damage.";
+    return "Stiletto: " + percent(Math.min(1, totalBonus("critChance"))) + " chance of a critical hit for x" + (stilettoCritHit + totalBonus("critPower") + overflow("critChance", 1)).toFixed(1) + " damage.";
   }
   return "Shadow Blade: +10% dodge, and your next hit after a dodge deals +" + percent(totalBonus("counter") * multiplier("counter")) + " damage.";
 }

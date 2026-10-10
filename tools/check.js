@@ -228,6 +228,11 @@ try {
   monsterHp = -50000;
   bossTakes(500);
   check("reflect aura: a blow far bigger than its health only throws back what it had left", 100000 - playerHp === Math.max(1, Math.round(costOfHalf)));
+  playerMaxHp = 100;
+  playerHp = 100;
+  monsterHp = 0;
+  bossTakes(1000);
+  check("reflect aura: one blow never throws back more than " + percent(bossMechanics.reflect.mostOfHealth) + " of your health (took " + (100 - playerHp) + " of 100)", 100 - playerHp === Math.round(100 * bossMechanics.reflect.mostOfHealth));
   recalcStats();
   playerHp = playerMaxHp;
 

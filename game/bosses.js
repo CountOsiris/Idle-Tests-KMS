@@ -64,7 +64,7 @@ function bossMechanicText(id) {
     return "after " + rule.afterTurns + " turns its attack is multiplied by " + rule.attack;
   }
   if (id === "reflect") {
-    return "hurting it hurts you: over the whole fight, " + rule.attacks + " of its attacks' worth (" + percent(rule.rangedShare) + " of that for a class that fights from range). Your armor works against it";
+    return "hurting it hurts you: over the whole fight, " + rule.attacks + " of its attacks' worth (" + percent(rule.rangedShare) + " of that for a class that fights from range), never more than " + percent(rule.mostOfHealth) + " of your health from one blow. Your armor works against it";
   }
   if (id === "armorUp") {
     return "its armor blocks " + percent(rule.perTurn) + " more every turn, up to " + percent(rule.most) + ". Spells and bleeding ignore armor";
@@ -154,6 +154,11 @@ function bossTakes(hpBefore) {
     }
     // What comes back is a hit like any other: armor, a guard and damage resistance all work on it
     back = back * (1 - armorShareBlocked()) / damageDivider() * multiplier("damageTaken") * abilityGuardFactor();
+
+    // One blow never throws back more than a share of your health ("mostOfHealth"). Deep
+    // in the tower one of a boss's attacks is most of a life, and without this limit the
+    // reward for killing such a boss in a single hit was to die on the first turn.
+    back = Math.min(back, playerMaxHp * bossMechanics.reflect.mostOfHealth);
     back = Math.max(1, Math.round(back));
     playerHp = playerHp - back;
     noteTaken(back);

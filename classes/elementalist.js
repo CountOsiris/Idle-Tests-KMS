@@ -10,7 +10,7 @@
 //   Fire      - weaker hits that set the enemy burning; the burn stacks up, like bleeding
 //   Ice       - a chance of a critical hit for triple damage
 //   Lightning - several fast, weak bolts every turn
-//   Earth     - gathers stone for a turn, then throws one huge boulder
+//   Earth     - throws one huge boulder, then gathers stone for a turn
 //
 // Bonus words only the Elementalist uses:
 //   burnStacks   fire: most burn stacks                         (2 means +2)
@@ -56,7 +56,7 @@ classes.elementalist = {
     fire: { name: "Fire", text: "Each spell hits for 90% of your attack and adds two burn stacks. Every stack burns for 23% of your attack each turn." },
     ice: { name: "Ice", text: "Each spell has a chance of a critical hit for triple damage." },
     lightning: { name: "Lightning", text: "Two bolts every turn, each for 65% of your attack. Skills add a chance of more bolts." },
-    earth: { name: "Earth", text: "Every second turn, one boulder for 400% of your attack, with a chance to stun." }
+    earth: { name: "Earth", text: "Every second turn, starting with the first, one boulder for 220% of your attack, with a chance to stun." }
   },
 
   upgrades: [
@@ -117,7 +117,7 @@ classes.elementalist = {
         { id: "inferno", name: "Inferno", text: "Fire: burning damage x2.3", multiply: { burn: 2.3 } },
         { id: "glacier", name: "Glacier", text: "Ice: critical hit damage x2", multiply: { iceCrit: 2 } },
         { id: "tempest", name: "Tempest", text: "Lightning: bolt damage x1.8", multiply: { bolt: 1.8 } },
-        { id: "mountain", name: "Mountain", text: "Earth: boulder damage x2.2", multiply: { boulder: 2.2 } }
+        { id: "mountain", name: "Mountain", text: "Earth: boulder damage x1.8", multiply: { boulder: 1.8 } }
       ]
     },
     // KEYSTONES: each changes a rule of one weapon, and costs something. This milestone is
@@ -130,7 +130,7 @@ classes.elementalist = {
         { id: "conflagration", name: "Conflagration", keystone: true, text: "Fire: half of an enemy's burn stacks pass to the next enemy. Your fire spells deal no damage of their own: only the burning does", bonus: { burnCarry: 0.5 } },
         { id: "deepFreeze", name: "Deep Freeze", keystone: true, text: "Ice: a critical hit has a 50% chance to freeze the enemy for a turn. Critical hit damage x0.8", bonus: { iceFreeze: 0.5 }, multiply: { iceCrit: 0.8 } },
         { id: "overcharge", name: "Overcharge", keystone: true, text: "Lightning: every bolt in a turn deals 15% more than the one before it. health x0.85", bonus: { overcharge: 0.15 }, multiply: { health: 0.85 } },
-        { id: "landslide", name: "Landslide", keystone: true, text: "Earth: the first boulder is ready when the fight starts, so you throw on turns 1, 3 and 5 instead of 2, 4 and 6. Boulder damage x0.85", bonus: { landslide: 1 }, multiply: { boulder: 0.85 } }
+        { id: "landslide", name: "Landslide", keystone: true, text: "Earth: a boulder that stuns is followed at once by a second, for half its damage. Stun chance cannot pass 40%", bonus: { landslide: 0.5 } }
       ]
     },
     {
@@ -153,7 +153,7 @@ classes.elementalist = {
         { id: "phoenixFlame", name: "Phoenix Flame", text: "Fire: burning damage x2.3 again", multiply: { burn: 2.3 } },
         { id: "iceAge", name: "Ice Age", text: "Ice: critical hit damage x2 again", multiply: { iceCrit: 2 } },
         { id: "thunderGod", name: "Thunder God", text: "Lightning: bolt damage x1.8 again", multiply: { bolt: 1.8 } },
-        { id: "earthquake", name: "Earthquake", text: "Earth: boulder damage x2.2 again", multiply: { boulder: 2.2 } }
+        { id: "earthquake", name: "Earthquake", text: "Earth: boulder damage x1.8 again", multiply: { boulder: 1.8 } }
       ]
     }
   ],
@@ -213,15 +213,17 @@ const fireBurn = 0.23;      // and each burn stack burns for this share every tu
 const iceCrit = 3;          // an ice critical multiplies the hit by this
 const lightningBolts = 2;   // lightning casts this many bolts a turn
 const lightningHit = 0.65;  // each for this share of your attack
-const earthHit = 4;         // a boulder hits for this many times your attack
+const earthHit = 2.2;       // a boulder hits for this many times your attack
 
 // Earth: has the boulder been gathered, ready to throw this turn?
 let elementalistCharged = false;
 
-// Runs at the start of every fight
+// Runs at the start of every fight. The first boulder is gathered on the way in (like
+// the Ranger's longbow, drawn before the fight), so Earth throws on turns 1, 3, 5...
+// Gathering first gave every monster a free hit: deep in the tower Earth died on the
+// first turn of ordinary fights and fell far behind the other elements.
 function elementalistStartFight() {
-  // (Landslide, a keystone: the first boulder is gathered on the way in)
-  elementalistCharged = totalBonus("landslide") > 0;
+  elementalistCharged = true;
 
   // Conflagration (keystone): part of the last enemy's burning passes to this one
   if (stance === "fire" && totalBonus("burnCarry") > 0) {
@@ -284,9 +286,14 @@ function elementalistAttack() {
       // Stun chance past its limit adds to the boulder's damage instead
       spellHitMonster(playerAttack * (earthHit + totalBonus("crush") + overflow("stunChance", maxChance)) * multiplier("boulder"), "earth");
 
-      if (chance(cappedChance("stunChance"))) {
+      // (Landslide, a keystone: a lower limit on the stun, and an aftershock when it lands)
+      let stunLimit = totalBonus("landslide") > 0 ? Math.min(0.4, cappedChance("stunChance")) : cappedChance("stunChance");
+      if (chance(stunLimit)) {
         monsterStunned = true;
         say("The boulder stuns the enemy!");
+        if (totalBonus("landslide") > 0) {
+          spellHitMonster(playerAttack * (earthHit + totalBonus("crush") + overflow("stunChance", maxChance)) * multiplier("boulder") * totalBonus("landslide"), "earth");
+        }
       }
     }
   }
