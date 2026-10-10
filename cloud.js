@@ -26,6 +26,36 @@ let cloudBusy = false;      // true while something is being sent or fetched
 
 const cloudEvery = 60;      // seconds between sending the save
 
+// WHICH BROWSER SENT A SAVE. Every save sent up is marked with this browser's own id
+// (made once, kept in the browser). It answers a question the revision alone cannot:
+// when the server's revision is not the one this browser remembers, was that another
+// device, or was it THIS browser, whose last save went up as the page was closing so
+// that the answer never came back? Only the first means the online save should be taken.
+//
+// (Before this, a refresh could trap the game in a loop: the closing page sent a save,
+// the new page saw a revision it did not know, took the online save and reloaded, and
+// the reload sent a save as it closed. October 2026.)
+const deviceName = "lloegrys-idle-device";
+let cloudDevice = localStorage.getItem(deviceName);
+if (cloudDevice === null) {
+  cloudDevice = Date.now() + "-" + Math.random().toString(36).slice(2);
+  localStorage.setItem(deviceName, cloudDevice);
+}
+
+// A LAST DEFENCE AGAINST RELOADING FOREVER. Taking an online save reloads the page. If
+// that has just happened (within reloadGapSeconds, remembered for this tab only), the
+// page is not reloaded again whatever the server says: it keeps the save it has.
+const reloadMarkName = "lloegrys-idle-took-cloud-save";
+const reloadGapSeconds = 30;
+
+function tookCloudSaveJustNow() {
+  let when = Number(sessionStorage.getItem(reloadMarkName));
+  return when > 0 && Date.now() - when < reloadGapSeconds * 1000;
+}
+
+// Set while the page is reloading to take an online save, so nothing is sent on the way out
+let cloudLeaving = false;
+
 function cloudIsSetUp() {
   return cloudUrl !== "" && cloudKey !== "";
 }
@@ -126,16 +156,30 @@ function localSaveHasProgress() {
   return false;
 }
 
-// Replaces this browser's save with one from the server, and starts the game again with it
+// Was this save sent up by this very browser?
+function sentFromHere(save) {
+  return save !== null && save !== undefined && save.sentBy === cloudDevice;
+}
+
+// Replaces this browser's save with one from the server, and starts the game again with it.
+// Gives back false, and does nothing, if the page did this only a moment ago.
 function takeCloudSave(save) {
+  if (tookCloudSaveJustNow()) {
+    cloudMessage = "Kept this browser's save. It will be sent online shortly.";
+    return false;
+  }
+  sessionStorage.setItem(reloadMarkName, String(Date.now()));
+  cloudLeaving = true;
   clearInterval(timer);
   localStorage.setItem(saveName, JSON.stringify(save));
   location.reload();
+  return true;
 }
 
 // ----- Sending the save up -----
 async function cloudUpload() {
-  if (!cloudIsSetUp() || !cloudLoggedIn() || cloudBusy || saveProblem !== "") {
+  // (not from a tab that a newer tab has stopped, and not while leaving to take an online save)
+  if (!cloudIsSetUp() || !cloudLoggedIn() || cloudBusy || saveProblem !== "" || otherTabOpen || cloudLeaving) {
     return;
   }
 
@@ -150,26 +194,36 @@ async function cloudUpload() {
 
   cloudBusy = true;
   try {
-    let result = await cloudCall("store_save", { p_username: cloudUser, p_token: cloudToken, p_save: JSON.parse(text), p_revision: cloudRevision });
+    // The save goes up marked with the browser it came from (see "WHICH BROWSER SENT A SAVE")
+    let outgoing = JSON.parse(text);
+    outgoing.sentBy = cloudDevice;
+    let result = await cloudCall("store_save", { p_username: cloudUser, p_token: cloudToken, p_save: outgoing, p_revision: cloudRevision });
 
     if (result.force === true && result.save !== null) {
       // The save was edited by hand on the server and marked to be taken as it is
       await cloudCall("clear_force", { p_username: cloudUser, p_token: cloudToken });
       rememberAccount(cloudUser, cloudToken, result.revision);
-      takeCloudSave(result.save);
-      return;
-    }
-
-    if (result.conflict === true) {
-      // Another device has saved since this one last looked: its save is the newer game
+      if (takeCloudSave(result.save)) {
+        return;
+      }
+    } else if (result.conflict === true) {
       rememberAccount(cloudUser, cloudToken, result.revision);
-      takeCloudSave(result.save);
+
+      // The server has a save this browser did not know of. If another device sent it,
+      // that is the newer game: take it. If this browser sent it (as the page was last
+      // closing), nothing is wrong: the revision is now known, and the next send goes through.
+      if (!sentFromHere(result.save) && takeCloudSave(result.save)) {
+        return;
+      }
+      cloudBusy = false;
+      showAccount();
       return;
+    } else {
+      rememberAccount(cloudUser, cloudToken, result.revision);
+      cloudLastSent = text;
+      cloudMessage = "Saved online at " + new Date().toLocaleTimeString() + ".";
     }
 
-    rememberAccount(cloudUser, cloudToken, result.revision);
-    cloudLastSent = text;
-    cloudMessage = "Saved online at " + new Date().toLocaleTimeString() + ".";
   } catch (error) {
     if (error.message === "You are not logged in.") {
       forgetAccount();
@@ -197,18 +251,21 @@ async function cloudCheckOnStart() {
       if (result.force === true) {
         await cloudCall("clear_force", { p_username: cloudUser, p_token: cloudToken });
         rememberAccount(cloudUser, cloudToken, result.revision);
-        takeCloudSave(result.save);
-        return;
-      }
-
-      // The server has stored a save that this browser has never seen: the player has
-      // been on another device since. That one is the newer game, so take it.
-      // (Clocks are not used for this. The game writes "now" into the save the moment
-      // it starts, so this browser's save always looks the most recent.)
-      if (result.revision !== cloudRevision) {
+        if (takeCloudSave(result.save)) {
+          return;
+        }
+      } else if (result.revision !== cloudRevision) {
+        // The server has stored a save under a revision this browser does not remember.
+        // If ANOTHER device sent it, the player has been playing there: that is the newer
+        // game, so take it. If THIS browser sent it, it went up as the page was closing
+        // and the answer never came back: this browser's save is already that game or a
+        // later one, so only the revision needs remembering.
+        // (Clocks are not used for this. The game writes "now" into the save the moment
+        // it starts, so this browser's save always looks the most recent.)
         rememberAccount(cloudUser, cloudToken, result.revision);
-        takeCloudSave(result.save);
-        return;
+        if (!sentFromHere(result.save) && takeCloudSave(result.save)) {
+          return;
+        }
       }
     }
 

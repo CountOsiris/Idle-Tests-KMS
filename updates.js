@@ -13,6 +13,14 @@
 
 const gameUpdates = [
   {
+    version: "20261010u",
+    title: "Reload loop fixed",
+    changes: [
+      "Refreshing the page while logged in could trap the game in a loop of reloading, with pop-ups that could not be clicked. Fixed.",
+      "Your progress in this browser is kept through a refresh: the online copy is only taken when another device has really played."
+    ]
+  },
+  {
     version: "20261010t",
     title: "Runaway builds reined in",
     changes: [

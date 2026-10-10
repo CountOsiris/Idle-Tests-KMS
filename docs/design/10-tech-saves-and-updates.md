@@ -20,6 +20,21 @@ Back to the [Masterplan](../../Masterplan.md).
 - Balance testing: a headless-browser bot that plays classes for simulated hours
   (written in the session that produced this plan; it lives outside the repository).
 
+## Online saves and refreshing (fixed October 2026)
+
+Players reported that refreshing could leave the game reloading over and over, with
+milestone pop-ups that could not be clicked. The cause was in `cloud.js`. A page sends
+its save online as it closes, and never hears the answer. The next page then saw a
+revision it did not remember, took that as another device having played, replaced the
+browser's save with the online one and reloaded, which sent a save again on the way out.
+
+Every save sent up is now marked with the browser that sent it (`sentBy`). A revision
+this browser does not remember is only treated as another device when the save was not
+sent from here. A page that has just reloaded to take an online save never does so again
+within 30 seconds, whatever the server says; it sends nothing on its way out; and a tab
+stopped by a newer tab sends nothing either. The pre-upload check plays these cases
+against a pretend server.
+
 ## Flaws found in review
 
 1. *(Fixed October 2026: split into `game/`.)* **`game.js` does everything.** Combat, progression, saving and the page in one

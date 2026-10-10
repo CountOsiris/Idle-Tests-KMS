@@ -905,13 +905,97 @@ try {
   out.push("FAIL  the check itself broke: " + error.stack);
 }
 
-if (window.pageErrors !== undefined) {
-  failures++;
-  out.push("FAIL  errors on the page: " + window.pageErrors);
-}
-out.push(failures === 0 ? "ALL GOOD" : failures + " PROBLEM(S)");
+// 7. Online saves, against a pretend server. A refresh once trapped the game in a loop:
+// the closing page sent its save, the new page saw a revision it did not know, took the
+// online save and reloaded, and the reload sent a save as it closed.
+async function checkOnlineSaves() {
+  let realFetch = window.fetch;
+  let realTake = takeCloudSave;
+  let server = { revision: 6, save: null };
+  let taken = 0;
 
-let pre = document.createElement("pre");
-pre.id = "test-out";
-pre.textContent = out.join("\n");
-document.body.appendChild(pre);
+  window.fetch = function (url, options) {
+    let answer = {};
+    if (String(url).includes("load_save")) {
+      answer = { save: server.save, force: false, revision: server.revision };
+    } else if (String(url).includes("store_save")) {
+      let body = JSON.parse(options.body);
+      if (body.p_revision !== server.revision) {
+        answer = { conflict: true, save: server.save, revision: server.revision };
+      } else {
+        server.revision = server.revision + 1;
+        server.save = body.p_save;
+        answer = { revision: server.revision };
+      }
+    }
+    return Promise.resolve({ ok: true, json: function () { return Promise.resolve(answer); } });
+  };
+  takeCloudSave = function () {
+    taken = taken + 1;
+    return true;
+  };
+
+  try {
+    let mine = JSON.parse(localStorage.getItem(saveName));
+    cloudUser = "tester";
+    cloudToken = "token";
+
+    // This browser's own save is online under a revision it never heard back about
+    mine.sentBy = cloudDevice;
+    server.save = mine;
+    cloudRevision = 5;
+    await cloudCheckOnStart();
+    check("online saves: a refresh does not take back this browser's own save (remembered revision " + cloudRevision + ")", taken === 0 && cloudRevision === 6);
+
+    cloudRevision = 5;
+    cloudLastSent = "";
+    await cloudUpload();
+    await cloudUpload();
+    check("online saves: a send that meets this browser's own save learns the revision, and the next one goes through (server at " + server.revision + ")", taken === 0 && server.revision === 7 && cloudRevision === 7);
+
+    // Another device has played since
+    let theirs = JSON.parse(localStorage.getItem(saveName));
+    theirs.sentBy = "another-device";
+    server.save = theirs;
+    server.revision = 9;
+    await cloudCheckOnStart();
+    check("online saves: a save from another device is taken", taken === 1 && cloudRevision === 9);
+
+    // The last defence: a page that has just reloaded for an online save does not do it again
+    takeCloudSave = realTake;
+    sessionStorage.setItem(reloadMarkName, String(Date.now()));
+    check("online saves: a page that has just reloaded for an online save never reloads for one again straight away", takeCloudSave(theirs) === false);
+    sessionStorage.removeItem(reloadMarkName);
+
+    // A tab that a newer tab has stopped sends nothing
+    otherTabOpen = true;
+    let revisionWas = server.revision;
+    cloudRevision = server.revision;
+    cloudLastSent = "";
+    await cloudUpload();
+    otherTabOpen = false;
+    check("online saves: a stopped tab sends nothing", server.revision === revisionWas);
+  } catch (error) {
+    failures++;
+    out.push("FAIL  the online save check broke: " + error.stack);
+  }
+
+  window.fetch = realFetch;
+  takeCloudSave = realTake;
+  forgetAccount();
+}
+
+function finishCheck() {
+  if (window.pageErrors !== undefined) {
+    failures++;
+    out.push("FAIL  errors on the page: " + window.pageErrors);
+  }
+  out.push(failures === 0 ? "ALL GOOD" : failures + " PROBLEM(S)");
+
+  let pre = document.createElement("pre");
+  pre.id = "test-out";
+  pre.textContent = out.join("\n");
+  document.body.appendChild(pre);
+}
+
+checkOnlineSaves().then(finishCheck);
