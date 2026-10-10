@@ -657,6 +657,56 @@ try {
   runStats = freshRunStats();
   startEncounter();
 
+  // 3g2. The table of what is kept and lost says what the game really does
+  let tableProblems = [];
+  let said = {};
+  for (let line of resetTable) {
+    said[line.what] = line;
+  }
+  bestFloor = 144;
+  level = 40;
+  experience = 10;
+  bank = 500;
+  gold = 77;
+  forgeLevels = { weapon: 3, armor: 3 };
+  townLevels = { tactician: 1, whetstone: 2 };
+  skillLevels = {};
+  skillLevels[currentClass().skills[0].id] = 3;
+  chosenPerks = { 5: currentClass().milestones[0].perks[0].id };
+  upgrades = {};
+  upgrades[currentClass().upgrades[0].id] = 2;
+  abilityUses = { anything: 150 };
+  realDie();
+  let afterFall = { "Boons": upgradesHeld() === 0 ? "lost" : "kept", "Gold in the bank": bank >= 577 ? "kept" : "lost", "Level and experience": level >= 40 ? "kept" : "lost",
+    "The blacksmith's work": forgeLevels.weapon === 3 ? "kept" : "lost", "Perks and keystones picked": Object.keys(chosenPerks).length === 1 ? "kept" : "lost" };
+  ascensionBest = ascendFirstFloor;
+  ascend();
+  let afterAscend = { "Gold in the bank": bank === 0 ? "lost" : "kept", "Level and experience": level < 40 ? "lost" : "kept", "The blacksmith's work": forgeLevels.weapon === 0 ? "lost" : "kept",
+    "Town upgrades with levels": townLevels.whetstone === undefined ? "lost" : "kept", "Town helpers": townLevels.tactician === 1 ? "kept" : "lost",
+    "Best floors, and milestones reached": bestFloor === 144 ? "kept" : "lost", "Perks and keystones picked": Object.keys(chosenPerks).length === 1 ? "kept" : "lost", "Ability ranks": abilityUses.anything === 150 ? "kept" : "lost" };
+  let fameHeld = fame;
+  becomeLegend();
+  let afterLegend = { "Best floors, and milestones reached": bestFloor === 1 ? "lost" : "kept", "Perks and keystones picked": Object.keys(chosenPerks).length === 0 ? "lost" : "kept",
+    "Town helpers": townLevels.tactician === 1 ? "kept" : "lost", "Ability ranks": abilityUses.anything === 150 ? "kept" : "lost", "Fame and fame upgrades": fame === fameHeld ? "kept" : "lost" };
+  for (let pair of [["fall", afterFall], ["ascend", afterAscend], ["legend", afterLegend]]) {
+    for (let what in pair[1]) {
+      if (said[what] === undefined || !said[what][pair[0]].startsWith(pair[1][what])) {
+        tableProblems.push(what + " is " + pair[1][what] + " on " + pair[0] + ", but the table says " + (said[what] === undefined ? "nothing" : said[what][pair[0]]));
+      }
+    }
+  }
+  showTab("ascension");
+  if (document.getElementById("reset-table").rows.length !== resetTable.length + 1 || document.getElementById("reset-table").offsetHeight === 0) {
+    tableProblems.push("the table is not on the Ascension tab");
+  }
+  check("the kept-and-lost table agrees with what falling, ascending and becoming a legend really do" + (tableProblems.length === 0 ? "" : ": " + tableProblems.join("; ")), tableProblems.length === 0);
+  townLevels = {};
+  abilityUses = {};
+  legendMarks = 0;
+  legends = 0;
+  recalcStats();
+  startEncounter();
+
   // 3h. Legend: becoming one pays the right marks, starts the class over, and keeps what it should
   let fameThen = fame;
   let marksThen = legendMarks;

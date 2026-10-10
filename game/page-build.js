@@ -121,6 +121,36 @@ function buildFameList() {
   }
 }
 
+// Runs once, when the game starts: the table of what each way of starting over costs
+function buildResetTable() {
+  let table = document.getElementById("reset-table");
+  document.getElementById("reset-legend-floor").textContent = legendFloor;
+
+  let head = document.createElement("tr");
+  for (let title of ["", "When you fall", "When you ascend", "Becoming a legend"]) {
+    let cell = document.createElement("th");
+    cell.textContent = title;
+    head.appendChild(cell);
+  }
+  table.appendChild(head);
+
+  for (let line of resetTable) {
+    let row = document.createElement("tr");
+    let name = document.createElement("td");
+    name.textContent = line.what;
+    row.appendChild(name);
+
+    for (let when of ["fall", "ascend", "legend"]) {
+      let cell = document.createElement("td");
+      cell.textContent = line[when];
+      // (kept and banked are shown bright, lost dim: see style.css)
+      cell.className = line[when].startsWith("lost") ? "lost" : "kept";
+      row.appendChild(cell);
+    }
+    table.appendChild(row);
+  }
+}
+
 // Runs once, when the game starts. What legend marks buy is the same for every class.
 function buildLegendList() {
   let box = document.getElementById("legend-unlocks");

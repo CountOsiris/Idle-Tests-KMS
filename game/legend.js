@@ -13,6 +13,7 @@
 //   Lost: everything an ascension loses, and best floors, milestone perks picked,
 //         ability slots filled, and the place in other towers.
 //   Kept: fame and fame upgrades, trophies, town helpers, legend marks and what they bought.
+// (The player's table of this is resetTable in data.js: keep the two in step.)
 
 // ----- The account -----
 let legendMarks = 0;

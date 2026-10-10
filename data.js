@@ -177,6 +177,30 @@ const fameUpgrades = [
   { id: "scavenger", name: "Craftsmanship", text: "Multiplies the power of your weapon and armor by 1.15.", unlockAt: 2, multiply: { gear: 1.15 }, cost: 8, growth: 1.45, maxLevel: 0 }
 ];
 
+// ----- What is kept, and what is lost -----
+// The table on the Ascension tab. One line for each thing a class has, and what becomes
+// of it at each of the three ways of starting over. It only DESCRIBES the game: the
+// rules themselves are in die (game/fights.js), startClassOver (game/bonuses.js) and
+// becomeLegend (game/legend.js). Change a line here when one of those changes.
+const resetTable = [
+  { what: "Boons", fall: "lost", ascend: "lost", legend: "lost" },
+  { what: "Relics", fall: "lost, but for your relic slots", ascend: "lost", legend: "lost" },
+  { what: "Gold carried", fall: "banked", ascend: "lost", legend: "lost" },
+  { what: "Gold in the bank", fall: "kept", ascend: "lost", legend: "lost" },
+  { what: "Level and experience", fall: "kept", ascend: "lost", legend: "lost" },
+  { what: "Skills", fall: "kept", ascend: "lost (your saved build is remembered)", legend: "lost" },
+  { what: "The blacksmith's work", fall: "kept", ascend: "lost", legend: "lost" },
+  { what: "Town upgrades with levels", fall: "kept", ascend: "lost", legend: "lost" },
+  { what: "Town helpers", fall: "kept", ascend: "kept", legend: "kept" },
+  { what: "Best floors, and milestones reached", fall: "kept", ascend: "kept", legend: "lost" },
+  { what: "Perks and keystones picked", fall: "kept", ascend: "kept", legend: "lost" },
+  { what: "Abilities in your slots", fall: "kept", ascend: "kept", legend: "lost" },
+  { what: "Ability ranks", fall: "kept", ascend: "kept", legend: "kept" },
+  { what: "Trophies and named weapons", fall: "kept", ascend: "kept", legend: "kept" },
+  { what: "Fame and fame upgrades", fall: "kept", ascend: "kept", legend: "kept" },
+  { what: "Legend marks and what they opened", fall: "kept", ascend: "kept", legend: "kept" }
+];
+
 // ----- Legend -----
 // The layer above ascension (rules in game/legend.js). A class that has reached
 // legendFloor can become a legend: it starts over from floor 1 with every milestone to

@@ -13,6 +13,13 @@
 
 const gameUpdates = [
   {
+    version: "20261011a",
+    title: "What is kept, and what is lost",
+    changes: [
+      "The Ascension tab has a table of what you keep and lose when you fall, when you ascend, and when you become a legend."
+    ]
+  },
+  {
     version: "20261010z",
     title: "The fight stays in sight on a phone",
     changes: [

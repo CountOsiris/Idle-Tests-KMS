@@ -27,7 +27,9 @@ Back to the [Masterplan](../../Masterplan.md).
    milestone perks, skills (Power, Toughness), trophies and the town all give
    "more attack" or "more health". With 14 layers and one verb, no single reward
    can feel huge, which works against the "every now and then a HUGE upgrade" goal.
-2. **The reset table is hard to see in the game.** The Ascension tab lists what is
+2. *(Done October 2026: the Ascension tab has the table, from `resetTable` in `data.js`,
+   and the check compares it with what the game really does.)*
+   **The reset table is hard to see in the game.** The Ascension tab lists what is
    kept and lost in a sentence; players learn the rest by surprise.
 3. **No layer above ascension.** Pecorella notes that later games add a second
    prestige (Realm Grinder's reincarnation, AdVenture Capitalist's Mega Bucks) to

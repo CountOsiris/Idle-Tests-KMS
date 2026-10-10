@@ -141,6 +141,7 @@ buildRoomPips();
 buildTownList();
 buildFameList();
 buildLegendList();
+buildResetTable();
 buildTowerList();
 buildClassScreen();
 checkTabUnlocks(true);

@@ -917,6 +917,35 @@ body[data-tab="tower"] #tab-character {
   background: linear-gradient(#8fa6bd, #4c6178);
 }
 
+/* The table of what is kept and lost, on the Ascension tab */
+.reset-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 15px;
+}
+
+.reset-table th {
+  padding: 6px 8px;
+  text-align: left;
+  font-weight: normal;
+  color: var(--faded);
+  border-bottom: 1px solid var(--card-edge);
+}
+
+.reset-table td {
+  padding: 6px 8px;
+  border-bottom: 1px solid #1c1815;
+  vertical-align: top;
+}
+
+.reset-table td.kept {
+  color: var(--gold-bright);
+}
+
+.reset-table td.lost {
+  color: var(--faded);
+}
+
 /* The strip a phone shows above the tabs' pages (see index.html). Not on a wide screen. */
 .mini-fight {
   display: none;
