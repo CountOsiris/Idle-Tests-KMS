@@ -13,6 +13,14 @@
 
 const gameUpdates = [
   {
+    version: "20261010f",
+    title: "Reflecting bosses made fair",
+    changes: [
+      "A boss with a reflect aura no longer kills you for killing it in one hit: only the health it had left is thrown back, and your armor works against it.",
+      "Every weapon and element now measures within a quarter of its class's pace to floor 50."
+    ]
+  },
+  {
     version: "20261010e",
     title: "Fixes",
     changes: [

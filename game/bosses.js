@@ -64,7 +64,7 @@ function bossMechanicText(id) {
     return "after " + rule.afterTurns + " turns its attack is multiplied by " + rule.attack;
   }
   if (id === "reflect") {
-    return "hurting it hurts you: over the whole fight, " + rule.attacks + " of its attacks' worth (half for a class that fights from range)";
+    return "hurting it hurts you: over the whole fight, " + rule.attacks + " of its attacks' worth (" + percent(rule.rangedShare) + " of that for a class that fights from range). Your armor works against it";
   }
   if (id === "armorUp") {
     return "its armor blocks " + percent(rule.perTurn) + " more every turn, up to " + percent(rule.most) + ". Spells and bleeding ignore armor";
@@ -144,11 +144,16 @@ function bossTakes(hpBefore) {
   }
 
   if (bossHas("reflect")) {
-    // Taking off all of its health costs "attacks" of its attacks, so a tenth costs a tenth of that
-    let back = bossBaseAttack * bossMechanics.reflect.attacks * dealt / monsterMaxHp;
+    // Taking off all of its health costs "attacks" of its attacks, so a tenth costs a tenth
+    // of that. Only health it really had counts: a blow far bigger than what it had left
+    // is not thrown back in full, or killing it in one hit would kill you too.
+    let counted = Math.min(dealt, Math.max(0, hpBefore));
+    let back = bossBaseAttack * bossMechanics.reflect.attacks * counted / monsterMaxHp;
     if (currentClass().ranged === true) {
       back = back * bossMechanics.reflect.rangedShare;
     }
+    // What comes back is a hit like any other: armor, a guard and damage resistance all work on it
+    back = back * (1 - armorShareBlocked()) / damageDivider() * multiplier("damageTaken") * abilityGuardFactor();
     back = Math.max(1, Math.round(back));
     playerHp = playerHp - back;
     noteTaken(back);

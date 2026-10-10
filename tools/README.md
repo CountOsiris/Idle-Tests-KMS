@@ -19,6 +19,21 @@ All the options are listed at the top of `bot.js`. A 14-hour run of every class
 takes about a minute. The bot plays well but not perfectly; compare runs with each
 other, not with real players, and run twice before trusting a small difference.
 
+## The balance report
+
+```
+bash tools/balance.sh                 every build, 30 hours, 3 runs, time to floor 50
+bash tools/balance.sh 30 5 50 ranger  hours, runs, floor, and one class only
+```
+
+Says how each weapon or element compares with the average of its class, and marks any
+that is more than 25% off. Run it after changing a class, a boss or a tower. When a
+build looks wrong, ask the bot what is killing it before changing its numbers:
+
+```
+bash tools/run.sh sim "h=22,every,ascend,killers,c=ranger"
+```
+
 ## The pre-upload check
 
 Loads an old save into the current game, checks it came through, plays every class,

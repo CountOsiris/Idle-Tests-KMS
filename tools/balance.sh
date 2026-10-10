@@ -27,7 +27,7 @@ fi
 for i in $(seq "$RUNS"); do
   bash tools/run.sh sim "$OPTIONS"
 done | awk -v floor="F$FLOOR" -v hours="$HOURS" -v runs="$RUNS" '
-  /^#/ || /ascensions:/ || NF == 0 { next }
+  /^#/ || /ascensions:/ || /killers:/ || NF == 0 { next }
   {
     build = $1
     time = hours

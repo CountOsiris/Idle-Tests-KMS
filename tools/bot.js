@@ -17,6 +17,7 @@
 //  only=a+b    spend skill points only on these skill ids
 //  perk=text   at milestones, prefer perks whose text contains this
 //  fav=id      hire the Tactician with this favourite boon
+//  killers     also say what killed it most in its last two hours, and on which floor
 //  duo         a Barbarian for 6 hours, then a new Ranger and Warden on the same account
 // =====================================================================
 
@@ -199,6 +200,9 @@ function run(className, weaponType, stanceId, hours, ascending, keepAccount) {
   let lastDeaths = deaths;
   let mostBoons = 0;
 
+  // What ended the runs of the last two hours, to see what a build is stuck on
+  let killers = {};
+
   for (let i = 1; i <= hours * 3600; i++) {
     now = i;
     step();
@@ -217,6 +221,10 @@ function run(className, weaponType, stanceId, hours, ascending, keepAccount) {
         reached[m] = i;
       }
     }
+    if (deaths !== lastDeaths && lastRun !== null && i > (hours - 2) * 3600) {
+      let killer = lastRun.killer + " F" + lastRun.floor + " (turn " + lastRun.fightTurns + ")";
+      killers[killer] = (killers[killer] || 0) + 1;
+    }
     if (deaths !== lastDeaths || i % 60 === 0) {
       lastDeaths = deaths;
       manage();
@@ -233,6 +241,10 @@ function run(className, weaponType, stanceId, hours, ascending, keepAccount) {
   out.push(line);
   if (ascending) {
     out.push("    ascensions: " + ascensionTimes.slice(0, 14).join(" "));
+  }
+  if (location.hash.includes("killers")) {
+    let ranked = Object.keys(killers).sort(function (a, b) { return killers[b] - killers[a]; }).slice(0, 4);
+    out.push("    killers: " + ranked.map(function (k) { return killers[k] + "x " + k; }).join(" | "));
   }
 }
 

@@ -152,8 +152,14 @@ try {
   playerHp = 100000;
   monsterHp = 500;
   bossTakes(1000);
-  let costOfHalf = 100 * bossMechanics.reflect.attacks / 2 * (currentClass().ranged === true ? bossMechanics.reflect.rangedShare : 1);
-  check("reflect aura: taking off half its health costs " + costOfHalf + " health", 100000 - playerHp === Math.round(costOfHalf));
+  let costOfHalf = 100 * bossMechanics.reflect.attacks / 2 * (currentClass().ranged === true ? bossMechanics.reflect.rangedShare : 1)
+    * (1 - armorShareBlocked()) / damageDivider() * multiplier("damageTaken");
+  check("reflect aura: taking off half its health costs half of " + bossMechanics.reflect.attacks + " attacks, less your armor (" + (100000 - playerHp) + " of 100 attack)",
+    100000 - playerHp === Math.max(1, Math.round(costOfHalf)) && 100000 - playerHp <= 100 * bossMechanics.reflect.attacks / 2);
+  playerHp = 100000;
+  monsterHp = -50000;
+  bossTakes(500);
+  check("reflect aura: a blow far bigger than its health only throws back what it had left", 100000 - playerHp === Math.max(1, Math.round(costOfHalf)));
   recalcStats();
   playerHp = playerMaxHp;
 

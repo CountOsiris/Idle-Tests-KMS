@@ -44,6 +44,27 @@ Planned eighth: **Beast Tamer**. Animal companions first, mythical beasts much l
 4. **No cross-class identity.** Pillar 4 says challenges give "tools to compete in
    other towers"; today no class can borrow anything from another.
 
+## Balance, measured October 2026
+
+`bash tools/balance.sh` plays every build several times and compares each with its
+class. Hours to floor 50, ascending when stuck, averaged over 3 to 6 runs: Barbarian
+9.1 to 10.2, Warden 6.4 to 7.6, Ranger 9.6 to 10.2, Assassin 7.5 to 11.0, Warlock 7.6
+to 8.8, Elementalist 7.8 to 9.7, Zealot 9.0 to 9.8. Every build is within 25% of its
+class; the Stiletto is the closest to the edge (23% faster than the Assassin average).
+No class number was changed to get there.
+
+Two things were wrong with the measuring, not with the builds:
+
+- The bot always took the first perk at a milestone, so only each class's first weapon
+  got its floor 20 perk. It now takes the perk written for the weapon in use.
+- The first version of the reflect aura threw back overkill and ignored armor, so
+  killing a reflecting boss in one hit killed the player. That doubled the time to
+  floor 50 for five classes and made the Longbow and Earth look broken. It was found by
+  asking the bot what was killing it (`killers` option), and fixed in `game/bosses.js`.
+
+The late-game gap in flaw 1 above was measured before sweeping and abilities; it has
+not been re-measured past floor 50.
+
 ## Proposed
 
 - **Balance target:** for every class, each weapon build reaches floor 50 within

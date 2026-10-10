@@ -85,11 +85,13 @@ now sits above its health bar. Numbers in `data.js` (`bossMechanics`), rules in
 `game/bosses.js`, which boss has which in `towers.js`. Differences from the table below:
 the shield blocks everything for its 5 turns (burst only helps by ending the fight
 before half health); a minion has 10% of the boss's health, comes twice, and whatever
-is left of the hit that kills it is wasted; the reflect aura costs 3 of the boss's
-attacks over the whole fight, half for a ranged class; armor rises 4% a turn to 80%.
-Armor up is only used in the two towers whose own class casts spells. Measured: the
-first wall is reached about 6% later (5.5 → 5.8 hours averaged over 21 runs), inside
-the 4 to 7 hour target, so no other number was changed.
+is left of the hit that kills it is wasted; the reflect aura costs 2 of the boss's
+attacks over the whole fight, half for a ranged class, and armor works against it;
+armor rises 4% a turn to 80%. Armor up is only used in the two towers whose own class
+casts spells. Boss killers set to Auto or Bosses only wait out a shield or a minion.
+Measured: floor 50 is reached in 7 to 10 hours by every class, the same as before the
+mechanics (see [Classes](04-classes-and-builds.md) for the reflect aura bug that hid
+this at first).
 
 Give each tower's bosses one or two rules from a small menu, shown on the stage:
 
