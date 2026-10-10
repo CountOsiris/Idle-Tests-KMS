@@ -397,6 +397,7 @@ function animatedStep() {
   let trophiesBefore = trophies.length;
   lastUpgrade = null;
   lastAbilityUsed = null;
+  lastBossEvent = "";
 
   step();
 
@@ -440,6 +441,9 @@ function animatedStep() {
   // it is on the list under the fight for the rest of the run
   if (lastAbilityUsed !== null) {
     floatText("player-side", lastAbilityUsed.name + "!", "word", false);
+  }
+  if (lastBossEvent !== "") {
+    floatText("monster-side", lastBossEvent + "!", "word", false);
   }
   if (lastUpgrade !== null) {
     toast("Boon: " + lastUpgrade.name, "good");

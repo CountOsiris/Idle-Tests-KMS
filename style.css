@@ -894,6 +894,28 @@ body[data-tab="tower"] #tab-character {
   padding-left: 20px;
 }
 
+/* A boss's mechanics: what they are doing now (above its health bar) and the rules in words */
+.boss-status {
+  min-height: 18px;
+  margin: 0 0 4px;
+  font-size: 13px;
+  color: var(--gold-bright);
+  text-align: center;
+}
+
+.boss-rules {
+  color: var(--text);
+}
+
+.boss-rules[hidden] {
+  display: none;
+}
+
+/* While a boss's shield is up its health bar turns steel blue */
+.fill.monster.shielded {
+  background: linear-gradient(#8fa6bd, #4c6178);
+}
+
 /* The ability buttons under the fight */
 .ability-bar {
   justify-content: center;

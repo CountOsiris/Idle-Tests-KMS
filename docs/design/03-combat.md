@@ -79,6 +79,18 @@ never *when*.
 
 ### B. Boss mechanics
 
+**Built October 2026.** Every boss has one mechanic, from floor 10 up (the floor 5 boss
+fights plainly). Its rule is written under its description, and what it is doing right
+now sits above its health bar. Numbers in `data.js` (`bossMechanics`), rules in
+`game/bosses.js`, which boss has which in `towers.js`. Differences from the table below:
+the shield blocks everything for its 5 turns (burst only helps by ending the fight
+before half health); a minion has 10% of the boss's health, comes twice, and whatever
+is left of the hit that kills it is wasted; the reflect aura costs 3 of the boss's
+attacks over the whole fight, half for a ranged class; armor rises 4% a turn to 80%.
+Armor up is only used in the two towers whose own class casts spells. Measured: the
+first wall is reached about 6% later (5.5 → 5.8 hours averaged over 21 runs), inside
+the 4 to 7 hour target, so no other number was changed.
+
 Give each tower's bosses one or two rules from a small menu, shown on the stage:
 
 | Mechanic | What it does | What counters it |

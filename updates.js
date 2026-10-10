@@ -13,6 +13,14 @@
 
 const gameUpdates = [
   {
+    version: "20261010c",
+    title: "Bosses with rules of their own",
+    changes: [
+      "From floor 10, every boss has a mechanic: a shield phase, minions, an enrage timer, a reflect aura or rising armor.",
+      "The rule is written under the boss, and what it is doing now shows above its health bar."
+    ]
+  },
+  {
     version: "20261010b",
     title: "Updates window",
     changes: [

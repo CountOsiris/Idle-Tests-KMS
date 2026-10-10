@@ -787,6 +787,12 @@ function updateScreen() {
   if (inFight && monsterLunges && currentClass().ranged !== true) {
     resistNote = resistNote + "  Lunges: it strikes first.";
   }
+  // A boss's mechanics: the rules in words, and what they are doing right now
+  document.getElementById("boss-rules").hidden = !inFight || bossRules.length === 0;
+  document.getElementById("boss-rules").textContent = bossRulesText();
+  document.getElementById("boss-status").textContent = inFight ? bossStatusText() : "";
+  document.getElementById("monster-hp-bar").classList.toggle("shielded", inFight && shieldTurnsLeft() > 0);
+
   document.getElementById("monster-weak").textContent = weakNote;
   document.getElementById("monster-resist").textContent = resistNote;
 

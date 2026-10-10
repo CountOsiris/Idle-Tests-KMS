@@ -117,6 +117,8 @@ function spawnMonster(isBoss) {
     monsterArt = type.art;
   }
 
+  startBossMechanics(type, isBoss);
+
   // Some classes get ready at the start of a fight
   if (currentClass().startFight !== undefined) {
     currentClass().startFight();
@@ -313,8 +315,10 @@ function monsterAttacks() {
   }
 
   // Your armor blocks a share of the hit (see armorShareBlocked), but poison goes straight through it
-  let damage = Math.max(1, Math.round(monsterAttack * (1 - armorShareBlocked())));
-  damage = damage + Math.round(monsterAttack * monsterPoison);
+  // (a boss's minion attacks beside it: see game/bosses.js)
+  let attackNow = monsterAttack * bossAttackFactor();
+  let damage = Math.max(1, Math.round(attackNow * (1 - armorShareBlocked())));
+  damage = damage + Math.round(attackNow * monsterPoison);
   damage = Math.max(1, Math.round(damage / damageDivider() * multiplier("damageTaken") * abilityGuardFactor()));
   playerHp = playerHp - damage;
 
@@ -338,12 +342,26 @@ function fightMonster() {
     monsterAttack = Math.ceil(monsterAttack * 1.1);
   }
 
+  // If you die during this turn, a new run has already started and this fight is over.
+  // Every place below that could kill you checks this number afterwards.
+  let deathsBefore = deaths;
+
+  bossStartOfTurn();
+
+  // Each time something hurts the monster, a boss's mechanics get to answer (bossTakes
+  // in game/bosses.js): a shield puts health back, a minion takes the hit, an aura
+  // hurts you for it.
+
   // A lunging monster strikes before you can, unless your class fights from range
   if (fightTurns === 1 && monsterLunges && currentClass().ranged !== true) {
-    let deathsAtLunge = deaths;
     say("The " + monsterName + " lunges at you before you are ready!");
+    let hpBeforeLunge = monsterHp;
     monsterAttacks();
-    if (deaths !== deathsAtLunge) {
+    if (deaths !== deathsBefore) {
+      return;
+    }
+    bossTakes(hpBeforeLunge);
+    if (deaths !== deathsBefore) {
       return;
     }
     if (monsterHp <= 0) {
@@ -353,19 +371,27 @@ function fightMonster() {
   }
 
   // Abilities come first, then the normal attack
+  let hpBeforeAbilities = monsterHp;
   useAbilities();
+  bossTakes(hpBeforeAbilities);
+  if (deaths !== deathsBefore) {
+    return;
+  }
   if (monsterHp <= 0) {
     tickAbilityTimers();
     victory();
     return;
   }
 
-  // What your normal turn does is measured, for abilities that deal "turns of your damage"
+  // What your normal turn does is measured, for abilities that deal "turns of your damage".
+  // (Measured before a boss's mechanics answer, so a shield does not shrink your abilities.)
   let hpBeforeTurn = monsterHp;
   currentClass().attack();
   let dealtThisTurn = hpBeforeTurn - monsterHp;
-
-  let deathsBefore = deaths;
+  bossTakes(hpBeforeTurn);
+  if (deaths !== deathsBefore) {
+    return;
+  }
 
   if (monsterHp > 0) {
     if (monsterRegen > 0) {
@@ -378,15 +404,17 @@ function fightMonster() {
     } else {
       let hpBeforeTheirs = monsterHp;
       monsterAttacks();
+      if (deaths !== deathsBefore) {
+        return;
+      }
       dealtThisTurn = dealtThisTurn + Math.max(0, hpBeforeTheirs - monsterHp);
+      bossTakes(hpBeforeTheirs);
+      if (deaths !== deathsBefore) {
+        return;
+      }
     }
   }
   recordTurnDamage(dealtThisTurn);
-
-  // If that attack killed you, a new run has already started and this fight is over
-  if (deaths !== deathsBefore) {
-    return;
-  }
 
   tickAbilityTimers();
 

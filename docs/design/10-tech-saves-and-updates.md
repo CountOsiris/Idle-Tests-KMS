@@ -6,9 +6,10 @@ Back to the [Masterplan](../../Masterplan.md).
 
 - Plain HTML, CSS and JavaScript, no build step. Files: `data.js` (numbers and shared
   lists), `towers.js`, `classes/*.js` (one per class), the game's rules in `game/`
-  (ten files, split from one 3,600-line `game.js` in October 2026: state, bonuses,
-  equipment, skills, save, page-build, page-show, fights, feel, start), and `cloud.js`
-  (Supabase accounts and online saves).
+  (split from one 3,600-line `game.js` in October 2026: state, bonuses, equipment,
+  abilities, bosses, skills, save, page-build, page-show, fights, feel, start),
+  `updates.js` (what changed in each version, shown in the Updates window) and
+  `cloud.js` (Supabase accounts and online saves).
 - Hosted on GitHub Pages; an upload is `git push`. `version.txt` plus `?v=` on every
   file lets open tabs notice updates. **Every upload: bump the version in three places**
   (see the comment in `index.html`).

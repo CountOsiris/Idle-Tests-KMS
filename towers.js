@@ -44,7 +44,13 @@
 //
 // ----- Bosses -----
 // Bosses guard the last room of every 5th floor, in the order listed, then start again.
-// On top of the numbers here, every boss has triple health and 50% more attack.
+// On top of the numbers here, every boss has more health and attack (bossHealth and
+// bossAttack in data.js).
+// A boss can have MECHANICS: rules of its own, from floor 10 up. Add for example
+//   mechanics: ["shield"]
+// The choices are shield, summons, enrage, reflect and armorUp; what each does and its
+// numbers are under "Boss mechanics" in data.js. Keep to the rule that a home tower
+// never works against its own class: armorUp only where the class casts spells.
 //
 // ----- Trophies -----
 // A trophy is a permanent bonus for the class that wins it (each class wins its own).
@@ -70,9 +76,9 @@ const towers = {
       { name: "Ogre", icon: "🦍",text: "A mountain of health.", minFloor: 10, hp: 2, attack: 1.2, armor: 0.5, gold: 1.5, weak: ["slashing", "lightning"], resist: ["piercing", "nature", "earth"] }
     ],
     bosses: [
-      { name: "Orc Warlord", text: "The first real test.", hp: 1, attack: 1, armor: 1, gold: 1, weak: ["slashing"], resist: ["piercing", "arcane", "nature"] },
-      { name: "Ogre Chieftain", icon: "🦍",text: "Even more health than the rest of them.", hp: 1.4, attack: 1, armor: 0.5, gold: 1.2, weak: ["affliction", "lightning"], resist: ["piercing", "earth", "holy"] },
-      { name: "Warg Mother", icon: "🐺",text: "Enrages: her attack grows by 10% every turn.", hp: 1.1, attack: 1, armor: 0.5, gold: 1.2, enrage: 0.1, weak: ["fire", "crushing"], resist: ["nature", "ice", "arcane"] }
+      { name: "Orc Warlord", text: "The first real test.", hp: 1, attack: 1, armor: 1, gold: 1, weak: ["slashing"], resist: ["piercing", "arcane", "nature"], mechanics: ["enrage"] },
+      { name: "Ogre Chieftain", icon: "🦍",text: "Even more health than the rest of them.", hp: 1.4, attack: 1, armor: 0.5, gold: 1.2, weak: ["affliction", "lightning"], resist: ["piercing", "earth", "holy"], mechanics: ["reflect"] },
+      { name: "Warg Mother", icon: "🐺",text: "Enrages: her attack grows by 10% every turn.", hp: 1.1, attack: 1, armor: 0.5, gold: 1.2, enrage: 0.1, weak: ["fire", "crushing"], resist: ["nature", "ice", "arcane"], mechanics: ["summons"] }
     ],
     trophies: [
       { floor: 10, id: "warlordsBanner", name: "Warlord's Banner", text: "attack x1.1", multiply: { attack: 1.1 } },
@@ -96,9 +102,9 @@ const towers = {
       { name: "Pit Fighter", icon: "🥊",text: "Enrages: his attack grows by 10% every turn.", minFloor: 10, hp: 1, attack: 1.2, armor: 0.5, gold: 1.4, enrage: 0.1, weak: ["piercing", "ice"], resist: ["crushing", "affliction", "nature"] }
     ],
     bosses: [
-      { name: "Bandit King", icon: "👑",text: "Hits harder than anyone in the pass.", hp: 1, attack: 1.3, armor: 1, gold: 1.5, weak: ["piercing"], resist: ["crushing", "arcane", "affliction"] },
-      { name: "The Twin Blades", icon: "⚔️",text: "Two swords, very little patience.", hp: 0.9, attack: 1.5, armor: 0.5, gold: 1.2, weak: ["slashing", "lightning"], resist: ["crushing", "fire", "nature"] },
-      { name: "Warlord of the Pass", icon: "🏇",text: "Enrages: his attack grows by 10% every turn.", hp: 1.1, attack: 1.1, armor: 1, gold: 1.2, enrage: 0.1, weak: ["piercing"], resist: ["crushing", "elemental", "holy"] }
+      { name: "Bandit King", icon: "👑",text: "Hits harder than anyone in the pass.", hp: 1, attack: 1.3, armor: 1, gold: 1.5, weak: ["piercing"], resist: ["crushing", "arcane", "affliction"], mechanics: ["summons"] },
+      { name: "The Twin Blades", icon: "⚔️",text: "Two swords, very little patience.", hp: 0.9, attack: 1.5, armor: 0.5, gold: 1.2, weak: ["slashing", "lightning"], resist: ["crushing", "fire", "nature"], mechanics: ["enrage"] },
+      { name: "Warlord of the Pass", icon: "🏇",text: "Enrages: his attack grows by 10% every turn.", hp: 1.1, attack: 1.1, armor: 1, gold: 1.2, enrage: 0.1, weak: ["piercing"], resist: ["crushing", "elemental", "holy"], mechanics: ["shield"] }
     ],
     trophies: [
       { floor: 10, id: "raidersShield", name: "Raider's Shield", text: "+3 armor", bonus: { armor: 3 } },
@@ -123,9 +129,9 @@ const towers = {
       { name: "Dire Bear", icon: "🐻",text: "Huge, and hits like it.", minFloor: 10, hp: 1.8, attack: 1.4, armor: 1, gold: 1.5, weak: ["piercing"], resist: ["crushing", "earth", "arcane"] }
     ],
     bosses: [
-      { name: "Spider Queen", icon: "🕸️",text: "Venomous: 40% of her attack ignores your armor.", hp: 1, attack: 1, armor: 1, gold: 1.2, poison: 0.4, weak: ["fire", "piercing"], resist: ["affliction", "arcane", "holy"] },
-      { name: "Elder Treant", icon: "🌲",text: "Ancient, armored and very hard to fell.", hp: 1.5, attack: 0.9, armor: 1.5, gold: 1.2, weak: ["fire", "slashing"], resist: ["crushing", "earth", "arcane"] },
-      { name: "Troll King", icon: "👹",text: "Regenerates 3% of his health every turn.", hp: 1.2, attack: 1, armor: 1, gold: 1.2, regen: 0.03, weak: ["fire", "nature"], resist: ["crushing", "affliction", "holy"] }
+      { name: "Spider Queen", icon: "🕸️",text: "Venomous: 40% of her attack ignores your armor.", hp: 1, attack: 1, armor: 1, gold: 1.2, poison: 0.4, weak: ["fire", "piercing"], resist: ["affliction", "arcane", "holy"], mechanics: ["summons"] },
+      { name: "Elder Treant", icon: "🌲",text: "Ancient, armored and very hard to fell.", hp: 1.5, attack: 0.9, armor: 1.5, gold: 1.2, weak: ["fire", "slashing"], resist: ["crushing", "earth", "arcane"], mechanics: ["shield"] },
+      { name: "Troll King", icon: "👹",text: "Regenerates 3% of his health every turn.", hp: 1.2, attack: 1, armor: 1, gold: 1.2, regen: 0.03, weak: ["fire", "nature"], resist: ["crushing", "affliction", "holy"], mechanics: ["reflect"] }
     ],
     trophies: [
       { floor: 10, id: "heartOfTheWild", name: "Heart of the Wild", text: "health x1.1", multiply: { health: 1.1 } },
@@ -149,9 +155,9 @@ const towers = {
       { name: "Enforcer", icon: "👊",text: "The guild's muscle.", minFloor: 9, hp: 1.2, attack: 1.4, armor: 1.5, gold: 1.2, weak: ["affliction"], resist: ["crushing", "arcane", "earth"] }
     ],
     bosses: [
-      { name: "Rat King", text: "Venomous: 30% of its attack ignores your armor.", hp: 1, attack: 1, armor: 0.5, gold: 1.2, poison: 0.3, weak: ["affliction", "fire"], resist: ["nature", "crushing", "holy"] },
-      { name: "Guildmaster", icon: "🎩",text: "Did not get the job by fighting fair.", hp: 1, attack: 1.3, armor: 1, gold: 1.5, weak: ["piercing"], resist: ["crushing", "arcane", "lightning"] },
-      { name: "The Butcher", icon: "🔪",text: "Enrages: his attack grows by 10% every turn.", hp: 1.1, attack: 1, armor: 0.5, gold: 1.2, enrage: 0.1, weak: ["slashing", "affliction"], resist: ["crushing", "holy", "ice"] }
+      { name: "Rat King", text: "Venomous: 30% of its attack ignores your armor.", hp: 1, attack: 1, armor: 0.5, gold: 1.2, poison: 0.3, weak: ["affliction", "fire"], resist: ["nature", "crushing", "holy"], mechanics: ["summons"] },
+      { name: "Guildmaster", icon: "🎩",text: "Did not get the job by fighting fair.", hp: 1, attack: 1.3, armor: 1, gold: 1.5, weak: ["piercing"], resist: ["crushing", "arcane", "lightning"], mechanics: ["shield"] },
+      { name: "The Butcher", icon: "🔪",text: "Enrages: his attack grows by 10% every turn.", hp: 1.1, attack: 1, armor: 0.5, gold: 1.2, enrage: 0.1, weak: ["slashing", "affliction"], resist: ["crushing", "holy", "ice"], mechanics: ["enrage"] }
     ],
     trophies: [
       { floor: 10, id: "thievesPurse", name: "Thieves' Purse", text: "+25% gold", bonus: { gold: 0.25 } },
@@ -174,9 +180,9 @@ const towers = {
       { name: "Death Knight", icon: "⚰️",text: "Triple armor, and it hits back hard.", minFloor: 12, hp: 1.3, attack: 1.3, armor: 3, gold: 1.5, weak: ["holy", "arcane"], resist: ["slashing", "affliction", "ice"] }
     ],
     bosses: [
-      { name: "Bone Lich", icon: "🧙",text: "Double armor, and hits harder than most.", hp: 1, attack: 1.2, armor: 2, gold: 1.2, weak: ["crushing", "holy"], resist: ["piercing", "affliction", "ice"] },
-      { name: "Iron Colossus", icon: "🤖",text: "Four times the armor.", hp: 1.3, attack: 0.9, armor: 4, gold: 1.2, weak: ["lightning", "arcane"], resist: ["physical", "affliction", "nature"] },
-      { name: "The Entombed King", icon: "👑",text: "Triple armor, and regenerates 2% of his health every turn.", hp: 1.1, attack: 1, armor: 3, gold: 1.5, regen: 0.02, weak: ["holy", "arcane"], resist: ["slashing", "piercing", "affliction"] }
+      { name: "Bone Lich", icon: "🧙",text: "Double armor, and hits harder than most.", hp: 1, attack: 1.2, armor: 2, gold: 1.2, weak: ["crushing", "holy"], resist: ["piercing", "affliction", "ice"], mechanics: ["summons"] },
+      { name: "Iron Colossus", icon: "🤖",text: "Four times the armor.", hp: 1.3, attack: 0.9, armor: 4, gold: 1.2, weak: ["lightning", "arcane"], resist: ["physical", "affliction", "nature"], mechanics: ["armorUp"] },
+      { name: "The Entombed King", icon: "👑",text: "Triple armor, and regenerates 2% of his health every turn.", hp: 1.1, attack: 1, armor: 3, gold: 1.5, regen: 0.02, weak: ["holy", "arcane"], resist: ["slashing", "piercing", "affliction"], mechanics: ["shield"] }
     ],
     trophies: [
       { floor: 10, id: "cryptLore", name: "Crypt Lore", text: "+20% experience", bonus: { experience: 0.2 } },
@@ -199,9 +205,9 @@ const towers = {
       { name: "Storm Giant", icon: "⛈️",text: "Huge, armored and angry.", minFloor: 11, hp: 1.8, attack: 1.3, armor: 1.5, gold: 1.5, weak: ["earth"], resist: ["piercing", "arcane", "nature"] }
     ],
     bosses: [
-      { name: "Thunderbird", icon: "⚡",text: "Strikes like lightning.", hp: 0.9, attack: 1.3, armor: 0.5, gold: 1.2, weak: ["earth"], resist: ["slashing", "nature", "arcane"], flying: true },
-      { name: "Mountain Heart", icon: "⛰️",text: "Triple armor, and regenerates 2% of its health every turn.", hp: 1.3, attack: 0.9, armor: 3, gold: 1.2, regen: 0.02, weak: ["ice", "crushing"], resist: ["slashing", "piercing", "affliction"] },
-      { name: "Red Dragon", icon: "🐲",text: "Enrages: its attack grows by 10% every turn.", hp: 1.3, attack: 1, armor: 1, gold: 1.5, enrage: 0.1, weak: ["ice"], resist: ["slashing", "arcane", "affliction"], flying: true }
+      { name: "Thunderbird", icon: "⚡",text: "Strikes like lightning.", hp: 0.9, attack: 1.3, armor: 0.5, gold: 1.2, weak: ["earth"], resist: ["slashing", "nature", "arcane"], flying: true, mechanics: ["enrage"] },
+      { name: "Mountain Heart", icon: "⛰️",text: "Triple armor, and regenerates 2% of its health every turn.", hp: 1.3, attack: 0.9, armor: 3, gold: 1.2, regen: 0.02, weak: ["ice", "crushing"], resist: ["slashing", "piercing", "affliction"], mechanics: ["armorUp"] },
+      { name: "Red Dragon", icon: "🐲",text: "Enrages: its attack grows by 10% every turn.", hp: 1.3, attack: 1, armor: 1, gold: 1.5, enrage: 0.1, weak: ["ice"], resist: ["slashing", "arcane", "affliction"], flying: true, mechanics: ["reflect"] }
     ],
     trophies: [
       { floor: 10, id: "stormShard", name: "Storm Shard", text: "attack and health x1.05", multiply: { attack: 1.05, health: 1.05 } },
@@ -224,9 +230,9 @@ const towers = {
       { name: "Banshee", icon: "😱",text: "Her wail goes through armor: 40% of her attack ignores it.", minFloor: 11, hp: 0.9, attack: 1.1, armor: 0.5, gold: 1.4, poison: 0.4, weak: ["holy"], resist: ["slashing", "piercing", "nature"] }
     ],
     bosses: [
-      { name: "The Abbot", icon: "📿",text: "Regenerates 3% of his health every turn.", hp: 1.1, attack: 1, armor: 1, gold: 1.2, regen: 0.03, weak: ["crushing", "arcane"], resist: ["slashing", "affliction", "nature"] },
-      { name: "Vampire Lord", icon: "🦇",text: "Hits hard, and regenerates 3% of his health every turn.", hp: 1, attack: 1.2, armor: 1, gold: 1.5, regen: 0.03, weak: ["holy", "fire"], resist: ["affliction", "ice", "arcane", "piercing"] },
-      { name: "Lich Bishop", icon: "☠️",text: "Double armor, and 30% of his attack ignores yours.", hp: 1, attack: 1, armor: 2, gold: 1.2, poison: 0.3, weak: ["holy", "crushing"], resist: ["piercing", "affliction", "ice"] }
+      { name: "The Abbot", icon: "📿",text: "Regenerates 3% of his health every turn.", hp: 1.1, attack: 1, armor: 1, gold: 1.2, regen: 0.03, weak: ["crushing", "arcane"], resist: ["slashing", "affliction", "nature"], mechanics: ["shield"] },
+      { name: "Vampire Lord", icon: "🦇",text: "Hits hard, and regenerates 3% of his health every turn.", hp: 1, attack: 1.2, armor: 1, gold: 1.5, regen: 0.03, weak: ["holy", "fire"], resist: ["affliction", "ice", "arcane", "piercing"], mechanics: ["reflect"] },
+      { name: "Lich Bishop", icon: "☠️",text: "Double armor, and 30% of his attack ignores yours.", hp: 1, attack: 1, armor: 2, gold: 1.2, poison: 0.3, weak: ["holy", "crushing"], resist: ["piercing", "affliction", "ice"], mechanics: ["summons"] }
     ],
     trophies: [
       { floor: 10, id: "abbeyBlessing", name: "Abbey Blessing", text: "health x1.1 and +1 armor", bonus: { armor: 1 }, multiply: { health: 1.1 } },

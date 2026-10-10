@@ -90,6 +90,79 @@ try {
     startEncounter();
   }
 
+  // 3b. Boss mechanics: every one a boss lists exists, and each does what it says
+  let unknownMechanics = [];
+  for (let towerName in towers) {
+    for (let boss of towers[towerName].bosses) {
+      for (let id of boss.mechanics || []) {
+        if (bossMechanics[id] === undefined || bossMechanicText(id) === "") {
+          unknownMechanics.push(boss.name + ": " + id);
+        }
+      }
+    }
+  }
+  check("boss mechanics in towers.js all exist" + (unknownMechanics.length === 0 ? "" : ": " + unknownMechanics.join(", ")), unknownMechanics.length === 0);
+
+  // A made-up boss with 1000 health, to try each mechanic on its own
+  function tryBoss(id) {
+    startBossMechanics({}, false);
+    bossRules = [id];
+    monsterMaxHp = 1000;
+    monsterHp = 1000;
+    monsterAttack = 100;
+    bossBaseAttack = 100;
+    fightTurns = 3;
+    recalcStats();
+    playerHp = playerMaxHp;
+  }
+
+  tryBoss("shield");
+  monsterHp = 400;
+  bossTakes(600);
+  let shieldWentUp = shieldUsed && monsterHp === 400;
+  fightTurns = 4;
+  monsterHp = 300;
+  bossTakes(400);
+  check("shield phase: goes up below half health, then blocks " + percent(bossMechanics.shield.blocks) + " (100 damage left " + monsterHp + " of 400)",
+    shieldWentUp && monsterHp === 400 - Math.ceil(100 * (1 - bossMechanics.shield.blocks)));
+  fightTurns = 4 + bossMechanics.shield.turns;
+  monsterHp = 200;
+  bossTakes(300);
+  check("shield phase: ends after " + bossMechanics.shield.turns + " turns", monsterHp === 200);
+
+  tryBoss("summons");
+  monsterHp = 600;
+  bossTakes(700);
+  let minionCame = minionHp === 1000 * bossMechanics.summons.health;
+  monsterHp = 100;
+  bossTakes(600);
+  check("summons: a minion comes at " + percent(bossMechanics.summons.at[0]) + " health and takes the next hit", minionCame && monsterHp === 600 && minionHp === 0);
+
+  tryBoss("enrage");
+  fightTurns = bossMechanics.enrage.afterTurns;
+  bossStartOfTurn();
+  let calmInTime = monsterAttack === 100;
+  fightTurns = bossMechanics.enrage.afterTurns + 1;
+  bossStartOfTurn();
+  bossStartOfTurn();
+  check("enrage timer: attack x" + bossMechanics.enrage.attack + " once, after turn " + bossMechanics.enrage.afterTurns, calmInTime && monsterAttack === 100 * bossMechanics.enrage.attack);
+
+  tryBoss("reflect");
+  playerMaxHp = 100000;
+  playerHp = 100000;
+  monsterHp = 500;
+  bossTakes(1000);
+  let costOfHalf = 100 * bossMechanics.reflect.attacks / 2 * (currentClass().ranged === true ? bossMechanics.reflect.rangedShare : 1);
+  check("reflect aura: taking off half its health costs " + costOfHalf + " health", 100000 - playerHp === Math.round(costOfHalf));
+  recalcStats();
+  playerHp = playerMaxHp;
+
+  tryBoss("armorUp");
+  monsterArmor = 0.1;
+  bossStartOfTurn();
+  check("armor up: +" + percent(bossMechanics.armorUp.perTurn) + " armor a turn", Math.abs(monsterArmor - 0.1 - bossMechanics.armorUp.perTurn) < 0.0001);
+  startEncounter();
+
   // 4. The content lists: no name used twice in a class, no old wording
   for (let className in classes) {
     let c = classes[className];

@@ -271,6 +271,31 @@ const cruiseTurns = 2;
 // game/abilities.js). A class opens one ability slot on each of these floors.
 const abilitySlotFloors = [10, 35, 75];
 
+// ----- Boss mechanics -----
+// From this floor up, a boss can have a rule of its own that changes how the fight
+// goes (the rules themselves are in game/bosses.js). Which boss has which is written
+// on the boss in towers.js:  mechanics: ["shield"]
+// Bosses below this floor fight plainly, so a new player's first boss has nothing to learn.
+const bossMechanicsFloor = 10;
+
+// TO CHANGE A MECHANIC: change its numbers here. The words the player reads are
+// written from these numbers, so they never fall out of step.
+//   shield   below "below" of its health, once a fight, it takes "blocks" less damage for "turns" turns
+//   summons  at each share of its health in "at", it calls a minion with "health" of the
+//            boss's health. The minion must die before the boss can be hurt again, and
+//            while it stands the boss's attack is "attack" higher (0.3 means +30%).
+//   enrage   after "afterTurns" turns, its attack is multiplied by "attack"
+//   reflect  hurting it hurts you. Taking off ALL of its health costs you "attacks" of its
+//            attacks, spread over the fight; a class that fights from range takes "rangedShare" of that.
+//   armorUp  its armor blocks "perTurn" more of every weapon hit each turn, up to "most"
+const bossMechanics = {
+  shield: { name: "Shield phase", icon: "🛡️", below: 0.5, blocks: 0.75, turns: 5 },
+  summons: { name: "Summons", icon: "👥", at: [0.66, 0.33], health: 0.1, attack: 0.3 },
+  enrage: { name: "Enrage timer", icon: "💢", afterTurns: 20, attack: 2 },
+  reflect: { name: "Reflect aura", icon: "🌵", attacks: 3, rangedShare: 0.5 },
+  armorUp: { name: "Armor up", icon: "⛓️", perTurn: 0.04, most: 0.8 }
+};
+
 // How much of your health comes back after every kill (0.2 means a fifth)
 const healOnKill = 0.2;
 
