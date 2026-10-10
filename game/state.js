@@ -5,7 +5,7 @@
 //
 //  The game's rules are split over the files in game/, loaded in this order
 //  (see the script tags in index.html):
-//    state, bonuses, equipment, abilities, bosses, summary, skills, save,
+//    state, bonuses, legend, equipment, abilities, bosses, summary, skills, save,
 //    page-build, page-show, fights, feel, start
 //  They all share one set of names, as if they were one long file, so the order
 //  matters only for start.js, which must be last. Lists you are likely to edit
@@ -86,6 +86,9 @@ let trophies = [];
 
 // How many runs in a row have ended without a new best floor (see stuckAfterRuns in data.js)
 let runsSinceBest = 0;
+
+// How many times this class has become a legend (see game/legend.js)
+let legends = 0;
 
 // ----- The account -----
 // Fame, and what it has bought, belong to the ACCOUNT: every class earns into the

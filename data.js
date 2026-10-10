@@ -177,6 +177,39 @@ const fameUpgrades = [
   { id: "scavenger", name: "Craftsmanship", text: "Multiplies the power of your weapon and armor by 1.15.", unlockAt: 2, multiply: { gear: 1.15 }, cost: 8, growth: 1.45, maxLevel: 0 }
 ];
 
+// ----- Legend -----
+// The layer above ascension (rules in game/legend.js). A class that has reached
+// legendFloor can become a legend: it starts over from floor 1 with every milestone to
+// earn again, and is paid legend marks:
+//   marks  =  the square root of its best floor x legendMarkRate, rounded down
+// With the numbers below, floor 100 pays 10, floor 144 pays 12, floor 400 pays 20:
+// four times as deep for twice the marks.
+const legendFloor = 100;
+const legendMarkRate = 1;
+
+// What legend marks buy. Each one OPENS SOMETHING, for every class on the account, and
+// none of them is a multiplier: multipliers are fame's job.
+//
+// TO ADD ONE: add a line. It needs:
+//   id       - a unique name with no spaces (used in the save, so don't rename it later)
+//   name     - what the player sees
+//   text     - a short description
+//   cost     - the price in legend marks; each further level costs "growth" times more
+//   maxLevel - how many times it can be bought
+//   bonus    - what one level does, in bonus words. The ones made for this list:
+//                abilitySlots  ability slots, open from floor 1
+//                extraBoons    boons every boss leaves beyond the first
+//                relicSlots    relics kept when you fall
+//                startLevels   levels a class starts with after ascending or becoming a legend
+//                freePotions   healing potions every run starts with
+const legendUnlocks = [
+  { id: "extraHand", name: "Extra Hand", text: "One more ability slot for every class, open from floor 1.", bonus: { abilitySlots: 1 }, cost: 8, growth: 1, maxLevel: 1 },
+  { id: "twiceBlessed", name: "Twice Blessed", text: "Every boss leaves one more boon.", bonus: { extraBoons: 1 }, cost: 10, growth: 1, maxLevel: 1 },
+  { id: "reliquary", name: "Reliquary", text: "Every class keeps 1 more relic when it falls.", bonus: { relicSlots: 1 }, cost: 5, growth: 2, maxLevel: 3 },
+  { id: "oldRoads", name: "Old Roads", text: "Every class starts again 10 levels higher after ascending or becoming a legend.", bonus: { startLevels: 10 }, cost: 4, growth: 2, maxLevel: 3 },
+  { id: "quartermaster", name: "Quartermaster", text: "Every run starts with 2 healing potions, free.", bonus: { freePotions: 2 }, cost: 4, growth: 1, maxLevel: 1 }
+];
+
 // ----- Breakthroughs -----
 // Each class has its own milestones, in its file, up to floor 100. After those,
 // breakthroughs go on forever. The first is at breakthroughFirstFloor, and each one

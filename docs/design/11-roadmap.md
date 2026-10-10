@@ -65,7 +65,8 @@ Done when: a class stuck at a wall has a visible, worthwhile challenge to go and
 
 ## Phase 4: The long game
 
-1. Second prestige layer ("Legend") after floor 100. [Progression layers](06-progression-layers.md)
+1. ~~Second prestige layer ("Legend") after floor 100.~~ Done.
+   [Progression layers](06-progression-layers.md)
 2. Beast Tamer, the eighth class.
 3. Rotating weekly challenge modifiers across all towers.
 

@@ -11,7 +11,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&family=EB+Garamond:wght@400;500;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css?v=20261010k">
+  <link rel="stylesheet" href="style.css?v=20261010l">
 </head>
 <body data-tab="tower">
 
@@ -199,6 +199,7 @@
         <button id="tab-travel" onclick="showTab('travel')">Towers</button>
         <button id="tab-milestones" onclick="showTab('milestones')">Milestones</button>
         <button id="tab-ascension" onclick="showTab('ascension')">Ascension</button>
+        <button id="tab-legend" onclick="showTab('legend')">Legend</button>
         <button id="tab-save" onclick="showTab('save')">Settings</button>
       </nav>
 
@@ -433,6 +434,39 @@
         </div>
       </div>
 
+      <!-- Legend: the layer above ascension (game/legend.js) -->
+      <div class="page" id="page-legend">
+        <div class="card">
+          <div class="card-head">
+            <h2>Legend</h2>
+            <p>Legend marks <strong id="legend-marks" class="big-number">0</strong></p>
+          </div>
+          <p class="note">
+            A class that has reached floor <span id="legend-floor">100</span> can become a legend. It starts again
+            from floor 1 and level 1 with every milestone to earn again, and is paid legend marks: more for a deeper
+            best floor, but four times as deep pays only twice as much. Marks are shared by all your classes.
+          </p>
+
+          <p><button id="legend-btn" class="main" onclick="becomeLegend()">Become a legend</button></p>
+
+          <div class="pair"><span>Best floor of this class</span><span id="legend-best">1</span></div>
+          <div class="pair"><span>Times this class has become a legend</span><span id="legend-count">0</span></div>
+
+          <p class="note">
+            Lost when you become a legend: everything an ascension loses, and also your best floors, the milestone
+            perks you picked, the abilities in your slots and your place in other towers.
+            Kept: fame and fame upgrades, trophies, the town helpers, legend marks and everything they bought.
+          </p>
+        </div>
+
+        <div class="card">
+          <h2>What marks open</h2>
+          <p class="note">Kept forever, for every class. None of these is a multiplier: each one opens something new.</p>
+          <!-- The rows are made by the game (game/) from the legendUnlocks list in data.js -->
+          <div id="legend-unlocks"></div>
+        </div>
+      </div>
+
       <!-- Settings and save -->
       <div class="page" id="page-save">
         <div class="card">
@@ -510,31 +544,32 @@
          3. the file version.txt
        The ?v= makes browsers fetch the new files instead of old remembered ones, and
        version.txt is how a game left open finds out it is out of date (see game/start.js). -->
-  <script>const gameVersion = "20261010k";</script>
-  <script src="data.js?v=20261010k"></script>
-  <script src="updates.js?v=20261010k"></script>
-  <script src="towers.js?v=20261010k"></script>
-  <script src="classes/barbarian.js?v=20261010k"></script>
-  <script src="classes/warden.js?v=20261010k"></script>
-  <script src="classes/ranger.js?v=20261010k"></script>
-  <script src="classes/assassin.js?v=20261010k"></script>
-  <script src="classes/warlock.js?v=20261010k"></script>
-  <script src="classes/elementalist.js?v=20261010k"></script>
-  <script src="classes/zealot.js?v=20261010k"></script>
+  <script>const gameVersion = "20261010l";</script>
+  <script src="data.js?v=20261010l"></script>
+  <script src="updates.js?v=20261010l"></script>
+  <script src="towers.js?v=20261010l"></script>
+  <script src="classes/barbarian.js?v=20261010l"></script>
+  <script src="classes/warden.js?v=20261010l"></script>
+  <script src="classes/ranger.js?v=20261010l"></script>
+  <script src="classes/assassin.js?v=20261010l"></script>
+  <script src="classes/warlock.js?v=20261010l"></script>
+  <script src="classes/elementalist.js?v=20261010l"></script>
+  <script src="classes/zealot.js?v=20261010l"></script>
   <!-- The game's rules, in this order (start.js last) -->
-  <script src="game/state.js?v=20261010k"></script>
-  <script src="game/bonuses.js?v=20261010k"></script>
-  <script src="game/equipment.js?v=20261010k"></script>
-  <script src="game/abilities.js?v=20261010k"></script>
-  <script src="game/bosses.js?v=20261010k"></script>
-  <script src="game/summary.js?v=20261010k"></script>
-  <script src="game/skills.js?v=20261010k"></script>
-  <script src="game/save.js?v=20261010k"></script>
-  <script src="game/page-build.js?v=20261010k"></script>
-  <script src="game/page-show.js?v=20261010k"></script>
-  <script src="game/fights.js?v=20261010k"></script>
-  <script src="game/feel.js?v=20261010k"></script>
-  <script src="game/start.js?v=20261010k"></script>
-  <script src="cloud.js?v=20261010k"></script>
+  <script src="game/state.js?v=20261010l"></script>
+  <script src="game/bonuses.js?v=20261010l"></script>
+  <script src="game/legend.js?v=20261010l"></script>
+  <script src="game/equipment.js?v=20261010l"></script>
+  <script src="game/abilities.js?v=20261010l"></script>
+  <script src="game/bosses.js?v=20261010l"></script>
+  <script src="game/summary.js?v=20261010l"></script>
+  <script src="game/skills.js?v=20261010l"></script>
+  <script src="game/save.js?v=20261010l"></script>
+  <script src="game/page-build.js?v=20261010l"></script>
+  <script src="game/page-show.js?v=20261010l"></script>
+  <script src="game/fights.js?v=20261010l"></script>
+  <script src="game/feel.js?v=20261010l"></script>
+  <script src="game/start.js?v=20261010l"></script>
+  <script src="cloud.js?v=20261010l"></script>
 </body>
 </html>

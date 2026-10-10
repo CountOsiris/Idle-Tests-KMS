@@ -262,9 +262,12 @@ function die() {
   // Sweeping past bosses does not cost their boons: one for every boss passed, and a
   // relic for every relic boss
   let bossesPassed = Math.floor((floor - 1) / 5);
-  for (let i = 0; i < bossesPassed; i++) {
+  for (let i = 0; i < bossesPassed * (1 + totalBonus("extraBoons")); i++) {
     gainBossUpgrade();
   }
+
+  // The Quartermaster (a legend unlock) fills the belt for free
+  potions = Math.max(potions, totalBonus("freePotions"));
   let relicBossesPassed = Math.floor((floor - 1) / relicBossEvery);
   for (let i = 0; i < relicBossesPassed; i++) {
     gainRelic();
@@ -328,7 +331,10 @@ function victory() {
     gainRelic();
   }
   if (encounterType === "boss") {
-    gainBossUpgrade();
+    // (the Twice Blessed legend unlock adds a boon: "extraBoons")
+    for (let i = 0; i < 1 + totalBonus("extraBoons"); i++) {
+      gainBossUpgrade();
+    }
     if (floor % relicBossEvery === 0) {
       gainRelic();
     }

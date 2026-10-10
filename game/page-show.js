@@ -7,7 +7,7 @@
 // style.css shows the page whose name matches body's data-tab.
 // On a wide screen the tower is always visible beside the tabs; on a narrow
 // one it is a tab of its own.
-const tabNames = ["tower", "character", "inventory", "skills", "town", "travel", "milestones", "ascension", "save"];
+const tabNames = ["tower", "character", "inventory", "skills", "town", "travel", "milestones", "ascension", "legend", "save"];
 
 function showTab(name) {
   if (!tabIsOpen(name)) {
@@ -564,6 +564,9 @@ function nextGoals() {
   if (hasPerkToPick()) {
     goals.push("You have a milestone perk to pick (Milestones).");
   }
+  if (canBecomeLegend()) {
+    goals.push("You can become a legend (Legend).");
+  }
   if (canAscend()) {
     goals.push("You can ascend (Ascension).");
   }
@@ -612,6 +615,7 @@ function showGoals() {
   markTab("skills", skillPointsLeft() > 0 || hasEmptyAbilitySlot());
   markTab("milestones", hasPerkToPick());
   markTab("ascension", canAscend() || canBuyFameUpgrade());
+  markTab("legend", canBecomeLegend() || canBuyLegendUnlock());
 }
 
 // The relic list is rebuilt only when the relics held change
@@ -702,6 +706,7 @@ function updateScreen() {
   showTown();
   showTowers();
   showAscension();
+  showLegend();
   showLastRun();
   showGoals();
   showLog();

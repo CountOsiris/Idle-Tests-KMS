@@ -42,9 +42,17 @@ try {
         updateScreen();
       }
     }
+    // Every tab's page really shows (a tab with no rule in style.css stays blank)
+    let tabsBefore = unlockedTabs;
+    unlockedTabs = tabNames;
     for (let name of tabNames) {
       showTab(name);
+      if (name !== "tower" && document.getElementById("page-" + name).offsetHeight === 0) {
+        failures++;
+        out.push("FAIL  the " + name + " tab opens to a blank page");
+      }
     }
+    unlockedTabs = tabsBefore;
     updateScreen();
     check(className + " plays (floor " + floor + ", attack " + big(playerAttack) + ", health " + big(playerMaxHp) + ")",
       playerAttack > 0 && playerMaxHp > 0 && !isNaN(playerHp) && skillPointsLeft() >= 0);
@@ -183,7 +191,8 @@ try {
     if (tallyRanked(ended.damage).length === 0 || tallyRanked(ended.taken).length === 0) {
       summaryProblems.push("a finished run has no damage dealt or taken");
     }
-    if (ended.killer === "" || !(ended.lastHit > 0) || !(ended.kills > 0)) {
+    // (a run that starts too high can end in its first fight, with no kills at all)
+    if (ended.killer === "" || !(ended.lastHit > 0) || typeof ended.kills !== "number") {
       summaryProblems.push("killer, last hit or kills missing");
     }
     for (let source in ended.damage) {
@@ -545,6 +554,49 @@ try {
   recalcStats();
   playerHp = playerMaxHp;
   runStats = freshRunStats();
+  startEncounter();
+
+  // 3h. Legend: becoming one pays the right marks, starts the class over, and keeps what it should
+  let fameThen = fame;
+  let marksThen = legendMarks;
+  trophies = ["raidersShield"];
+  bestFloor = 144;
+  chosenPerks = { 5: currentClass().milestones[0].perks[0].id };
+  level = 50;
+  becomeLegend();
+  check("legend: floor 144 pays 12 marks and starts the class over (best floor " + bestFloor + ", level " + level + ")",
+    legendMarks === marksThen + 12 && bestFloor === 1 && floor === 1 && level === 1 && Object.keys(chosenPerks).length === 0 && legends >= 1);
+  check("legend: fame and trophies are kept", fame === fameThen && trophies.length === 1);
+  becomeLegend();
+  check("legend: a class below floor " + legendFloor + " cannot become one", legendMarks === marksThen + 12);
+
+  let slotsAtStart = openAbilitySlots();
+  legendMarks = 1000;
+  for (let item of legendUnlocks) {
+    while (!legendUnlockIsMaxed(item)) {
+      buyLegendUnlock(item);
+    }
+  }
+  ascensionBest = ascendFirstFloor;
+  ascend();
+  check("legend unlocks: an ability slot from floor 1, " + (level - 1) + " starting levels, " + potions + " free potions, " + totalBonus("relicSlots") + " relic slots",
+    openAbilitySlots() === slotsAtStart + 1 && level === 1 + totalBonus("startLevels") && totalBonus("startLevels") === 30 && potions === 2 && totalBonus("relicSlots") === 3);
+  floor = 5;
+  room = roomsPerFloor;
+  encounterType = "boss";
+  monsterIsRare = false;
+  spawnMonster(true);
+  let boonsThen = upgradesHeld();
+  monsterHp = 0;
+  victory();
+  check("legend unlocks: a boss leaves two boons", upgradesHeld() === boonsThen + 2);
+  showTab("legend");
+  updateScreen();
+  check("the Legend tab opens and lists what marks buy", document.body.dataset.tab === "legend" && document.getElementById("legend-unlocks").children.length === legendUnlocks.length);
+  legendMarks = marksThen;
+  legendLevels = {};
+  trophies = [];
+  recalcStats();
   startEncounter();
 
   // A newer tab taking over stops this one from saving

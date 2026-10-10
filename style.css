@@ -280,6 +280,7 @@ body[data-tab="town"] #page-town,
 body[data-tab="travel"] #page-travel,
 body[data-tab="milestones"] #page-milestones,
 body[data-tab="ascension"] #page-ascension,
+body[data-tab="legend"] #page-legend,
 body[data-tab="save"] #page-save {
   display: block;
 }

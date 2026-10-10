@@ -121,6 +121,17 @@ function buildFameList() {
   }
 }
 
+// Runs once, when the game starts. What legend marks buy is the same for every class.
+function buildLegendList() {
+  let box = document.getElementById("legend-unlocks");
+
+  for (let item of legendUnlocks) {
+    addRow(box, "legend-" + item.id, function () {
+      buyLegendUnlock(item);
+    });
+  }
+}
+
 // Runs when the game starts and every time the class changes
 function buildClassScreen() {
   // The blacksmith's weapon picker lists this class's own kinds of weapon

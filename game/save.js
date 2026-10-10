@@ -237,7 +237,8 @@ function freshClass(className) {
     abilityModes: {},
     lastRun: null,
     runStats: null,
-    runsSinceBest: 0
+    runsSinceBest: 0,
+    legends: 0
   };
 }
 
@@ -283,7 +284,8 @@ function packClass() {
     abilityModes: abilityModes,
     lastRun: lastRun,
     runStats: runStats,
-    runsSinceBest: runsSinceBest
+    runsSinceBest: runsSinceBest,
+    legends: legends
   };
 }
 
@@ -342,6 +344,7 @@ function unpackClass(saved) {
   lastAscensionSeconds = data.lastAscensionSeconds;
   trophies = data.trophies;
   runsSinceBest = data.runsSinceBest;
+  legends = data.legends;
   runCounter = data.runCounter;
   savedBuild = data.savedBuild;
   autoBuild = data.autoBuild;
@@ -450,6 +453,8 @@ function saveGame() {
     classSaves: classSaves,
     fame: fame,
     fameLevels: fameLevels,
+    legendMarks: legendMarks,
+    legendLevels: legendLevels,
     unlockedTabs: unlockedTabs,
     lastTick: lastTick
   };
@@ -475,6 +480,10 @@ function loadGame() {
       classSaves = data.classSaves;
       fame = data.fame;
       fameLevels = keepKnownIds(data.fameLevels, fameUpgrades);
+
+      // Legend marks: saves from before they existed have none
+      legendMarks = typeof data.legendMarks === "number" ? data.legendMarks : 0;
+      legendLevels = keepKnownIds(data.legendLevels || {}, legendUnlocks);
       if (Array.isArray(data.unlockedTabs)) {
         unlockedTabs = data.unlockedTabs;
       }
@@ -494,6 +503,8 @@ function loadGame() {
       classSaves = {};
       fame = 0;
       fameLevels = {};
+      legendMarks = 0;
+      legendLevels = {};
       playerClass = "barbarian";
       lastTick = Date.now();
     }

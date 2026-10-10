@@ -189,7 +189,9 @@ const tabUnlocks = [
   { tab: "ascension", size: "moment", title: "Ascension", text: "Reach floor " + ascendFirstFloor + " to ascend: this class starts again from level 1 and earns fame, which makes every one of your classes stronger for good. See the Ascension tab.",
     earned: function () { return accountMost("bestFloor") >= 10 || totalAscensions() > 0; } },
   { tab: "travel", size: "moment", title: "Other towers", text: "Your classes can now challenge each other's towers. Each has stronger monsters and a rule of its own against challengers, and six trophies to win: bonuses that are yours for good. See the Towers tab.",
-    earned: function () { return accountMost("bestFloor") >= 20 || totalAscensions() > 0; } }
+    earned: function () { return accountMost("bestFloor") >= 20 || totalAscensions() > 0; } },
+  { tab: "legend", size: "moment", title: "Legend", text: "A class that reaches floor " + legendFloor + " can become a legend: it climbs the whole tower again, and earns legend marks that open new things for every class. See the Legend tab.",
+    earned: function () { return accountMost("bestFloor") >= legendFloor || accountMost("legends") > 0 || legendMarks > 0 || Object.keys(legendLevels).length > 0; } }
 ];
 
 // Tabs that are always open
@@ -203,7 +205,7 @@ function accountMost(what) {
   for (let className in classes) {
     let saved = classSaves[className];
     if (className === playerClass) {
-      saved = { level: level, bank: bank, bestFloor: bestFloor, forgeLevels: forgeLevels };
+      saved = { level: level, bank: bank, bestFloor: bestFloor, forgeLevels: forgeLevels, legends: legends };
     }
     if (saved === undefined) {
       continue;

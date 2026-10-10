@@ -312,9 +312,18 @@ function ascend() {
   ascensions = ascensions + 1;
   ascensionBest = 1;
 
+  startClassOver();
+  say("You ascend! Every floor will pay fame again.");
+  startEncounter();
+  updateScreen();
+  saveGame();
+}
+
+// What an ascension takes away, and becoming a legend too (game/legend.js)
+function startClassOver() {
   // What is lost: levels, stats, skills, experience, gold and the run in progress.
-  // (No fame upgrade adds starting levels at the moment; fameAdd is 0 unless one does.)
-  level = 1 + fameAdd("startLevels");
+  // (Starting levels come from the Old Roads legend unlock.)
+  level = 1 + fameAdd("startLevels") + totalBonus("startLevels");
   experience = 0;
 
   // The skills are about to be wiped. If no build was ever saved, remember this one,
@@ -354,12 +363,9 @@ function ascend() {
   startRunGear();
   resetAbilitiesForRun();
   runStats = freshRunStats();
+  potions = totalBonus("freePotions");
   playerHp = playerMaxHp;
   logLines = [];
-  say("You ascend! Every floor will pay fame again.");
-  startEncounter();
-  updateScreen();
-  saveGame();
 }
 
 // The rule of the tower being challenged (see "awayRule" in towers.js). It only counts
@@ -381,9 +387,9 @@ function towerRuleBonus(stat) {
 
 // Everything in the game asks this for its numbers:
 // the class's own base + skills + milestone perks + relics + upgrades + trophies + town
-// + the rule of the tower being challenged
+// + the rule of the tower being challenged + what legend marks have bought
 function totalBonus(stat) {
-  return baseBonus(stat) + skillBonus(stat) + perkBonus(stat) + relicBonus(stat) + upgradeBonus(stat) + trophyBonus(stat) + townBonus(stat) + towerRuleBonus(stat);
+  return baseBonus(stat) + skillBonus(stat) + perkBonus(stat) + relicBonus(stat) + upgradeBonus(stat) + trophyBonus(stat) + townBonus(stat) + towerRuleBonus(stat) + legendBonus(stat);
 }
 
 // ----- Chances and overflow -----

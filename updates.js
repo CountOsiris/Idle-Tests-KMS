@@ -13,6 +13,14 @@
 
 const gameUpdates = [
   {
+    version: "20261010l",
+    title: "Legend",
+    changes: [
+      "A class that reaches floor 100 can become a legend: it climbs the whole tower again and earns legend marks.",
+      "Marks open new things for every class: an extra ability slot, a second boon from every boss, relic slots, starting levels and free potions."
+    ]
+  },
+  {
     version: "20261010k",
     title: "Relics that do something",
     changes: [

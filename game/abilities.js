@@ -73,9 +73,9 @@ function abilityById(id) {
   return null;
 }
 
-// How many slots this class has opened
+// How many slots this class has opened (the Extra Hand legend unlock adds one from floor 1)
 function openAbilitySlots() {
-  let open = 0;
+  let open = totalBonus("abilitySlots");
   for (let slotFloor of abilitySlotFloors) {
     if (bestFloor >= slotFloor) {
       open = open + 1;
