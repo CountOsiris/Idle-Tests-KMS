@@ -889,6 +889,18 @@ try {
       updateProblems.push(update.version + " has no title or no changes");
     }
   }
+  seenVersion = "";
+  showSettings();
+  showTab("save");
+  let settingsButton = document.getElementById("updates-btn-settings");
+  if (settingsButton.offsetHeight === 0 || !settingsButton.classList.contains("chosen") || document.getElementById("settings-version").textContent !== gameVersion) {
+    updateProblems.push("the Settings tab has no lit Updates button with the version beside it");
+  }
+  settingsButton.click();
+  if (document.getElementById("updates").hidden || settingsButton.classList.contains("chosen")) {
+    updateProblems.push("the Settings button did not open the window");
+  }
+  closeUpdates();
   openUpdates();
   if (document.getElementById("updates").hidden || document.getElementById("updates-list").children.length !== gameUpdates.length * 2) {
     updateProblems.push("the window did not show every entry");

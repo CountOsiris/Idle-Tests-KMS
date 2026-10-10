@@ -309,8 +309,11 @@ function showSettings() {
   // style.css switches every animation off when the body has "no-motion"
   document.body.classList.toggle("no-motion", !animationsOn);
 
-  // A dot on the Updates button until the newest entry has been opened
+  // A dot on the Updates button (under the game's name) until the newest entry has been
+  // opened, and the Settings tab's own Updates button lit up until then
   document.getElementById("updates-btn").classList.toggle("alert", seenVersion !== gameVersion);
+  document.getElementById("updates-btn-settings").classList.toggle("chosen", seenVersion !== gameVersion);
+  document.getElementById("settings-version").textContent = gameVersion;
 }
 
 // ----- The Updates window -----

@@ -13,6 +13,13 @@
 
 const gameUpdates = [
   {
+    version: "20261010v",
+    title: "Updates button in Settings",
+    changes: [
+      "The Settings tab has an Updates button, with the version you are playing beside it."
+    ]
+  },
+  {
     version: "20261010u",
     title: "Reload loop fixed",
     changes: [
