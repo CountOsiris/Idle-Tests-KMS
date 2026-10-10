@@ -870,6 +870,30 @@ body[data-tab="tower"] #tab-character {
   display: none;
 }
 
+/* The Updates button under the game's name, and the list in its window */
+.updates-link {
+  position: relative;
+  padding: 0 10px 0 0;
+  font-size: 14px;
+}
+
+.updates-link.alert::after {
+  content: "";
+  position: absolute;
+  top: 2px;
+  right: 0;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--ember);
+  box-shadow: 0 0 8px 2px rgba(181, 82, 42, 0.7);
+}
+
+.update-changes {
+  margin: 2px 0 14px;
+  padding-left: 20px;
+}
+
 /* The ability buttons under the fight */
 .ability-bar {
   justify-content: center;

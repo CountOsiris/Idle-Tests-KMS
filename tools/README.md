@@ -31,6 +31,23 @@ bash tools/run.sh check tools/saves/save-v3.json
 It ends with `ALL GOOD` or the number of problems. Run it with every save in
 `tools/saves/` before uploading.
 
+## A picture of the page
+
+```
+bash tools/run.sh shot "openUpdates();" picture.png
+```
+
+Opens the game as a new player, runs the code given, and saves a picture of the page.
+
+## A new version
+
+```
+bash tools/version.sh 20261011a
+```
+
+Sets the version in all three places (see the comment in `index.html`). Then add an
+entry for it at the top of `updates.js`: the pre-upload check fails without one.
+
 ## The saves
 
 - `save-v1.json`: made by the version before the blacksmith (save version 1).

@@ -113,7 +113,22 @@ try {
     check(className + " content: " + (problems.length === 0 ? "no problems" : problems.join("; ")), problems.length === 0);
   }
 
-  // 5. Saving gives the current version
+  // 5. The Updates window: its newest entry is for this version, and it opens
+  check("updates.js starts with this version (" + gameVersion + ")", gameUpdates[0].version === gameVersion);
+  let updateProblems = [];
+  for (let update of gameUpdates) {
+    if (!update.title || !Array.isArray(update.changes) || update.changes.length === 0) {
+      updateProblems.push(update.version + " has no title or no changes");
+    }
+  }
+  openUpdates();
+  if (document.getElementById("updates").hidden || document.getElementById("updates-list").children.length !== gameUpdates.length * 2) {
+    updateProblems.push("the window did not show every entry");
+  }
+  closeUpdates();
+  check("the Updates window: " + (updateProblems.length === 0 ? "no problems" : updateProblems.join("; ")), updateProblems.length === 0);
+
+  // 6. Saving gives the current version
   saveGame();
   let again = JSON.parse(localStorage.getItem(saveName));
   check("saved as version " + again.version + " (the game is at " + saveVersion + ")", again.version === saveVersion);

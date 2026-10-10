@@ -11,14 +11,18 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&family=EB+Garamond:wght@400;500;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css?v=20261010a">
+  <link rel="stylesheet" href="style.css?v=20261010b">
 </head>
 <body data-tab="tower">
 
   <!-- The bar across the top: who you are playing, and what you own -->
   <header class="top">
     <div class="brand">
-      <h1>Tower Idle</h1>
+      <div class="title">
+        <h1>Tower Idle</h1>
+        <!-- Opens the Updates window: what changed in each version (updates.js) -->
+        <button id="updates-btn" class="quiet updates-link" onclick="openUpdates()">Updates</button>
+      </div>
       <div class="who">
         <span id="header-icon" class="who-icon"></span>
         <div class="who-text">
@@ -43,6 +47,17 @@
       <p id="moment-text"></p>
       <div id="moment-choices"></div>
       <p><button id="moment-close" class="main" onclick="closeMoment()">Continue</button></p>
+    </div>
+  </div>
+
+  <!-- The Updates window: the version being played and what changed in each one.
+       The list is made by game/feel.js from updates.js. -->
+  <div id="updates" class="moment" hidden>
+    <div class="card highlight moment-card">
+      <h2>Updates</h2>
+      <p class="note">You are playing version <strong id="updates-version"></strong>.</p>
+      <div id="updates-list"></div>
+      <p><button class="main" onclick="closeUpdates()">Close</button></p>
     </div>
   </div>
 
@@ -468,35 +483,37 @@
 
   </main>
 
-  <!-- data.js first, then towers.js, then one file per class, then the files in game/, then cloud.js last -->
-  <!-- THE VERSION. Before every upload, change it in THREE places to the same new value:
+  <!-- data.js first, then updates.js and towers.js, then one file per class, then the files in game/, then cloud.js last -->
+  <!-- THE VERSION. tools/version.sh changes it everywhere at once; then add an entry at
+       the top of updates.js. By hand, it is in THREE places, all the same value:
          1. gameVersion just below
          2. every ?v=... on this page (the stylesheet at the top and the scripts below)
          3. the file version.txt
        The ?v= makes browsers fetch the new files instead of old remembered ones, and
        version.txt is how a game left open finds out it is out of date (see game/start.js). -->
-  <script>const gameVersion = "20261010a";</script>
-  <script src="data.js?v=20261010a"></script>
-  <script src="towers.js?v=20261010a"></script>
-  <script src="classes/barbarian.js?v=20261010a"></script>
-  <script src="classes/warden.js?v=20261010a"></script>
-  <script src="classes/ranger.js?v=20261010a"></script>
-  <script src="classes/assassin.js?v=20261010a"></script>
-  <script src="classes/warlock.js?v=20261010a"></script>
-  <script src="classes/elementalist.js?v=20261010a"></script>
-  <script src="classes/zealot.js?v=20261010a"></script>
+  <script>const gameVersion = "20261010b";</script>
+  <script src="data.js?v=20261010b"></script>
+  <script src="updates.js?v=20261010b"></script>
+  <script src="towers.js?v=20261010b"></script>
+  <script src="classes/barbarian.js?v=20261010b"></script>
+  <script src="classes/warden.js?v=20261010b"></script>
+  <script src="classes/ranger.js?v=20261010b"></script>
+  <script src="classes/assassin.js?v=20261010b"></script>
+  <script src="classes/warlock.js?v=20261010b"></script>
+  <script src="classes/elementalist.js?v=20261010b"></script>
+  <script src="classes/zealot.js?v=20261010b"></script>
   <!-- The game's rules, in this order (start.js last) -->
-  <script src="game/state.js?v=20261010a"></script>
-  <script src="game/bonuses.js?v=20261010a"></script>
-  <script src="game/equipment.js?v=20261010a"></script>
-  <script src="game/abilities.js?v=20261010a"></script>
-  <script src="game/skills.js?v=20261010a"></script>
-  <script src="game/save.js?v=20261010a"></script>
-  <script src="game/page-build.js?v=20261010a"></script>
-  <script src="game/page-show.js?v=20261010a"></script>
-  <script src="game/fights.js?v=20261010a"></script>
-  <script src="game/feel.js?v=20261010a"></script>
-  <script src="game/start.js?v=20261010a"></script>
-  <script src="cloud.js?v=20261010a"></script>
+  <script src="game/state.js?v=20261010b"></script>
+  <script src="game/bonuses.js?v=20261010b"></script>
+  <script src="game/equipment.js?v=20261010b"></script>
+  <script src="game/abilities.js?v=20261010b"></script>
+  <script src="game/skills.js?v=20261010b"></script>
+  <script src="game/save.js?v=20261010b"></script>
+  <script src="game/page-build.js?v=20261010b"></script>
+  <script src="game/page-show.js?v=20261010b"></script>
+  <script src="game/fights.js?v=20261010b"></script>
+  <script src="game/feel.js?v=20261010b"></script>
+  <script src="game/start.js?v=20261010b"></script>
+  <script src="cloud.js?v=20261010b"></script>
 </body>
 </html>

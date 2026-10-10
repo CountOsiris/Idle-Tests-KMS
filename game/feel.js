@@ -240,6 +240,7 @@ function checkTabUnlocks(quietly) {
 const settingsName = "lloegrys-idle-settings";
 let animationsOn = true;
 let openTab = "tower";      // the tab that was open last time
+let seenVersion = "";       // the newest version whose Updates entry this device has opened
 let settingsLoaded = false;
 
 function loadSettings() {
@@ -252,6 +253,9 @@ function loadSettings() {
       momentsOn = settings.momentsOn !== false;
       if (tabNames.includes(settings.openTab)) {
         openTab = settings.openTab;
+      }
+      if (typeof settings.seenVersion === "string") {
+        seenVersion = settings.seenVersion;
       }
     } catch (error) {
       animationsOn = true;
@@ -266,7 +270,7 @@ function loadSettings() {
 function saveSettings() {
   // Not before they have been read, or the first showTab would overwrite them
   if (settingsLoaded) {
-    localStorage.setItem(settingsName, JSON.stringify({ animationsOn: animationsOn, momentsOn: momentsOn, openTab: openTab }));
+    localStorage.setItem(settingsName, JSON.stringify({ animationsOn: animationsOn, momentsOn: momentsOn, openTab: openTab, seenVersion: seenVersion }));
   }
 }
 
@@ -288,6 +292,42 @@ function showSettings() {
 
   // style.css switches every animation off when the body has "no-motion"
   document.body.classList.toggle("no-motion", !animationsOn);
+
+  // A dot on the Updates button until the newest entry has been opened
+  document.getElementById("updates-btn").classList.toggle("alert", seenVersion !== gameVersion);
+}
+
+// ----- The Updates window -----
+// What changed in each version, newest first, from the gameUpdates list in updates.js.
+function openUpdates() {
+  document.getElementById("updates-version").textContent = gameVersion;
+
+  let box = document.getElementById("updates-list");
+  box.innerHTML = "";
+  for (let update of gameUpdates) {
+    let title = document.createElement("p");
+    title.className = "row-title";
+    title.textContent = update.version + " · " + update.title;
+    box.appendChild(title);
+
+    let list = document.createElement("ul");
+    list.className = "note update-changes";
+    for (let change of update.changes) {
+      let line = document.createElement("li");
+      line.textContent = change;
+      list.appendChild(line);
+    }
+    box.appendChild(list);
+  }
+
+  document.getElementById("updates").hidden = false;
+  seenVersion = gameVersion;
+  saveSettings();
+  showSettings();
+}
+
+function closeUpdates() {
+  document.getElementById("updates").hidden = true;
 }
 
 // Big words that fade in across the whole fight and out again.
