@@ -42,7 +42,7 @@ classes.assassin = {
   upgrades: [
     { id: "sharpenedEdge", name: "Sharpened Edge", text: "+3 attack", bonus: { attack: 3 } },
     { id: "smokeBomb", name: "Smoke Bomb", text: "+2% dodge", bonus: { dodge: 0.02 } },
-    { id: "backstab", name: "Backstab", text: "+10% ambush damage", bonus: { ambush: 0.1 } },
+    { id: "backstab", name: "Backstab", text: "Ambush: the first hit of a fight deals +10% more", bonus: { ambush: 0.1 } },
     { id: "toxicCoating", name: "Toxic Coating", text: "Venom Dagger: +1 poison stack", build: "venom", bonus: { poisonStacks: 1 } },
     { id: "killerInstinct", name: "Killer Instinct", text: "Stiletto: +5% critical chance", build: "stiletto", bonus: { critChance: 0.05 } },
     { id: "shadowstep", name: "Shadowstep", text: "Shadow Blade: +15% damage after a dodge", build: "shadow", bonus: { counter: 0.15 } }
@@ -50,9 +50,9 @@ classes.assassin = {
 
   // One skill for each build, so there is never a question of where a build's points go
   skills: [
-    { id: "lethality", name: "Lethality", text: "+3% attack", bonus: { attackPercent: 0.03 }, cost: 1 },
-    { id: "conditioning", name: "Conditioning", text: "+3% health", bonus: { healthPercent: 0.03 }, cost: 1 },
-    { id: "ambushTraining", name: "Ambush Training", text: "+5% ambush damage and +0.5% chance each turn to hide again", bonus: { ambush: 0.05, vanishChance: 0.005 }, cost: 1 },
+    { id: "lethality", name: "Power", text: "+3% attack", bonus: { attackPercent: 0.03 }, cost: 1 },
+    { id: "conditioning", name: "Toughness", text: "+3% health", bonus: { healthPercent: 0.03 }, cost: 1 },
+    { id: "ambushTraining", name: "Ambush Training", text: "Ambush: the first hit of a fight deals +5% more. Vanish: +0.5% chance each turn to hide and ambush again", bonus: { ambush: 0.05, vanishChance: 0.005 }, cost: 1 },
     { id: "venomMastery", name: "Venom Mastery", text: "Venom Dagger: +1 poison stack and poison deals +8% damage", bonus: { poisonStacks: 1, dotPower: 0.08 }, cost: 1 },
     { id: "stilettoMastery", name: "Stiletto Mastery", text: "Stiletto: +1% critical chance and +2.5% critical damage", bonus: { critChance: 0.01, critPower: 0.025 }, cost: 1 },
     { id: "riposte", name: "Shadow Mastery", text: "Shadow Blade: +0.5% dodge and +8% damage after a dodge", bonus: { dodge: 0.005, counter: 0.08 }, cost: 1 }
@@ -69,7 +69,7 @@ classes.assassin = {
     {
       floor: 10,
       perks: [
-        { id: "lurker", name: "Lurker", text: "+25% ambush damage", bonus: { ambush: 0.25 } },
+        { id: "lurker", name: "Lurker", text: "Ambush: the first hit of a fight deals +25% more", bonus: { ambush: 0.25 } },
         { id: "leatherWraps", name: "Leather Wraps", text: "+25 health", bonus: { maxHp: 25 } }
       ]
     },
@@ -78,8 +78,8 @@ classes.assassin = {
       perks: [
         { id: "toxicologist", name: "Toxicologist", text: "Venom Dagger: +2 poison stacks", bonus: { poisonStacks: 2 } },
         { id: "executioner", name: "Executioner", text: "Stiletto: +10% critical chance", bonus: { critChance: 0.1 } },
-        { id: "phantom", name: "Phantom", text: "+5% dodge and Shadow Blade: +40% damage after a dodge", bonus: { dodge: 0.05, counter: 0.4 } },
-        { id: "stalker", name: "Stalker", text: "+8% chance each turn to hide again", bonus: { vanishChance: 0.08 } }
+        { id: "phantom", name: "Phantom", text: "Shadow Blade: +40% damage after a dodge, and +5% dodge", bonus: { dodge: 0.05, counter: 0.4 } },
+        { id: "stalker", name: "Stalker", text: "Vanish: +8% chance each turn to hide and ambush again", bonus: { vanishChance: 0.08 } }
       ]
     },
     {
@@ -92,11 +92,11 @@ classes.assassin = {
     {
       floor: 50,
       perks: [
-        { id: "nightStalker", name: "Night Stalker", text: "+24% attack and +10% dodge", bonus: { attackPercent: 0.24, dodge: 0.1 } },
-        { id: "deathMark", name: "Death Mark", text: "Ambush damage is DOUBLED, and health x1.4", multiply: { ambush: 2, health: 1.4 } },
-        { id: "plaguebringer", name: "Plaguebringer", text: "Venom Dagger: poison deals TRIPLE damage", multiply: { poison: 3 } },
-        { id: "throatCutter", name: "Throat Cutter", text: "Stiletto: critical hits deal DOUBLE damage", multiply: { stilettoCrit: 2 } },
-        { id: "shade", name: "Shade", text: "Shadow Blade: the hit after a dodge is TRIPLED, and +8% dodge", bonus: { dodge: 0.08 }, multiply: { counter: 3 } },
+        { id: "nightStalker", name: "Nightwalker", text: "+24% attack and +10% dodge", bonus: { attackPercent: 0.24, dodge: 0.1 } },
+        { id: "deathMark", name: "Death Mark", text: "Ambush damage x2, and health x1.4", multiply: { ambush: 2, health: 1.4 } },
+        { id: "plaguebringer", name: "Plaguebringer", text: "Venom Dagger: poison damage x3", multiply: { poison: 3 } },
+        { id: "throatCutter", name: "Throat Cutter", text: "Stiletto: critical hit damage x2", multiply: { stilettoCrit: 2 } },
+        { id: "shade", name: "Shade", text: "Shadow Blade: damage of the hit after a dodge x3, and +8% dodge", bonus: { dodge: 0.08 }, multiply: { counter: 3 } },
         { id: "ironNerves", name: "Iron Nerves", text: "health x1.5 and +5% dodge", bonus: { dodge: 0.05 }, multiply: { health: 1.5 } }
       ]
     },
@@ -108,18 +108,18 @@ classes.assassin = {
         { id: "venomancer", name: "Venomancer", text: "Venom Dagger: +25% attack, +4 poison stacks and poison deals +50% damage", bonus: { attackPercent: 0.25, poisonStacks: 4, dotPower: 0.5 } },
         { id: "heartseeker", name: "Heartseeker", text: "Stiletto: +25% attack, +10% critical chance and +70% critical damage", bonus: { attackPercent: 0.25, critChance: 0.1, critPower: 0.7 } },
         { id: "nightblade", name: "Nightblade", text: "Shadow Blade: +25% attack, +8% dodge and +100% damage after a dodge", bonus: { attackPercent: 0.25, dodge: 0.08, counter: 1 } },
-        { id: "ghost", name: "Ghost", text: "+25% attack, +80% ambush damage and +5% chance each turn to hide again", bonus: { attackPercent: 0.25, ambush: 0.8, vanishChance: 0.05 } },
+        { id: "ghost", name: "Ghost", text: "+25% attack. Ambush: the first hit of a fight deals +80% more. Vanish: +5% chance each turn to hide and ambush again", bonus: { attackPercent: 0.25, ambush: 0.8, vanishChance: 0.05 } },
         { id: "slippery", name: "Slippery", text: "You take 25% less damage", multiply: { damageTaken: 0.75 } }
       ]
     },
     {
       floor: 100,
       perks: [
-        { id: "shadowMaster", name: "Shadow Master", text: "+40% attack and +10% dodge", bonus: { attackPercent: 0.4, dodge: 0.1 } },
-        { id: "grimReaper", name: "Grim Reaper", text: "Ambush damage is DOUBLED again, and health x1.6", multiply: { ambush: 2, health: 1.6 } },
-        { id: "blightlord", name: "Blightlord", text: "Venom Dagger: poison deals TRIPLE damage again", multiply: { poison: 3 } },
-        { id: "kingslayer", name: "Kingslayer", text: "Stiletto: critical hits deal DOUBLE damage again", multiply: { stilettoCrit: 2 } },
-        { id: "umbra", name: "Umbra", text: "Shadow Blade: the hit after a dodge is TRIPLED again, and +8% dodge", bonus: { dodge: 0.08 }, multiply: { counter: 3 } },
+        { id: "shadowMaster", name: "Master Assassin", text: "+40% attack and +10% dodge", bonus: { attackPercent: 0.4, dodge: 0.1 } },
+        { id: "grimReaper", name: "Grim Reaper", text: "Ambush damage x2 again, and health x1.6", multiply: { ambush: 2, health: 1.6 } },
+        { id: "blightlord", name: "Blightlord", text: "Venom Dagger: poison damage x3 again", multiply: { poison: 3 } },
+        { id: "kingslayer", name: "Kingslayer", text: "Stiletto: critical hit damage x2 again", multiply: { stilettoCrit: 2 } },
+        { id: "umbra", name: "Umbra", text: "Shadow Blade: damage of the hit after a dodge x3 again, and +8% dodge", bonus: { dodge: 0.08 }, multiply: { counter: 3 } },
         { id: "untouchable", name: "Untouchable", text: "health x2 and +10% dodge", bonus: { dodge: 0.1 }, multiply: { health: 2 } }
       ]
     }
@@ -128,16 +128,16 @@ classes.assassin = {
   // Extra choices at every BREAKTHROUGH (floor 150 and beyond), beside the ones every
   // class has. One for each build: it multiplies that build's own damage again.
   breakthroughs: [
-    { id: "strongerVenom", name: "Stronger Venom", text: "Venom Dagger: poison x1.5", multiply: { poison: 1.5 } },
-    { id: "finerPoint", name: "Finer Point", text: "Stiletto: critical hits x1.5", multiply: { stilettoCrit: 1.5 } },
-    { id: "deeperShadow", name: "Deeper Shadow", text: "Shadow Blade: the hit after a dodge x1.5", multiply: { counter: 1.5 } },
+    { id: "strongerVenom", name: "Stronger Venom", text: "Venom Dagger: poison damage x1.5", multiply: { poison: 1.5 } },
+    { id: "finerPoint", name: "Finer Point", text: "Stiletto: critical hit damage x1.5", multiply: { stilettoCrit: 1.5 } },
+    { id: "deeperShadow", name: "Deeper Shadow", text: "Shadow Blade: damage of the hit after a dodge x1.5", multiply: { counter: 1.5 } },
     { id: "perfectAmbush", name: "Perfect Ambush", text: "Ambush damage x1.5", multiply: { ambush: 1.5 } }
   ],
 
   relics: [
     { id: "shadowCloak", name: "Shadow Cloak", text: "+3% dodge", bonus: { dodge: 0.03 } },
     { id: "viperFang", name: "Viper Fang", text: "Venom Dagger: +1 poison stack", build: "venom", bonus: { poisonStacks: 1 } },
-    { id: "assassinsMark", name: "Assassin's Mark", text: "+25% ambush damage", bonus: { ambush: 0.25 } },
+    { id: "assassinsMark", name: "Assassin's Mark", text: "Ambush: the first hit of a fight deals +25% more", bonus: { ambush: 0.25 } },
     { id: "needlePoint", name: "Needle Point", text: "Stiletto: +8% critical chance", build: "stiletto", bonus: { critChance: 0.08 } },
     { id: "duskMantle", name: "Dusk Mantle", text: "Shadow Blade: +25% damage after a dodge", build: "shadow", bonus: { counter: 0.25 } }
   ],

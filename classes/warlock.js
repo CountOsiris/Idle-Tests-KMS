@@ -50,19 +50,19 @@ classes.warlock = {
     { id: "arcanePower", name: "Arcane Power", text: "+4 attack", bonus: { attack: 4 } },
     { id: "manaShield", name: "Mana Shield", text: "+15 health", bonus: { maxHp: 15 } },
     { id: "focus", name: "Focus", text: "Arcane Tome: +5% critical chance", build: "arcane", bonus: { critChance: 0.05 } },
-    { id: "devour", name: "Devour", text: "Void Tome: +2 void power", build: "void", bonus: { voidRend: 0.02 } },
-    { id: "resonance", name: "Resonance", text: "Rune Tome: +5% chance to cast twice", build: "rune", bonus: { echoChance: 0.05 } },
-    { id: "soulJar", name: "Soul Jar", text: "+25% chance of an extra soul from a kill", bonus: { soulChance: 0.25 } }
+    { id: "devour", name: "Devour", text: "Void Tome: +2 void power (every spell tears away more of the enemy's full health)", build: "void", bonus: { voidRend: 0.02 } },
+    { id: "resonance", name: "Resonance", text: "Rune Tome: +5% chance to cast twice (the second cast is an echo)", build: "rune", bonus: { echoChance: 0.05 } },
+    { id: "soulJar", name: "Soul Jar", text: "Souls: +25% chance of an extra soul from a kill", bonus: { soulChance: 0.25 } }
   ],
 
   // One skill for each build, so there is never a question of where a build's points go
   skills: [
-    { id: "intellect", name: "Intellect", text: "+3% attack", bonus: { attackPercent: 0.03 }, cost: 1 },
-    { id: "warding", name: "Warding", text: "+3% health", bonus: { healthPercent: 0.03 }, cost: 1 },
+    { id: "intellect", name: "Power", text: "+3% attack", bonus: { attackPercent: 0.03 }, cost: 1 },
+    { id: "warding", name: "Toughness", text: "+3% health", bonus: { healthPercent: 0.03 }, cost: 1 },
     { id: "arcaneMastery", name: "Arcane Mastery", text: "Arcane Tome: +1% critical chance and +2.5% critical damage", bonus: { critChance: 0.01, critPower: 0.025 }, cost: 1 },
     { id: "voidMastery", name: "Void Mastery", text: "Void Tome: +0.6 void power, and every spell heals 0.1% more of your health", bonus: { voidRend: 0.006, voidHeal: 0.001 }, cost: 1 },
-    { id: "runeMastery", name: "Rune Mastery", text: "Rune Tome: +1% chance to cast twice and echoes deal +2.5% damage", bonus: { echoChance: 0.01, echoPower: 0.025 }, cost: 1 },
-    { id: "harvester", name: "Soul Mastery", text: "+1.25% damage for every 100 souls and +2.5% chance of an extra soul from a kill", bonus: { soulPower: 0.0125, soulChance: 0.025 }, cost: 1 }
+    { id: "runeMastery", name: "Rune Mastery", text: "Rune Tome: +1% chance to cast twice, and the second cast (the echo) deals +2.5% damage", bonus: { echoChance: 0.01, echoPower: 0.025 }, cost: 1 },
+    { id: "harvester", name: "Soul Mastery", text: "Souls: +1.25% damage for every 100 souls, and +2.5% chance of an extra soul from a kill", bonus: { soulPower: 0.0125, soulChance: 0.025 }, cost: 1 }
   ],
 
   milestones: [
@@ -76,7 +76,7 @@ classes.warlock = {
     {
       floor: 10,
       perks: [
-        { id: "overload", name: "Overload", text: "+50% critical damage", bonus: { critPower: 0.5 } },
+        { id: "overload", name: "Overload", text: "Arcane Tome: +50% critical damage", bonus: { critPower: 0.5 } },
         { id: "shimmer", name: "Shimmer", text: "+3 armor", bonus: { armor: 3 } }
       ]
     },
@@ -86,7 +86,7 @@ classes.warlock = {
         { id: "archmage", name: "Archmage", text: "Arcane Tome: +10% critical chance", bonus: { critChance: 0.1 } },
         { id: "voidCaller", name: "Void Caller", text: "Void Tome: +4 void power", bonus: { voidRend: 0.04 } },
         { id: "runemaster", name: "Runemaster", text: "Rune Tome: +10% chance to cast twice", bonus: { echoChance: 0.1 } },
-        { id: "soulReaper", name: "Soul Reaper", text: "+20% damage for every 100 souls", bonus: { soulPower: 0.2 } }
+        { id: "soulReaper", name: "Soul Reaper", text: "Souls: +20% damage for every 100 souls", bonus: { soulPower: 0.2 } }
       ]
     },
     {
@@ -99,32 +99,32 @@ classes.warlock = {
     {
       floor: 50,
       perks: [
-        { id: "cataclysm", name: "Cataclysm", text: "Arcane Tome: critical hits deal x1.7 their extra damage, and +10% critical chance", bonus: { critChance: 0.1 }, multiply: { arcaneCrit: 1.7 } },
+        { id: "cataclysm", name: "Cataclysm", text: "Arcane Tome: the extra damage of critical hits x1.7, and +10% critical chance", bonus: { critChance: 0.1 }, multiply: { arcaneCrit: 1.7 } },
         { id: "lichForm", name: "Lich Form", text: "health x1.5 and +5 armor", bonus: { armor: 5 }, multiply: { health: 1.5 } },
-        { id: "hungeringVoid", name: "Hungering Void", text: "Void Tome: every spell deals x1.8 damage and heals 0.5% more of your health", bonus: { voidHeal: 0.005 }, multiply: { void: 1.8 } },
-        { id: "runicStorm", name: "Runic Storm", text: "Rune Tome: echoes deal x1.6 damage, and +15% chance to cast twice", bonus: { echoChance: 0.15 }, multiply: { echo: 1.6 } },
-        { id: "soulCollector", name: "Soul Collector", text: "Souls give x1.6 the damage, and +25% chance of an extra soul", bonus: { soulChance: 0.25 }, multiply: { souls: 1.6 } }
+        { id: "hungeringVoid", name: "Hungering Void", text: "Void Tome: spell damage x1.8, and every spell heals 0.5% more of your health", bonus: { voidHeal: 0.005 }, multiply: { void: 1.8 } },
+        { id: "runicStorm", name: "Runic Storm", text: "Rune Tome: echo damage x1.6, and +15% chance to cast twice", bonus: { echoChance: 0.15 }, multiply: { echo: 1.6 } },
+        { id: "soulCollector", name: "Soul Collector", text: "Souls: the damage souls give x1.6, and +25% chance of an extra soul from a kill", bonus: { soulChance: 0.25 }, multiply: { souls: 1.6 } }
       ]
     },
     {
       floor: 75,
       perks: [
-        { id: "arcaneMight", name: "Arcane Might", text: "+60% attack", bonus: { attackPercent: 0.6 } },
+        { id: "arcaneMight", name: "Arcane Supremacy", text: "+60% attack", bonus: { attackPercent: 0.6 } },
         { id: "arcaneBarrier", name: "Arcane Barrier", text: "health x1.75", multiply: { health: 1.75 } },
         { id: "spellblade", name: "Spellblade", text: "Arcane Tome: +35% attack, +10% critical chance and +80% critical damage", bonus: { attackPercent: 0.35, critChance: 0.1, critPower: 0.8 } },
         { id: "abyss", name: "Abyss", text: "Void Tome: +35% attack and +8 void power", bonus: { attackPercent: 0.35, voidRend: 0.08 } },
         { id: "glyphmaster", name: "Glyphmaster", text: "Rune Tome: +35% attack, +20% chance to cast twice and echoes deal +50% damage", bonus: { attackPercent: 0.35, echoChance: 0.2, echoPower: 0.5 } },
-        { id: "soulEater", name: "Soul Eater", text: "+35% attack and +50% damage for every 100 souls", bonus: { attackPercent: 0.35, soulPower: 0.5 } },
+        { id: "soulEater", name: "Soul Eater", text: "+35% attack, and Souls: +50% damage for every 100 souls", bonus: { attackPercent: 0.35, soulPower: 0.5 } },
         { id: "phaseShift", name: "Phase Shift", text: "You take 25% less damage", multiply: { damageTaken: 0.75 } }
       ]
     },
     {
       floor: 100,
       perks: [
-        { id: "annihilation", name: "Annihilation", text: "Arcane Tome: critical hits deal x1.7 their extra damage again, and +10% critical chance", bonus: { critChance: 0.1 }, multiply: { arcaneCrit: 1.7 } },
-        { id: "voidLord", name: "Void Lord", text: "Void Tome: every spell deals x1.8 damage again, and health x1.5", multiply: { void: 1.8, health: 1.5 } },
-        { id: "runeLord", name: "Rune Lord", text: "Rune Tome: echoes deal x1.6 damage again, and +20% chance to cast twice", bonus: { echoChance: 0.2 }, multiply: { echo: 1.6 } },
-        { id: "deathsHarvest", name: "Death's Harvest", text: "Souls give x1.6 the damage again, and +50% chance of an extra soul", bonus: { soulChance: 0.5 }, multiply: { souls: 1.6 } },
+        { id: "annihilation", name: "Annihilation", text: "Arcane Tome: the extra damage of critical hits x1.7 again, and +10% critical chance", bonus: { critChance: 0.1 }, multiply: { arcaneCrit: 1.7 } },
+        { id: "voidLord", name: "Void Lord", text: "Void Tome: spell damage x1.8 again, and health x1.5", multiply: { void: 1.8, health: 1.5 } },
+        { id: "runeLord", name: "Rune Lord", text: "Rune Tome: echo damage x1.6 again, and +20% chance to cast twice", bonus: { echoChance: 0.2 }, multiply: { echo: 1.6 } },
+        { id: "deathsHarvest", name: "Death's Harvest", text: "Souls: the damage souls give x1.6 again, and +50% chance of an extra soul from a kill", bonus: { soulChance: 0.5 }, multiply: { souls: 1.6 } },
         { id: "undying", name: "Undying", text: "health x2 and +6 armor", bonus: { armor: 6 }, multiply: { health: 2 } }
       ]
     }
@@ -133,17 +133,17 @@ classes.warlock = {
   // Extra choices at every BREAKTHROUGH (floor 150 and beyond), beside the ones every
   // class has. One for each build: it multiplies that build's own damage again.
   breakthroughs: [
-    { id: "purerArcana", name: "Purer Arcana", text: "Arcane Tome: critical damage x1.5", multiply: { arcaneCrit: 1.5 } },
-    { id: "deeperVoid", name: "Deeper Void", text: "Void Tome: spells x1.4", multiply: { void: 1.4 } },
-    { id: "louderEchoes", name: "Louder Echoes", text: "Rune Tome: echoes x1.5", multiply: { echo: 1.5 } },
-    { id: "hungrierSouls", name: "Hungrier Souls", text: "Souls give x1.5 the damage", multiply: { souls: 1.5 } }
+    { id: "purerArcana", name: "Purer Arcana", text: "Arcane Tome: the extra damage of critical hits x1.5", multiply: { arcaneCrit: 1.5 } },
+    { id: "deeperVoid", name: "Deeper Void", text: "Void Tome: spell damage x1.4", multiply: { void: 1.4 } },
+    { id: "louderEchoes", name: "Louder Echoes", text: "Rune Tome: echo damage x1.5", multiply: { echo: 1.5 } },
+    { id: "hungrierSouls", name: "Hungrier Souls", text: "Souls: the damage souls give x1.5", multiply: { souls: 1.5 } }
   ],
 
   relics: [
     { id: "magesEye", name: "Mage's Eye", text: "Arcane Tome: +8% critical chance", build: "arcane", bonus: { critChance: 0.08 } },
     { id: "voidShard", name: "Void Shard", text: "Void Tome: +2 void power", build: "void", bonus: { voidRend: 0.02 } },
     { id: "echoStone", name: "Echo Stone", text: "Rune Tome: +8% chance to cast twice", build: "rune", bonus: { echoChance: 0.08 } },
-    { id: "soulLantern", name: "Soul Lantern", text: "+10% damage for every 100 souls", bonus: { soulPower: 0.1 } }
+    { id: "soulLantern", name: "Soul Lantern", text: "Souls: +10% damage for every 100 souls", bonus: { soulPower: 0.1 } }
   ],
 
   startRun: warlockStartRun,
@@ -165,9 +165,24 @@ function warlockDamageTypes() {
 const soulsPerKill = 1;
 const soulsPerFloorSkipped = 3;   // souls you start with for each floor the Pathfinder skips
 
+// The first soulSoftCap souls count in full. After that each one counts for less and
+// less: every time the souls held DOUBLE, they are worth soulSoftCap more.
+//   100 souls count as 100, 300 as 200, 700 as 300, 1,500 as 400, 3,100 as 500...
+// So a long run still grows stronger, but souls alone can never outrun the tower.
+// (Before this, 1,400 souls made spells 90 times stronger and runs never ended.)
+const soulSoftCap = 100;
+
+// How many souls the ones held are worth
+function soulsCounted() {
+  if (runCounter <= soulSoftCap) {
+    return runCounter;
+  }
+  return soulSoftCap * Math.log2(1 + runCounter / soulSoftCap);
+}
+
 // The share of extra damage the souls held are giving
 function soulBonus() {
-  return runCounter / 100 * totalBonus("soulPower") * multiplier("souls");
+  return soulsCounted() / 100 * totalBonus("soulPower") * multiplier("souls");
 }
 
 // Runs when a run starts. Skipped floors still count: you reaped them on the way up.
@@ -251,15 +266,15 @@ function warlockDotPerStack() {
 }
 
 function warlockStatLine() {
-  return "Souls: " + big(runCounter) + ", making your spells " + percent(soulBonus()) + " stronger. Every kill is a soul; they are lost when you fall.";
+  return "Souls: " + big(runCounter) + ", making your spells " + percent(soulBonus()) + " stronger. Every kill is a soul; they are lost when you fall. They count as " + big(Math.round(soulsCounted())) + ": past " + soulSoftCap + " souls, each one counts for less.";
 }
 
 function warlockGearInfo() {
   if (weapon === "arcane") {
-    return "Arcane Tome: " + percent(Math.min(1, totalBonus("critChance"))) + " chance of a critical for +" + percent(totalBonus("critPower") + overflow("critChance", 1)) + " damage.";
+    return "Arcane Tome: " + percent(Math.min(1, totalBonus("critChance"))) + " chance of a critical hit for +" + percent(totalBonus("critPower") + overflow("critChance", 1)) + " damage.";
   }
   if (weapon === "void") {
     return "Void Tome: every spell also tears away " + percent(voidShare()) + " of the enemy's full health (" + Math.round(totalBonus("voidRend") * 100) + " void power; the share can never pass " + percent(maxVoidShare) + "), and heals " + percent(totalBonus("voidHeal")) + " of yours.";
   }
-  return "Rune Tome: " + percent(totalBonus("echoChance")) + " chance to cast twice. Echoes deal +" + percent(totalBonus("echoPower")) + " damage.";
+  return "Rune Tome: " + percent(totalBonus("echoChance")) + " chance to cast twice. The second cast (the echo) deals +" + percent(totalBonus("echoPower")) + " damage.";
 }

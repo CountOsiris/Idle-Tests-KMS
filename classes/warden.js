@@ -51,22 +51,25 @@ classes.warden = {
 
   upgrades: [
     { id: "spearhead", name: "Spearhead", text: "+3 attack", bonus: { attack: 3 } },
-    { id: "bulwark", name: "Bulwark", text: "+2 armor", bonus: { armor: 2 } },
-    { id: "thorns", name: "Thorns", text: "Spiked: +10% reflect", build: "spiked", bonus: { reflect: 0.1 } },
-    { id: "shieldWall", name: "Shield Wall", text: "Tower: +4% block chance", build: "tower", bonus: { blockChance: 0.04 } },
-    { id: "sharpRim", name: "Sharp Rim", text: "Bladed: throws hit for half your armor more", build: "bladed", bonus: { throwPower: 0.5 } },
-    { id: "oath", name: "Oath", text: "+8% vengeance", bonus: { vengeance: 0.08 } }
+    { id: "bulwark", name: "Reinforced Rim", text: "+2 armor", bonus: { armor: 2 } },
+    { id: "thorns", name: "Thorns", text: "Spiked Shield: reflects +10% more of the enemy's attack", build: "spiked", bonus: { reflect: 0.1 } },
+    { id: "shieldWall", name: "Shield Wall", text: "Tower Shield: +4% block chance", build: "tower", bonus: { blockChance: 0.04 } },
+    { id: "sharpRim", name: "Sharp Rim", text: "Bladed Shield: each throw hits for +0.5 times your armor", build: "bladed", bonus: { throwPower: 0.5 } },
+    { id: "oath", name: "Oath", text: "Vengeance: +8% of each hit you take is added to your next spear thrust", bonus: { vengeance: 0.08 } }
   ],
 
-  // One skill for each build, so there is never a question of where a build's points go
+  // One skill for each shield, so there is never a question of where a build's points go.
+  // Vengeance has NO skill on purpose: it pays the enemy's hits back through the spear,
+  // which made a vengeance skill feel like a second Tower Mastery (and a second
+  // Spiked Mastery). It still grows through boons, relics and milestone perks.
+  // (A skill with the id "grudge" was here until October 2026. Don't reuse that id.)
   skills: [
-    { id: "spearThrust", name: "Spear Thrust", text: "+3% attack", bonus: { attackPercent: 0.03 }, cost: 1 },
-    { id: "vigor", name: "Vigor", text: "+3% health", bonus: { healthPercent: 0.03 }, cost: 1 },
+    { id: "spearThrust", name: "Power", text: "+3% attack", bonus: { attackPercent: 0.03 }, cost: 1 },
+    { id: "vigor", name: "Toughness", text: "+3% health", bonus: { healthPercent: 0.03 }, cost: 1 },
     { id: "plating", name: "Plating", text: "+2 armor", bonus: { armor: 2 }, cost: 1 },
-    { id: "thornmail", name: "Spiked Mastery", text: "Spiked: +5% reflect", bonus: { reflect: 0.05 }, cost: 1 },
-    { id: "phalanx", name: "Tower Mastery", text: "Tower: +1% block chance and +2.5% spear damage", bonus: { blockChance: 0.01, spearPower: 0.025 }, cost: 1 },
-    { id: "discus", name: "Bladed Mastery", text: "Bladed: throws hit for 30% of your armor more", bonus: { throwPower: 0.3 }, cost: 1 },
-    { id: "grudge", name: "Grudge", text: "+4% vengeance, and +5% more against bosses and rare monsters", bonus: { vengeance: 0.04, spite: 0.05 }, cost: 1 }
+    { id: "thornmail", name: "Spiked Mastery", text: "Spiked Shield: reflects +5% more of the enemy's attack", bonus: { reflect: 0.05 }, cost: 1 },
+    { id: "phalanx", name: "Tower Mastery", text: "Tower Shield: +1% block chance and +2.5% spear damage", bonus: { blockChance: 0.01, spearPower: 0.025 }, cost: 1 },
+    { id: "discus", name: "Bladed Mastery", text: "Bladed Shield: each throw hits for +0.3 times your armor", bonus: { throwPower: 0.3 }, cost: 1 }
   ],
 
   milestones: [
@@ -74,7 +77,7 @@ classes.warden = {
       floor: 5,
       perks: [
         { id: "stalwart", name: "Stalwart", text: "+40 health", bonus: { maxHp: 40 } },
-        { id: "spikedPlating", name: "Spiked Plating", text: "+10% shield damage and +3 attack", bonus: { shieldPower: 0.1, attack: 3 } }
+        { id: "spikedPlating", name: "Shield Drill", text: "+10% shield damage (reflected or thrown) and +3 attack", bonus: { shieldPower: 0.1, attack: 3 } }
       ]
     },
     {
@@ -87,10 +90,10 @@ classes.warden = {
     {
       floor: 20,
       perks: [
-        { id: "bramble", name: "Bramble", text: "Spiked: +25% reflect", bonus: { reflect: 0.25 } },
-        { id: "sentinel", name: "Sentinel", text: "Tower: +10% block chance", bonus: { blockChance: 0.1 } },
-        { id: "sawblade", name: "Sawblade", text: "Bladed: throws hit for one more time your armor", bonus: { throwPower: 1 } },
-        { id: "avenger", name: "Avenger", text: "+35% vengeance", bonus: { vengeance: 0.35 } }
+        { id: "bramble", name: "Bramble", text: "Spiked Shield: reflects +25% more of the enemy's attack", bonus: { reflect: 0.25 } },
+        { id: "sentinel", name: "Sentinel", text: "Tower Shield: +10% block chance", bonus: { blockChance: 0.1 } },
+        { id: "sawblade", name: "Sawblade", text: "Bladed Shield: each throw hits for +1 times your armor", bonus: { throwPower: 1 } },
+        { id: "avenger", name: "Avenger", text: "Vengeance: +35% of each hit you take is added to your next spear thrust", bonus: { vengeance: 0.35 } }
       ]
     },
     {
@@ -104,22 +107,22 @@ classes.warden = {
       floor: 50,
       perks: [
         { id: "bastion", name: "Bastion", text: "health x1.5 and +6 armor", bonus: { armor: 6 }, multiply: { health: 1.5 } },
-        { id: "retribution", name: "Retribution", text: "+25% attack and +25% shield damage", bonus: { attackPercent: 0.25, shieldPower: 0.25 } },
-        { id: "thornwall", name: "Thornwall", text: "Spiked: reflected damage x2.5", multiply: { reflect: 2.5 } },
-        { id: "phalanxCaptain", name: "Phalanx Captain", text: "Tower: every spear thrust deals x1.6 damage", multiply: { spear: 1.6 } },
-        { id: "razorDisc", name: "Razor Disc", text: "Bladed: thrown shield damage is DOUBLED", multiply: { throw: 2 } },
-        { id: "bloodDebt", name: "Blood Debt", text: "Vengeance is QUADRUPLED", multiply: { vengeance: 4 } }
+        { id: "retribution", name: "Retribution", text: "+25% attack and +25% shield damage (reflected or thrown)", bonus: { attackPercent: 0.25, shieldPower: 0.25 } },
+        { id: "thornwall", name: "Thornwall", text: "Spiked Shield: reflected damage x2.5", multiply: { reflect: 2.5 } },
+        { id: "phalanxCaptain", name: "Phalanx Captain", text: "Tower Shield: spear damage x1.6", multiply: { spear: 1.6 } },
+        { id: "razorDisc", name: "Razor Disc", text: "Bladed Shield: thrown shield damage x2", multiply: { throw: 2 } },
+        { id: "bloodDebt", name: "Blood Debt", text: "Vengeance x4: four times as much of each hit you take is paid back", multiply: { vengeance: 4 } }
       ]
     },
     {
       floor: 75,
       perks: [
         { id: "fortress", name: "Fortress", text: "health x1.75", multiply: { health: 1.75 } },
-        { id: "mirrorWall", name: "Mirror Wall", text: "+40% attack and +40% shield damage", bonus: { attackPercent: 0.4, shieldPower: 0.4 } },
-        { id: "ironBramble", name: "Iron Bramble", text: "Spiked: +60% reflect and +50% shield damage", bonus: { reflect: 0.6, shieldPower: 0.5 } },
-        { id: "spearWall", name: "Spear Wall", text: "Tower: +25% attack, +10% block chance and +50% spear damage", bonus: { attackPercent: 0.25, blockChance: 0.1, spearPower: 0.5 } },
-        { id: "whirlingEdge", name: "Whirling Edge", text: "Bladed: +40% shield damage, and throws hit for two and a half times your armor more", bonus: { shieldPower: 0.4, throwPower: 2.5 } },
-        { id: "unforgiving", name: "Unforgiving", text: "+50% vengeance, and +50% more against bosses and rare monsters", bonus: { vengeance: 0.5, spite: 0.5 } },
+        { id: "mirrorWall", name: "Mirror Wall", text: "+40% attack and +40% shield damage (reflected or thrown)", bonus: { attackPercent: 0.4, shieldPower: 0.4 } },
+        { id: "ironBramble", name: "Iron Bramble", text: "Spiked Shield: reflects +60% more of the enemy's attack, and +50% shield damage", bonus: { reflect: 0.6, shieldPower: 0.5 } },
+        { id: "spearWall", name: "Spear Wall", text: "Tower Shield: +25% attack, +10% block chance and +50% spear damage", bonus: { attackPercent: 0.25, blockChance: 0.1, spearPower: 0.5 } },
+        { id: "whirlingEdge", name: "Whirling Edge", text: "Bladed Shield: +40% shield damage, and each throw hits for +2.5 times your armor", bonus: { shieldPower: 0.4, throwPower: 2.5 } },
+        { id: "unforgiving", name: "Unforgiving", text: "Vengeance: +50% of each hit you take is added to your next spear thrust (+50% more against bosses and rare monsters)", bonus: { vengeance: 0.5, spite: 0.5 } },
         { id: "immovable", name: "Immovable", text: "You take 25% less damage", multiply: { damageTaken: 0.75 } }
       ]
     },
@@ -127,11 +130,11 @@ classes.warden = {
       floor: 100,
       perks: [
         { id: "unyielding", name: "Unyielding", text: "health x2 and +12 armor", bonus: { armor: 12 }, multiply: { health: 2 } },
-        { id: "vengeance", name: "Vengeance", text: "+50% attack and +50% shield damage", bonus: { attackPercent: 0.5, shieldPower: 0.5 } },
-        { id: "crownOfThorns", name: "Crown of Thorns", text: "Spiked: reflected damage x2.5 again", multiply: { reflect: 2.5 } },
-        { id: "lastLine", name: "Last Line", text: "Tower: every spear thrust deals x1.6 damage again", multiply: { spear: 1.6 } },
-        { id: "stormOfSteel", name: "Storm of Steel", text: "Bladed: thrown shield damage is DOUBLED again", multiply: { throw: 2 } },
-        { id: "reckoning", name: "Reckoning", text: "Vengeance is QUADRUPLED again", multiply: { vengeance: 4 } }
+        { id: "vengeance", name: "Wrath", text: "+50% attack and +50% shield damage (reflected or thrown)", bonus: { attackPercent: 0.5, shieldPower: 0.5 } },
+        { id: "crownOfThorns", name: "Crown of Thorns", text: "Spiked Shield: reflected damage x2.5 again", multiply: { reflect: 2.5 } },
+        { id: "lastLine", name: "Last Line", text: "Tower Shield: spear damage x1.6 again", multiply: { spear: 1.6 } },
+        { id: "stormOfSteel", name: "Storm of Steel", text: "Bladed Shield: thrown shield damage x2 again", multiply: { throw: 2 } },
+        { id: "reckoning", name: "Reckoning", text: "Vengeance x4 again", multiply: { vengeance: 4 } }
       ]
     }
   ],
@@ -139,17 +142,17 @@ classes.warden = {
   // Extra choices at every BREAKTHROUGH (floor 150 and beyond), beside the ones every
   // class has. One for each build: it multiplies that build's own damage again.
   breakthroughs: [
-    { id: "sharperSpikes", name: "Sharper Spikes", text: "Spiked: reflected damage x1.5", multiply: { reflect: 1.5 } },
-    { id: "longerSpear", name: "Longer Spear", text: "Tower: spear thrusts x1.4", multiply: { spear: 1.4 } },
-    { id: "heavierDisc", name: "Heavier Disc", text: "Bladed: thrown shield damage x1.5", multiply: { throw: 1.5 } },
+    { id: "sharperSpikes", name: "Sharper Spikes", text: "Spiked Shield: reflected damage x1.5", multiply: { reflect: 1.5 } },
+    { id: "longerSpear", name: "Longer Spear", text: "Tower Shield: spear damage x1.4", multiply: { spear: 1.4 } },
+    { id: "heavierDisc", name: "Heavier Disc", text: "Bladed Shield: thrown shield damage x1.5", multiply: { throw: 1.5 } },
     { id: "oldGrudges", name: "Old Grudges", text: "Vengeance x1.5", multiply: { vengeance: 1.5 } }
   ],
 
   relics: [
-    { id: "mirrorShard", name: "Mirror Shard", text: "Spiked: +15% reflect", build: "spiked", bonus: { reflect: 0.15 } },
-    { id: "bulwarkCrest", name: "Bulwark Crest", text: "Tower: +6% block chance", build: "tower", bonus: { blockChance: 0.06 } },
-    { id: "razorRim", name: "Razor Rim", text: "Bladed: throws hit for half your armor more", build: "bladed", bonus: { throwPower: 0.5 } },
-    { id: "grudgeStone", name: "Grudge Stone", text: "+12% vengeance", bonus: { vengeance: 0.12 } }
+    { id: "mirrorShard", name: "Mirror Shard", text: "Spiked Shield: reflects +15% more of the enemy's attack", build: "spiked", bonus: { reflect: 0.15 } },
+    { id: "bulwarkCrest", name: "Tower Crest", text: "Tower Shield: +6% block chance", build: "tower", bonus: { blockChance: 0.06 } },
+    { id: "razorRim", name: "Razor Rim", text: "Bladed Shield: each throw hits for +0.5 times your armor", build: "bladed", bonus: { throwPower: 0.5 } },
+    { id: "grudgeStone", name: "Grudge Stone", text: "Vengeance: +12% of each hit you take is added to your next spear thrust", bonus: { vengeance: 0.12 } }
   ],
 
   startFight: wardenStartFight,
@@ -270,7 +273,7 @@ function wardenShieldLine() {
 
 function wardenGearInfo() {
   if (weapon === "spiked") {
-    return "Spiked Shield: every attack against you is thrown back at the enemy, ignoring its armor.";
+    return "Spiked Shield: " + percent(totalBonus("reflect")) + " of every attack against you is reflected back at the enemy, ignoring its armor.";
   }
   if (weapon === "tower") {
     return "Tower Shield: " + percent(cappedChance("blockChance")) + " chance to block an attack, and your spear deals +" + percent(totalBonus("spearPower")) + " damage."

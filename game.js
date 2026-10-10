@@ -87,8 +87,8 @@ let monsterText = "";
 let monsterMaxHp = 0;
 let monsterHp = 0;
 let monsterAttack = 0;
-let monsterArmor = 0;
-let monsterWard = 0;        // like armor, but against spells
+let monsterArmor = 0;       // the share of every weapon hit it blocks (0.3 means 30%)
+let monsterWard = 0;        // the same, against spells
 let monsterGold = 1;
 let monsterPoison = 0;
 let monsterRegen = 0;
@@ -198,7 +198,7 @@ function resistNow() {
   return resist / (1 + penetration());
 }
 
-// Penetration cuts through resistance (see data.js). It comes from the town.
+// Penetration cuts through resistance, armor and ward (see data.js). It comes from the town.
 function penetration() {
   let total = totalBonus("penetration") + fameAdd("penetration");
 
@@ -229,7 +229,16 @@ function typeMultiplier(type) {
 // That is what makes the Might fame upgrade work for every class and every build,
 // whether the damage comes from a weapon, a spell, a reflected blow or a bleed.
 
-// A normal hit: the monster's armor is taken off it.
+// Armor and ward block a share of the hit (see data.js). Penetration cuts through them.
+function armorNow() {
+  return monsterArmor / (1 + penetration());
+}
+
+function wardNow() {
+  return monsterWard / (1 + penetration());
+}
+
+// A normal hit: the monster's armor blocks a share of it.
 // "type" is the damage type, for example "slashing".
 // "armorShare" can be left out. It is how much of the armor counts against this hit:
 // 1 is all of it, 0.5 is half (for a hit that pierces armor).
@@ -244,15 +253,15 @@ function hitMonster(damage, type, armorShare) {
     return 0;
   }
 
-  damage = Math.max(1, Math.round(damage * multiplier("damage") * typeMultiplier(type)) - Math.round(monsterArmor * armorShare));
+  damage = Math.max(1, Math.round(damage * multiplier("damage") * typeMultiplier(type) * (1 - armorNow() * armorShare)));
   monsterHp = monsterHp - damage;
   return damage;
 }
 
-// A spell ignores armor, but the monster's WARD is taken off it instead.
+// A spell ignores armor, but the monster's WARD blocks a share of it instead.
 // Ward is to a caster what armor is to a fighter.
 function spellHitMonster(damage, type) {
-  damage = Math.max(1, Math.round(damage * multiplier("damage") * typeMultiplier(type)) - monsterWard);
+  damage = Math.max(1, Math.round(damage * multiplier("damage") * typeMultiplier(type) * (1 - wardNow())));
   monsterHp = monsterHp - damage;
   return damage;
 }
@@ -407,7 +416,7 @@ function skillBonus(stat) {
 
   for (let skill of currentClass().skills) {
     if (skill.bonus[stat] !== undefined) {
-      total = total + skill.bonus[stat] * skillLevel(skill.id);
+      total = total + skill.bonus[stat] * skillLevel(skill.id) * skillRankBoost(skill.id);
     }
   }
 
@@ -886,7 +895,9 @@ function buyPotion() {
   }
 }
 
-// ----- Boss upgrades -----
+// ----- Boss upgrades (the page calls them BOONS) -----
+// The player sees the word "boon" for these, so that "upgrade" on the page only ever
+// means something bought: at the blacksmith, in town or with fame.
 // Every boss gives one upgrade, straight away, with nothing to click and nothing to
 // wait for. It is always one that suits the weapon being used (see fitsBuild), and
 // it lasts until you die. What a run has collected is listed under the fight.
@@ -911,11 +922,6 @@ function upgradeBoost() {
   return 1 + bossUpgradePower * upgradesHeld();
 }
 
-// The top level of the upgrades that bosses give
-function upgradeCap() {
-  return maxUpgradeLevel + fameAdd("upgradeCap");
-}
-
 // The floor a run starts on. It is 1 now: nothing sold at the moment starts runs
 // part-way to the best floor reached since the last ascension.
 function startFloor() {
@@ -935,12 +941,12 @@ let lastUpgrade = null;
 function gainBossUpgrade() {
   let choices = [];
   for (let upgrade of currentClass().upgrades) {
-    if (fitsBuild(upgrade) && upgradeLevel(upgrade.id) < upgradeCap()) {
+    if (fitsBuild(upgrade)) {
       choices.push(upgrade);
     }
   }
 
-  // Everything that suits this weapon is already at its limit
+  // (Every class has boons that suit any weapon, so this never happens. Boons have no top level.)
   if (choices.length === 0) {
     return;
   }
@@ -959,7 +965,7 @@ function gainBossUpgrade() {
   upgrades[upgrade.id] = upgradeLevel(upgrade.id) + 1;
   lastUpgrade = upgrade;
   recalcStats();
-  say("The boss leaves you an upgrade: " + upgrade.name + ", level " + upgrades[upgrade.id] + " (" + upgrade.text + ").");
+  say("The boss leaves you a boon: " + upgrade.name + ", level " + upgrades[upgrade.id] + " (" + upgrade.text + ").");
 }
 
 // ----- Skills -----
@@ -977,11 +983,42 @@ function skillPointsEarned() {
   return (level - 1) * skillPointsPerLevel;
 }
 
+// RANKS. Every skillRankSize levels (10) a skill gains a RANK. A rank does two things:
+//   - the whole skill becomes stronger: +skillRankPower (50%) of everything it gives,
+//     for every rank it has. That is the reward for going deep.
+//   - every level after it costs one more skill point. That is why spreading points
+//     over several skills is worth it: the first levels of each are the cheap ones.
+// The numbers are in data.js.
+function skillRank(id) {
+  return Math.floor(skillLevel(id) / skillRankSize);
+}
+
+// How many times stronger its ranks make a skill (1 with no rank, 1.5 with one...)
+function skillRankBoost(id) {
+  return 1 + skillRankPower * skillRank(id);
+}
+
+// The price of the NEXT level of a skill, in skill points
+function skillCostOf(skill) {
+  return skill.cost * (1 + skillRank(skill.id));
+}
+
+// All the points that have gone into a skill so far
+function skillPointsIn(skill) {
+  let spent = 0;
+
+  for (let i = 0; i < skillLevel(skill.id); i++) {
+    spent = spent + skill.cost * (1 + Math.floor(i / skillRankSize));
+  }
+
+  return spent;
+}
+
 function skillPointsSpent() {
   let spent = 0;
 
   for (let skill of currentClass().skills) {
-    spent = spent + skill.cost * skillLevel(skill.id);
+    spent = spent + skillPointsIn(skill);
   }
 
   return spent;
@@ -1003,7 +1040,7 @@ function setSkillBuyAmount(amount) {
 function buySkill(skill) {
   let bought = 0;
 
-  while (skillPointsLeft() >= skill.cost && (skillBuyAmount === 0 || bought < skillBuyAmount)) {
+  while (skillPointsLeft() >= skillCostOf(skill) && (skillBuyAmount === 0 || bought < skillBuyAmount)) {
     skillLevels[skill.id] = skillLevel(skill.id) + 1;
     bought = bought + 1;
   }
@@ -1045,7 +1082,7 @@ function spendOnSavedBuild() {
 
     for (let skill of currentClass().skills) {
       let wanted = savedBuild[skill.id];
-      if (wanted === undefined || skill.cost > skillPointsLeft()) {
+      if (wanted === undefined || skillCostOf(skill) > skillPointsLeft()) {
         continue;
       }
 
@@ -1350,6 +1387,16 @@ const oldFameUpgrades = [
 // Set when an update has just given fame back, so the player can be told
 let fameWasRefunded = false;
 
+// Set when a class's skill points had to be given back (see unpackClass)
+let skillsWereReset = false;
+
+function tellAboutSkillReset() {
+  if (skillsWereReset) {
+    skillsWereReset = false;
+    say("Skills have changed: they now gain ranks every " + skillRankSize + " levels and cost more as they rise. Your skill points have been given back to spend again (Skills).");
+  }
+}
+
 // Town upgrades that were removed in version 2, with the prices they had,
 // so that upgradeSave can give the gold back
 const removedTownUpgrades = [
@@ -1557,6 +1604,17 @@ function unpackClass(saved) {
   dotStacks = 0;
   recalcStats();
 
+  // Skill levels cost more points the higher they go (see "RANKS"). A save made before
+  // that can hold more levels than its points now pay for: give the points back.
+  if (skillPointsLeft() < 0) {
+    skillLevels = {};
+    if (autoBuild && hasSavedBuild()) {
+      spendOnSavedBuild();
+    }
+    recalcStats();
+    skillsWereReset = true;
+  }
+
   // A class that has never been played starts on full health
   if (playerHp === undefined) {
     playerHp = playerMaxHp;
@@ -1661,6 +1719,7 @@ function switchClass(className) {
   buildClassScreen();
   logLines = [];
   say("You are now playing the " + currentClass().name + ".");
+  tellAboutSkillReset();
   startEncounter();
   updateScreen();
   saveGame();
@@ -1994,7 +2053,7 @@ let upgradesShown = "";
 function showUpgrades() {
   document.getElementById("upgrade-boost").textContent = "+" + percent(upgradeBoost() - 1);
 
-  let key = playerClass + JSON.stringify(upgrades) + upgradeCap();
+  let key = playerClass + JSON.stringify(upgrades);
   if (key === upgradesShown) {
     return;
   }
@@ -2019,9 +2078,6 @@ function showUpgrades() {
     let title = document.createElement("p");
     title.className = "row-title";
     title.textContent = upgrade.name + " · level " + upgradeLevel(upgrade.id);
-    if (upgradeLevel(upgrade.id) >= upgradeCap()) {
-      title.textContent = title.textContent + " (the most for one run)";
-    }
     text.appendChild(title);
 
     let note = document.createElement("p");
@@ -2035,6 +2091,29 @@ function showUpgrades() {
 
   document.getElementById("upgrade-count").textContent = held;
   document.getElementById("upgrades-empty").hidden = held > 0;
+}
+
+// A description that begins with the name of a weapon ("Axe: ...") or of an element
+// ("Fire: ...") only works with that one. If the class is using another right now,
+// this gives a few words to say so, so nobody spends points and wonders why nothing changed.
+function otherBuildNote(text) {
+  let using = currentClass().gearTypes[weapon];
+  let names = Object.values(currentClass().gearTypes);
+
+  if (currentClass().stances !== undefined) {
+    using = currentClass().stances[stance].name;
+    names = [];
+    for (let id in currentClass().stances) {
+      names.push(currentClass().stances[id].name);
+    }
+  }
+
+  for (let name of names) {
+    if (name !== using && text.startsWith(name + ":")) {
+      return " (Does nothing right now: you are using the " + using + ".)";
+    }
+  }
+  return "";
 }
 
 function showSkills() {
@@ -2079,13 +2158,23 @@ function showSkills() {
   }
 
   for (let skill of currentClass().skills) {
-    let price = skill.cost + " points";
-    if (skill.cost === 1) {
+    let cost = skillCostOf(skill);
+    let price = cost + " points";
+    if (cost === 1) {
       price = "1 point";
     }
 
+    // The rank the skill has, and when the next one comes
+    let rank = skillRank(skill.id);
+    let nextRankAt = (rank + 1) * skillRankSize;
+    let title = skill.name + " · level " + skillLevel(skill.id);
+    let rankNote = " Rank " + (rank + 1) + " at level " + nextRankAt + ": the whole skill +" + percent(skillRankPower) + " stronger, and its levels cost 1 point more.";
+    if (rank > 0) {
+      title = title + " · rank " + rank + " (x" + big(skillRankBoost(skill.id)) + ")";
+    }
+
     // Skills have no top level
-    fillRow("skill-" + skill.id, skill.name + " · level " + skillLevel(skill.id), skill.text + " per level", price, skillPointsLeft() < skill.cost);
+    fillRow("skill-" + skill.id, title, skill.text + " per level." + rankNote + otherBuildNote(skill.text), price, skillPointsLeft() < cost);
   }
 }
 
@@ -2404,7 +2493,7 @@ function nextGoals() {
     goals.push("You can ascend (Ascension).");
   }
   if (canBuyFameUpgrade()) {
-    goals.push("You have enough fame for an upgrade (Ascension).");
+    goals.push("You have enough fame for a fame upgrade (Ascension).");
   }
   if (canAffordForge()) {
     goals.push("The blacksmith can improve your equipment (Town).");
@@ -2657,8 +2746,8 @@ function updateScreen() {
     document.getElementById("monster-hp-bar").style.width = Math.max(0, monsterHp / monsterMaxHp * 100) + "%";
     document.getElementById("monster-hp-trail").style.width = Math.max(0, monsterHp / monsterMaxHp * 100) + "%";
     document.getElementById("monster-attack").textContent = big(monsterAttack);
-    document.getElementById("monster-armor").textContent = big(monsterArmor);
-    document.getElementById("monster-ward").textContent = big(monsterWard);
+    document.getElementById("monster-armor").textContent = percent(armorNow());
+    document.getElementById("monster-ward").textContent = percent(wardNow());
     document.getElementById("monster-dot").textContent = big(dotDamage());
   }
 
@@ -2817,7 +2906,7 @@ function spawnMonster(isBoss) {
   }
   monsterMaxHp = Math.round(monsterHealth * growth * type.hp);
   monsterAttack = Math.round(monsterDamage * growth * type.attack);
-  monsterArmor = Math.floor(floor * monsterArmorPerFloor * type.armor);
+  monsterArmor = Math.min(maxArmorShare, armorPerPoint * type.armor);
 
   // Ward works like armor. A monster can have its own, or it uses its tower's.
   // A tower with none written has no ward at all.
@@ -2827,7 +2916,7 @@ function spawnMonster(isBoss) {
   } else if (towers[tower].ward !== undefined) {
     ward = towers[tower].ward;
   }
-  monsterWard = Math.floor(floor * monsterArmorPerFloor * ward);
+  monsterWard = Math.min(maxArmorShare, armorPerPoint * ward);
   monsterGold = type.gold;
   monsterPoison = traitOf(type, "poison");
   monsterRegen = traitOf(type, "regen");
@@ -3341,7 +3430,7 @@ function animatedStep() {
   // A boss's upgrade gets a pop-up too, but it does not need reading in a hurry:
   // it is on the list under the fight for the rest of the run
   if (lastUpgrade !== null) {
-    toast("Upgrade: " + lastUpgrade.name, "good");
+    toast("Boon: " + lastUpgrade.name, "good");
     animate("upgrade-count", "pop");
   }
 
@@ -3459,6 +3548,37 @@ function tick() {
   saveGame();
 }
 
+// ----- New versions -----
+// A game left open in a tab keeps running the version it was opened with, for days if
+// nobody reloads it. So every few minutes the page asks the website which version is
+// current (the file version.txt), and if it is not this one, shows a notice with a
+// Reload button. "gameVersion" is set in index.html, next to the script tags.
+// (Opened straight from a folder there is no website to ask, and nothing happens.)
+function checkForNewVersion() {
+  fetch("version.txt?t=" + Date.now(), { cache: "no-store" })
+    .then(function (answer) {
+      if (!answer.ok) {
+        return "";
+      }
+      return answer.text();
+    })
+    .then(function (latest) {
+      if (latest.trim() !== "" && latest.trim() !== gameVersion) {
+        document.getElementById("new-version").hidden = false;
+      }
+    })
+    .catch(function () {
+      // No connection, or not on a website: try again next time
+    });
+}
+
+function reloadForNewVersion() {
+  saveGame();
+  location.reload();
+}
+
+setInterval(checkForNewVersion, 5 * 60 * 1000);
+
 // ----- Start the game -----
 loadGame();
 buildClassButtons();
@@ -3471,6 +3591,7 @@ showTab("tower");
 loadSettings();
 showSaveProblem();
 startEncounter();
+tellAboutSkillReset();
 if (fameWasRefunded) {
   say("Ascension has changed: fame and its upgrades are now shared by all your classes. All your fame has been given back to spend again (Ascension).");
 }

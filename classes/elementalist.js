@@ -61,7 +61,7 @@ classes.elementalist = {
 
   upgrades: [
     { id: "elementalPower", name: "Elemental Power", text: "+3 attack", bonus: { attack: 3 } },
-    { id: "attunement", name: "Attunement", text: "+15 health", bonus: { maxHp: 15 } },
+    { id: "attunement", name: "Elemental Ward", text: "+15 health", bonus: { maxHp: 15 } },
     { id: "wildfire", name: "Wildfire", text: "Fire: +1 burn stack", build: "fire", bonus: { burnStacks: 1 } },
     { id: "frostbite", name: "Frostbite", text: "Ice: +5% critical chance", build: "ice", bonus: { critChance: 0.05 } },
     { id: "conduction", name: "Conduction", text: "Lightning: +10% chance of an extra bolt", build: "lightning", bonus: { extraBolts: 0.1 } },
@@ -70,8 +70,8 @@ classes.elementalist = {
 
   // One skill per element, so there is never a question of where an element's points go
   skills: [
-    { id: "attunement", name: "Attunement", text: "+3% attack", bonus: { attackPercent: 0.03 }, cost: 1 },
-    { id: "resilience", name: "Resilience", text: "+3% health", bonus: { healthPercent: 0.03 }, cost: 1 },
+    { id: "attunement", name: "Power", text: "+3% attack", bonus: { attackPercent: 0.03 }, cost: 1 },
+    { id: "resilience", name: "Toughness", text: "+3% health", bonus: { healthPercent: 0.03 }, cost: 1 },
     { id: "fireMastery", name: "Fire Mastery", text: "Fire: +1 burn stack and burning deals +8% damage", bonus: { burnStacks: 1, dotPower: 0.08 }, cost: 1 },
     { id: "iceMastery", name: "Ice Mastery", text: "Ice: +1.5% critical chance and +5% critical damage", bonus: { critChance: 0.015, critPower: 0.05 }, cost: 1 },
     { id: "lightningMastery", name: "Lightning Mastery", text: "Lightning: +3% chance of an extra bolt and bolts deal +1% damage", bonus: { extraBolts: 0.03, boltPower: 0.01 }, cost: 1 },
@@ -114,10 +114,10 @@ classes.elementalist = {
       perks: [
         { id: "avatarOfStorms", name: "Avatar of Storms", text: "+36% attack", bonus: { attackPercent: 0.36 } },
         { id: "avatarOfStone", name: "Avatar of Stone", text: "health x1.5 and +5 armor", bonus: { armor: 5 }, multiply: { health: 1.5 } },
-        { id: "inferno", name: "Inferno", text: "Fire: burning deals x2.3 damage", multiply: { burn: 2.3 } },
-        { id: "glacier", name: "Glacier", text: "Ice: critical hits deal DOUBLE damage", multiply: { iceCrit: 2 } },
-        { id: "tempest", name: "Tempest", text: "Lightning: every bolt deals x1.8 damage", multiply: { bolt: 1.8 } },
-        { id: "mountain", name: "Mountain", text: "Earth: every boulder deals x2.2 damage", multiply: { boulder: 2.2 } }
+        { id: "inferno", name: "Inferno", text: "Fire: burning damage x2.3", multiply: { burn: 2.3 } },
+        { id: "glacier", name: "Glacier", text: "Ice: critical hit damage x2", multiply: { iceCrit: 2 } },
+        { id: "tempest", name: "Tempest", text: "Lightning: bolt damage x1.8", multiply: { bolt: 1.8 } },
+        { id: "mountain", name: "Mountain", text: "Earth: boulder damage x2.2", multiply: { boulder: 2.2 } }
       ]
     },
     {
@@ -137,10 +137,10 @@ classes.elementalist = {
       perks: [
         { id: "masterOfElements", name: "Master of Elements", text: "+70% attack", bonus: { attackPercent: 0.7 } },
         { id: "avatarOfTides", name: "Avatar of Tides", text: "health x2 and +6 armor", bonus: { armor: 6 }, multiply: { health: 2 } },
-        { id: "phoenixFlame", name: "Phoenix Flame", text: "Fire: burning deals x2.3 damage again", multiply: { burn: 2.3 } },
-        { id: "iceAge", name: "Ice Age", text: "Ice: critical hits deal DOUBLE damage again", multiply: { iceCrit: 2 } },
-        { id: "thunderGod", name: "Thunder God", text: "Lightning: every bolt deals x1.8 damage again", multiply: { bolt: 1.8 } },
-        { id: "earthquake", name: "Earthquake", text: "Earth: every boulder deals x2.2 damage again", multiply: { boulder: 2.2 } }
+        { id: "phoenixFlame", name: "Phoenix Flame", text: "Fire: burning damage x2.3 again", multiply: { burn: 2.3 } },
+        { id: "iceAge", name: "Ice Age", text: "Ice: critical hit damage x2 again", multiply: { iceCrit: 2 } },
+        { id: "thunderGod", name: "Thunder God", text: "Lightning: bolt damage x1.8 again", multiply: { bolt: 1.8 } },
+        { id: "earthquake", name: "Earthquake", text: "Earth: boulder damage x2.2 again", multiply: { boulder: 2.2 } }
       ]
     }
   ],
@@ -148,10 +148,10 @@ classes.elementalist = {
   // Extra choices at every BREAKTHROUGH (floor 150 and beyond), beside the ones every
   // class has. One for each build: it multiplies that build's own damage again.
   breakthroughs: [
-    { id: "hotterFlame", name: "Hotter Flame", text: "Fire: burning x1.5", multiply: { burn: 1.5 } },
-    { id: "colderIce", name: "Colder Ice", text: "Ice: critical hits x1.5", multiply: { iceCrit: 1.5 } },
-    { id: "wilderStorm", name: "Wilder Storm", text: "Lightning: bolts x1.4", multiply: { bolt: 1.4 } },
-    { id: "biggerBoulders", name: "Bigger Boulders", text: "Earth: boulders x1.4", multiply: { boulder: 1.4 } }
+    { id: "hotterFlame", name: "Hotter Flame", text: "Fire: burning damage x1.5", multiply: { burn: 1.5 } },
+    { id: "colderIce", name: "Colder Ice", text: "Ice: critical hit damage x1.5", multiply: { iceCrit: 1.5 } },
+    { id: "wilderStorm", name: "Wilder Storm", text: "Lightning: bolt damage x1.4", multiply: { bolt: 1.4 } },
+    { id: "biggerBoulders", name: "Bigger Boulders", text: "Earth: boulder damage x1.4", multiply: { boulder: 1.4 } }
   ],
 
   relics: [

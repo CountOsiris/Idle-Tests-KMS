@@ -19,7 +19,8 @@
 //
 // ----- Monsters -----
 // A normal monster on floor F starts with:
-//   health 20 + F x 10,  attack 1 + F x 2,  armor F / 2
+//   the health and attack that data.js works out for floor F, and armor that blocks 10%
+//   of every weapon hit (armor and ward are shares of a hit: see data.js)
 // Each kind of monster then multiplies those numbers.
 //
 // TO ADD A MONSTER: add a line to a tower's monsters list. It needs:
@@ -28,8 +29,8 @@
 //   minFloor  - the first floor it can appear on
 //   hp, attack, armor, gold - multipliers (1 is normal, 2 is double, 0.5 is half)
 // and it can have any of these special traits:
-//   ward: 2      - how much is taken off every SPELL that hits it, the way armor is
-//                  taken off a weapon swing (1 is the same as a normal armor, 2 is double).
+//   ward: 2      - how much of every SPELL that hits it is blocked, the way armor
+//                  blocks a weapon swing (1 blocks 10%, 2 blocks 20%).
 //                  Written on a tower it counts for every monster in it; a monster
 //                  can have its own. Left out, there is no ward.
 //   weak: ["crushing", "holy"]   - damage types it takes 25% more from

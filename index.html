@@ -11,7 +11,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&family=EB+Garamond:wght@400;500;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="style.css?v=20261009c">
 </head>
 <body data-tab="tower">
 
@@ -35,6 +35,13 @@
       <div class="tile"><span>Fame</span><strong id="fame">0</strong></div>
     </div>
   </header>
+
+  <!-- Only shown when the website has a newer version than the one running in this tab -->
+  <div id="new-version" class="card highlight notice" hidden>
+    <h2>A new version is out</h2>
+    <p>This tab is still running the old one. Reload to get the update. Your progress is kept.</p>
+    <button class="main" onclick="reloadForNewVersion()">Reload now</button>
+  </div>
 
   <!-- Only shown if the save in this browser could not be read -->
   <div id="save-problem" class="card highlight notice" hidden>
@@ -126,10 +133,10 @@
       <!-- The upgrades bosses have given this run. Always on the page, so there is no hurry to read them. -->
       <div class="card">
         <div class="card-head">
-          <h2>Upgrades this run</h2>
+          <h2>Boons this run</h2>
           <p><strong id="upgrade-count" class="big-number">0</strong> held</p>
         </div>
-        <p class="note">Every boss you defeat gives one upgrade for the weapon you are using. They last until you fall. Each one also makes you stronger all round: right now <strong id="upgrade-boost">+0%</strong> attack and health.</p>
+        <p class="note">Every boss you defeat gives one boon that suits the weapon you are using. Boons last until you fall. Each one also makes you stronger all round: right now <strong id="upgrade-boost">+0%</strong> attack and health.</p>
         <p id="upgrades-empty" class="note">None yet. The first boss is on floor 5.</p>
         <!-- The rows are made by game.js from the class's upgrades list -->
         <div id="upgrades"></div>
@@ -215,7 +222,7 @@
             <h2>Skills</h2>
             <p>Skill points <strong id="skill-points" class="big-number">0</strong></p>
           </div>
-          <p class="note">Every level gives a skill point. Skills have no top level. They last until you ascend, and resetting them is free.</p>
+          <p class="note">Every level gives a skill point. Skills have no top level. Every 10 levels a skill gains a rank: the whole skill becomes 50% stronger, and its next levels cost 1 point more. They last until you ascend, and resetting them is free.</p>
           <!-- Something a class wants said at the top of its skills (the Ranger's companions) -->
           <p id="skills-note" class="note" hidden></p>
 
@@ -294,7 +301,7 @@
 
           <!-- Only shown once the Tactician has been hired -->
           <div id="favourite-upgrade" class="picker" hidden>
-            <p class="row-title">Favourite upgrade</p>
+            <p class="row-title">Favourite boon</p>
             <div id="favourite-upgrade-buttons" class="choices"></div>
           </div>
 
@@ -426,16 +433,23 @@
   </main>
 
   <!-- data.js first, then towers.js, then one file per class, then game.js last -->
-  <script src="data.js"></script>
-  <script src="towers.js"></script>
-  <script src="classes/barbarian.js"></script>
-  <script src="classes/warden.js"></script>
-  <script src="classes/ranger.js"></script>
-  <script src="classes/assassin.js"></script>
-  <script src="classes/warlock.js"></script>
-  <script src="classes/elementalist.js"></script>
-  <script src="classes/zealot.js"></script>
-  <script src="game.js"></script>
-  <script src="cloud.js"></script>
+  <!-- THE VERSION. Before every upload, change it in THREE places to the same new value:
+         1. gameVersion just below
+         2. every ?v=... on this page (the stylesheet at the top and the scripts below)
+         3. the file version.txt
+       The ?v= makes browsers fetch the new files instead of old remembered ones, and
+       version.txt is how a game left open finds out it is out of date (see game.js). -->
+  <script>const gameVersion = "20261009c";</script>
+  <script src="data.js?v=20261009c"></script>
+  <script src="towers.js?v=20261009c"></script>
+  <script src="classes/barbarian.js?v=20261009c"></script>
+  <script src="classes/warden.js?v=20261009c"></script>
+  <script src="classes/ranger.js?v=20261009c"></script>
+  <script src="classes/assassin.js?v=20261009c"></script>
+  <script src="classes/warlock.js?v=20261009c"></script>
+  <script src="classes/elementalist.js?v=20261009c"></script>
+  <script src="classes/zealot.js?v=20261009c"></script>
+  <script src="game.js?v=20261009c"></script>
+  <script src="cloud.js?v=20261009c"></script>
 </body>
 </html>

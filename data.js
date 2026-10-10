@@ -68,8 +68,16 @@ const towerWalls = [
   { floor: 100, strength: 2 }
 ];
 
-// Monster armor grows steadily instead: this much per floor
-const monsterArmorPerFloor = 0.5;
+// ARMOR AND WARD are a SHARE of every hit, not a fixed number, so they matter just as
+// much against a hit of 50,000 as against a hit of 50.
+//   - armor is taken off weapon hits. Spells ignore it.
+//   - ward is taken off spells. Weapons ignore it.
+// Every monster has an "armor" number in towers.js (and a tower or monster can have a
+// "ward"). Each point of it blocks armorPerPoint of the hit (0.1 means 10%), so armor 3
+// blocks 30%. Nothing blocks more than maxArmorShare (0.6 means 60%).
+// Penetration cuts through both, the same way it cuts through resistance.
+const armorPerPoint = 0.1;
+const maxArmorShare = 0.6;
 
 // ----- Rewards -----
 // Gold from a normal monster is this much per floor. Bosses, rare monsters
@@ -86,6 +94,15 @@ const chestGold = 4;
 const experiencePerFloor = 20;
 const levelCostPerLevel = 50;
 const skillPointsPerLevel = 1;
+
+// SKILL RANKS. Every skillRankSize levels a skill gains a rank. Each rank makes the
+// whole skill skillRankPower stronger (0.5 means +50% of everything it gives), and
+// makes every later level cost one more skill point:
+//   levels 1 to 10 cost 1 point each, 11 to 20 cost 2, 21 to 30 cost 3...
+//   at level 10 the skill is x1.5, at level 20 it is x2, at level 30 it is x2.5...
+// So the first ranks of several skills are cheap, and going deep in one is a choice.
+const skillRankSize = 10;
+const skillRankPower = 0.5;
 
 // ----- Ascension -----
 // Fame is the ascension currency. It belongs to the ACCOUNT: every class earns into
@@ -296,9 +313,8 @@ const awayTowerHealth = 1;
 const awayTowerAttack = 0.5;
 const awayTowerExperience = 0.5;
 
-// Every boss gives one upgrade that suits the weapon being used. This is how many
-// levels one upgrade can reach in a run.
-const maxUpgradeLevel = 5;
+// Every boss gives one boon that suits the weapon being used. A boon has NO top level:
+// the same one can be given again and again, for as long as the run lasts.
 
 // As well as what it says, every level of every boss upgrade held makes the class
 // this much stronger for the rest of the run (0.1 means +10% attack and health each).
@@ -375,8 +391,8 @@ const resistAmount = 0.4;           // a hit the monster resists deals this much
 const awayResistPerFloor = 0.005;   // in another class's tower, resistance grows this much every floor
 const maxResist = 0.6;              // but never past this: nothing is ever immune
 
-// PENETRATION cuts through resistance. It never removes it completely: what is left of
-// a resistance is divided by (1 + penetration). So 1 (shown as 100%) halves it and
+// PENETRATION cuts through resistance, armor and ward. It never removes them completely:
+// what is left of each is divided by (1 + penetration). So 1 (shown as 100%) halves it and
 // 3 quarters it. There is always more to gain and no point where it stops working.
 // The bonus word is "penetration" (0.1 means +10%).
 
@@ -408,8 +424,8 @@ const classes = {};
 // them was given back: see upgradeSave in game.js. Don't reuse their ids.)
 
 const townUpgrades = [
-  { id: "tactician", name: "Tactician", text: "Pick a favourite upgrade. Bosses give you that one, whenever it suits your weapon, until it reaches its level limit.", bonus: { favouriteUpgrade: 1 }, maxLevel: 1, cost: 5000, growth: 1 },
-  { id: "whetstone", name: "Whetstone", text: "+10% penetration. Penetration cuts through what monsters resist.", bonus: { penetration: 0.1 }, maxLevel: 0, cost: 2000, growth: 1.4 },
+  { id: "tactician", name: "Tactician", text: "Pick a favourite boon. Bosses give you that one every time, whenever it suits your weapon.", bonus: { favouriteUpgrade: 1 }, maxLevel: 1, cost: 5000, growth: 1 },
+  { id: "whetstone", name: "Whetstone", text: "+10% penetration. Penetration cuts through everything a monster blocks: its armor, its ward, and the damage types it resists.", bonus: { penetration: 0.1 }, maxLevel: 0, cost: 2000, growth: 1.4 },
   { id: "trainingGrounds", name: "Training Grounds", text: "+5% experience.", bonus: { experience: 0.05 }, maxLevel: 0, cost: 500, growth: 1.4 },
   { id: "treasureMaps", name: "Treasure Maps", text: "+5% gold.", bonus: { gold: 0.05 }, maxLevel: 0, cost: 500, growth: 1.4 },
   { id: "potionBelt", name: "Potion Belt", text: "Carry 1 more healing potion.", bonus: { potionSlots: 1 }, maxLevel: 0, cost: 800, growth: 1.6 },
@@ -428,7 +444,7 @@ const townUpgrades = [
 //   bonus - what it does
 const relics = [
   { id: "trollHeart", name: "Troll Heart", text: "+40 health", bonus: { maxHp: 40 } },
-  { id: "whetstone", name: "Whetstone of Ruin", text: "+8 attack", bonus: { attack: 8 } },
+  { id: "whetstone", name: "Edge of Ruin", text: "+8 attack", bonus: { attack: 8 } },
   { id: "dragonscale", name: "Dragonscale", text: "+4 armor", bonus: { armor: 4 } },
   { id: "goldenIdol", name: "Golden Idol", text: "+30% gold", bonus: { gold: 0.3 } },
   { id: "tomeOfTheFallen", name: "Tome of the Fallen", text: "+20% experience", bonus: { experience: 0.2 } }
