@@ -86,7 +86,8 @@ function spawnMonster(isBoss) {
   dotStacks = 0;
   fightTurns = 0;
 
-  monsterIsRare = !isBoss && Math.random() < rareChance;
+  // (a week's modifier can make rare monsters more common: "rareMore")
+  monsterIsRare = !isBoss && Math.random() < rareChance + totalBonus("rareMore");
 
   if (isBoss) {
     monsterMaxHp = Math.round(monsterMaxHp * bossHealth);

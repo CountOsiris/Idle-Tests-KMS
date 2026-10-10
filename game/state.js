@@ -5,7 +5,7 @@
 //
 //  The game's rules are split over the files in game/, loaded in this order
 //  (see the script tags in index.html):
-//    state, bonuses, legend, equipment, abilities, bosses, summary, skills, save,
+//    state, bonuses, legend, weekly, equipment, abilities, bosses, summary, skills, save,
 //    page-build, page-show, fights, feel, start
 //  They all share one set of names, as if they were one long file, so the order
 //  matters only for start.js, which must be last. Lists you are likely to edit

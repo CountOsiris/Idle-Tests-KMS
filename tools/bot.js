@@ -19,6 +19,8 @@
 //  fav=id      hire the Tactician with this favourite boon
 //  keystones   at floor 51, take the weapon's keystone (and with perk=Name, a shared one
 //              by its name at floors 76 and 101). Without this, keystones are left alone.
+//  week=N      play under the modifier of week N (0 is the first on the list in data.js).
+//              Without this the bot plays with no modifier of the week.
 //  t=name      climb this class's tower instead of its own (a challenge), or t=next for
 //              the tower of the class after it on the list
 //  killers     also say what killed it most in its last two hours, and on which floor
@@ -27,6 +29,13 @@
 
 clearInterval(timer);
 window.confirm = function () { return true; };
+
+// No modifier of the week, unless asked for one with week=N, so that runs made in
+// different weeks can be compared
+weekOverride = "none";
+if (location.hash.match(/week=(\d+)/)) {
+  weekOverride = Number(location.hash.match(/week=(\d+)/)[1]);
+}
 
 const HOURS = Number((location.hash.match(/h=([\d.]+)/) || [0, 10])[1]);
 const ONLY_CLASS = (location.hash.match(/c=(\w+)/) || [0, ""])[1];

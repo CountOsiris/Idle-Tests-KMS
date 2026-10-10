@@ -917,6 +917,15 @@ body[data-tab="tower"] #tab-character {
   background: linear-gradient(#8fa6bd, #4c6178);
 }
 
+/* The week's modifier, under the tower's note */
+.week-note {
+  color: var(--gold-bright);
+}
+
+.week-note[hidden] {
+  display: none;
+}
+
 /* The suggested challenge, above the tower list */
 .suggestion {
   margin: 10px 0;

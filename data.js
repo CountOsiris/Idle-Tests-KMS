@@ -212,6 +212,25 @@ const legendUnlocks = [
   { id: "beastTamer", name: "The Beast Tamer", text: "Opens the eighth class: a tamer who fights beside a wolf pack, a bear or a hawk.", bonus: {}, cost: 12, growth: 1, maxLevel: 1 }
 ];
 
+// ----- The week's modifier -----
+// One of these is in force each week, for every class in every tower, and they come
+// round in this order (rules in game/weekly.js). Each should help in one way and bite
+// in another, and stay mild: the game's pacing was tuned without them.
+//
+// TO ADD ONE: add a line. It needs an id, a name, a text, and a bonus or a multiply (or
+// both), written exactly as for a perk. Words made for this list:
+//   rareMore   added to the chance that a monster is rare   (0.05 means +5%)
+// and any other bonus word works, for example the tower-rule words in towers.js.
+const weeklyModifiers = [
+  { id: "bloodMoon", name: "Blood Moon", text: "every monster's attack grows by 2% each turn, and all fame earned is x1.25", bonus: { enrageAll: 0.02 }, multiply: { fame: 1.25 } },
+  { id: "plenty", name: "Week of Plenty", text: "gold x1.5, and experience x0.9", multiply: { gold: 1.5, experience: 0.9 } },
+  { id: "theHunt", name: "The Great Hunt", text: "rare monsters are twice as common, and you take 10% more damage", bonus: { rareMore: 0.1 }, multiply: { damageTaken: 1.1 } },
+  { id: "storms", name: "Week of Storms", text: "abilities are ready a quarter sooner, and you take 10% more damage", bonus: { quickHands: 0.25 }, multiply: { damageTaken: 1.1 } },
+  { id: "scholars", name: "Scholars' Week", text: "experience x1.15, and gold x0.8", multiply: { experience: 1.15, gold: 0.8 } },
+  { id: "vigil", name: "The Long Vigil", text: "you heal 1% of your health every turn of a fight, and healing potions cannot be drunk", bonus: { prayer: 0.01, noPotions: 1 } },
+  { id: "firstBlood", name: "First Blood", text: "all your damage +40% on the first turn of every fight, and every monster strikes first unless you fight from range", bonus: { opener: 0.4, ambushed: 1 } }
+];
+
 // ----- Breakthroughs -----
 // Each class has its own milestones, in its file, up to floor 100. After those,
 // breakthroughs go on forever. The first is at breakthroughFirstFloor, and each one

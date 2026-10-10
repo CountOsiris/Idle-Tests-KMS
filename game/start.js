@@ -58,6 +58,7 @@ function tick() {
   let now = Date.now();
   let seconds = Math.max(1, Math.round((now - lastTick) / 1000));
   lastTick = now;
+  announceWeek();
 
   if (seconds >= awayReportAfter) {
     playTimeAway(seconds);

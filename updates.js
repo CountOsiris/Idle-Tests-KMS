@@ -13,6 +13,14 @@
 
 const gameUpdates = [
   {
+    version: "20261010n",
+    title: "A modifier every week",
+    changes: [
+      "Each week brings a twist to every tower, such as Blood Moon or the Week of Plenty, shown under the tower's name.",
+      "It changes on Monday for everyone, and each one helps in one way and bites in another."
+    ]
+  },
+  {
     version: "20261010m",
     title: "The Beast Tamer",
     changes: [

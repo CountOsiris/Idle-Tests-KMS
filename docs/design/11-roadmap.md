@@ -68,7 +68,8 @@ Done when: a class stuck at a wall has a visible, worthwhile challenge to go and
 1. ~~Second prestige layer ("Legend") after floor 100.~~ Done.
    [Progression layers](06-progression-layers.md)
 2. ~~Beast Tamer, the eighth class.~~ Done, opened with legend marks.
-3. Rotating weekly challenge modifiers across all towers.
+3. ~~Rotating weekly challenge modifiers across all towers.~~ Done: seven, one a week.
+   [Towers](05-towers-and-challenges.md)
 
 ## Not planned (by decision)
 

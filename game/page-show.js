@@ -739,6 +739,10 @@ function updateScreen() {
     document.getElementById("tower-note").textContent = "Your home tower. " + towers[tower].text;
   }
 
+  // The week's modifier, under the tower's note
+  document.getElementById("week-note").hidden = weeklyModifier() === null;
+  document.getElementById("week-note").textContent = weeklyText();
+
   document.getElementById("floor").textContent = floor;
   document.getElementById("best-floor").textContent = bestFloor;
 

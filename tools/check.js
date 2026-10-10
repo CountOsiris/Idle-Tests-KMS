@@ -31,6 +31,49 @@ try {
   }
   check("fame is a number (" + big(fame) + ")", typeof fame === "number" && !isNaN(fame));
 
+  // 1a. The week's modifier: each one is well formed, they take turns, and they apply.
+  // The rest of the check then runs with none, so that its numbers do not depend on the date.
+  let weekProblems = [];
+  let weekIds = {};
+  for (let i = 0; i < weeklyModifiers.length; i++) {
+    let week = weeklyModifiers[i];
+    weekOverride = i;
+    if (!week.id || !week.name || !week.text || weekIds[week.id] !== undefined || (week.bonus === undefined && week.multiply === undefined)) {
+      weekProblems.push("entry " + i + " is not well formed");
+    }
+    weekIds[week.id] = true;
+    if (weeklyModifier() !== week) {
+      weekProblems.push(week.name + " is not the modifier of week " + i);
+    }
+    for (let word in week.bonus || {}) {
+      if (weeklyBonus(word) !== week.bonus[word] || totalBonus(word) < week.bonus[word]) {
+        weekProblems.push(week.name + ": " + word + " is not added");
+      }
+    }
+    for (let word in week.multiply || {}) {
+      weekOverride = "none";
+      let without = multiplier(word);
+      weekOverride = i;
+      if (Math.abs(multiplier(word) / without - week.multiply[word]) > 0.0001) {
+        weekProblems.push(week.name + ": " + word + " is not multiplied");
+      }
+    }
+    recalcStats();
+    updateScreen();
+    if (!document.getElementById("week-note").textContent.includes(week.name)) {
+      weekProblems.push(week.name + " is not shown above the fight");
+    }
+  }
+  weekOverride = weeklyModifiers.length;
+  if (weeklyModifier() !== weeklyModifiers[0]) {
+    weekProblems.push("the list does not come round again");
+  }
+  weekOverride = null;
+  let today = weeklyModifier();
+  check("the week's modifier: " + weeklyModifiers.length + " take turns (today: " + (today === null ? "none" : today.name + ", changes in " + weekEndsIn()) + ")" + (weekProblems.length === 0 ? "" : ": " + weekProblems.join("; ")), weekProblems.length === 0 && today !== null);
+  weekOverride = "none";
+  recalcStats();
+
   // 1b. A class that needs legend marks cannot be played before they are spent
   let lockedClasses = Object.keys(classes).filter(function (name) { return classes[name].unlock !== undefined; });
   let lockProblems = [];

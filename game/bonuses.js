@@ -98,10 +98,11 @@ function trophyMultiplier(stat) {
   return total;
 }
 
-// Everything that multiplies a number: fame upgrades, milestone and breakthrough perks, trophies.
+// Everything that multiplies a number: fame upgrades, milestone and breakthrough perks,
+// trophies, and the week's modifier.
 // The stats are damage, attack, health, armor, experience, gold, gear and fame.
 function multiplier(stat) {
-  return fameMultiplier(stat) * perkMultiplier(stat) * trophyMultiplier(stat);
+  return fameMultiplier(stat) * perkMultiplier(stat) * trophyMultiplier(stat) * weeklyMultiplier(stat);
 }
 
 // The relics this class can find: the shared ones plus its own
@@ -388,8 +389,9 @@ function towerRuleBonus(stat) {
 // Everything in the game asks this for its numbers:
 // the class's own base + skills + milestone perks + relics + upgrades + trophies + town
 // + the rule of the tower being challenged + what legend marks have bought
+// + the week's modifier
 function totalBonus(stat) {
-  return baseBonus(stat) + skillBonus(stat) + perkBonus(stat) + relicBonus(stat) + upgradeBonus(stat) + trophyBonus(stat) + townBonus(stat) + towerRuleBonus(stat) + legendBonus(stat);
+  return baseBonus(stat) + skillBonus(stat) + perkBonus(stat) + relicBonus(stat) + upgradeBonus(stat) + trophyBonus(stat) + townBonus(stat) + towerRuleBonus(stat) + legendBonus(stat) + weeklyBonus(stat);
 }
 
 // ----- Chances and overflow -----

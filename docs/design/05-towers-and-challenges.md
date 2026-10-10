@@ -49,6 +49,10 @@ and can challenge the others for permanent unlocks.
   current damage does best among those with a trophy left, and what its next tier pays.
   After 12 runs in a row with no new best floor at home (`stuckAfterRuns`), a banner, a
   line under the fight and a dot on the Towers tab point there too.
+- **The week's modifier.** One of seven twists (`weeklyModifiers` in `data.js`, rules in
+  `game/weekly.js`) is in force each week for every class in every tower, changing on
+  Monday (UTC) for everyone at once. Each helps one way and bites another, and they are
+  kept mild because the pacing was tuned without them. The balance bot plays with none.
 - Not built: the named weapon at tier 100.
 - Not built: a rule on a single tier ("floor 50 boss within 30 turns"). The plan below
   describes it; a rule for the whole tower was simpler to read and to play idle.
