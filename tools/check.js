@@ -277,6 +277,7 @@ try {
   function onlyPerk(floorOfIt, id) {
     chosenPerks = {};
     chosenPerks[floorOfIt] = id;
+    ownedRelics = [];
     recalcStats();
     playerHp = playerMaxHp;
     runStats = freshRunStats();
@@ -424,6 +425,62 @@ try {
   }
   check("suggested challenge: " + (ideaProblems.length === 0 ? towers[idea.tower].name + ", for " + idea.trophy.name : ideaProblems.join("; ")), ideaProblems.length === 0);
 
+  // 3f3. Relics: every shared one does something, and they come from the right places
+  let relicProblems = [];
+  let knownWords = ["secondWind", "brace", "leech", "bossSlayer", "opener", "finisher", "quickHands", "exploit", "prayer", "sidestep", "killStreak"];
+  for (let relic of relics) {
+    for (let word in relic.bonus) {
+      if (!knownWords.includes(word)) {
+        relicProblems.push(relic.name + " uses a word that is not a relic's: " + word);
+      }
+    }
+  }
+  ownedRelics = [];
+  floor = 20;
+  room = roomsPerFloor;
+  encounterType = "boss";
+  monsterIsRare = false;
+  spawnMonster(true);
+  monsterHp = 0;
+  victory();
+  let afterPlainBoss = ownedRelics.length;
+  floor = 25;
+  room = roomsPerFloor;
+  encounterType = "boss";
+  spawnMonster(true);
+  monsterHp = 0;
+  victory();
+  if (afterPlainBoss !== 0 || ownedRelics.length !== 1) {
+    relicProblems.push("a floor 20 boss gave " + afterPlainBoss + " relics and a floor 25 boss " + (ownedRelics.length - afterPlainBoss));
+  }
+  ownedRelics = ["phoenixFeather", "phoenixFeather"];
+  recalcStats();
+  runStats = freshRunStats();
+  let deathsWas = deaths;
+  let evading = currentClass().whenAttacked;
+  currentClass().whenAttacked = function () { return false; };
+  for (let i = 0; i < 2; i++) {
+    monsterAttack = playerMaxHp * 1000;
+    monsterPoison = 0;
+    guardTurns = 0;
+    monsterAttacks();
+  }
+  if (deaths !== deathsWas) {
+    relicProblems.push("two Phoenix Feathers did not save two lives");
+  }
+  monsterAttack = playerMaxHp * 1000;
+  monsterAttacks();
+  currentClass().whenAttacked = evading;
+  if (deaths !== deathsWas + 1) {
+    relicProblems.push("a third killing blow did not kill");
+  }
+  check("relics: " + relics.length + " shared ones, from 25th-floor bosses only" + (relicProblems.length === 0 ? "" : ": " + relicProblems.join("; ")), relicProblems.length === 0);
+  ownedRelics = [];
+  recalcStats();
+  playerHp = playerMaxHp;
+  runStats = freshRunStats();
+  startEncounter();
+
   // 3g. The rewards ladder: with every trophy won, the abilities work and the techniques bite
   let trophiesBefore = trophies;
   trophies = Object.keys(trophyIds);
@@ -455,7 +512,7 @@ try {
   }
   check("the ladder: " + taught.length + " abilities taught by trophies" + (ladderProblems.length === 0 ? ", all work" : ": " + ladderProblems.join("; ")), taught.length === 7 && ladderProblems.length === 0);
 
-  ownedRelics = ["trollHeart", "whetstone", "dragonscale", "goldenIdol", "trollHeart", "trollHeart", "trollHeart", "trollHeart"];
+  ownedRelics = ["bloodstone", "prism", "rosary", "smokeVial", "bloodstone", "bloodstone", "bloodstone", "bloodstone"];
   let slotsWon = totalBonus("relicSlots");
   die();
   check("relic slots: " + slotsWon + " won, " + ownedRelics.length + " relics kept through a fall", slotsWon === 7 && ownedRelics.length === 7);

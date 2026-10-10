@@ -13,6 +13,14 @@
 
 const gameUpdates = [
   {
+    version: "20261010k",
+    title: "Relics that do something",
+    changes: [
+      "Relics are now rare: the boss of every 25th floor carries one, and now and then a rare monster does.",
+      "Eleven new relics change how a run plays, such as a saved life, attacks thrown back or faster abilities."
+    ]
+  },
+  {
     version: "20261010j",
     title: "Where to go when you are stuck",
     changes: [

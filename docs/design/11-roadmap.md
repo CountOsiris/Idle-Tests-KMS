@@ -58,7 +58,8 @@ announces what it does.
    weapon.~~ Done, except the named weapon. [Towers](05-towers-and-challenges.md),
    [Equipment](08-equipment-and-items.md)
 3. ~~Suggest the best away tower when the home tower hits a wall.~~ Done.
-4. Separate relics (mechanical, rarer) from boons. [Equipment](08-equipment-and-items.md)
+4. ~~Separate relics (mechanical, rarer) from boons.~~ Done for the relics every class
+   shares; each class's own are still numbers. [Equipment](08-equipment-and-items.md)
 
 Done when: a class stuck at a wall has a visible, worthwhile challenge to go and win.
 

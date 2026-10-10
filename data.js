@@ -527,20 +527,49 @@ const townUpgrades = [
   { id: "alchemist", name: "Alchemist", text: "Healing potions heal 10% more of your health.", bonus: { potionPower: 0.1 }, maxLevel: 0, cost: 800, growth: 1.6 }
 ];
 
-// ----- Relics every class can find -----
-// Every boss you kill gives one random relic that suits your weapon. Relics are lost when you die.
-// You can get the same relic more than once, and the bonuses stack.
-// Each class also has relics of its own, in its file.
+// ----- Relics -----
+// BOONS AND RELICS ARE DIFFERENT THINGS. A boon comes from every boss, is a small number
+// that suits the weapon, and stacks up over a run. A relic is RARE and changes how the
+// run plays: it does something, where a boon adds something.
+//   - The boss of every relicBossEvery-th floor carries one (25 means floors 25, 50, 75...).
+//   - A rare monster carries one this often (0.15 means about one in seven).
+// Relics are lost when you fall, unless a relic slot keeps them (won at floor 75 of
+// another class's tower). The same relic can be held more than once, and it stacks.
+const relicBossEvery = 25;
+const relicRareChance = 0.15;
+
+// The relics every class can find. Each class also has relics for its own weapons, in
+// its file; those are still plain numbers.
 //
 // TO ADD A RELIC: add a line. It needs:
-//   id    - a unique name with no spaces (used in the save, so don't rename it later)
+//   id    - a unique name with no spaces (a relic slot can keep one in the save, so don't rename it later)
 //   name  - what the player sees
 //   text  - a short description
-//   bonus - what it does
+//   bonus - what it does. The words below are the ones made for relics, trophies and
+//           keystones; the game reads each with totalBonus("theWord"):
+//             secondWind  how many times a run a killing blow leaves you alive on half health
+//             brace       share of every attack against you thrown back, ignoring armor
+//             leech       share of the damage your turns deal that heals you
+//             bossSlayer  extra damage against bosses
+//             opener      extra damage on the first turn of a fight
+//             finisher    extra damage against an enemy below half health
+//             quickHands  share taken off ability cooldowns
+//             exploit     extra damage of a hit on a weakness
+//             prayer      share of your health healed every turn of a fight
+//             sidestep    chance to avoid any attack (never past the limit on chances)
+//             killStreak  damage added by every kill this run (stops at +100%)
+// (Troll Heart, Edge of Ruin, Dragonscale, Golden Idol and Tome of the Fallen were plain
+// numbers, the same as boons. They are gone; relics are lost at death, so nobody lost one.)
 const relics = [
-  { id: "trollHeart", name: "Troll Heart", text: "+10% health", bonus: { healthPercent: 0.1 } },
-  { id: "whetstone", name: "Edge of Ruin", text: "+10% attack", bonus: { attackPercent: 0.1 } },
-  { id: "dragonscale", name: "Dragonscale", text: "+4 armor", bonus: { armor: 4 } },
-  { id: "goldenIdol", name: "Golden Idol", text: "+30% gold", bonus: { gold: 0.3 } },
-  { id: "tomeOfTheFallen", name: "Tome of the Fallen", text: "+20% experience", bonus: { experience: 0.2 } }
+  { id: "phoenixFeather", name: "Phoenix Feather", icon: "🪶", text: "Once this run, a blow that would kill you leaves you alive on half your health", bonus: { secondWind: 1 } },
+  { id: "thornedCarapace", name: "Thorned Carapace", icon: "🦔", text: "A fifth of every attack against you is thrown back at the enemy, ignoring its armor", bonus: { brace: 0.2 } },
+  { id: "bloodstone", name: "Bloodstone", icon: "🩸", text: "You heal for 3% of the damage your turns deal", bonus: { leech: 0.03 } },
+  { id: "huntersTrophy", name: "Hunter's Trophy", icon: "🦌", text: "All your damage +30% against bosses", bonus: { bossSlayer: 0.3 } },
+  { id: "cutpursesKnife", name: "Cutpurse's Knife", icon: "🗡️", text: "All your damage +40% on the first turn of every fight", bonus: { opener: 0.4 } },
+  { id: "executionersHood", name: "Executioner's Hood", icon: "🪓", text: "All your damage +30% against an enemy below half health", bonus: { finisher: 0.3 } },
+  { id: "sandClock", name: "Sand Clock", icon: "⏳", text: "Your abilities are ready a fifth sooner", bonus: { quickHands: 0.2 } },
+  { id: "prism", name: "Prism", icon: "🔮", text: "A hit on a weakness deals 20% more", bonus: { exploit: 0.2 } },
+  { id: "rosary", name: "Worn Rosary", icon: "📿", text: "You heal 1% of your health every turn of a fight", bonus: { prayer: 0.01 } },
+  { id: "smokeVial", name: "Smoke Vial", icon: "🌫️", text: "A 5% chance to avoid any attack", bonus: { sidestep: 0.05 } },
+  { id: "skullTotem", name: "Skull Totem", icon: "💀", text: "Every kill makes all your damage 0.5% stronger for the rest of the run (up to +100%)", bonus: { killStreak: 0.005 } }
 ];

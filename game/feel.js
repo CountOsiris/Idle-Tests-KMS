@@ -184,7 +184,7 @@ const tabUnlocks = [
     earned: function () { return accountMost("bank") > 0 || accountMost("forge") > 0; } },
   { tab: "milestones", size: "banner", title: "Milestones open", text: "Reaching new floors unlocks perks that are yours for good (Milestones tab).",
     earned: function () { return accountMost("bestFloor") >= 5; } },
-  { tab: "inventory", size: "banner", title: "Inventory opens", text: "Your equipment and the relics bosses leave you are on the Inventory tab.",
+  { tab: "inventory", size: "banner", title: "Inventory opens", text: "Your equipment is on the Inventory tab, and so are relics: rare finds that change how a run plays.",
     earned: function () { return accountMost("bestFloor") >= 6; } },
   { tab: "ascension", size: "moment", title: "Ascension", text: "Reach floor " + ascendFirstFloor + " to ascend: this class starts again from level 1 and earns fame, which makes every one of your classes stronger for good. See the Ascension tab.",
     earned: function () { return accountMost("bestFloor") >= 10 || totalAscensions() > 0; } },

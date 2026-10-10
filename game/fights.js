@@ -259,10 +259,15 @@ function die() {
   startRunGear();
   resetAbilitiesForRun();
 
-  // Sweeping past bosses does not cost their boons: one for every boss passed
+  // Sweeping past bosses does not cost their boons: one for every boss passed, and a
+  // relic for every relic boss
   let bossesPassed = Math.floor((floor - 1) / 5);
   for (let i = 0; i < bossesPassed; i++) {
     gainBossUpgrade();
+  }
+  let relicBossesPassed = Math.floor((floor - 1) / relicBossEvery);
+  for (let i = 0; i < relicBossesPassed; i++) {
+    gainRelic();
   }
 
   // Some classes set something up at the start of a run
@@ -277,10 +282,11 @@ function die() {
   startEncounter();
 }
 
-// The Second Wind keystone: once a run, a blow that would kill you does not
+// Second Wind (a keystone, a trophy, a relic): a blow that would kill you does not, as
+// many times a run as the class has of them
 function survivesDeath() {
-  if (totalBonus("secondWind") > 0 && runStats.secondWindUsed !== true) {
-    runStats.secondWindUsed = true;
+  if ((runStats.secondWinds || 0) < totalBonus("secondWind")) {
+    runStats.secondWinds = (runStats.secondWinds || 0) + 1;
     playerHp = Math.round(playerMaxHp / 2);
     say("Second Wind! The blow that should have killed you does not.");
     return true;
@@ -316,10 +322,16 @@ function victory() {
   if (fightTurns > cruiseTurns) {
     cruising = false;
   }
-  // Every boss leaves an upgrade and a relic, both of them suited to the weapon being used
+  // Every boss leaves a boon that suits the weapon being used. Relics are rarer: the boss
+  // of every 25th floor carries one, and now and then a rare monster does (see data.js).
+  if (monsterIsRare && chance(relicRareChance)) {
+    gainRelic();
+  }
   if (encounterType === "boss") {
     gainBossUpgrade();
-    gainRelic();
+    if (floor % relicBossEvery === 0) {
+      gainRelic();
+    }
 
     let earned = bossFameAt(floor);
     if (earned > 0) {
@@ -346,7 +358,7 @@ function monsterAttacks() {
   }
 
   // The Sidestep technique: a chance to avoid any attack, whatever the class
-  if (chance(totalBonus("sidestep"))) {
+  if (chance(Math.min(maxChance, totalBonus("sidestep")))) {
     say("You sidestep the attack!");
     return;
   }

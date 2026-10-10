@@ -446,7 +446,8 @@ function fitsBuild(thing) {
 }
 
 // ----- Relics -----
-// A boss never gives a relic that only works with another weapon
+// Rare finds that change how a run plays (see "Relics" in data.js for where they come from).
+// A relic that only works with another weapon is never given.
 function gainRelic() {
   let choices = [];
   for (let relic of allRelics()) {
@@ -458,5 +459,5 @@ function gainRelic() {
 
   ownedRelics.push(relic.id);
   recalcStats();
-  say("You claim a relic: " + relic.name + " (" + relic.text + ").");
+  announce("banner", "Relic: " + relic.name, relic.text + ".");
 }

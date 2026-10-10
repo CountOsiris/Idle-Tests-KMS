@@ -31,6 +31,12 @@ Back to the [Masterplan](../../Masterplan.md).
   the class that wins it: "Bloodletter, the Warlord's Axe: bleeding can crit". Equip
   it instead of the forged one; it inherits the blacksmith level. Earned, not dropped,
   which keeps the October decision.
+- **Built October 2026: relics separated from boons.** A relic comes from the boss of
+  every 25th floor and from about one rare monster in seven (`relicBossEvery`,
+  `relicRareChance`), and the eleven every class can find each do something (a saved
+  life, attacks thrown back, faster abilities) where a boon adds a number. Relic slots
+  from tier 75 keep the first ones claimed. Still open: each class's own relics are
+  plain numbers, and the named weapons.
 - **Separate relics from boons:**
   - Boons: small, stackable, weapon-leaning (as now).
   - Relics: rarer (only on floors that are multiples of 25, and on rare monsters),
