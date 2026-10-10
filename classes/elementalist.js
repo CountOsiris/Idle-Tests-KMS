@@ -112,7 +112,7 @@ classes.elementalist = {
     {
       floor: 50,
       perks: [
-        { id: "avatarOfStorms", name: "Avatar of Storms", text: "+36% attack", bonus: { attackPercent: 0.36 } },
+        { id: "avatarOfStorms", name: "Avatar of Storms", text: "attack x1.3", multiply: { attack: 1.3 } },
         { id: "avatarOfStone", name: "Avatar of Stone", text: "health x1.5 and +5 armor", bonus: { armor: 5 }, multiply: { health: 1.5 } },
         { id: "inferno", name: "Inferno", text: "Fire: burning damage x2.3", multiply: { burn: 2.3 } },
         { id: "glacier", name: "Glacier", text: "Ice: critical hit damage x1.6", multiply: { iceCrit: 1.6 } },
@@ -136,7 +136,7 @@ classes.elementalist = {
     {
       floor: 75,
       perks: [
-        { id: "elementalFury", name: "Elemental Fury", text: "+50% attack", bonus: { attackPercent: 0.5 } },
+        { id: "elementalFury", name: "Elemental Fury", text: "attack x1.4", multiply: { attack: 1.4 } },
         { id: "elementalShield", name: "Elemental Shield", text: "health x1.75", multiply: { health: 1.75 } },
         { id: "firestorm", name: "Firestorm", text: "Fire: +25% attack, +4 burn stacks and burning deals +50% damage", bonus: { attackPercent: 0.25, burnStacks: 4, dotPower: 0.5 } },
         { id: "absoluteZero", name: "Absolute Zero", text: "Ice: +25% attack, +10% critical chance and +80% critical damage", bonus: { attackPercent: 0.25, critChance: 0.1, critPower: 0.8 } },
@@ -148,7 +148,7 @@ classes.elementalist = {
     {
       floor: 100,
       perks: [
-        { id: "masterOfElements", name: "Master of Elements", text: "+70% attack", bonus: { attackPercent: 0.7 } },
+        { id: "masterOfElements", name: "Master of Elements", text: "attack x1.5", multiply: { attack: 1.5 } },
         { id: "avatarOfTides", name: "Avatar of Tides", text: "health x2 and +6 armor", bonus: { armor: 6 }, multiply: { health: 2 } },
         { id: "phoenixFlame", name: "Phoenix Flame", text: "Fire: burning damage x2.3 again", multiply: { burn: 2.3 } },
         { id: "iceAge", name: "Ice Age", text: "Ice: critical hit damage x1.6 again", multiply: { iceCrit: 1.6 } },

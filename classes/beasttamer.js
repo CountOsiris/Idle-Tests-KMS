@@ -109,7 +109,7 @@ classes.beasttamer = {
     {
       floor: 50,
       perks: [
-        { id: "beastlord", name: "Beastlord", text: "+30% attack", bonus: { attackPercent: 0.3 } },
+        { id: "beastlord", name: "Beastlord", text: "attack x1.3", multiply: { attack: 1.3 } },
         { id: "oldGrowth", name: "Old Growth", text: "health x1.5 and +5 armor", bonus: { armor: 5 }, multiply: { health: 1.5 } },
         { id: "direPack", name: "Dire Pack", text: "Wolf Pack: bite damage x1.8", multiply: { wolf: 1.8 } },
         { id: "caveBear", name: "Cave Bear", text: "Bear: maul damage x1.8", multiply: { bear: 1.8 } },
@@ -132,7 +132,7 @@ classes.beasttamer = {
     {
       floor: 75,
       perks: [
-        { id: "apex", name: "Apex", text: "+50% attack", bonus: { attackPercent: 0.5 } },
+        { id: "apex", name: "Apex", text: "attack x1.4", multiply: { attack: 1.4 } },
         { id: "ironwoodHeart", name: "Ironwood Heart", text: "health x1.75", multiply: { health: 1.75 } },
         { id: "wolfKing", name: "Wolf King", text: "Wolf Pack: +25% attack, one more wolf, and bites deal +10% of your attack more", bonus: { attackPercent: 0.25, packSize: 1, bitePower: 0.1 } },
         { id: "ursine", name: "Ursine", text: "Bear: +25% attack, the maul deals +80% of your attack more, and +8% stun chance", bonus: { attackPercent: 0.25, maulPower: 0.8, stunChance: 0.08 } },

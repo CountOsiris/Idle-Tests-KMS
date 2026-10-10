@@ -115,7 +115,7 @@ classes.assassin = {
     {
       floor: 75,
       perks: [
-        { id: "killer", name: "Killer", text: "+44% attack", bonus: { attackPercent: 0.44 } },
+        { id: "killer", name: "Killer", text: "attack x1.4", multiply: { attack: 1.4 } },
         { id: "survivor", name: "Survivor", text: "health x1.75", multiply: { health: 1.75 } },
         { id: "venomancer", name: "Venomancer", text: "Venom Dagger: +25% attack, +4 poison stacks and poison deals +50% damage", bonus: { attackPercent: 0.25, poisonStacks: 4, dotPower: 0.5 } },
         { id: "heartseeker", name: "Heartseeker", text: "Stiletto: +25% attack, +10% critical chance and +70% critical damage", bonus: { attackPercent: 0.25, critChance: 0.1, critPower: 0.7 } },

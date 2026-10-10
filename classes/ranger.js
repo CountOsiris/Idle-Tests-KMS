@@ -132,7 +132,7 @@ classes.ranger = {
     {
       floor: 75,
       perks: [
-        { id: "deadeye", name: "Deadeye", text: "+50% attack", bonus: { attackPercent: 0.5 } },
+        { id: "deadeye", name: "Deadeye", text: "attack x1.4", multiply: { attack: 1.4 } },
         { id: "wildHeart", name: "Wild Heart", text: "health x1.75", multiply: { health: 1.75 } },
         { id: "eagleOfTheWood", name: "Eagle of the Wood", text: "Longbow: +30% attack, +10% critical shot chance and critical shots deal +100% damage", bonus: { attackPercent: 0.3, aimChance: 0.1, aimPower: 1 } },
         { id: "hailOfArrows", name: "Hail of Arrows", text: "Shortbow: +30% attack and +60% chance of an extra arrow", bonus: { attackPercent: 0.3, quickShot: 0.6 } },

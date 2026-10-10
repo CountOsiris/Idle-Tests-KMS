@@ -123,7 +123,7 @@ classes.warlock = {
     {
       floor: 75,
       perks: [
-        { id: "arcaneMight", name: "Arcane Supremacy", text: "+60% attack", bonus: { attackPercent: 0.6 } },
+        { id: "arcaneMight", name: "Arcane Supremacy", text: "attack x1.4", multiply: { attack: 1.4 } },
         { id: "arcaneBarrier", name: "Arcane Barrier", text: "health x1.75", multiply: { health: 1.75 } },
         { id: "spellblade", name: "Spellblade", text: "Arcane Tome: +35% attack, +10% critical chance and +80% critical damage", bonus: { attackPercent: 0.35, critChance: 0.1, critPower: 0.8 } },
         { id: "abyss", name: "Abyss", text: "Void Tome: attack x1.5 and +8 void power", bonus: { voidRend: 0.08 }, multiply: { attack: 1.5 } },

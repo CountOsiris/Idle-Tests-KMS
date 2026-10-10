@@ -65,7 +65,11 @@ The gaps the plan set out to close (1 to 6 are now built; what is left is below)
 - **A run starting above the floor the last one ended on**, as players reported, could
   not be reproduced in thousands of simulated deaths. A guard now makes it impossible
   and the check watches every death for it, but its cause was never seen.
-- **"Layers get distinct jobs"**: milestone perks still hand out percentages.
+- **"Layers get distinct jobs"**: milestone perks still hand out percentages, on purpose.
+  Keystones now carry the build-defining job, and rewriting every class's ordinary perks
+  would throw away content written by hand. The plain attack perks at floors 50, 75 and
+  100 were the one real trap (they added a percentage where the others multiplied) and
+  now multiply.
 - The Beast Tamer has no art.
 
 ## The plan

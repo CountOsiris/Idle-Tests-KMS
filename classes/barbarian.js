@@ -134,7 +134,7 @@ classes.barbarian = {
     {
       floor: 75,
       perks: [
-        { id: "warlord", name: "Warlord", text: "attack x1.6", multiply: { attack: 1.6 } },
+        { id: "warlord", name: "Warlord", text: "attack x1.4", multiply: { attack: 1.4 } },
         { id: "unbreakable", name: "Unbreakable", text: "health x1.75", multiply: { health: 1.75 } },
         { id: "bloodletter", name: "Bloodletter", text: "Axe: attack x1.4, +4 bleed stacks and bleeding deals +50% damage", bonus: { bleedStacks: 4, dotPower: 0.5 }, multiply: { attack: 1.4 } },
         { id: "blademaster", name: "Blademaster", text: "Sword: attack x1.4, +10% critical and parry chance, +60% critical damage", bonus: { critChance: 0.1, parryChance: 0.1, critPower: 0.6 }, multiply: { attack: 1.4 } },

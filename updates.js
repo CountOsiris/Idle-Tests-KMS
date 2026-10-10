@@ -13,6 +13,13 @@
 
 const gameUpdates = [
   {
+    version: "20261011b",
+    title: "Plain attack perks worth picking",
+    changes: [
+      "The plain attack perks at floors 50, 75 and 100 now multiply attack (x1.3 to x1.5). They used to add a percentage that was worth very little by then."
+    ]
+  },
+  {
     version: "20261011a",
     title: "What is kept, and what is lost",
     changes: [

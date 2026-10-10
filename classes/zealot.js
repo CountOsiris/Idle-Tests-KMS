@@ -120,7 +120,7 @@ classes.zealot = {
     {
       floor: 75,
       perks: [
-        { id: "holyWrath", name: "Holy Wrath", text: "+44% attack", bonus: { attackPercent: 0.44 } },
+        { id: "holyWrath", name: "Holy Wrath", text: "attack x1.4", multiply: { attack: 1.4 } },
         { id: "divineHealth", name: "Divine Health", text: "health x1.75", multiply: { health: 1.75 } },
         { id: "inquisitor", name: "Inquisitor", text: "Holy Mace: +25% attack, hits add +40% more of their damage as holy damage, and Judgement (every third hit) deals +80% more", bonus: { attackPercent: 0.25, smite: 0.4, judgement: 0.8 } },
         { id: "shieldOfTheFaithful", name: "Shield of the Faithful", text: "Mace and Shield: +25% attack, +10% block chance, and the strike back after a block hits for +70% of your attack more", bonus: { attackPercent: 0.25, blockChance: 0.1, counter: 0.7 } },
