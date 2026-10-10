@@ -67,6 +67,9 @@ entry for it at the top of `updates.js`: the pre-upload check fails without one.
 
 - `save-v1.json`: made by the version before the blacksmith (save version 1).
 - `save-v3.json`: made by the version live on 9 October 2026 (save version 3).
+- `save-v3-20261010a.json`: made by version 20261010a, the one live on 10 October 2026
+  before boss mechanics, keystones, challenge towers, Legend and the Beast Tamer:
+  three classes played, one ascension, relics held that no longer exist.
 
 When an upload changes `saveVersion`, make a save with the version that is live
 before the upload and add it here, so every future update is checked against it.
