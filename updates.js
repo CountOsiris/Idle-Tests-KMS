@@ -13,6 +13,13 @@
 
 const gameUpdates = [
   {
+    version: "20261010z",
+    title: "The fight stays in sight on a phone",
+    changes: [
+      "On a narrow screen, a strip at the top shows the floor and both health bars while any other tab is open. Tap it to go to the fight."
+    ]
+  },
+  {
     version: "20261010y",
     title: "Potions that keep themselves stocked",
     changes: [

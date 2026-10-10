@@ -881,6 +881,19 @@ try {
   bank = 0;
   startEncounter();
 
+  // 3i7. The strip a phone shows follows the fight
+  floor = 7;
+  room = 1;
+  encounterType = "monster";
+  spawnMonster(false);
+  playerHp = Math.round(playerMaxHp / 2);
+  monsterHp = Math.round(monsterMaxHp / 4);
+  updateScreen();
+  check("the phone strip shows the floor and both health bars (" + document.getElementById("mini-floor").textContent + ", " + document.getElementById("mini-monster").textContent + ")",
+    document.getElementById("mini-floor").textContent === "Floor 7" && document.getElementById("mini-monster").textContent === monsterName
+    && Math.abs(parseFloat(document.getElementById("mini-player-bar").style.width) - 50) < 1 && Math.abs(parseFloat(document.getElementById("mini-monster-bar").style.width) - 25) < 1);
+  playerHp = playerMaxHp;
+
   // 3j. Starting floors, and the Tactician's list
   cruiseFloor = 40;
   runStartFloor = 1;

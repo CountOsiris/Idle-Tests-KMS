@@ -917,6 +917,11 @@ body[data-tab="tower"] #tab-character {
   background: linear-gradient(#8fa6bd, #4c6178);
 }
 
+/* The strip a phone shows above the tabs' pages (see index.html). Not on a wide screen. */
+.mini-fight {
+  display: none;
+}
+
 /* How you stand against the floor: two thin bars under the fight */
 .pressure {
   margin: 10px 0 4px;
@@ -1389,6 +1394,41 @@ textarea {
 
   .tab-tower {
     display: block;
+  }
+
+  /* The fight in one line, under the tab buttons, on every tab but the fight's own */
+  .mini-fight {
+    display: grid;
+    grid-template-columns: auto 1fr 1fr;
+    align-items: center;
+    gap: 10px;
+    flex: 1 1 100%;
+    padding: 6px 4px 8px;
+    font-size: 12px;
+    color: var(--faded);
+    border-bottom: 1px solid var(--card-edge);
+    cursor: pointer;
+  }
+
+  .mini-floor {
+    color: var(--gold-bright);
+  }
+
+  .mini-side span {
+    display: block;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  body[data-tab="tower"] .mini-fight {
+    display: none;
+  }
+
+  /* One column of words above the bar is easier to read than three across */
+  .pressure-row {
+    grid-template-columns: 90px 70px 1fr;
+    font-size: 13px;
   }
 
   /* The tower only shows on its own tab, and the Character page only on its own */

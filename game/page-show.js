@@ -944,6 +944,13 @@ function updateScreen() {
     document.getElementById("monster-dot").textContent = big(dotDamage());
   }
 
+  // The strip a phone shows above every tab but the fight's own
+  document.getElementById("mini-floor").textContent = "Floor " + floor;
+  document.getElementById("mini-player").textContent = currentClass().name;
+  document.getElementById("mini-player-bar").style.width = Math.max(0, playerHp / playerMaxHp * 100) + "%";
+  document.getElementById("mini-monster").textContent = title;
+  document.getElementById("mini-monster-bar").style.width = inFight ? Math.max(0, monsterHp / monsterMaxHp * 100) + "%" : "0%";
+
   // Classes without damage over time have no dotLabel, so that part is hidden
   if (currentClass().dotLabel === undefined) {
     document.getElementById("dot-part").hidden = true;

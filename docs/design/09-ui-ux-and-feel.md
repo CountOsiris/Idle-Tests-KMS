@@ -75,5 +75,10 @@ comparison were built earlier.
 
 ### Mobile
 
+**Built October 2026.** Below 900 pixels wide the fight is a tab of its own, so it was out
+of sight while any other tab was open. A strip under the tab buttons, which stay at the
+top of the screen, now shows the floor and both health bars on every other tab; pressing
+it goes to the fight. Checked in a 400 pixel wide window, not on a real phone.
+
 Friends will play on phones. The two-column layout stacks into one below 900px today; check
 that the stage stays on screen while a tab is open (sticky stage, tabs scroll).
