@@ -17,6 +17,12 @@
 //   spite        extra vengeance against bosses and rare
 //                monsters                                  (0.1 means +10%)
 //
+// and the words of its keystones (floor 51; see "Keystones" in data.js):
+//   spikedThrust      spiked: share of a reflection every spear thrust sets off
+//   stunningBlock     tower: 1 = a block stuns the enemy for a turn
+//   maim              bladed: share of the enemy's attack every throw cuts away
+//   instantVengeance  1 = vengeance is paid back at once, ignoring armor
+//
 // Words a perk can MULTIPLY (see "multiply" in data.js):
 //   reflect    everything a spiked shield throws back
 //   spear      every spear thrust behind a tower shield
@@ -112,6 +118,19 @@ classes.warden = {
         { id: "phalanxCaptain", name: "Phalanx Captain", text: "Tower Shield: spear damage x1.6", multiply: { spear: 1.6 } },
         { id: "razorDisc", name: "Razor Disc", text: "Bladed Shield: thrown shield damage x2", multiply: { throw: 2 } },
         { id: "bloodDebt", name: "Blood Debt", text: "Vengeance x4: four times as much of each hit you take is paid back", multiply: { vengeance: 4 } }
+      ]
+    },
+    // KEYSTONES: each changes a rule of one weapon, and costs something. This milestone is
+    // optional: pick one, or none (press the chosen one again to let it go).
+    // See "Keystones" in data.js.
+    {
+      floor: 51,
+      keystones: true,
+      perks: [
+        { id: "barbedWall", name: "Barbed Wall", keystone: true, text: "Spiked Shield: your spear thrust also sets off the shield, for 15% of a reflection. Vengeance is lost", bonus: { spikedThrust: 0.15 }, multiply: { vengeance: 0 } },
+        { id: "shieldWall", name: "Stunning Guard", keystone: true, text: "Tower Shield: a block also stuns the enemy for a turn. Spear damage x0.9", bonus: { stunningBlock: 1 }, multiply: { spear: 0.9 } },
+        { id: "hamstring", name: "Hamstring", keystone: true, text: "Bladed Shield: every throw cuts the enemy's attack by 3%. Thrown shield damage x0.8", bonus: { maim: 0.03 }, multiply: { throw: 0.8 } },
+        { id: "eyeForAnEye", name: "Eye for an Eye", keystone: true, text: "Vengeance: a hit you take is paid back at once, ignoring armor, instead of with your next thrust. health x0.85", bonus: { instantVengeance: 1 }, multiply: { health: 0.85 } }
       ]
     },
     {
@@ -237,15 +256,28 @@ function wardenAttack() {
   }
   hitMonster(damage, "piercing");
 
+  // Barbed Wall (keystone): the thrust sets off the spiked shield as well
+  if (weapon === "spiked" && totalBonus("spikedThrust") > 0) {
+    magicHitMonster(reflectDamage() * totalBonus("spikedThrust"), "piercing");
+  }
+
   // The bladed shield is thrown after every thrust, and cuts through armor
   if (weapon === "bladed") {
     magicHitMonster(throwDamage(), "slashing");
+
+    // Hamstring (keystone): every throw leaves the enemy a little weaker
+    if (totalBonus("maim") > 0) {
+      monsterAttack = Math.max(1, Math.round(monsterAttack * (1 - totalBonus("maim"))));
+    }
   }
 }
 
 function wardenWhenAttacked() {
   if (weapon === "tower" && chance(cappedChance("blockChance"))) {
     say("You block the attack!");
+    if (totalBonus("stunningBlock") > 0) {
+      monsterStunned = true;
+    }
     return true;
   }
 
@@ -255,7 +287,12 @@ function wardenWhenAttacked() {
   }
 
   // Every hit that lands is remembered, and paid back with the next thrust
-  wardenOwed = wardenOwed + monsterAttack * wardenVengeance();
+  // (or at once, with the Eye for an Eye keystone)
+  if (totalBonus("instantVengeance") > 0) {
+    magicHitMonster(monsterAttack * wardenVengeance(), "piercing");
+  } else {
+    wardenOwed = wardenOwed + monsterAttack * wardenVengeance();
+  }
   return false;
 }
 

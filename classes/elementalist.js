@@ -120,6 +120,19 @@ classes.elementalist = {
         { id: "mountain", name: "Mountain", text: "Earth: boulder damage x2.2", multiply: { boulder: 2.2 } }
       ]
     },
+    // KEYSTONES: each changes a rule of one weapon, and costs something. This milestone is
+    // optional: pick one, or none (press the chosen one again to let it go).
+    // See "Keystones" in data.js.
+    {
+      floor: 51,
+      keystones: true,
+      perks: [
+        { id: "conflagration", name: "Conflagration", keystone: true, text: "Fire: half of an enemy's burn stacks pass to the next enemy. Your fire spells deal no damage of their own: only the burning does", bonus: { burnCarry: 0.5 } },
+        { id: "deepFreeze", name: "Deep Freeze", keystone: true, text: "Ice: a critical hit has a 50% chance to freeze the enemy for a turn. Critical hit damage x0.8", bonus: { iceFreeze: 0.5 }, multiply: { iceCrit: 0.8 } },
+        { id: "overcharge", name: "Overcharge", keystone: true, text: "Lightning: every bolt in a turn deals 15% more than the one before it. health x0.85", bonus: { overcharge: 0.15 }, multiply: { health: 0.85 } },
+        { id: "landslide", name: "Landslide", keystone: true, text: "Earth: the first boulder is ready when the fight starts, so you throw on turns 1, 3 and 5 instead of 2, 4 and 6. Boulder damage x0.85", bonus: { landslide: 1 }, multiply: { boulder: 0.85 } }
+      ]
+    },
     {
       floor: 75,
       perks: [
@@ -207,7 +220,13 @@ let elementalistCharged = false;
 
 // Runs at the start of every fight
 function elementalistStartFight() {
-  elementalistCharged = false;
+  // (Landslide, a keystone: the first boulder is gathered on the way in)
+  elementalistCharged = totalBonus("landslide") > 0;
+
+  // Conflagration (keystone): part of the last enemy's burning passes to this one
+  if (stance === "fire" && totalBonus("burnCarry") > 0) {
+    dotStacks = Math.min(totalBonus("burnStacks"), Math.floor(lastFightStacks * totalBonus("burnCarry")));
+  }
 }
 
 function elementalistAttack() {
@@ -215,7 +234,10 @@ function elementalistAttack() {
   // Many small bolts lose more to ward than one big boulder does.
 
   if (stance === "fire") {
-    spellHitMonster(playerAttack * fireHit, "fire");
+    // (with the Conflagration keystone only the burning does damage)
+    if (totalBonus("burnCarry") === 0) {
+      spellHitMonster(playerAttack * fireHit, "fire");
+    }
 
     // Fire catches quickly: every spell adds two burn stacks
     addDotStack(totalBonus("burnStacks"));
@@ -229,6 +251,11 @@ function elementalistAttack() {
     if (chance(totalBonus("critChance"))) {
       damage = damage * (iceCrit + totalBonus("critPower") + overflow("critChance", 1)) * multiplier("iceCrit");
       say("An ice shard shatters for a critical hit!");
+
+      // Deep Freeze (keystone)
+      if (chance(totalBonus("iceFreeze"))) {
+        monsterStunned = true;
+      }
     }
     spellHitMonster(damage, "ice");
   }
@@ -242,7 +269,8 @@ function elementalistAttack() {
     }
 
     for (let i = 0; i < bolts; i++) {
-      spellHitMonster(playerAttack * (lightningHit + totalBonus("boltPower")) * multiplier("bolt"), "lightning");
+      // (Overcharge, a keystone: each bolt hits harder than the one before)
+      spellHitMonster(playerAttack * (lightningHit + totalBonus("boltPower")) * multiplier("bolt") * (1 + totalBonus("overcharge") * i), "lightning");
     }
   }
 

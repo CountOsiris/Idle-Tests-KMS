@@ -104,6 +104,19 @@ classes.zealot = {
         { id: "zealous", name: "Zealous", text: "Crusade x3: three times the damage for every turn a fight lasts", multiply: { crusade: 3 } }
       ]
     },
+    // KEYSTONES: each changes a rule of one weapon, and costs something. This milestone is
+    // optional: pick one, or none (press the chosen one again to let it go).
+    // See "Keystones" in data.js.
+    {
+      floor: 51,
+      keystones: true,
+      perks: [
+        { id: "swiftJudgement", name: "Swift Judgement", keystone: true, text: "Holy Mace: Judgement falls on every second hit instead of every third. Devotion heals half as much", bonus: { swiftJudgement: 1 } },
+        { id: "retributionAura", name: "Retribution", keystone: true, text: "Mace and Shield: you strike back after every attack, at half strength when you did not block it. health x0.85", bonus: { retribution: 0.5 }, multiply: { health: 0.85 } },
+        { id: "martyrsFlame", name: "Martyr's Flame", keystone: true, text: "Holy Tome: all your healing burns the enemy, and the part you needed burns at half strength. Your spells deal 20% less", bonus: { martyrsFlame: 0.5 } },
+        { id: "zealotry", name: "Zealotry", keystone: true, text: "Crusade: half of the damage built up in a fight carries into the next one. You no longer heal after a kill", bonus: { crusadeCarry: 0.5, noKillHeal: 1 } }
+      ]
+    },
     {
       floor: 75,
       perks: [
@@ -190,9 +203,19 @@ const judgementEvery = 3;   // with the holy mace, every hit of this number is a
 // Holy Mace: how many hits have landed in this fight
 let zealotHits = 0;
 
+// Zealotry (keystone): the turns of Crusade carried in from the fight before
+let zealotCarry = 0;
+
 // Runs at the start of every fight
 function zealotStartFight() {
   zealotHits = 0;
+
+  // Half of what the last fight had built up, including what IT carried in
+  if (lastFightTurns > 0) {
+    zealotCarry = (lastFightTurns - 1 + zealotCarry) * totalBonus("crusadeCarry");
+  } else {
+    zealotCarry = 0;
+  }
 }
 
 // How much the Zealot heals every turn, as a share of full health. The Holy Tome doubles it.
@@ -205,14 +228,18 @@ function zealotHealing() {
   let healing = maxHealing * devotion / (devotion + maxHealing);
 
   if (weapon === "tome") {
-    return healing * 2;
+    healing = healing * 2;
+  }
+  // (the Swift Judgement keystone pays for its Judgements with half the healing)
+  if (totalBonus("swiftJudgement") > 0) {
+    healing = healing / 2;
   }
   return healing;
 }
 
 // Crusade: all damage grows with every turn the fight has lasted
 function zealotCrusade() {
-  return 1 + (fightTurns - 1) * totalBonus("crusade") * multiplier("crusade");
+  return 1 + (fightTurns - 1 + zealotCarry) * totalBonus("crusade") * multiplier("crusade");
 }
 
 function zealotAttack() {
@@ -226,9 +253,16 @@ function zealotAttack() {
 
   if (weapon === "tome") {
     // Holy magic ignores armor
-    spellHitMonster(damage * tomeHit, "holy");
-    if (wasted > 0) {
-      spellHitMonster(wasted * (1 + totalBonus("sacredFlame")) * multiplier("sacred") * zealotCrusade(), "holy");
+    // Martyr's Flame (keystone): weaker spells, but the healing you needed burns as well
+    let burning = wasted;
+    let spell = damage * tomeHit;
+    if (totalBonus("martyrsFlame") > 0) {
+      burning = wasted + (healing - wasted) * totalBonus("martyrsFlame");
+      spell = spell * 0.8;
+    }
+    spellHitMonster(spell, "holy");
+    if (burning > 0) {
+      spellHitMonster(burning * (1 + totalBonus("sacredFlame")) * multiplier("sacred") * zealotCrusade(), "holy");
     }
   }
 
@@ -237,9 +271,9 @@ function zealotAttack() {
   }
 
   if (weapon === "mace") {
-    // Every third hit is a Judgement
+    // Every third hit is a Judgement (every second, with the Swift Judgement keystone)
     zealotHits = zealotHits + 1;
-    if (zealotHits % judgementEvery === 0) {
+    if (zealotHits % (totalBonus("swiftJudgement") > 0 ? 2 : judgementEvery) === 0) {
       damage = damage * (1 + totalBonus("judgement") * multiplier("mace"));
       say("Judgement falls!");
     }
@@ -264,6 +298,11 @@ function zealotWhenAttacked() {
     say("You block the attack and strike back!");
     hitMonster(playerAttack * totalBonus("counter") * multiplier("shieldCounter") * zealotCrusade(), "crushing");
     return true;
+  }
+
+  // Retribution (keystone): the strike back comes even when the block does not
+  if (weapon === "shield" && totalBonus("retribution") > 0) {
+    hitMonster(playerAttack * totalBonus("counter") * multiplier("shieldCounter") * zealotCrusade() * totalBonus("retribution"), "crushing");
   }
   return false;
 }

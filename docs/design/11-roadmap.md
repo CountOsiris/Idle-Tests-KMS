@@ -43,7 +43,9 @@ first 3 hours, and no reward in the game is a flat number.
 5. ~~Build balance pass: every weapon within ±25% of its class to floor 50.~~ Done:
    measured with `tools/balance.sh`, every build is inside the target with no class
    number changed. [Classes](04-classes-and-builds.md)
-6. Keystone perks at 50, 75, 100. [Classes](04-classes-and-builds.md)
+6. ~~Keystone perks at 50, 75, 100.~~ Done, one floor later so they never replace a
+   build perk: one per weapon or element at 51, three shared ones at 76 and at 101.
+   [Classes](04-classes-and-builds.md)
 
 Done when: two builds of the same class look different on the stage, and every boss
 announces what it does.

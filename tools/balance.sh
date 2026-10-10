@@ -20,6 +20,10 @@ HOURS="${1:-30}"
 RUNS="${2:-3}"
 FLOOR="${3:-50}"
 OPTIONS="h=$HOURS,every,ascend"
+# More bot options can be given in BOT, for example  BOT=keystones bash tools/balance.sh 40 3 75
+if [ -n "$BOT" ]; then
+  OPTIONS="$OPTIONS,$BOT"
+fi
 if [ -n "$4" ]; then
   OPTIONS="$OPTIONS,c=$4"
 fi

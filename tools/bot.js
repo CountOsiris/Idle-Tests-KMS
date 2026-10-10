@@ -17,6 +17,8 @@
 //  only=a+b    spend skill points only on these skill ids
 //  perk=text   at milestones, prefer perks whose text contains this
 //  fav=id      hire the Tactician with this favourite boon
+//  keystones   at floor 51, take the weapon's keystone (and with perk=Name, a shared one
+//              by its name at floors 76 and 101). Without this, keystones are left alone.
 //  killers     also say what killed it most in its last two hours, and on which floor
 //  duo         a Barbarian for 6 hours, then a new Ranger and Warden on the same account
 // =====================================================================
@@ -33,6 +35,7 @@ const NOABILITIES = location.hash.includes("noabilities");
 const ONLY_SKILLS = ((location.hash.match(/only=([\w+]+)/) || [0, ""])[1]).split("+").filter(function (x) { return x !== ""; });
 const PERK = decodeURIComponent((location.hash.match(/perk=([^,]+)/) || [0, ""])[1]);
 const FAV = (location.hash.match(/fav=(\w+)/) || [0, ""])[1];
+const KEYSTONES = location.hash.includes("keystones");
 const STALL = Number((location.hash.match(/stall=(\d+)/) || [0, 600])[1]);
 let ASCEND = location.hash.includes("ascend");
 
@@ -107,6 +110,18 @@ function manage() {
   // otherwise the first that works with it, or one that matches "perk="
   let buildName = c.stances !== undefined ? c.stances[stance].name : c.gearTypes[weapon];
   for (let milestone of allMilestones()) {
+    // A keystone milestone is optional: left alone unless asked for
+    if (milestone.keystones === true) {
+      if (KEYSTONES && bestFloor >= milestone.floor && chosenPerks[milestone.floor] === undefined) {
+        let keystone = milestone.perks.find(function (p) {
+          return p.text.startsWith(buildName + ":") || (PERK !== "" && p.name.includes(PERK));
+        });
+        if (keystone !== undefined) {
+          chosenPerks[milestone.floor] = keystone.id;
+        }
+      }
+      continue;
+    }
     if (bestFloor >= milestone.floor && chosenPerks[milestone.floor] === undefined) {
       let perk = milestone.perks[milestone.perks.length > 2 ? 0 : 1];
       if (otherBuildNote(perk.text) !== "") {

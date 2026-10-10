@@ -10,6 +10,11 @@
 //   critPower    sword: extra damage of a critical   (0.1 means +10%)
 //   stunChance   club stun chance                    (0.15 means +15%)
 //   clubPower    club: extra damage of every hit     (0.04 means +4%)
+// and the words of its keystones (floor 51; see "Keystones" in data.js):
+//   bleedCarry   axe: share of bleed stacks passed to the next enemy; bleeding stops healing
+//   riposte      sword: 1 = every parry strikes back
+//   shatter      club: 1 = double damage on an enemy stunned the turn before
+//   alwaysRage   1 = Rage at any health
 //
 // Words a perk can MULTIPLY (see "multiply" in data.js). These are the big ones:
 //   bleed      all bleeding damage            (2 means bleeding deals double)
@@ -113,6 +118,19 @@ classes.barbarian = {
         { id: "frenzy", name: "Frenzy", text: "Rage x3: three times the bonus damage while below half health", multiply: { rage: 3 } }
       ]
     },
+    // KEYSTONES: each changes a rule of one weapon, and costs something. This milestone is
+    // optional: pick one, or none (press the chosen one again to let it go).
+    // See "Keystones" in data.js.
+    {
+      floor: 51,
+      keystones: true,
+      perks: [
+        { id: "festeringWounds", name: "Festering Wounds", keystone: true, text: "Axe: half of an enemy's bleed stacks pass to the next enemy. Bleeding no longer heals you", bonus: { bleedCarry: 0.5 } },
+        { id: "riposteStance", name: "Counterstroke", keystone: true, text: "Sword: every parry strikes back with a sword hit. You take 15% more damage", bonus: { riposte: 1 }, multiply: { damageTaken: 1.15 } },
+        { id: "shatter", name: "Shatter", keystone: true, text: "Club: your hit on an enemy you stunned the turn before deals double damage. health x0.85", bonus: { shatter: 1 }, multiply: { health: 0.85 } },
+        { id: "deathWish", name: "Death Wish", keystone: true, text: "Rage is always on, at any health. You no longer heal after a kill", bonus: { alwaysRage: 1, noKillHeal: 1 } }
+      ]
+    },
     {
       floor: 75,
       perks: [
@@ -172,6 +190,7 @@ classes.barbarian = {
   ],
 
   // The functions below, which make the class fight its own way
+  startFight: barbarianStartFight,
   damageTypes: barbarianDamageTypes,
   attack: barbarianAttack,
   whenAttacked: barbarianWhenAttacked,
@@ -198,11 +217,25 @@ const clubHit = 1.2;
 // ...and breaks this much of the enemy's armor (0.03 means its armor blocks 3% less)
 const clubArmorBreak = 0.03;
 
+// Shatter (keystone): did your last hit stun the enemy?
+let barbarianStunnedLast = false;
+
+// Runs at the start of every fight
+function barbarianStartFight() {
+  barbarianStunnedLast = false;
+
+  // Festering Wounds (keystone): part of the last enemy's bleeding passes to this one
+  if (weapon === "axe" && totalBonus("bleedCarry") > 0) {
+    dotStacks = Math.min(totalBonus("bleedStacks"), Math.floor(lastFightStacks * totalBonus("bleedCarry")));
+  }
+}
+
 // The class's turn, once per second
 function barbarianAttack() {
   let damage = playerAttack;
 
-  if (playerHp < playerMaxHp / 2) {
+  // (the Death Wish keystone keeps Rage on at any health)
+  if (playerHp < playerMaxHp / 2 || totalBonus("alwaysRage") > 0) {
     damage = damage * (1 + totalBonus("rage") * multiplier("rage"));
   }
 
@@ -215,7 +248,11 @@ function barbarianAttack() {
   // Stun chance past its limit makes the club hit harder instead
   if (weapon === "club") {
     damage = damage * (clubHit + totalBonus("clubPower") + overflow("stunChance", maxChance)) * multiplier("club");
+    if (barbarianStunnedLast && totalBonus("shatter") > 0) {
+      damage = damage * 2;
+    }
   }
+  barbarianStunnedLast = false;
 
   // Barbarians heal from the damage they deal
   // Axes and swords slash, a club crushes
@@ -232,13 +269,16 @@ function barbarianAttack() {
     // The bleeding feeds lifesteal as well
     let bled = dotDamage();
     monsterHp = monsterHp - bled;
-    healPlayer(bled * totalBonus("lifesteal"));
+    if (totalBonus("bleedCarry") === 0) {
+      healPlayer(bled * totalBonus("lifesteal"));
+    }
   }
 
   if (weapon === "club") {
     monsterArmor = Math.max(0, monsterArmor - clubArmorBreak);
     if (chance(cappedChance("stunChance"))) {
       monsterStunned = true;
+      barbarianStunnedLast = true;
       say("You stun the enemy!");
     }
   }
@@ -248,6 +288,9 @@ function barbarianAttack() {
 function barbarianWhenAttacked() {
   if (weapon === "sword" && chance(cappedChance("parryChance"))) {
     say("You parry the attack!");
+    if (totalBonus("riposte") > 0) {
+      hitMonster(playerAttack, "slashing");
+    }
     return true;
   }
   return false;

@@ -13,6 +13,16 @@
 
 const gameUpdates = [
   {
+    version: "20261010g",
+    title: "Keystones",
+    changes: [
+      "Floor 51 offers a ★ keystone for each weapon or element: a perk that changes a rule of how it fights, at a cost.",
+      "Floors 76 and 101 each offer three more that any class can take, such as Glass Cannon and Second Wind.",
+      "Keystones are optional: take one, or none, and change your mind whenever you like.",
+      "The count of a run in progress now survives reloading the page."
+    ]
+  },
+  {
     version: "20261010f",
     title: "Reflecting bosses made fair",
     changes: [

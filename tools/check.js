@@ -257,6 +257,88 @@ try {
   }
   startEncounter();
 
+  // 3e. Keystones: every class has one per weapon at floor 50, and the shared ones do what they say
+  let keystoneProblems = [];
+  for (let className in classes) {
+    let c = classes[className];
+    let builds = c.stances !== undefined ? Object.keys(c.stances).map(function (id) { return c.stances[id].name; }) : Object.values(c.gearTypes);
+    let at50 = c.milestones.find(function (m) { return m.floor === 51; }).perks.filter(function (p) { return p.keystone === true; });
+    for (let build of builds) {
+      if (!at50.some(function (p) { return p.text.startsWith(build + ":"); })) {
+        keystoneProblems.push(c.name + " has no floor 51 keystone for the " + build);
+      }
+    }
+  }
+  check("keystones: one per weapon or element at floor 51" + (keystoneProblems.length === 0 ? "" : ": " + keystoneProblems.join("; ")), keystoneProblems.length === 0);
+
+  let perksBefore = chosenPerks;
+  let bestBefore = bestFloor;
+  bestFloor = 101;
+  function onlyPerk(floorOfIt, id) {
+    chosenPerks = {};
+    chosenPerks[floorOfIt] = id;
+    recalcStats();
+    playerHp = playerMaxHp;
+    runStats = freshRunStats();
+    startBossMechanics({}, false);
+    guardTurns = 0;
+  }
+
+  onlyPerk(76, "bloodPrice");
+  let boostAtStart = runDamageBoost();
+  encounterType = "monster";
+  monsterIsRare = false;
+  playerHp = 1;
+  monsterHp = 0;
+  victory();
+  check("Blood Price: a kill heals nothing and adds " + percent(0.02) + " damage (boost x" + runDamageBoost() + ")", playerHp === 1 && boostAtStart === 1 && Math.abs(runDamageBoost() - 1.02) < 0.0001);
+  runStats.kills = 500;
+  check("Blood Price stops at +" + percent(keystoneRunLimit), runDamageBoost() === 1 + keystoneRunLimit);
+
+  onlyPerk(76, "secondWind");
+  let deathsThen = deaths;
+  let avoiding = currentClass().whenAttacked;
+  currentClass().whenAttacked = function () { return false; };
+  monsterAttack = playerMaxHp * 1000;
+  monsterPoison = 0;
+  monsterEnrageStep = 0;
+  monsterAttacks();
+  let livedOnce = deaths === deathsThen && playerHp === Math.round(playerMaxHp / 2);
+  monsterAttack = playerMaxHp * 1000;
+  monsterAttacks();
+  currentClass().whenAttacked = avoiding;
+  check("Second Wind: the first killing blow of a run leaves you on half health, the second kills", livedOnce && deaths === deathsThen + 1);
+
+  onlyPerk(101, "quickHands");
+  let anyAbility = classAbilities().find(function (ability) { return fitsBuild(ability) && ability.bossKiller !== true; });
+  if (anyAbility !== undefined) {
+    let slotsThen = abilitySlots;
+    abilitySlots = [anyAbility.id];
+    resetAbilitiesForRun();
+    abilityPressed[anyAbility.id] = true;
+    encounterType = "monster";
+    monsterMaxHp = 1000000;
+    monsterHp = 1000000;
+    useAbilities();
+    check("Quick Hands: " + anyAbility.name + " waits " + abilityCooldowns[anyAbility.id] + " turns instead of " + anyAbility.cooldown, abilityCooldowns[anyAbility.id] === Math.ceil(anyAbility.cooldown / 2));
+    abilitySlots = slotsThen;
+    resetAbilitiesForRun();
+  }
+
+  onlyPerk(101, "ironSkin");
+  let withIronSkin = armorShareBlocked();
+  chosenPerks = {};
+  let withoutIronSkin = armorShareBlocked();
+  check("Iron Skin: armor blocks up to " + percent(maxArmorShare + 0.2) + " (" + percent(withIronSkin) + " here, against " + percent(withoutIronSkin) + ")",
+    Math.abs(withIronSkin / withoutIronSkin - (maxArmorShare + 0.2) / maxArmorShare) < 0.0001);
+
+  chosenPerks = perksBefore;
+  bestFloor = bestBefore;
+  recalcStats();
+  playerHp = playerMaxHp;
+  runStats = freshRunStats();
+  startEncounter();
+
   // A newer tab taking over stops this one from saving
   let markBefore = localStorage.getItem(saveName);
   window.dispatchEvent(new StorageEvent("storage", { key: tabMarkName, newValue: "a newer tab" }));

@@ -157,7 +157,7 @@ function bossTakes(hpBefore) {
     back = Math.max(1, Math.round(back));
     playerHp = playerHp - back;
     noteTaken(back);
-    if (playerHp <= 0) {
+    if (playerHp <= 0 && !survivesDeath()) {
       say("The " + monsterName + "'s reflect aura finishes you.");
       die();
       return;

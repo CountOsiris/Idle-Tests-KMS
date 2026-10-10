@@ -100,6 +100,18 @@ classes.assassin = {
         { id: "ironNerves", name: "Iron Nerves", text: "health x1.5 and +5% dodge", bonus: { dodge: 0.05 }, multiply: { health: 1.5 } }
       ]
     },
+    // KEYSTONES: each changes a rule of one weapon, and costs something. This milestone is
+    // optional: pick one, or none (press the chosen one again to let it go).
+    // See "Keystones" in data.js.
+    {
+      floor: 51,
+      keystones: true,
+      perks: [
+        { id: "neurotoxin", name: "Neurotoxin", keystone: true, text: "Venom Dagger: an enemy carrying every poison stack you can give hits 30% weaker. Ambush damage x0.5", bonus: { neurotoxin: 0.3 }, multiply: { ambush: 0.5 } },
+        { id: "coupDeGrace", name: "Coup de Grace", keystone: true, text: "Stiletto: a critical hit on an enemy below 30% health kills it outright (a boss takes double damage instead). health x0.8", bonus: { coupDeGrace: 0.3 }, multiply: { health: 0.8 } },
+        { id: "shadowDance", name: "Veil Step", keystone: true, text: "Shadow Blade: every dodge is also a Vanish, so your next hit is an ambush. health x0.9", bonus: { shadowDance: 1 }, multiply: { health: 0.9 } }
+      ]
+    },
     {
       floor: 75,
       perks: [
@@ -201,10 +213,21 @@ function assassinAttack() {
     say("You strike from the shadows!");
   }
 
+  // Coup de Grace (keystone): a critical hit finishes an enemy that is nearly dead
+  let finishing = false;
+
   if (weapon === "stiletto" && chance(totalBonus("critChance"))) {
     // Critical chance past 100% adds to the critical damage instead
     damage = damage * (3 + totalBonus("critPower") + overflow("critChance", 1)) * multiplier("stilettoCrit");
     say("A deadly critical hit!");
+
+    if (totalBonus("coupDeGrace") > 0 && monsterHp < monsterMaxHp * totalBonus("coupDeGrace")) {
+      if (encounterType === "boss") {
+        damage = damage * 2;
+      } else {
+        finishing = true;
+      }
+    }
   }
 
   if (weapon === "shadow" && assassinCounterReady) {
@@ -218,6 +241,9 @@ function assassinAttack() {
     type = "slashing";
   }
   hitMonster(damage, type);
+  if (finishing && monsterHp > 0) {
+    monsterHp = 0;
+  }
 
   // Poison ignores armor
   if (weapon === "venom") {
@@ -250,7 +276,13 @@ function assassinDamageDivider() {
   if (weapon === "shadow") {
     dodge = dodge + 0.1;
   }
-  return 1 + Math.max(0, dodge - maxChance);
+  let divider = 1 + Math.max(0, dodge - maxChance);
+
+  // Neurotoxin (keystone): a fully poisoned enemy hits weaker
+  if (weapon === "venom" && totalBonus("neurotoxin") > 0 && dotStacks >= totalBonus("poisonStacks")) {
+    divider = divider / (1 - totalBonus("neurotoxin"));
+  }
+  return divider;
 }
 
 function assassinWhenAttacked() {
@@ -258,6 +290,11 @@ function assassinWhenAttacked() {
     say("You dodge the attack!");
     if (weapon === "shadow") {
       assassinCounterReady = true;
+
+      // Veil Step (keystone): the dodge hides you again
+      if (totalBonus("shadowDance") > 0) {
+        assassinAmbushReady = true;
+      }
     }
     return true;
   }

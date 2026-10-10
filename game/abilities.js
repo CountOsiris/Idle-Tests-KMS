@@ -146,7 +146,8 @@ function useAbilities() {
     }
 
     ability.use();
-    abilityCooldowns[id] = ability.cooldown;
+    // (the Quick Hands keystone shortens every cooldown: "quickHands")
+    abilityCooldowns[id] = Math.max(1, Math.ceil(ability.cooldown * (1 - totalBonus("quickHands"))));
     abilityPressed[id] = false;
     lastAbilityUsed = ability;
     say("You use " + ability.name + "!");
@@ -236,12 +237,23 @@ function abilityGuard(share, turns) {
   guardTurns = turns;
 }
 
-// What the hit functions multiply all your damage by
+// What the hit functions multiply all your damage by: a boost from an ability, and
+// what the run itself has built up
 function abilityDamageBoost() {
   if (boostTurns > 0) {
-    return 1 + boostAmount;
+    return (1 + boostAmount) * runDamageBoost();
   }
-  return 1;
+  return runDamageBoost();
+}
+
+// Keystones that grow stronger as a run goes on (see keystoneMilestones in data.js):
+//   killStreak  every kill this run adds this much damage
+//   momentum    every floor swept through at the start of the run adds this much
+// Each stops at keystoneRunLimit (1 means +100%).
+function runDamageBoost() {
+  let streak = Math.min(keystoneRunLimit, totalBonus("killStreak") * runStats.kills);
+  let momentum = Math.min(keystoneRunLimit, totalBonus("momentum") * (runStartFloor - 1));
+  return 1 + streak + momentum;
 }
 
 // What a monster's hit is multiplied by while a guard is up (0 means it does nothing)

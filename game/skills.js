@@ -174,9 +174,17 @@ function resetSkills() {
 
 // ----- Milestones -----
 // Reaching a floor for the first time unlocks its perks forever
+// (A keystone milestone is optional: pressing the keystone that is chosen lets it go.)
 function choosePerk(milestoneFloor, perkId) {
   if (bestFloor >= milestoneFloor) {
-    chosenPerks[milestoneFloor] = perkId;
+    let optional = allMilestones().some(function (milestone) {
+      return milestone.floor === milestoneFloor && milestone.keystones === true;
+    });
+    if (optional && chosenPerks[milestoneFloor] === perkId) {
+      delete chosenPerks[milestoneFloor];
+    } else {
+      chosenPerks[milestoneFloor] = perkId;
+    }
     recalcStats();
     updateScreen();
   }

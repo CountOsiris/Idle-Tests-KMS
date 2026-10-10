@@ -237,6 +237,49 @@ const trialMilestones = [
   }
 ];
 
+// ----- Keystones -----
+// A KEYSTONE is a perk that changes a rule, and costs something. Keystones have
+// milestones of their own, one floor past the big ones (51, 76 and 101), so they never
+// take the place of an ordinary perk. A keystone milestone is OPTIONAL: pick one, or
+// none, and press the chosen one again to let it go.
+//   - Every weapon (or element) has one of its own at floor 51, in its class file.
+//   - The ones below, at floors 76 and 101, are offered to every class.
+// (They were first tried as extra choices ON floors 50, 75 and 100. Measured, taking one
+// meant giving up a x2 build perk and nearly every keystone lost; so they were moved.)
+// A keystone block has  keystones: true , and each perk in it  keystone: true  so the
+// page marks it with a star. Its rule is a bonus word of its own, which the code asks
+// for with totalBonus("theWord"). The words used below:
+//   noKillHeal   1 = no healing after a kill
+//   killStreak   damage added by every kill this run            (0.02 means +2%)
+//   secondWind   1 = once a run, a killing blow leaves you alive on half health
+//   momentum     damage added by every floor swept at the start of a run
+//   quickHands   share taken off every ability's cooldown       (0.5 means half)
+//   armorLimit   added to the most your armor can block         (0.2 means 60% becomes 80%)
+// TO ADD ONE: add a perk to a block, or a block on a floor nothing else uses.
+// (Never rename an id or move a block's floor: saves remember perks by both.)
+const keystoneRunLimit = 1;   // killStreak and momentum each stop at this (1 means +100%)
+
+const keystoneMilestones = [
+  {
+    floor: 76,
+    keystones: true,
+    perks: [
+      { id: "glassCannon", name: "Glass Cannon", keystone: true, text: "All your damage x2. health x0.5", multiply: { damage: 2, health: 0.5 } },
+      { id: "bloodPrice", name: "Blood Price", keystone: true, text: "Every kill makes all your damage 2% stronger for the rest of the run, up to +100%. You no longer heal after a kill", bonus: { killStreak: 0.02, noKillHeal: 1 } },
+      { id: "secondWind", name: "Second Wind", keystone: true, text: "Once a run, a blow that would kill you leaves you alive on half your health. health x0.9", bonus: { secondWind: 1 }, multiply: { health: 0.9 } }
+    ]
+  },
+  {
+    floor: 101,
+    keystones: true,
+    perks: [
+      { id: "momentum", name: "Momentum", keystone: true, text: "Every floor swept through at the start of a run makes all your damage 1% stronger for that run, up to +100%. experience x0.8", bonus: { momentum: 0.01 }, multiply: { experience: 0.8 } },
+      { id: "quickHands", name: "Quick Hands", keystone: true, text: "Ability cooldowns are halved. All your damage x0.8", bonus: { quickHands: 0.5 }, multiply: { damage: 0.8 } },
+      { id: "ironSkin", name: "Iron Skin", keystone: true, text: "Your armor can block up to 80% of a hit instead of 60%. All your damage x0.8", bonus: { armorLimit: 0.2 }, multiply: { damage: 0.8 } }
+    ]
+  }
+];
+
 // Every breakthrough offers the same choice, and the player picks one each time.
 // (A class adds one more choice for each of its builds: see "breakthroughs" in its file.)
 // "multiply" works like the fame upgrades. It can multiply:

@@ -71,6 +71,21 @@ not been re-measured past floor 50.
   ±25% of the class average, measured with the balance bot (see
   [Tech](10-tech-saves-and-updates.md)). Tune with each build's own `multiply`
   words, not with global numbers.
+- **Built October 2026.** Keystones are perks marked with a star, on optional
+  milestones of their own one floor past the big ones. Every weapon and element has one
+  at floor 51 (22 in all, in the class files), and every class is offered three shared
+  ones at floor 76 and three at floor 101 (`keystoneMilestones` in `data.js`). Each
+  changes a rule and costs something; a class may take one per milestone, or none. A
+  keystone's rule is a bonus word of its own, so adding one needs a perk line and a few
+  lines where the rule bites.
+  They were first built as extra choices on floors 50, 75 and 100. Measured, taking one
+  there meant giving up a x2 build perk, and almost every keystone made the climb slower.
+  On their own floors, hours to floor 75 with the weapon's keystone against without
+  (2 to 3 runs, so only large gaps mean anything): most builds within 15%; faster with
+  Barbed Wall (Spiked Shield, 19 to 12), Landslide (Earth, never to 16), Event Horizon
+  (Void Tome, 10 to 8) and Conflagration (Fire, 17 to 14); slower with Neurotoxin
+  (Venom Dagger, 21 to 24). Earth without Landslide is the one build far behind its
+  class at floor 75; that is older than keystones and still open.
 - **Keystone perks** at floors 50, 75 and 100: one per build that changes a rule.
   Path of Exile's keystones (which Echoes of Creation draws on) are the model: a
   strong benefit with a real cost or condition.

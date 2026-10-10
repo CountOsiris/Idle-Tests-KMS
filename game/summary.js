@@ -9,7 +9,7 @@
 //   - whatever a class's turn dealt beyond its hits is its damage over time
 //   - everything an ability did counts as "Abilities"
 
-// ----- The run being played (not saved: switching class or reloading starts the count again) -----
+// ----- The run being played (saved, per class) -----
 let runStats = freshRunStats();
 
 // ----- The last finished run (saved, per class) -----

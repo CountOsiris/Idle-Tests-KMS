@@ -154,12 +154,17 @@ function announceMilestone(milestone) {
   let choices = [];
   for (let perk of milestone.perks) {
     choices.push({
-      title: perk.name,
+      title: (perk.keystone === true ? "★ Keystone: " : "") + perk.name,
       note: perk.text,
       whenPicked: function () {
         choosePerk(milestone.floor, perk.id);
       }
     });
+  }
+  if (milestone.keystones === true) {
+    announce("moment", "Keystones: floor " + milestone.floor,
+      "A keystone changes a rule of how you fight, and costs something. Take one, or none: you can change your mind at any time on the Milestones tab.", choices);
+    return;
   }
   announce("moment", "Milestone: floor " + milestone.floor,
     "Pick one perk. It is yours for good, and you can change your pick later on the Milestones tab.", choices);

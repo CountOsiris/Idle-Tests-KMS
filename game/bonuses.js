@@ -33,8 +33,8 @@ function allMilestones() {
     return milestoneList;
   }
 
-  // The class's own milestones and the trials every class has, in floor order
-  milestoneList = currentClass().milestones.concat(trialMilestones);
+  // The class's own milestones, and the trials and keystones every class has, in floor order
+  milestoneList = currentClass().milestones.concat(trialMilestones).concat(keystoneMilestones);
   milestoneList.sort(function (a, b) {
     return a.floor - b.floor;
   });
@@ -407,10 +407,11 @@ function townUpgradeIsMaxed(item) {
   return item.maxLevel > 0 && townLevel(item.id) >= item.maxLevel;
 }
 
-// The share of a monster's hit your armor blocks on this floor (see data.js)
+// The share of a monster's hit your armor blocks on this floor (see data.js).
+// (The Iron Skin keystone raises the limit: "armorLimit".)
 function armorShareBlocked() {
   let armor = Math.max(0, totalArmor());
-  return maxArmorShare * armor / (armor + armorHalfBase + armorHalfPerFloor * floor);
+  return (maxArmorShare + totalBonus("armorLimit")) * armor / (armor + armorHalfBase + armorHalfPerFloor * floor);
 }
 
 function totalArmor() {

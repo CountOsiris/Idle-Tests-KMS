@@ -229,8 +229,13 @@ function showMilestones() {
     let unlocked = bestFloor >= milestone.floor;
 
     let title = "Floor " + milestone.floor;
+    if (milestone.keystones === true) {
+      title = title + " · ★ keystone";
+    }
     if (!unlocked) {
       title = title + " · locked";
+    } else if (milestone.keystones === true && chosenPerks[milestone.floor] === undefined) {
+      title = title + " · pick one, or none";
     } else if (chosenPerks[milestone.floor] === undefined) {
       title = title + " · pick one";
     }
@@ -239,12 +244,7 @@ function showMilestones() {
     for (let perk of milestone.perks) {
       let button = document.getElementById("perk-" + milestone.floor + "-" + perk.id);
       button.disabled = !unlocked;
-
-      if (chosenPerks[milestone.floor] === perk.id) {
-        button.className = "chosen";
-      } else {
-        button.className = "";
-      }
+      button.classList.toggle("chosen", chosenPerks[milestone.floor] === perk.id);
     }
   }
 }
@@ -525,8 +525,9 @@ function showAscension() {
 
 // Is there an unlocked milestone with no perk picked yet?
 function hasPerkToPick() {
+  // (a keystone milestone is optional, so it never nags)
   for (let milestone of allMilestones()) {
-    if (bestFloor >= milestone.floor && chosenPerks[milestone.floor] === undefined) {
+    if (bestFloor >= milestone.floor && chosenPerks[milestone.floor] === undefined && milestone.keystones !== true) {
       return true;
     }
   }
@@ -571,7 +572,7 @@ function nextGoals() {
   }
   for (let milestone of allMilestones()) {
     if (bestFloor < milestone.floor) {
-      goals.push("Reach floor " + milestone.floor + " to unlock a milestone perk.");
+      goals.push("Reach floor " + milestone.floor + " to unlock a " + (milestone.keystones === true ? "keystone." : "milestone perk."));
       break;
     }
   }

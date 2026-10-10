@@ -186,7 +186,9 @@ function buildMilestones() {
     for (let perk of milestone.perks) {
       let button = document.createElement("button");
       button.id = "perk-" + milestone.floor + "-" + perk.id;
-      button.textContent = perk.name + " (" + perk.text + ")";
+      // A keystone is marked with a star (and a colour of its own: see style.css)
+      button.textContent = (perk.keystone === true ? "★ " : "") + perk.name + " (" + perk.text + ")";
+      button.classList.toggle("keystone", perk.keystone === true);
       button.onclick = function () {
         choosePerk(milestone.floor, perk.id);
       };

@@ -15,6 +15,12 @@
 //   boltPower    crossbow: extra damage of every bolt             (0.1 means +10%)
 //   boltPierce   crossbow: penetration its bolts have             (0.1 means +10%)
 //
+// and the words of its keystones (floor 51; see "Keystones" in data.js):
+//   sniper       longbow: 1 = the first arrow of a fight always strikes a critical shot,
+//                and the others have half the chance
+//   pinCushion   shortbow: extra damage of every arrow for each one loosed before it in the fight
+//   flyOn        crossbow: 1 = what is left of a killing bolt hits the next enemy
+//
 // Words a perk can MULTIPLY (see "multiply" in data.js):
 //   longbowCrit  the damage of a longbow's critical shots
 //   shortbow     every shortbow arrow
@@ -109,6 +115,18 @@ classes.ranger = {
         { id: "longshot", name: "Longshot", text: "Longbow: critical shot damage x1.6, and +10% critical shot chance", bonus: { aimChance: 0.1 }, multiply: { longbowCrit: 1.6 } },
         { id: "volleyer", name: "Volleyer", text: "Shortbow: arrow damage x1.6", multiply: { shortbow: 1.6 } },
         { id: "siegeArcher", name: "Siege Archer", text: "Crossbow: bolt damage x1.6", multiply: { crossbow: 1.6 } }
+      ]
+    },
+    // KEYSTONES: each changes a rule of one weapon, and costs something. This milestone is
+    // optional: pick one, or none (press the chosen one again to let it go).
+    // See "Keystones" in data.js.
+    {
+      floor: 51,
+      keystones: true,
+      perks: [
+        { id: "sniper", name: "Sniper", keystone: true, text: "Longbow: the first arrow of every fight is always a critical shot. Your other arrows have half the critical chance", bonus: { sniper: 1 } },
+        { id: "pinCushion", name: "Pin Cushion", keystone: true, text: "Shortbow: every arrow loosed in a fight makes the ones after it deal 2% more. Arrow damage x0.85", bonus: { pinCushion: 0.02 }, multiply: { shortbow: 0.85 } },
+        { id: "throughAndThrough", name: "Through and Through", keystone: true, text: "Crossbow: a bolt that kills flies on, and what was left of its damage hits the next enemy (up to half its health). Range: the enemy misses 1 turn fewer", bonus: { flyOn: 1, firstStrike: -1 } }
       ]
     },
     {
@@ -211,12 +229,26 @@ let rangerFreeTurns = 0;
 // Longbow: is the bow drawn, ready to loose this turn?
 let rangerDrawn = true;
 
+// For the keystones: how many arrows have been loosed in this fight, and the damage a
+// killing bolt had left over for the next enemy
+let rangerArrows = 0;
+let rangerCarry = 0;
+
 // Runs at the start of every fight
 function rangerStartFight() {
-  rangerFreeTurns = Math.min(maxFreeTurns, totalBonus("firstStrike"));
+  rangerFreeTurns = Math.max(0, Math.min(maxFreeTurns, totalBonus("firstStrike")));
 
   // An archer walks into a fight with an arrow already on the string
   rangerDrawn = true;
+  rangerArrows = 0;
+
+  // Through and Through (keystone): the last bolt is still flying
+  if (rangerCarry > 0) {
+    let hit = Math.min(rangerCarry, Math.floor(monsterMaxHp / 2));
+    monsterHp = monsterHp - hit;
+    noteDamage("piercing", hit);
+    rangerCarry = 0;
+  }
 }
 
 function rangerAttack() {
@@ -243,7 +275,14 @@ function rangerAttack() {
     } else {
       rangerDrawn = false;
       damage = damage * (longbowHit + totalBonus("heavyShot"));
-      if (chance(totalBonus("aimChance"))) {
+
+      // Sniper (keystone): the first arrow always strikes true, the rest less often
+      let aim = totalBonus("aimChance");
+      if (totalBonus("sniper") > 0) {
+        aim = rangerArrows === 0 ? 1 + aim : aim / 2;
+      }
+      rangerArrows = rangerArrows + 1;
+      if (chance(Math.min(1, aim))) {
         damage = damage * (longbowCrit + totalBonus("aimPower") + overflow("aimChance", 1)) * multiplier("longbowCrit");
         say("A critical shot!");
       }
@@ -259,13 +298,20 @@ function rangerAttack() {
       arrows = arrows + 1;
     }
     for (let i = 0; i < arrows; i++) {
-      hitMonster(damage * (shortbowHit + totalBonus("arrowPower")) * multiplier("shortbow"), "piercing", bodkinArmorShare());
+      // (Pin Cushion, a keystone: each arrow hits harder than the one before)
+      hitMonster(damage * (shortbowHit + totalBonus("arrowPower")) * multiplier("shortbow") * (1 + totalBonus("pinCushion") * rangerArrows), "piercing", bodkinArmorShare());
+      rangerArrows = rangerArrows + 1;
     }
   }
 
   // CROSSBOW: one bolt that armor does nothing to
   if (weapon === "crossbow") {
     magicHitMonster(damage * (crossbowHit + totalBonus("boltPower")) * multiplier("crossbow"), "piercing");
+
+    // Through and Through (keystone): what the kill did not need flies on
+    if (totalBonus("flyOn") > 0 && monsterHp < 0) {
+      rangerCarry = -monsterHp;
+    }
   }
 }
 
@@ -279,7 +325,7 @@ function rangerDotPerStack() {
 }
 
 function rangerStatLine() {
-  return "Range: the enemy misses its first " + Math.min(maxFreeTurns, totalBonus("firstStrike")) + " turn(s) of every fight."
+  return "Range: the enemy misses its first " + Math.max(0, Math.min(maxFreeTurns, totalBonus("firstStrike"))) + " turn(s) of every fight."
     + overflowNote(overflow("firstStrike", maxFreeTurns) * extraOpeningDamage, "damage on those turns")
     + " Hunter's Mark: +" + percent(totalBonus("huntersMark")) + " damage against bosses and rare monsters.";
 }

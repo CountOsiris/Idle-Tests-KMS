@@ -120,6 +120,13 @@ let roomCount = 0;
 // Damage over time on the monster: bleeding, burning, poison or spirits, depending on the class
 let dotStacks = 0;
 
+// What the fight before this one ended with, for keystones that carry something over:
+// its damage-over-time stacks, how many turns it lasted, and (kept through a fall)
+// what the class's run counter stood at
+let lastFightStacks = 0;
+let lastFightTurns = 0;
+let lastRunCounter = 0;
+
 // For working out progress made while the game was closed or in the background
 let lastTick = Date.now();
 let catchingUp = false;

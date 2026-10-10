@@ -107,6 +107,19 @@ classes.warlock = {
         { id: "soulCollector", name: "Soul Collector", text: "Souls: the damage souls give x1.6, and +25% chance of an extra soul from a kill", bonus: { soulChance: 0.25 }, multiply: { souls: 1.6 } }
       ]
     },
+    // KEYSTONES: each changes a rule of one weapon, and costs something. This milestone is
+    // optional: pick one, or none (press the chosen one again to let it go).
+    // See "Keystones" in data.js.
+    {
+      floor: 51,
+      keystones: true,
+      perks: [
+        { id: "overchannel", name: "Overchannel", keystone: true, text: "Arcane Tome: every third spell of a fight is a certain critical hit. You take 20% more damage", bonus: { overchannel: 1 }, multiply: { damageTaken: 1.2 } },
+        { id: "eventHorizon", name: "Event Horizon", keystone: true, text: "Void Tome: the void tears away twice the share, but of the health the enemy has left, not of its full health", bonus: { eventHorizon: 1 } },
+        { id: "resonance", name: "Harmonics", keystone: true, text: "Rune Tome: every echo in a fight makes the echoes after it 10% stronger. The first cast of each turn deals 25% less", bonus: { resonance: 0.1 } },
+        { id: "soulPact", name: "Soul Pact", keystone: true, text: "Souls: you keep a quarter of your souls when you fall. health x0.8", bonus: { soulPact: 0.25 }, multiply: { health: 0.8 } }
+      ]
+    },
     {
       floor: 75,
       perks: [
@@ -165,6 +178,7 @@ classes.warlock = {
   ],
 
   startRun: warlockStartRun,
+  startFight: warlockStartFight,
   whenKill: warlockWhenKill,
   damageTypes: warlockDamageTypes,
   attack: warlockAttack,
@@ -204,8 +218,19 @@ function soulBonus() {
 }
 
 // Runs when a run starts. Skipped floors still count: you reaped them on the way up.
+// (The Soul Pact keystone keeps a share of the souls the last run ended with.)
 function warlockStartRun() {
-  runCounter = (floor - 1) * soulsPerFloorSkipped;
+  runCounter = Math.max((floor - 1) * soulsPerFloorSkipped, Math.floor(lastRunCounter * totalBonus("soulPact")));
+}
+
+// For the keystones: how many spells and how many echoes this fight has seen
+let warlockSpells = 0;
+let warlockEchoes = 0;
+
+// Runs at the start of every fight
+function warlockStartFight() {
+  warlockSpells = 0;
+  warlockEchoes = 0;
 }
 
 // Runs after every kill. Soul chance: each full 100% is one more soul for certain,
@@ -231,7 +256,11 @@ function voidShare() {
 function warlockCast(power) {
   let damage = playerAttack;
 
-  if (weapon === "arcane" && chance(totalBonus("critChance"))) {
+  // Overchannel (keystone): every third spell of the fight is a certain critical
+  warlockSpells = warlockSpells + 1;
+  let certain = totalBonus("overchannel") > 0 && warlockSpells % 3 === 0;
+
+  if (weapon === "arcane" && (certain || chance(totalBonus("critChance")))) {
     // Critical chance past 100% adds to the critical damage instead
     damage = damage * (1 + (totalBonus("critPower") + overflow("critChance", 1)) * multiplier("arcaneCrit"));
     say("An arcane critical!");
@@ -246,8 +275,13 @@ function warlockCast(power) {
   // The void tears away a share of the enemy's full health, and can feed you.
   // Souls do NOT strengthen this part: a share of the enemy's health that kept
   // growing would end up killing everything in one hit, on any floor, forever.
+  // (Event Horizon, a keystone: twice the share, but of the health it has LEFT)
   if (weapon === "void") {
-    damage = damage + monsterMaxHp * voidShare();
+    if (totalBonus("eventHorizon") > 0) {
+      damage = damage + Math.max(0, monsterHp) * voidShare() * 2;
+    } else {
+      damage = damage + monsterMaxHp * voidShare();
+    }
     healPlayer(playerMaxHp * totalBonus("voidHeal"));
   }
 
@@ -256,7 +290,8 @@ function warlockCast(power) {
 }
 
 function warlockAttack() {
-  warlockCast(1);
+  // (Harmonics, a keystone: a weaker first cast, and echoes that build on each other)
+  warlockCast(totalBonus("resonance") > 0 ? 0.75 : 1);
 
   // Echo: each full 100% of chance is one guaranteed extra cast, and what is
   // left over is the chance of one more
@@ -269,7 +304,8 @@ function warlockAttack() {
       say("The spell echoes!");
     }
     for (let i = 0; i < echoes; i++) {
-      warlockCast((1 + totalBonus("echoPower")) * multiplier("echo"));
+      warlockCast((1 + totalBonus("echoPower")) * multiplier("echo") * (1 + totalBonus("resonance") * warlockEchoes));
+      warlockEchoes = warlockEchoes + 1;
     }
   }
 }

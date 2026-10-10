@@ -81,6 +81,8 @@ function spawnMonster(isBoss) {
   }
 
   monsterStunned = false;
+  lastFightStacks = dotStacks;
+  lastFightTurns = fightTurns;
   dotStacks = 0;
   fightTurns = 0;
 
@@ -223,6 +225,7 @@ function die() {
   gold = 0;
   upgrades = {};
   ownedRelics = [];
+  lastRunCounter = runCounter;
   runCounter = 0;
   room = 1;
 
@@ -257,8 +260,22 @@ function die() {
     currentClass().startRun();
   }
 
+  // Nothing carries over from the fight that killed you
+  dotStacks = 0;
+  fightTurns = 0;
   playerHp = playerMaxHp;
   startEncounter();
+}
+
+// The Second Wind keystone: once a run, a blow that would kill you does not
+function survivesDeath() {
+  if (totalBonus("secondWind") > 0 && runStats.secondWindUsed !== true) {
+    runStats.secondWindUsed = true;
+    playerHp = Math.round(playerMaxHp / 2);
+    say("Second Wind! The blow that should have killed you does not.");
+    return true;
+  }
+  return false;
 }
 
 function victory() {
@@ -272,9 +289,12 @@ function victory() {
   reward = Math.round(reward * monsterGold * (1 + totalBonus("gold")) * multiplier("gold"));
   gold = gold + reward;
 
-  healSource = "After a kill";
-  healPlayer(playerMaxHp * (healOnKill + fameAdd("healOnKill")));
-  healSource = "";
+  // (some keystones give this up: "noKillHeal")
+  if (totalBonus("noKillHeal") === 0) {
+    healSource = "After a kill";
+    healPlayer(playerMaxHp * (healOnKill + fameAdd("healOnKill")));
+    healSource = "";
+  }
 
   runStats.kills = runStats.kills + 1;
   if (encounterType === "boss") {
@@ -334,7 +354,7 @@ function monsterAttacks() {
   playerHp = playerHp - damage;
   noteTaken(damage);
 
-  if (playerHp <= 0) {
+  if (playerHp <= 0 && !survivesDeath()) {
     die();
   } else if (potions > 0 && playerHp <= playerMaxHp * 0.3) {
     potions = potions - 1;
