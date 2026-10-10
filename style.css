@@ -916,6 +916,11 @@ body[data-tab="tower"] #tab-character {
   background: linear-gradient(#8fa6bd, #4c6178);
 }
 
+/* The tower list writes one line for each tier */
+#towers .note {
+  white-space: pre-line;
+}
+
 /* A keystone among a milestone's perks */
 button.keystone {
   border-color: var(--ember);

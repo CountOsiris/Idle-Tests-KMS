@@ -52,8 +52,8 @@ announces what it does.
 
 ## Phase 3: Challenge towers
 
-1. Challenge tiers with goals and rules in every away tower.
-   [Towers](05-towers-and-challenges.md)
+1. ~~Challenge tiers with goals and rules in every away tower.~~ Done: six tiers and
+   one rule for challengers in each tower. [Towers](05-towers-and-challenges.md)
 2. Rewards ladder: % stats → techniques → abilities → relic slot → keystone and named
    weapon. [Towers](05-towers-and-challenges.md), [Equipment](08-equipment-and-items.md)
 3. Suggest the best away tower when the home tower hits a wall.

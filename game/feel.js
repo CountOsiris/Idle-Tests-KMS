@@ -188,7 +188,7 @@ const tabUnlocks = [
     earned: function () { return accountMost("bestFloor") >= 6; } },
   { tab: "ascension", size: "moment", title: "Ascension", text: "Reach floor " + ascendFirstFloor + " to ascend: this class starts again from level 1 and earns fame, which makes every one of your classes stronger for good. See the Ascension tab.",
     earned: function () { return accountMost("bestFloor") >= 10 || totalAscensions() > 0; } },
-  { tab: "travel", size: "moment", title: "Other towers", text: "Your classes can now challenge each other's towers. They are harder, but they hold trophies: bonuses that are yours for good. See the Towers tab.",
+  { tab: "travel", size: "moment", title: "Other towers", text: "Your classes can now challenge each other's towers. Each has stronger monsters and a rule of its own against challengers, and six trophies to win: bonuses that are yours for good. See the Towers tab.",
     earned: function () { return accountMost("bestFloor") >= 20 || totalAscensions() > 0; } }
 ];
 

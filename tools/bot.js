@@ -19,6 +19,8 @@
 //  fav=id      hire the Tactician with this favourite boon
 //  keystones   at floor 51, take the weapon's keystone (and with perk=Name, a shared one
 //              by its name at floors 76 and 101). Without this, keystones are left alone.
+//  t=name      climb this class's tower instead of its own (a challenge), or t=next for
+//              the tower of the class after it on the list
 //  killers     also say what killed it most in its last two hours, and on which floor
 //  duo         a Barbarian for 6 hours, then a new Ranger and Warden on the same account
 // =====================================================================
@@ -36,6 +38,7 @@ const ONLY_SKILLS = ((location.hash.match(/only=([\w+]+)/) || [0, ""])[1]).split
 const PERK = decodeURIComponent((location.hash.match(/perk=([^,]+)/) || [0, ""])[1]);
 const FAV = (location.hash.match(/fav=(\w+)/) || [0, ""])[1];
 const KEYSTONES = location.hash.includes("keystones");
+const TOWER = (location.hash.match(/t=(\w+)/) || [0, ""])[1];
 const STALL = Number((location.hash.match(/stall=(\d+)/) || [0, 600])[1]);
 let ASCEND = location.hash.includes("ascend");
 
@@ -66,6 +69,11 @@ function freshStart(className, weaponType, keepAccount) {
   buildClassScreen();
   weapon = weaponType;
   nextWeapon = weaponType;
+  if (TOWER !== "") {
+    let names = Object.keys(towers);
+    tower = TOWER === "next" ? names[(names.indexOf(className) + 1) % names.length] : TOWER;
+    nextTower = tower;
+  }
   floor = 1;
   room = 1;
   recalcStats();
@@ -247,11 +255,14 @@ function run(className, weaponType, stanceId, hours, ascending, keepAccount) {
     mostBoons = Math.max(mostBoons, upgradesHeld());
   }
 
-  let line = className + "/" + (stanceId || weaponType) + "  ";
+  let line = className + "/" + (stanceId || weaponType) + (TOWER !== "" ? " in " + towers[tower].name : "") + "  ";
   line = line + marks.map(function (m) { return "F" + m + " " + (reached[m] === undefined ? "-" : hoursText(reached[m])); }).join("  ");
   line = line + "  | deaths " + (deaths - deathsBefore) + ", level " + level + ", most boons " + mostBoons + ", attack " + big(playerAttack) + ", health " + big(playerMaxHp) + ", armor " + big(totalArmor());
   if (ascending) {
     line = line + ", ascensions " + ascensionsDone;
+  }
+  if (TOWER !== "") {
+    line = line + ", trophies " + trophies.length;
   }
   out.push(line);
   if (ascending) {

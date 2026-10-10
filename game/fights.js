@@ -72,7 +72,7 @@ function spawnMonster(isBoss) {
   monsterWeak = type.weak || [];
   monsterResist = type.resist || [];
   monsterFlying = type.flying === true;
-  monsterLunges = type.lunge === true || towers[tower].lunge === true;
+  monsterLunges = type.lunge === true || towers[tower].lunge === true || totalBonus("ambushed") > 0;
 
   // Monsters in another class's tower are stronger
   if (isAway()) {
@@ -103,8 +103,9 @@ function spawnMonster(isBoss) {
     say("A " + monsterName + " appears.");
   }
 
-  // How much an enraging monster's attack grows each turn
-  monsterEnrageStep = Math.ceil(monsterAttack * traitOf(type, "enrage"));
+  // How much an enraging monster's attack grows each turn (a tower's rule can make
+  // every monster enrage: "enrageAll")
+  monsterEnrageStep = Math.ceil(monsterAttack * (traitOf(type, "enrage") + totalBonus("enrageAll")));
   monsterHp = monsterMaxHp;
 
   // A monster uses its tower's picture unless it has one of its own
@@ -356,7 +357,7 @@ function monsterAttacks() {
 
   if (playerHp <= 0 && !survivesDeath()) {
     die();
-  } else if (potions > 0 && playerHp <= playerMaxHp * 0.3) {
+  } else if (potions > 0 && playerHp <= playerMaxHp * 0.3 && totalBonus("noPotions") === 0) {
     potions = potions - 1;
     healSource = "Potions";
     healPlayer(playerMaxHp * (potionHealing + totalBonus("potionPower")));
@@ -381,6 +382,24 @@ function fightMonster() {
   let deathsBefore = deaths;
 
   bossStartOfTurn();
+
+  // RULES OF A TOWER BEING CHALLENGED (see awayRule in towers.js)
+  // "drain": you lose a share of your health every turn
+  if (totalBonus("drain") > 0) {
+    let drained = Math.max(1, Math.round(playerMaxHp * totalBonus("drain")));
+    playerHp = playerHp - drained;
+    noteTaken(drained);
+    if (playerHp <= 0 && !survivesDeath()) {
+      say("The tower drains the last of your strength.");
+      die();
+      return;
+    }
+  }
+  // "lostOpening": you do nothing on the first turn of a fight
+  let losesTurn = fightTurns === 1 && totalBonus("lostOpening") > 0;
+  if (losesTurn) {
+    say("You grope for the enemy in the dark and lose your turn.");
+  }
 
   // Each time something hurts the monster, a boss's mechanics get to answer (bossTakes
   // in game/bosses.js): a shield puts health back, a minion takes the hit, an aura
@@ -408,7 +427,9 @@ function fightMonster() {
   // (what they do is counted as theirs in the run summary: see game/summary.js)
   let hpBeforeAbilities = monsterHp;
   abilityPhase = true;
-  useAbilities();
+  if (!losesTurn) {
+    useAbilities();
+  }
   abilityPhase = false;
   noteAbilityDamage(hpBeforeAbilities - monsterHp);
   bossTakes(hpBeforeAbilities);
@@ -425,7 +446,9 @@ function fightMonster() {
   // (Measured before a boss's mechanics answer, so a shield does not shrink your abilities.)
   let hpBeforeTurn = monsterHp;
   notedThisPhase = 0;
-  currentClass().attack();
+  if (!losesTurn) {
+    currentClass().attack();
+  }
   let dealtThisTurn = hpBeforeTurn - monsterHp;
   noteRestOfTurn(dealtThisTurn);
   bossTakes(hpBeforeTurn);

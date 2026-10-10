@@ -13,6 +13,14 @@
 
 const gameUpdates = [
   {
+    version: "20261010h",
+    title: "Challenge towers",
+    changes: [
+      "Every tower now has a rule against challengers from other classes, shown on the Towers tab and above the fight.",
+      "Three more trophies in every tower, at floors 50, 75 and 100."
+    ]
+  },
+  {
     version: "20261010g",
     title: "Keystones",
     changes: [

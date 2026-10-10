@@ -29,6 +29,18 @@ and can challenge the others for permanent unlocks.
    so the rule has already bent once. Worth deciding on purpose
    ([Open questions](12-open-questions.md)).
 
+## Built, October 2026
+
+- Every tower has a **rule for challengers** (`awayRule` in `towers.js`), shown on the
+  Towers tab and above the fight: war drums in the Stronghold (everything enrages),
+  ambush in the Pass, no potions in the Wildwood, a lost first turn in the Undercity,
+  no healing after a kill in the Crypt, slower abilities on Storm Peak, and a health
+  drain in the Abbey. A rule is a set of bonus words added to the challenger's own, so
+  a new rule is one line.
+- Every tower has **six tiers**: floors 10, 20, 30, 50, 75 and 100.
+- Not built: a rule on a single tier ("floor 50 boss within 30 turns"). The plan below
+  describes it; a rule for the whole tower was simpler to read and to play idle.
+
 ## Proposed: Challenge Towers
 
 Treat each away tower as a **challenge**, in the sense Antimatter Dimensions and

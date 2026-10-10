@@ -373,16 +373,18 @@ function showTowers() {
     if (towerBest[towerName] !== undefined) {
       best = towerBest[towerName];
     }
+    // One line each (style.css keeps the line breaks): the place, its rule, then its tiers
     let text = place.text + " " + towerMatchup(towerName) + " Your best floor here: " + best + ".";
 
-    for (let trophy of place.trophies) {
-      text = text + " Trophy at floor " + trophy.floor + ": " + trophy.name + " (" + trophy.text + ")";
-      if (trophies.includes(trophy.id)) {
-        text = text + ", won.";
-      } else if (towerName === playerClass) {
-        text = text + ", cannot be won in your home tower.";
-      } else {
-        text = text + ", not won yet.";
+    if (towerName === playerClass) {
+      text = text + "\nYour home tower: no rule against you, and its trophies are for the other classes to win.";
+    } else {
+      if (place.awayRule !== undefined) {
+        text = text + "\nRule for challengers · " + place.awayRule.name + ": " + place.awayRule.text + ".";
+      }
+      for (let trophy of place.trophies) {
+        let mark = trophies.includes(trophy.id) ? "✓ won" : "floor " + trophy.floor;
+        text = text + "\n" + mark + " · " + trophy.name + ": " + trophy.text;
       }
     }
 
@@ -709,7 +711,11 @@ function updateScreen() {
   // Each tower tints the fight with its own colour (the "sky" in towers.js)
   document.getElementById("stage").style.setProperty("--sky", towers[tower].sky);
   if (isAway()) {
-    document.getElementById("tower-note").textContent = "Away from home: monsters have +" + percent(awayTowerHealth) + " health and +" + percent(awayTowerAttack) + " attack, and you earn +" + percent(awayTowerExperience) + " experience.";
+    let note = "Away from home: monsters have +" + percent(awayTowerHealth) + " health and +" + percent(awayTowerAttack) + " attack, and you earn +" + percent(awayTowerExperience) + " experience.";
+    if (towerRule() !== null) {
+      note = note + " " + towerRule().name + ": " + towerRule().text + ".";
+    }
+    document.getElementById("tower-note").textContent = note;
   } else {
     document.getElementById("tower-note").textContent = "Your home tower. " + towers[tower].text;
   }

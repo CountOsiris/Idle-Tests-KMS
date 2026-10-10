@@ -339,6 +339,60 @@ try {
   runStats = freshRunStats();
   startEncounter();
 
+  // 3f. Challenging a tower: every tower has a rule and six tiers, and the rules bite
+  let towerProblems = [];
+  let trophyIds = {};
+  for (let towerName in towers) {
+    let place = towers[towerName];
+    if (place.awayRule === undefined || !place.awayRule.name || !place.awayRule.text || Object.keys(place.awayRule.bonus).length === 0) {
+      towerProblems.push(place.name + " has no rule for challengers");
+    }
+    if (place.trophies.map(function (t) { return t.floor; }).join(",") !== "10,20,30,50,75,100") {
+      towerProblems.push(place.name + " does not have tiers at 10, 20, 30, 50, 75 and 100");
+    }
+    for (let trophy of place.trophies) {
+      if (trophyIds[trophy.id] !== undefined) {
+        towerProblems.push("trophy id " + trophy.id + " is used twice");
+      }
+      trophyIds[trophy.id] = true;
+    }
+  }
+  check("towers: a rule and six tiers each" + (towerProblems.length === 0 ? "" : ": " + towerProblems.join("; ")), towerProblems.length === 0);
+
+  let homeTower = tower;
+  let awayOne = Object.keys(towers).find(function (name) { return name !== playerClass && towers[name].awayRule.bonus.drain !== undefined; })
+    || Object.keys(towers).find(function (name) { return name !== playerClass && towers[name].awayRule.bonus.noPotions !== undefined; });
+  tower = playerClass;
+  let ruleAtHome = totalBonus("drain") + totalBonus("noPotions") + totalBonus("enrageAll") + totalBonus("lostOpening") + totalBonus("ambushed");
+  tower = awayOne;
+  let ruleWord = Object.keys(towers[awayOne].awayRule.bonus)[0];
+  check("a tower's rule counts for a challenger (" + towers[awayOne].awayRule.name + ") and never at home", ruleAtHome === 0 && totalBonus(ruleWord) === towers[awayOne].awayRule.bonus[ruleWord]);
+  if (ruleWord === "drain") {
+    recalcStats();
+    playerHp = playerMaxHp;
+    floor = 1;
+    room = 1;
+    encounterType = "monster";
+    spawnMonster(false);
+    monsterAttack = 0;
+    monsterStunned = true;
+    monsterMaxHp = 1e12;
+    monsterHp = 1e12;
+    let hpThen = playerHp;
+    let realAttack = currentClass().attack;
+    currentClass().attack = function () {};
+    fightMonster();
+    currentClass().attack = realAttack;
+    check("the drain rule takes " + percent(towers[awayOne].awayRule.bonus.drain) + " of your health a turn", hpThen - playerHp === Math.round(playerMaxHp * towers[awayOne].awayRule.bonus.drain));
+  }
+  tower = homeTower;
+  recalcStats();
+  playerHp = playerMaxHp;
+  showTab("travel");
+  updateScreen();
+  check("the Towers tab lists the tiers", document.getElementById("towers").textContent.includes("Rule for challengers") && document.getElementById("towers").textContent.includes("floor 100"));
+  startEncounter();
+
   // A newer tab taking over stops this one from saving
   let markBefore = localStorage.getItem(saveName);
   window.dispatchEvent(new StorageEvent("storage", { key: tabMarkName, newValue: "a newer tab" }));

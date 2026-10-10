@@ -362,10 +362,28 @@ function ascend() {
   saveGame();
 }
 
+// The rule of the tower being challenged (see "awayRule" in towers.js). It only counts
+// away from home: a class's own tower has no rule for it.
+function towerRule() {
+  if (towers[tower] === undefined || !isAway() || towers[tower].awayRule === undefined) {
+    return null;
+  }
+  return towers[tower].awayRule;
+}
+
+function towerRuleBonus(stat) {
+  let rule = towerRule();
+  if (rule === null || rule.bonus[stat] === undefined) {
+    return 0;
+  }
+  return rule.bonus[stat];
+}
+
 // Everything in the game asks this for its numbers:
 // the class's own base + skills + milestone perks + relics + upgrades + trophies + town
+// + the rule of the tower being challenged
 function totalBonus(stat) {
-  return baseBonus(stat) + skillBonus(stat) + perkBonus(stat) + relicBonus(stat) + upgradeBonus(stat) + trophyBonus(stat) + townBonus(stat);
+  return baseBonus(stat) + skillBonus(stat) + perkBonus(stat) + relicBonus(stat) + upgradeBonus(stat) + trophyBonus(stat) + townBonus(stat) + towerRuleBonus(stat);
 }
 
 // ----- Chances and overflow -----

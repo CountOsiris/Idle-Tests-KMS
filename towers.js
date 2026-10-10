@@ -52,9 +52,24 @@
 // numbers are under "Boss mechanics" in data.js. Keep to the rule that a home tower
 // never works against its own class: armorUp only where the class casts spells.
 //
-// ----- Trophies -----
+// ----- Challenging another class's tower -----
+// A class that climbs a tower that is not its own is CHALLENGING it. As well as the
+// stronger monsters (the "away" numbers in data.js), the tower has a RULE for challengers:
+//   awayRule: { name: "Deep woods", text: "no healing potions can be drunk here", bonus: { noPotions: 1 } }
+// The rule's bonus words are added to the challenger's own while it is there. The words
+// made for rules (any other bonus word works too, and a negative number takes away):
+//   enrageAll    every monster's attack grows this much each turn   (0.03 means 3%)
+//   ambushed     1 = every monster strikes first, unless the class fights from range
+//   noPotions    1 = potions cannot be drunk
+//   lostOpening  1 = the class does nothing on the first turn of a fight
+//   noKillHeal   1 = no healing after a kill
+//   quickHands   share taken off ability cooldowns (so -0.5 makes them half as long again)
+//   drain        share of full health lost every turn of a fight   (0.02 means 2%)
+//
+// ----- Trophies: the tiers of the challenge -----
 // A trophy is a permanent bonus for the class that wins it (each class wins its own).
 // It is won the first time that class reaches the trophy's floor in a tower that is NOT its own.
+// Every tower has six tiers: floors 10, 20, 30, 50, 75 and 100.
 // Every trophy needs: floor, id (unique, don't rename it later), name, text, and a
 // multiply (like a perk's, which never fades as the class grows) or a bonus, or both.
 // The bonus can only use the words every class understands:
@@ -62,6 +77,7 @@
 
 const towers = {
   barbarian: {
+    awayRule: { name: "War drums", text: "every monster grows angrier: its attack rises by 3% each turn", bonus: { enrageAll: 0.03 } },
     name: "Orc Stronghold",
     ward: 2,          // shamans' charms: spells lose twice what a normal armor would take
     sky: "#4d2e1a",
@@ -83,11 +99,15 @@ const towers = {
     trophies: [
       { floor: 10, id: "warlordsBanner", name: "Warlord's Banner", text: "attack x1.1", multiply: { attack: 1.1 } },
       { floor: 20, id: "warlordsAxe", name: "Warlord's Axe", text: "attack x1.15", multiply: { attack: 1.15 } },
-      { floor: 30, id: "warlordsCrown", name: "Warlord's Crown", text: "attack x1.25", multiply: { attack: 1.25 } }
+      { floor: 30, id: "warlordsCrown", name: "Warlord's Crown", text: "attack x1.25", multiply: { attack: 1.25 } },
+      { floor: 50, id: "warlordsHorn", name: "Warlord's Horn", text: "attack x1.4", multiply: { attack: 1.4 } },
+      { floor: 75, id: "warlordsMantle", name: "Warlord's Mantle", text: "attack x1.6", multiply: { attack: 1.6 } },
+      { floor: 100, id: "throneOfSkulls", name: "Throne of Skulls", text: "attack x2", multiply: { attack: 2 } }
     ]
   },
 
   warden: {
+    awayRule: { name: "Ambush", text: "every monster strikes first, unless you fight from range", bonus: { ambushed: 1 } },
     name: "Raider's Pass",
     ward: 2.5,
     sky: "#3a3f4d",
@@ -109,11 +129,15 @@ const towers = {
     trophies: [
       { floor: 10, id: "raidersShield", name: "Raider's Shield", text: "+3 armor", bonus: { armor: 3 } },
       { floor: 20, id: "raidersMail", name: "Raider's Mail", text: "+4 armor", bonus: { armor: 4 } },
-      { floor: 30, id: "banditKingsPlate", name: "Bandit King's Plate", text: "+6 armor", bonus: { armor: 6 } }
+      { floor: 30, id: "banditKingsPlate", name: "Bandit King's Plate", text: "+6 armor", bonus: { armor: 6 } },
+      { floor: 50, id: "captainsBulwark", name: "Captain's Bulwark", text: "armor x1.4", multiply: { armor: 1.4 } },
+      { floor: 75, id: "passKeepersAegis", name: "Pass Keeper's Aegis", text: "armor x1.6", multiply: { armor: 1.6 } },
+      { floor: 100, id: "kingOfThePass", name: "King of the Pass", text: "armor x2", multiply: { armor: 2 } }
     ]
   },
 
   ranger: {
+    awayRule: { name: "Deep woods", text: "no healing potions can be drunk here", bonus: { noPotions: 1 } },
     name: "Wildwood",
     lunge: true,      // its beasts leap out: they hit first, unless you fight from range
     ward: 3,          // old forest magic: the hardest place for a caster
@@ -136,11 +160,15 @@ const towers = {
     trophies: [
       { floor: 10, id: "heartOfTheWild", name: "Heart of the Wild", text: "health x1.1", multiply: { health: 1.1 } },
       { floor: 20, id: "elderBark", name: "Elder Bark", text: "health x1.15", multiply: { health: 1.15 } },
-      { floor: 30, id: "trollKingsBlood", name: "Troll King's Blood", text: "health x1.25", multiply: { health: 1.25 } }
+      { floor: 30, id: "trollKingsBlood", name: "Troll King's Blood", text: "health x1.25", multiply: { health: 1.25 } },
+      { floor: 50, id: "spiderSilkCloak", name: "Spider Silk Cloak", text: "health x1.4", multiply: { health: 1.4 } },
+      { floor: 75, id: "heartwood", name: "Heartwood", text: "health x1.6", multiply: { health: 1.6 } },
+      { floor: 100, id: "crownOfTheWild", name: "Crown of the Wild", text: "health x2", multiply: { health: 2 } }
     ]
   },
 
   assassin: {
+    awayRule: { name: "Pitch dark", text: "you lose your first turn of every fight finding the enemy", bonus: { lostOpening: 1 } },
     name: "The Undercity",
     ward: 2,
     sky: "#2e2244",
@@ -162,11 +190,15 @@ const towers = {
     trophies: [
       { floor: 10, id: "thievesPurse", name: "Thieves' Purse", text: "+25% gold", bonus: { gold: 0.25 } },
       { floor: 20, id: "smugglersLedger", name: "Smuggler's Ledger", text: "+25% gold", bonus: { gold: 0.25 } },
-      { floor: 30, id: "guildmastersSeal", name: "Guildmaster's Seal", text: "+50% gold", bonus: { gold: 0.5 } }
+      { floor: 30, id: "guildmastersSeal", name: "Guildmaster's Seal", text: "+50% gold", bonus: { gold: 0.5 } },
+      { floor: 50, id: "fencesCut", name: "Fence's Cut", text: "gold x1.5", multiply: { gold: 1.5 } },
+      { floor: 75, id: "guildVaultKey", name: "Guild Vault Key", text: "gold x1.75", multiply: { gold: 1.75 } },
+      { floor: 100, id: "undercityLedger", name: "The Undercity's Ledger", text: "gold x2", multiply: { gold: 2 } }
     ]
   },
 
   warlock: {
+    awayRule: { name: "Grave chill", text: "you do not heal after a kill", bonus: { noKillHeal: 1 } },
     name: "Iron Crypt",
     sky: "#1c3042",
     icon: "💀",
@@ -187,11 +219,15 @@ const towers = {
     trophies: [
       { floor: 10, id: "cryptLore", name: "Crypt Lore", text: "+20% experience", bonus: { experience: 0.2 } },
       { floor: 20, id: "lichsGrimoire", name: "Lich's Grimoire", text: "+20% experience", bonus: { experience: 0.2 } },
-      { floor: 30, id: "entombedCrown", name: "Entombed Crown", text: "+30% experience", bonus: { experience: 0.3 } }
+      { floor: 30, id: "entombedCrown", name: "Entombed Crown", text: "+30% experience", bonus: { experience: 0.3 } },
+      { floor: 50, id: "boneCodex", name: "Bone Codex", text: "experience x1.3", multiply: { experience: 1.3 } },
+      { floor: 75, id: "colossusCore", name: "Colossus Core", text: "experience x1.4", multiply: { experience: 1.4 } },
+      { floor: 100, id: "crownOfTheEntombed", name: "Crown of the Entombed", text: "experience x1.5", multiply: { experience: 1.5 } }
     ]
   },
 
   elementalist: {
+    awayRule: { name: "Thin air", text: "abilities take half as long again to be ready", bonus: { quickHands: -0.5 } },
     name: "Storm Peak",
     sky: "#1f3d47",
     icon: "🐉",
@@ -212,11 +248,15 @@ const towers = {
     trophies: [
       { floor: 10, id: "stormShard", name: "Storm Shard", text: "attack and health x1.05", multiply: { attack: 1.05, health: 1.05 } },
       { floor: 20, id: "thunderFeather", name: "Thunder Feather", text: "attack and health x1.1", multiply: { attack: 1.1, health: 1.1 } },
-      { floor: 30, id: "dragonHeart", name: "Dragon Heart", text: "attack and health x1.15", multiply: { attack: 1.15, health: 1.15 } }
+      { floor: 30, id: "dragonHeart", name: "Dragon Heart", text: "attack and health x1.15", multiply: { attack: 1.15, health: 1.15 } },
+      { floor: 50, id: "giantsBracer", name: "Giant's Bracer", text: "attack and health x1.2", multiply: { attack: 1.2, health: 1.2 } },
+      { floor: 75, id: "mountainsRoot", name: "Mountain's Root", text: "attack and health x1.3", multiply: { attack: 1.3, health: 1.3 } },
+      { floor: 100, id: "dragonsHoard", name: "Dragon's Hoard", text: "attack and health x1.4", multiply: { attack: 1.4, health: 1.4 } }
     ]
   },
 
   zealot: {
+    awayRule: { name: "The restless dead", text: "you lose 2% of your health every turn of a fight", bonus: { drain: 0.02 } },
     name: "Haunted Abbey",
     sky: "#3b2540",
     icon: "👻",
@@ -237,7 +277,10 @@ const towers = {
     trophies: [
       { floor: 10, id: "abbeyBlessing", name: "Abbey Blessing", text: "health x1.1 and +1 armor", bonus: { armor: 1 }, multiply: { health: 1.1 } },
       { floor: 20, id: "abbotsRosary", name: "Abbot's Rosary", text: "health x1.15 and +2 armor", bonus: { armor: 2 }, multiply: { health: 1.15 } },
-      { floor: 30, id: "saintsRelic", name: "Saint's Relic", text: "health x1.25 and +3 armor", bonus: { armor: 3 }, multiply: { health: 1.25 } }
+      { floor: 30, id: "saintsRelic", name: "Saint's Relic", text: "health x1.25 and +3 armor", bonus: { armor: 3 }, multiply: { health: 1.25 } },
+      { floor: 50, id: "vampiresChalice", name: "Vampire's Chalice", text: "health and armor x1.3", multiply: { health: 1.3, armor: 1.3 } },
+      { floor: 75, id: "bishopsMitre", name: "Bishop's Mitre", text: "health and armor x1.4", multiply: { health: 1.4, armor: 1.4 } },
+      { floor: 100, id: "abbeyBell", name: "Abbey Bell", text: "health and armor x1.5", multiply: { health: 1.5, armor: 1.5 } }
     ]
   }
 };
