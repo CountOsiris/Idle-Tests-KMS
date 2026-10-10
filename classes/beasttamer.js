@@ -180,10 +180,10 @@ classes.beasttamer = {
   ],
 
   relics: [
-    { id: "wolfsTooth", name: "Wolf's Tooth", text: "Wolf Pack: one more wolf", build: "wolf", bonus: { packSize: 1 } },
-    { id: "bearClaw", name: "Bear Claw", text: "Bear: +10% stun chance", build: "bear", bonus: { stunChance: 0.1 } },
-    { id: "hawkHood", name: "Hawk Hood", text: "Hawk: +8% critical dive chance", build: "hawk", bonus: { critChance: 0.08 } },
-    { id: "tamersWhistle", name: "Tamer's Whistle", text: "Bond: +4% companion damage for every 10% of your health that is missing", bonus: { bond: 0.04 } }
+    { id: "wolfsTooth", name: "Wolf's Tooth", text: "Wolf Pack: one more wolf, and all your damage +20% against an enemy below half health", build: "wolf", bonus: { packSize: 1, finisher: 0.2 } },
+    { id: "bearClaw", name: "Bear Claw", text: "Bear: +10% stun chance, and 15% of every attack against you is thrown back at the enemy", build: "bear", bonus: { stunChance: 0.1, brace: 0.15 } },
+    { id: "hawkHood", name: "Hawk Hood", text: "Hawk: +8% critical dive chance, and all your damage +50% on the first turn of every fight", build: "hawk", bonus: { critChance: 0.08, opener: 0.5 } },
+    { id: "tamersWhistle", name: "Tamer's Whistle", text: "Bond: +4% companion damage for every 10% of your health that is missing, and you heal for 3% of the damage your turns deal", bonus: { bond: 0.04, leech: 0.03 } }
   ],
 
   damageTypes: tamerDamageTypes,

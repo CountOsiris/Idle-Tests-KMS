@@ -164,11 +164,11 @@ classes.assassin = {
   ],
 
   relics: [
-    { id: "shadowCloak", name: "Shadow Cloak", text: "+3% dodge", bonus: { dodge: 0.03 } },
-    { id: "viperFang", name: "Viper Fang", text: "Venom Dagger: +1 poison stack", build: "venom", bonus: { poisonStacks: 1 } },
-    { id: "assassinsMark", name: "Assassin's Mark", text: "Ambush: the first hit of a fight deals +25% more", bonus: { ambush: 0.25 } },
-    { id: "needlePoint", name: "Needle Point", text: "Stiletto: +8% critical chance", build: "stiletto", bonus: { critChance: 0.08 } },
-    { id: "duskMantle", name: "Dusk Mantle", text: "Shadow Blade: +25% damage after a dodge", build: "shadow", bonus: { counter: 0.25 } }
+    { id: "shadowCloak", name: "Shadow Cloak", text: "+3% dodge, and a 4% chance to avoid any attack", bonus: { dodge: 0.03, sidestep: 0.04 } },
+    { id: "viperFang", name: "Viper Fang", text: "Venom Dagger: +1 poison stack, and all your damage +20% against an enemy below half health", build: "venom", bonus: { poisonStacks: 1, finisher: 0.2 } },
+    { id: "assassinsMark", name: "Assassin's Mark", text: "Ambush: the first hit of a fight deals +25% more, and all your damage +50% on the first turn of every fight", bonus: { ambush: 0.25, opener: 0.5 } },
+    { id: "needlePoint", name: "Needle Point", text: "Stiletto: +8% critical chance, and all your damage +25% against bosses", build: "stiletto", bonus: { critChance: 0.08, bossSlayer: 0.25 } },
+    { id: "duskMantle", name: "Dusk Mantle", text: "Shadow Blade: +25% damage after a dodge, and an enemy that is not a boss misses its first turn", build: "shadow", bonus: { counter: 0.25, headStart: 1 } }
   ],
 
   startFight: assassinStartFight,

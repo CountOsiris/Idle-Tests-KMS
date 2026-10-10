@@ -185,10 +185,10 @@ classes.warden = {
   ],
 
   relics: [
-    { id: "mirrorShard", name: "Mirror Shard", text: "Spiked Shield: reflects +15% more of the enemy's attack", build: "spiked", bonus: { reflect: 0.15 } },
-    { id: "bulwarkCrest", name: "Tower Crest", text: "Tower Shield: +6% block chance", build: "tower", bonus: { blockChance: 0.06 } },
-    { id: "razorRim", name: "Razor Rim", text: "Bladed Shield: each throw hits for +0.5 times your armor", build: "bladed", bonus: { throwPower: 0.5 } },
-    { id: "grudgeStone", name: "Grudge Stone", text: "Vengeance: +12% of each hit you take is added to your next spear thrust", bonus: { vengeance: 0.12 } }
+    { id: "mirrorShard", name: "Mirror Shard", text: "Spiked Shield: reflects +15% more of the enemy's attack, and 15% of every attack against you is thrown back at the enemy", build: "spiked", bonus: { reflect: 0.15, brace: 0.15 } },
+    { id: "bulwarkCrest", name: "Tower Crest", text: "Tower Shield: +6% block chance, and your armor can block 5% more of every hit", build: "tower", bonus: { blockChance: 0.06, armorLimit: 0.05 } },
+    { id: "razorRim", name: "Razor Rim", text: "Bladed Shield: each throw hits for +0.5 times your armor, and all your damage +20% against an enemy below half health", build: "bladed", bonus: { throwPower: 0.5, finisher: 0.2 } },
+    { id: "grudgeStone", name: "Grudge Stone", text: "Vengeance: +12% of each hit you take is added to your next spear thrust, and all your damage +25% against bosses", bonus: { vengeance: 0.12, bossSlayer: 0.25 } }
   ],
 
   startFight: wardenStartFight,

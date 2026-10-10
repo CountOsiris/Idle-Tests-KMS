@@ -182,11 +182,11 @@ classes.barbarian = {
   ],
 
   relics: [
-    { id: "vampireFang", name: "Vampire Fang", text: "+8% lifesteal", bonus: { lifesteal: 0.08 } },
-    { id: "serratedEdge", name: "Serrated Edge", text: "Axe: +1 bleed stack", build: "axe", bonus: { bleedStacks: 1 } },
-    { id: "duelistsGlove", name: "Duelist's Glove", text: "Sword: +5% critical and parry chance", build: "sword", bonus: { critChance: 0.05, parryChance: 0.05 } },
-    { id: "giantsKnuckle", name: "Giant's Knuckle", text: "Club: +10% stun chance", build: "club", bonus: { stunChance: 0.1 } },
-    { id: "berserkersTorc", name: "Berserker's Torc", text: "Rage: +25% damage while below half health", bonus: { rage: 0.25 } }
+    { id: "vampireFang", name: "Vampire Fang", text: "+8% lifesteal, and you heal for 3% of the damage your turns deal", bonus: { lifesteal: 0.08, leech: 0.03 } },
+    { id: "serratedEdge", name: "Serrated Edge", text: "Axe: +1 bleed stack, and all your damage +20% against an enemy below half health", build: "axe", bonus: { bleedStacks: 1, finisher: 0.2 } },
+    { id: "duelistsGlove", name: "Duelist's Glove", text: "Sword: +5% critical and parry chance, and a 4% chance to avoid any attack", build: "sword", bonus: { critChance: 0.05, parryChance: 0.05, sidestep: 0.04 } },
+    { id: "giantsKnuckle", name: "Giant's Knuckle", text: "Club: +10% stun chance, and all your damage +40% on the first turn of every fight", build: "club", bonus: { stunChance: 0.1, opener: 0.4 } },
+    { id: "berserkersTorc", name: "Berserker's Torc", text: "Rage: +25% damage while below half health, and every kill makes all your damage 0.5% stronger for the rest of the run", bonus: { rage: 0.25, killStreak: 0.005 } }
   ],
 
   // The functions below, which make the class fight its own way

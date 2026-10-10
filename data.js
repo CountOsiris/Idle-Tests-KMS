@@ -613,7 +613,7 @@ const relicBossEvery = 25;
 const relicRareChance = 0.15;
 
 // The relics every class can find. Each class also has relics for its own weapons, in
-// its file; those are still plain numbers.
+// its file: each of those gives something to that weapon, and one of the effects below.
 //
 // TO ADD A RELIC: add a line. It needs:
 //   id    - a unique name with no spaces (a relic slot can keep one in the save, so don't rename it later)

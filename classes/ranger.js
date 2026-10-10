@@ -178,12 +178,12 @@ classes.ranger = {
   ],
 
   relics: [
-    { id: "hawkFeather", name: "Goose Feather Fletching", text: "Longbow: +10% critical shot chance", build: "longbow", bonus: { aimChance: 0.1 } },
-    { id: "yewStave", name: "Yew Stave", text: "Longbow: critical shots deal +30% damage", build: "longbow", bonus: { aimPower: 0.3 } },
-    { id: "bodkinQuiver", name: "Bodkin Quiver", text: "Shortbow: +30% armor piercing (arrows ignore more of the enemy's armor)", build: "shortbow", bonus: { bodkin: 0.3 } },
-    { id: "windlass", name: "Windlass", text: "Crossbow: bolts gain +100% penetration", build: "crossbow", bonus: { boltPierce: 1 } },
-    { id: "fletchersGlove", name: "Fletcher's Glove", text: "Shortbow: +15% chance of an extra arrow", build: "shortbow", bonus: { quickShot: 0.15 } },
-    { id: "steelBolts", name: "Steel Bolts", text: "Crossbow: bolts deal +12% damage", build: "crossbow", bonus: { boltPower: 0.12 } }
+    { id: "hawkFeather", name: "Goose Feather Fletching", text: "Longbow: +10% critical shot chance, and all your damage +50% on the first turn of every fight", build: "longbow", bonus: { aimChance: 0.1, opener: 0.5 } },
+    { id: "yewStave", name: "Yew Stave", text: "Longbow: critical shots deal +30% damage, and all your damage +25% against bosses", build: "longbow", bonus: { aimPower: 0.3, bossSlayer: 0.25 } },
+    { id: "bodkinQuiver", name: "Bodkin Quiver", text: "Shortbow: +30% armor piercing (arrows ignore more of the enemy's armor), and all your damage +20% against an enemy below half health", build: "shortbow", bonus: { bodkin: 0.3, finisher: 0.2 } },
+    { id: "windlass", name: "Windlass", text: "Crossbow: bolts gain +100% penetration, and a hit on a weakness deals 20% more", build: "crossbow", bonus: { boltPierce: 1, exploit: 0.2 } },
+    { id: "fletchersGlove", name: "Fletcher's Glove", text: "Shortbow: +15% chance of an extra arrow, and every kill makes all your damage 0.5% stronger for the rest of the run", build: "shortbow", bonus: { quickShot: 0.15, killStreak: 0.005 } },
+    { id: "steelBolts", name: "Steel Bolts", text: "Crossbow: bolts deal +12% damage, and all your damage +25% against bosses", build: "crossbow", bonus: { boltPower: 0.12, bossSlayer: 0.25 } }
   ],
 
   startFight: rangerStartFight,

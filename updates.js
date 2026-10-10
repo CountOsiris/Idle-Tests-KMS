@@ -13,6 +13,13 @@
 
 const gameUpdates = [
   {
+    version: "20261010s",
+    title: "Class relics do something too",
+    changes: [
+      "Every class's own relics keep what they gave their weapon and gain an effect of their own, such as healing from damage or a first turn the enemy misses."
+    ]
+  },
+  {
     version: "20261010r",
     title: "A second weapon",
     changes: [

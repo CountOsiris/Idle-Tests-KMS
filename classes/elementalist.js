@@ -187,10 +187,10 @@ classes.elementalist = {
   ],
 
   relics: [
-    { id: "emberCore", name: "Ember Core", text: "Fire: +1 burn stack", build: "fire", bonus: { burnStacks: 1 } },
-    { id: "frostShard", name: "Frost Shard", text: "Ice: +8% critical chance", build: "ice", bonus: { critChance: 0.08 } },
-    { id: "stormCrystal", name: "Storm Crystal", text: "Lightning: +15% chance of an extra bolt", build: "lightning", bonus: { extraBolts: 0.15 } },
-    { id: "geode", name: "Geode", text: "Earth: +8% stun chance", build: "earth", bonus: { stunChance: 0.08 } }
+    { id: "emberCore", name: "Ember Core", text: "Fire: +1 burn stack, and all your damage +20% against an enemy below half health", build: "fire", bonus: { burnStacks: 1, finisher: 0.2 } },
+    { id: "frostShard", name: "Frost Shard", text: "Ice: +8% critical chance, and an enemy that is not a boss misses its first turn", build: "ice", bonus: { critChance: 0.08, headStart: 1 } },
+    { id: "stormCrystal", name: "Storm Crystal", text: "Lightning: +15% chance of an extra bolt, and your abilities are ready 15% sooner", build: "lightning", bonus: { extraBolts: 0.15, quickHands: 0.15 } },
+    { id: "geode", name: "Geode", text: "Earth: +8% stun chance, and your armor can block 5% more of every hit", build: "earth", bonus: { stunChance: 0.08, armorLimit: 0.05 } }
   ],
 
   startFight: elementalistStartFight,

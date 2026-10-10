@@ -171,10 +171,10 @@ classes.warlock = {
   ],
 
   relics: [
-    { id: "magesEye", name: "Mage's Eye", text: "Arcane Tome: +8% critical chance", build: "arcane", bonus: { critChance: 0.08 } },
-    { id: "voidShard", name: "Void Shard", text: "Void Tome: +2 void power", build: "void", bonus: { voidRend: 0.02 } },
-    { id: "echoStone", name: "Echo Stone", text: "Rune Tome: +8% chance to cast twice", build: "rune", bonus: { echoChance: 0.08 } },
-    { id: "soulLantern", name: "Soul Lantern", text: "Souls: +10% damage for every 100 souls", bonus: { soulPower: 0.1 } }
+    { id: "magesEye", name: "Mage's Eye", text: "Arcane Tome: +8% critical chance, and a hit on a weakness deals 20% more", build: "arcane", bonus: { critChance: 0.08, exploit: 0.2 } },
+    { id: "voidShard", name: "Void Shard", text: "Void Tome: +2 void power, and you heal for 3% of the damage your turns deal", build: "void", bonus: { voidRend: 0.02, leech: 0.03 } },
+    { id: "echoStone", name: "Echo Stone", text: "Rune Tome: +8% chance to cast twice, and your abilities are ready 15% sooner", build: "rune", bonus: { echoChance: 0.08, quickHands: 0.15 } },
+    { id: "soulLantern", name: "Soul Lantern", text: "Souls: +10% damage for every 100 souls, and every kill makes all your damage 0.5% stronger for the rest of the run", bonus: { soulPower: 0.1, killStreak: 0.005 } }
   ],
 
   startRun: warlockStartRun,

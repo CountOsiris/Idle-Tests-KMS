@@ -36,8 +36,8 @@ Back to the [Masterplan](../../Masterplan.md).
   `relicRareChance`), and the eleven every class can find each do something (a saved
   life, attacks thrown back, faster abilities) where a boon adds a number. Relic slots
   from tier 75 keep the first ones claimed. Named weapons are built too (see
-  [Towers and challenges](05-towers-and-challenges.md)). Still open: each class's own
-  relics are plain numbers.
+  [Towers and challenges](05-towers-and-challenges.md)). Each class's own relics (37 of them) kept what they gave their weapon and
+  gained one of the same effects, so every relic now does something.
 - **Separate relics from boons:**
   - Boons: small, stackable, weapon-leaning (as now).
   - Relics: rarer (only on floors that are multiples of 25, and on rare monsters),

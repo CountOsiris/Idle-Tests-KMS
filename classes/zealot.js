@@ -168,11 +168,11 @@ classes.zealot = {
   ],
 
   relics: [
-    { id: "holyChalice", name: "Holy Chalice", text: "Devotion: +1% of your health healed every turn", bonus: { devotion: 0.01 } },
-    { id: "sunSigil", name: "Sun Sigil", text: "Holy Mace: hits add +15% more of their damage as holy damage", build: "mace", bonus: { smite: 0.15 } },
-    { id: "saintsBuckler", name: "Saint's Buckler", text: "Mace and Shield: +6% block chance", build: "shield", bonus: { blockChance: 0.06 } },
-    { id: "psalter", name: "Psalter", text: "Holy Tome: healing you do not need burns the enemy for +25% more", build: "tome", bonus: { sacredFlame: 0.25 } },
-    { id: "warBanner", name: "War Banner", text: "Crusade: +3% damage for every turn a fight lasts", bonus: { crusade: 0.03 } }
+    { id: "holyChalice", name: "Holy Chalice", text: "Devotion: +1% of your health healed every turn, and you heal 1% more of your health every turn of a fight", bonus: { devotion: 0.01, prayer: 0.01 } },
+    { id: "sunSigil", name: "Sun Sigil", text: "Holy Mace: hits add +15% more of their damage as holy damage, and all your damage +25% against bosses", build: "mace", bonus: { smite: 0.15, bossSlayer: 0.25 } },
+    { id: "saintsBuckler", name: "Saint's Buckler", text: "Mace and Shield: +6% block chance, and 15% of every attack against you is thrown back at the enemy", build: "shield", bonus: { blockChance: 0.06, brace: 0.15 } },
+    { id: "psalter", name: "Psalter", text: "Holy Tome: healing you do not need burns the enemy for +25% more, and once this run a blow that would kill you leaves you alive on half your health", build: "tome", bonus: { sacredFlame: 0.25, secondWind: 1 } },
+    { id: "warBanner", name: "War Banner", text: "Crusade: +3% damage for every turn a fight lasts, and every kill makes all your damage 0.5% stronger for the rest of the run", bonus: { crusade: 0.03, killStreak: 0.005 } }
   ],
 
   startFight: zealotStartFight,
