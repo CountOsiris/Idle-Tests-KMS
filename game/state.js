@@ -77,7 +77,7 @@ let ascensionFame = 0;
 // quick, and the deepest floor reached while they were
 let runStartFloor = 1;
 let cruising = true;
-let cruiseFloor = 1;       // fame this class has earned since it last ascended
+let cruiseFloor = 1;
 let lastAscensionFame = 0;
 let lastAscensionSeconds = 0;
 
@@ -124,6 +124,10 @@ let dotStacks = 0;
 let lastTick = Date.now();
 let catchingUp = false;
 let deaths = 0;
+
+// All the experience earned since the page was opened. The "experience" number above
+// is only what is left in the level bar, so it cannot say how much was earned.
+let experienceEarned = 0;
 
 let logLines = [];
 

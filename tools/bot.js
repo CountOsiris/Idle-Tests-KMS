@@ -102,10 +102,20 @@ function manage() {
     skillLevels[pick.id] = skillLevel(pick.id) + 1;
   }
 
-  // Milestones: the first perk when there are several, or one that matches "perk="
+  // Milestones: the perk written for the weapon (or element) in use if there is one,
+  // otherwise the first that works with it, or one that matches "perk="
+  let buildName = c.stances !== undefined ? c.stances[stance].name : c.gearTypes[weapon];
   for (let milestone of allMilestones()) {
     if (bestFloor >= milestone.floor && chosenPerks[milestone.floor] === undefined) {
       let perk = milestone.perks[milestone.perks.length > 2 ? 0 : 1];
+      if (otherBuildNote(perk.text) !== "") {
+        perk = milestone.perks.find(function (p) { return otherBuildNote(p.text) === ""; });
+      }
+      for (let p of milestone.perks) {
+        if (p.text.startsWith(buildName + ":")) {
+          perk = p;
+        }
+      }
       for (let p of milestone.perks) {
         if (PERK !== "" && p.text.includes(PERK)) {
           perk = p;

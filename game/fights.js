@@ -217,6 +217,7 @@ function die() {
 
   deaths = deaths + 1;
   experience = experience + payout;
+  experienceEarned = experienceEarned + payout;
   levelUpWhilePossible();
   bank = bank + gold;
   gold = 0;
@@ -322,10 +323,12 @@ function monsterAttacks() {
     return;
   }
 
-  // Your armor blocks a share of the hit (see armorShareBlocked), but poison goes straight through it
+  // Your armor blocks a share of the hit (see armorShareBlocked). A venomous monster's
+  // poison is the part of its attack that goes straight through: with poison 0.3, armor
+  // only works on the other 70%.
   // (a boss's minion attacks beside it: see game/bosses.js)
   let attackNow = monsterAttack * bossAttackFactor();
-  let damage = Math.max(1, Math.round(attackNow * (1 - armorShareBlocked())));
+  let damage = Math.max(1, Math.round(attackNow * (1 - monsterPoison) * (1 - armorShareBlocked())));
   damage = damage + Math.round(attackNow * monsterPoison);
   damage = Math.max(1, Math.round(damage / damageDivider() * multiplier("damageTaken") * abilityGuardFactor()));
   playerHp = playerHp - damage;

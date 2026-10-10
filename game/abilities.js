@@ -139,6 +139,11 @@ function useAbilities() {
     if (!wanted) {
       continue;
     }
+    // A boss killer that uses itself waits while the boss's shield or minion would
+    // waste it. Pressing its button still uses it at once.
+    if (ability.bossKiller === true && abilityPressed[id] !== true && bossWouldWasteAHit()) {
+      continue;
+    }
 
     ability.use();
     abilityCooldowns[id] = ability.cooldown;

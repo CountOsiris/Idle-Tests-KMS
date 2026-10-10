@@ -196,6 +196,71 @@ try {
   }
   check("run summary: " + (summaryProblems.length === 0 ? "killed by " + ended.killer + "; damage " + tallyText(ended.damage, 3) + "; healing " + tallyText(ended.healing, 2) : summaryProblems.join("; ")), summaryProblems.length === 0);
 
+  // 3d. Things that were once wrong, so that they stay right
+  let levelAway = level;
+  closeAwayReport();
+  playTimeAway(1800);
+  playTimeAway(1800);
+  let awayWords = document.getElementById("away-text").textContent;
+  check("time away: two absences make one report of 1h 0m, with the experience really earned: " + awayWords,
+    awayWords.includes("away for 1h 0m") && !awayWords.includes("earned -") && (level === levelAway || awayWords.includes("(level " + levelAway + " to " + level + ")")));
+  closeAwayReport();
+
+  check("under a minute is written in seconds (" + timeText(45) + ")", timeText(45) === "45s" && timeText(125) === "2m");
+
+  // A venomous hit: with poison 0.3, armor works on the other 70% only
+  startBossMechanics({}, false);
+  guardTurns = 0;
+  monsterAttack = 1000;
+  monsterEnrageStep = 0;
+  monsterPoison = 0.3;
+  let dodgeless = currentClass().whenAttacked;
+  let undivided = currentClass().damageDivider;
+  currentClass().whenAttacked = function () { return false; };
+  currentClass().damageDivider = undefined;
+  playerMaxHp = 1000000;
+  playerHp = 1000000;
+  let blockedShare = armorShareBlocked();
+  monsterAttacks();
+  let venomTook = 1000000 - playerHp;
+  let venomShould = (Math.round(700 * (1 - blockedShare)) + 300) * multiplier("damageTaken");
+  currentClass().whenAttacked = dodgeless;
+  currentClass().damageDivider = undivided;
+  monsterPoison = 0;
+  check("poison 0.3 is 30% OF the attack, not 30% on top (took " + venomTook + " of 1000, armor blocks " + percent(blockedShare) + ")", Math.abs(venomTook - venomShould) <= 1);
+  recalcStats();
+  playerHp = playerMaxHp;
+
+  // A boss killer left to itself waits out a shield; pressing it does not
+  let killer = classAbilities().find(function (ability) { return ability.bossKiller === true; });
+  if (killer !== undefined) {
+    let slotsBefore = abilitySlots;
+    abilitySlots = [killer.id];
+    resetAbilitiesForRun();
+    encounterType = "boss";
+    tryBoss("shield");
+    shieldUsed = true;
+    shieldFrom = 2;
+    useAbilities();
+    let waited = monsterHp === 1000;
+    abilityPressed[killer.id] = true;
+    useAbilities();
+    check(killer.name + " waits while the boss is shielded, unless its button is pressed", waited && monsterHp < 1000);
+    abilitySlots = slotsBefore;
+    resetAbilitiesForRun();
+  }
+  startEncounter();
+
+  // A newer tab taking over stops this one from saving
+  let markBefore = localStorage.getItem(saveName);
+  window.dispatchEvent(new StorageEvent("storage", { key: tabMarkName, newValue: "a newer tab" }));
+  level = level + 1;
+  saveGame();
+  check("a newer tab stops this one: notice shown and nothing saved", otherTabOpen && !document.getElementById("other-tab").hidden && localStorage.getItem(saveName) === markBefore);
+  level = level - 1;
+  otherTabOpen = false;
+  document.getElementById("other-tab").hidden = true;
+
   // 4. The content lists: no name used twice in a class, no old wording
   for (let className in classes) {
     let c = classes[className];

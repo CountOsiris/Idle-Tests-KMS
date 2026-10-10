@@ -5,13 +5,28 @@
 // ----- Time away -----
 // Plays through the seconds you missed, very fast, then reports what happened.
 // The game was not really running: it works out the time away from the clock.
+//
+// A browser wakes a tab left in the background only about once a minute, so one long
+// absence arrives here as many short ones. They are added up into ONE report, which
+// keeps growing until the player closes it.
+let awayTotals = null;
+
 function playTimeAway(seconds) {
   let counted = Math.min(seconds, maxAwaySeconds);
 
-  let deathsBefore = deaths;
-  let experienceBefore = experience;
-  let goldBefore = gold + bank;
-  let bestFloorBefore = bestFloor;
+  if (awayTotals === null || document.getElementById("away-report").hidden) {
+    awayTotals = {
+      seconds: 0,
+      counted: 0,
+      deaths: deaths,
+      experience: experienceEarned,
+      level: level,
+      gold: gold + bank,
+      bestFloor: bestFloor
+    };
+  }
+  awayTotals.seconds = awayTotals.seconds + seconds;
+  awayTotals.counted = awayTotals.counted + counted;
 
   catchingUp = true;
   for (let i = 0; i < counted; i++) {
@@ -19,14 +34,17 @@ function playTimeAway(seconds) {
   }
   catchingUp = false;
 
-  let report = "While you were away for " + timeText(seconds);
-  if (seconds > maxAwaySeconds) {
-    report = report + " (only " + timeText(maxAwaySeconds) + " counts)";
+  let report = "While you were away for " + timeText(awayTotals.seconds);
+  if (awayTotals.seconds > awayTotals.counted) {
+    report = report + " (only " + timeText(awayTotals.counted) + " counts)";
   }
-  report = report + ", your " + currentClass().name + " fell " + (deaths - deathsBefore) + " times";
-  report = report + " and earned " + big(experience - experienceBefore) + " experience";
-  report = report + " and " + big(gold + bank - goldBefore) + " gold.";
-  if (bestFloor > bestFloorBefore) {
+  report = report + ", your " + currentClass().name + " fell " + (deaths - awayTotals.deaths) + " times";
+  report = report + ", earned " + big(experienceEarned - awayTotals.experience) + " experience";
+  if (level > awayTotals.level) {
+    report = report + " (level " + awayTotals.level + " to " + level + ")";
+  }
+  report = report + " and " + big(gold + bank - awayTotals.gold) + " gold.";
+  if (bestFloor > awayTotals.bestFloor) {
     report = report + " New best floor: " + bestFloor + "!";
   }
 
@@ -88,6 +106,22 @@ function reloadForNewVersion() {
 }
 
 setInterval(checkForNewVersion, 5 * 60 * 1000);
+
+// ----- One tab at a time -----
+// Two tabs of the game would each save over the other every second, and whichever
+// closed last would win. So the tab opened LAST plays: it writes its own mark in the
+// browser, every older tab sees that mark change, stops, and says so.
+const tabMarkName = "lloegrys-idle-tab";
+const tabMark = Date.now() + "-" + Math.random();
+
+localStorage.setItem(tabMarkName, tabMark);
+window.addEventListener("storage", function (event) {
+  if (event.key === tabMarkName && event.newValue !== tabMark) {
+    otherTabOpen = true;
+    clearInterval(timer);
+    document.getElementById("other-tab").hidden = false;
+  }
+});
 
 // ----- Start the game -----
 loadGame();

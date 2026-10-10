@@ -37,6 +37,9 @@ let classSaves = {};
 // Set when a save could not be read, so the page can tell the player
 let saveProblem = "";
 
+// Set when the game has been opened in a newer tab: this one stops saving (see game/start.js)
+let otherTabOpen = false;
+
 // Brings a save made by an older version of the game up to date, one step at a time.
 // Each step turns version N into version N + 1, so a very old save passes through them all.
 function upgradeSave(data) {
@@ -423,8 +426,9 @@ function unpackClass(saved) {
 }
 
 function saveGame() {
-  // Never write over a save that could not be read: the player may still get it back
-  if (saveProblem !== "") {
+  // Never write over a save that could not be read: the player may still get it back.
+  // Nor over the save of a newer tab that has taken over.
+  if (saveProblem !== "" || otherTabOpen) {
     return;
   }
 

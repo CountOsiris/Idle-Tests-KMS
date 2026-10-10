@@ -13,6 +13,16 @@
 
 const gameUpdates = [
   {
+    version: "20261010e",
+    title: "Fixes",
+    changes: [
+      "The Welcome back report now shows the experience you really earned and the levels gained, and adds up a whole absence instead of the last minute.",
+      "Venomous monsters hit as their description says: the poison is part of their attack, not extra on top.",
+      "Opening the game in a second tab stops the older tab, so two tabs can no longer save over each other.",
+      "Boss killers set to use themselves wait out a boss's shield or minion."
+    ]
+  },
+  {
     version: "20261010d",
     title: "Run summary",
     changes: [

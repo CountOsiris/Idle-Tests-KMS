@@ -236,8 +236,9 @@ function upgradeBoost() {
   return 1 + bossUpgradePower * upgradesHeld();
 }
 
-// The floor a run starts on. It is 1 now: nothing sold at the moment starts runs
-// part-way to the best floor reached since the last ascension.
+// The floor a run starts on (see "Sweeping through the easy floors" in data.js): the
+// deepest floor the last run reached without slowing down. A run that slowed down at
+// its very first fight was started too high, so the next one starts half as high.
 function startFloor() {
   if (cruiseFloor > runStartFloor) {
     return cruiseFloor;

@@ -65,6 +65,9 @@ function timeText(seconds) {
   if (hours > 0) {
     return hours + "h " + minutes + "m";
   }
+  if (minutes === 0) {
+    return Math.round(seconds) + "s";
+  }
   return minutes + "m";
 }
 

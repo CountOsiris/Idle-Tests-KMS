@@ -103,6 +103,11 @@ function bossStartOfTurn() {
   }
 }
 
+// Would a big hit be mostly thrown away this turn? (Boss killers wait for this to pass.)
+function bossWouldWasteAHit() {
+  return minionHp > 0 || shieldIsUp();
+}
+
 // While a minion stands, it attacks beside the boss
 function bossAttackFactor() {
   if (minionHp > 0) {

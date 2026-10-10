@@ -287,7 +287,7 @@ function rangerStatLine() {
 function rangerGearInfo() {
   if (weapon === "longbow") {
     return "Longbow: slow and heavy. One arrow every second turn for " + percent(longbowHit + totalBonus("heavyShot")) + " of your attack, with a "
-      + percent(Math.min(1, totalBonus("aimChance"))) + " chance of a critical shot for x" + (longbowCrit + totalBonus("aimPower") + overflow("aimChance", 1)).toFixed(1) + " damage..";
+      + percent(Math.min(1, totalBonus("aimChance"))) + " chance of a critical shot for x" + (longbowCrit + totalBonus("aimPower") + overflow("aimChance", 1)).toFixed(1) + " damage.";
   }
   if (weapon === "shortbow") {
     return "Shortbow: fast and light. " + shortbowArrows + " arrows every turn for " + percent(shortbowHit + totalBonus("arrowPower")) + " of your attack each, and a "
