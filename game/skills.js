@@ -287,6 +287,11 @@ function checkTowerProgress() {
   for (let trophy of towers[tower].trophies) {
     if (floor >= trophy.floor && !trophies.includes(trophy.id)) {
       trophies.push(trophy.id);
+
+      // The first named weapon won is taken up at once
+      if (trophy.weapon !== undefined && wieldedTrophy() === null) {
+        namedWeapon = trophy.id;
+      }
       recalcStats();
       announce("banner", "Trophy won: " + trophy.name, trophy.text + ", for good.");
     }

@@ -83,13 +83,22 @@ function perkMultiplier(stat) {
   return total;
 }
 
+// Does a trophy count right now? It must be won, and a named weapon must also be the
+// one the class is wielding.
+function trophyIsActive(trophy) {
+  if (!trophies.includes(trophy.id)) {
+    return false;
+  }
+  return trophy.weapon === undefined || namedWeapon === trophy.id;
+}
+
 // Trophies can multiply too (most of them do: a flat bonus would fade as the class grows)
 function trophyMultiplier(stat) {
   let total = 1;
 
   for (let towerName in towers) {
     for (let trophy of towers[towerName].trophies) {
-      if (trophies.includes(trophy.id) && trophy.multiply !== undefined && trophy.multiply[stat] !== undefined) {
+      if (trophyIsActive(trophy) && trophy.multiply !== undefined && trophy.multiply[stat] !== undefined) {
         total = total * trophy.multiply[stat];
       }
     }
@@ -153,7 +162,7 @@ function trophyBonus(stat) {
 
   for (let towerName in towers) {
     for (let trophy of towers[towerName].trophies) {
-      if (trophies.includes(trophy.id) && trophy.bonus !== undefined && trophy.bonus[stat] !== undefined) {
+      if (trophyIsActive(trophy) && trophy.bonus !== undefined && trophy.bonus[stat] !== undefined) {
         total = total + trophy.bonus[stat];
       }
     }

@@ -42,7 +42,7 @@ and can challenge the others for permanent unlocks.
   percentage and a **technique** at 30 (Bloodthirst, Brace, Keen Eye, Sidestep, Soul
   Siphon, Exploit, Prayer: each a small piece of that tower's class); an **ability**
   any class can slot at 50; a **relic slot** at 75 (a relic kept through death; seven
-  towers, so up to six for any one class); and at 100 a **passive** that changes a rule.
+  towers, so up to six for any one class); and at 100 a **named weapon** whose passive changes a rule.
   Techniques and passives are bonus words on the trophy; an ability is written on the
   trophy the way a class writes its own.
 - **The suggested challenge.** The Towers tab always names the tower where the class's
@@ -53,7 +53,10 @@ and can challenge the others for permanent unlocks.
   `game/weekly.js`) is in force each week for every class in every tower, changing on
   Monday (UTC) for everyone at once. Each helps one way and bites another, and they are
   kept mild because the pacing was tuned without them. The balance bot plays with none.
-- Not built: the named weapon at tier 100.
+- **Named weapons.** The tier 100 passive belongs to a named weapon (Warlord's Wrath,
+  Whisper, Dragonsoul...). A class wields one at a time, picked at the blacksmith; it
+  takes the forged weapon's name ("Steel Whisper +3") and keeps the blacksmith's work.
+  So a class that has beaten several towers chooses which rule to fight with.
 - Not built: a rule on a single tier ("floor 50 boss within 30 turns"). The plan below
   describes it; a rule for the whole tower was simpler to read and to play idle.
 

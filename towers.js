@@ -77,7 +77,10 @@
 //   50      an ABILITY any class can put in a slot (written on the trophy as  ability: { ... } ,
 //           exactly like the abilities in a class file)
 //   75      a RELIC SLOT: one more relic kept when you fall
-//   100     a passive that changes a rule
+//   100     a NAMED WEAPON: a passive that changes a rule, which only works while the class
+//           wields that weapon (weapon: "Its Name" on the trophy). A class wields one
+//           named weapon at a time, picked at the blacksmith; it takes the place of the
+//           forged weapon's name and keeps the blacksmith's work.
 // Techniques and passives are bonus words, read by the game with totalBonus("theWord"):
 //   leech       share of the damage your turns deal that heals you
 //   brace       share of every attack against you thrown back, ignoring armor
@@ -124,7 +127,7 @@ const towers = {
       { floor: 50, id: "warlordsHorn", name: "Warlord's Horn", text: "teaches the ability War Horn: all your damage +60% for 4 turns",
         ability: { id: "towerWarHorn", name: "War Horn", text: "All your damage +60% for 4 turns", cooldown: 14, use: function () { abilityBoost(0.6, 4); } } },
       { floor: 75, id: "warlordsMantle", name: "Warlord's Mantle", text: "a relic slot: you keep 1 more relic when you fall", bonus: { relicSlots: 1 } },
-      { floor: 100, id: "throneOfSkulls", name: "Throne of Skulls", text: "Warlord's Fury: all your damage +50% against bosses", bonus: { bossSlayer: 0.5 } }
+      { floor: 100, id: "throneOfSkulls", name: "Throne of Skulls", text: "the named weapon Warlord's Wrath. Warlord's Fury: all your damage +50% against bosses", weapon: "Warlord's Wrath", bonus: { bossSlayer: 0.5 } }
     ]
   },
 
@@ -155,7 +158,7 @@ const towers = {
       { floor: 50, id: "captainsBulwark", name: "Captain's Bulwark", text: "teaches the ability Raise Shields: take 60% less damage for 3 turns",
         ability: { id: "towerRaiseShields", name: "Raise Shields", text: "Take 60% less damage for 3 turns", cooldown: 12, use: function () { abilityGuard(0.6, 3); } } },
       { floor: 75, id: "passKeepersAegis", name: "Pass Keeper's Aegis", text: "a relic slot: you keep 1 more relic when you fall", bonus: { relicSlots: 1 } },
-      { floor: 100, id: "kingOfThePass", name: "King of the Pass", text: "Unbreakable: your armor can block 10% more of every hit", bonus: { armorLimit: 0.1 } }
+      { floor: 100, id: "kingOfThePass", name: "King of the Pass", text: "the named weapon Bulwark of the Pass. Unbreakable: your armor can block 10% more of every hit", weapon: "Bulwark of the Pass", bonus: { armorLimit: 0.1 } }
     ]
   },
 
@@ -187,7 +190,7 @@ const towers = {
       { floor: 50, id: "spiderSilkCloak", name: "Spider Silk Cloak", text: "teaches the ability Snipe: 4 turns of your damage in one shot from cover",
         ability: { id: "towerSnipe", name: "Snipe", text: "4 turns of your damage in one shot from cover", cooldown: 10, use: function () { abilityTurns(4); } } },
       { floor: 75, id: "heartwood", name: "Heartwood", text: "a relic slot: you keep 1 more relic when you fall", bonus: { relicSlots: 1 } },
-      { floor: 100, id: "crownOfTheWild", name: "Crown of the Wild", text: "First Shot: all your damage +100% on the first turn of every fight", bonus: { opener: 1 } }
+      { floor: 100, id: "crownOfTheWild", name: "Crown of the Wild", text: "the named weapon Wildheart. First Shot: all your damage +100% on the first turn of every fight", weapon: "Wildheart", bonus: { opener: 1 } }
     ]
   },
 
@@ -218,7 +221,7 @@ const towers = {
       { floor: 50, id: "fencesCut", name: "Fence's Cut", text: "teaches the ability Smoke Bomb: the enemy misses its next turn, and you take no damage this turn",
         ability: { id: "towerSmokeBomb", name: "Smoke Bomb", text: "The enemy misses its next turn, and you take no damage this turn", cooldown: 10, use: function () { abilityStun(); abilityGuard(1, 1); } } },
       { floor: 75, id: "guildVaultKey", name: "Guild Vault Key", text: "a relic slot: you keep 1 more relic when you fall", bonus: { relicSlots: 1 } },
-      { floor: 100, id: "undercityLedger", name: "The Undercity's Ledger", text: "Opportunist: all your damage +40% against an enemy below half health", bonus: { finisher: 0.4 } }
+      { floor: 100, id: "undercityLedger", name: "The Undercity's Ledger", text: "the named weapon Whisper. Opportunist: all your damage +40% against an enemy below half health", weapon: "Whisper", bonus: { finisher: 0.4 } }
     ]
   },
 
@@ -248,7 +251,7 @@ const towers = {
       { floor: 50, id: "boneCodex", name: "Bone Codex", text: "teaches the ability Drain Life: 2 turns of your damage, and you heal 15% of your health",
         ability: { id: "towerDrainLife", name: "Drain Life", text: "2 turns of your damage, and you heal 15% of your health", cooldown: 9, use: function () { abilityTurns(2); abilityHeal(0.15); } } },
       { floor: 75, id: "colossusCore", name: "Colossus Core", text: "a relic slot: you keep 1 more relic when you fall", bonus: { relicSlots: 1 } },
-      { floor: 100, id: "crownOfTheEntombed", name: "Crown of the Entombed", text: "Phylactery: once a run, a blow that would kill you leaves you alive on half your health", bonus: { secondWind: 1 } }
+      { floor: 100, id: "crownOfTheEntombed", name: "Crown of the Entombed", text: "the named weapon Gravecall. Phylactery: once a run, a blow that would kill you leaves you alive on half your health", weapon: "Gravecall", bonus: { secondWind: 1 } }
     ]
   },
 
@@ -278,7 +281,7 @@ const towers = {
       { floor: 50, id: "giantsBracer", name: "Giant's Bracer", text: "teaches the ability Flash Freeze: 1.5 turns of your damage, and the enemy is frozen for a turn",
         ability: { id: "towerFlashFreeze", name: "Flash Freeze", text: "1.5 turns of your damage, and the enemy is frozen for a turn", cooldown: 8, use: function () { abilityTurns(1.5); abilityStun(); } } },
       { floor: 75, id: "mountainsRoot", name: "Mountain's Root", text: "a relic slot: you keep 1 more relic when you fall", bonus: { relicSlots: 1 } },
-      { floor: 100, id: "dragonsHoard", name: "Dragon's Hoard", text: "Dragonfire: a hit on a weakness deals 25% more, and gold x1.5", bonus: { exploit: 0.25 }, multiply: { gold: 1.5 } }
+      { floor: 100, id: "dragonsHoard", name: "Dragon's Hoard", text: "the named weapon Dragonsoul. Dragonfire: a hit on a weakness deals 25% more, and gold x1.5", weapon: "Dragonsoul", bonus: { exploit: 0.25 }, multiply: { gold: 1.5 } }
     ]
   },
 
@@ -308,7 +311,7 @@ const towers = {
       { floor: 50, id: "vampiresChalice", name: "Vampire's Chalice", text: "teaches the ability Lay on Hands: heal 35% of your health",
         ability: { id: "towerLayOnHands", name: "Lay on Hands", text: "Heal 35% of your health", cooldown: 12, use: function () { abilityHeal(0.35); } } },
       { floor: 75, id: "bishopsMitre", name: "Bishop's Mitre", text: "a relic slot: you keep 1 more relic when you fall", bonus: { relicSlots: 1 } },
-      { floor: 100, id: "abbeyBell", name: "Abbey Bell", text: "Vespers: your abilities are ready a quarter sooner", bonus: { quickHands: 0.25 } }
+      { floor: 100, id: "abbeyBell", name: "Abbey Bell", text: "the named weapon Vesper. Vespers: your abilities are ready a quarter sooner", weapon: "Vesper", bonus: { quickHands: 0.25 } }
     ]
   },
 
@@ -338,7 +341,7 @@ const towers = {
       { floor: 50, id: "huntingHorn", name: "Hunting Horn", text: "teaches the ability Call the Pack: wolves from the long grass, for 3 turns of your damage",
         ability: { id: "towerCallThePack", name: "Call the Pack", text: "Wolves from the long grass, for 3 turns of your damage", cooldown: 9, use: function () { abilityTurns(3); } } },
       { floor: 75, id: "mammothIvory", name: "Mammoth Ivory", text: "a relic slot: you keep 1 more relic when you fall", bonus: { relicSlots: 1 } },
-      { floor: 100, id: "apexPredator", name: "Apex Predator", text: "Devour: you heal for 5% of the damage your turns deal", bonus: { leech: 0.05 } }
+      { floor: 100, id: "apexPredator", name: "Apex Predator", text: "the named weapon Fang of the Reaches. Devour: you heal for 5% of the damage your turns deal", weapon: "Fang of the Reaches", bonus: { leech: 0.05 } }
     ]
   }
 };

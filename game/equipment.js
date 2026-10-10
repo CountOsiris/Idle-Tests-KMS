@@ -132,6 +132,11 @@ function gearName(slot, step) {
   let name = plainLabel();
   if (slot === specialSlot()) {
     name = currentClass().gearTypes[weapon];
+
+    // A named weapon takes the place of the kind's name, and keeps the blacksmith's work
+    if (wieldedTrophy() !== null) {
+      name = wieldedTrophy().weapon;
+    }
   }
 
   // A class can name the tiers of its own special gear (a bow is not made of bronze)
@@ -148,6 +153,40 @@ function gearName(slot, step) {
     name = name + " +" + plus;
   }
   return name;
+}
+
+// ----- Named weapons -----
+// Won at floor 100 of another class's tower (see towers.js). The class wields one at a
+// time, and only that one's passive works.
+
+// Every named weapon the class has won, as its trophy
+function namedWeaponsWon() {
+  let won = [];
+  for (let towerName in towers) {
+    for (let trophy of towers[towerName].trophies) {
+      if (trophy.weapon !== undefined && trophies.includes(trophy.id)) {
+        won.push(trophy);
+      }
+    }
+  }
+  return won;
+}
+
+// The trophy of the named weapon being wielded, or null
+function wieldedTrophy() {
+  for (let trophy of namedWeaponsWon()) {
+    if (trophy.id === namedWeapon) {
+      return trophy;
+    }
+  }
+  return null;
+}
+
+// "" puts the named weapon away
+function wieldNamedWeapon(id) {
+  namedWeapon = id;
+  recalcStats();
+  updateScreen();
 }
 
 // Picks the kind of weapon to fight with. It is taken up at the start of the next run.

@@ -13,6 +13,14 @@
 
 const gameUpdates = [
   {
+    version: "20261010q",
+    title: "Named weapons",
+    changes: [
+      "Floor 100 of another class's tower now wins a named weapon, such as Whisper or Dragonsoul, each with a rule of its own.",
+      "You wield one at a time, picked at the blacksmith, and it keeps the blacksmith's work."
+    ]
+  },
+  {
     version: "20261010p",
     title: "Ability ranks and double speed",
     changes: [

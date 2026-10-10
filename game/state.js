@@ -84,6 +84,10 @@ let lastAscensionSeconds = 0;
 // The ids of the trophies this class has won in other towers (see towers.js)
 let trophies = [];
 
+// The named weapon the class wields: the id of a tier-100 trophy it has won, or "" for
+// none. Only the wielded one's passive works (see "NAMED WEAPON" in towers.js).
+let namedWeapon = "";
+
 // How many runs in a row have ended without a new best floor (see stuckAfterRuns in data.js)
 let runsSinceBest = 0;
 

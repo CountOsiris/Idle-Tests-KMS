@@ -239,7 +239,8 @@ function freshClass(className) {
     runStats: null,
     runsSinceBest: 0,
     legends: 0,
-    abilityUses: {}
+    abilityUses: {},
+    namedWeapon: ""
   };
 }
 
@@ -287,7 +288,8 @@ function packClass() {
     runStats: runStats,
     runsSinceBest: runsSinceBest,
     legends: legends,
-    abilityUses: abilityUses
+    abilityUses: abilityUses,
+    namedWeapon: namedWeapon
   };
 }
 
@@ -348,6 +350,12 @@ function unpackClass(saved) {
   runsSinceBest = data.runsSinceBest;
   legends = data.legends;
   abilityUses = data.abilityUses;
+
+  // A named weapon can only be wielded if its trophy is (still) won
+  namedWeapon = data.namedWeapon;
+  if (wieldedTrophy() === null) {
+    namedWeapon = "";
+  }
   runCounter = data.runCounter;
   savedBuild = data.savedBuild;
   autoBuild = data.autoBuild;

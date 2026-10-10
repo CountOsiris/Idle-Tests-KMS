@@ -313,6 +313,29 @@ function showBlacksmith() {
 
   document.getElementById("forge-all").disabled = !canAffordForge();
 
+  // Named weapons: one button each, and one for none. Made again only when another is won.
+  let named = namedWeaponsWon();
+  let namedBox = document.getElementById("named-buttons");
+  document.getElementById("named-picker").hidden = named.length === 0;
+  if (namedBox.dataset.shown !== playerClass + named.length) {
+    namedBox.dataset.shown = playerClass + named.length;
+    namedBox.innerHTML = "";
+    addFavouriteButton(namedBox, "named-", "None", function () {
+      wieldNamedWeapon("");
+    });
+    for (let trophy of named) {
+      addFavouriteButton(namedBox, "named-" + trophy.id, trophy.weapon, function () {
+        wieldNamedWeapon(trophy.id);
+      });
+    }
+  }
+  showFavourite("named-buttons", "named-" + namedWeapon);
+  if (wieldedTrophy() === null) {
+    document.getElementById("named-note").textContent = "You are fighting with your forged weapon. A named weapon keeps the blacksmith's work, and only the one you wield gives its power.";
+  } else {
+    document.getElementById("named-note").textContent = wieldedTrophy().text + ". Only the named weapon you wield gives its power.";
+  }
+
   // A class with only one kind of gear has nothing to pick between
   document.getElementById("weapon-picker").hidden = Object.keys(currentClass().gearTypes).length < 2;
   showFavourite("weapon-buttons", "weapon-" + nextWeapon);
@@ -875,7 +898,7 @@ let gearShown = "";
 
 function showGear() {
   // (the effect texts hold numbers that skills and upgrades change, so they are part of the key)
-  let key = playerClass + weapon + stance + JSON.stringify(forgeLevels) + weaponPower + armorPower + currentClass().gearInfo();
+  let key = playerClass + weapon + stance + namedWeapon + JSON.stringify(forgeLevels) + weaponPower + armorPower + currentClass().gearInfo();
   if (key === gearShown) {
     return;
   }

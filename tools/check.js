@@ -555,6 +555,30 @@ try {
   runStats = freshRunStats();
   startEncounter();
 
+  // 3f4. Named weapons: only the one wielded gives its power, and it names the gear
+  let trophiesWere = trophies;
+  let allNamed = [];
+  for (let towerName in towers) {
+    let last = towers[towerName].trophies[5];
+    if (last.weapon === undefined) {
+      towerProblems.push(towers[towerName].name + " has no named weapon at floor 100");
+    }
+    allNamed.push(last);
+  }
+  trophies = allNamed.map(function (t) { return t.id; });
+  namedWeapon = "";
+  let noneWielded = totalBonus("bossSlayer") + totalBonus("opener") + totalBonus("armorLimit") + totalBonus("finisher");
+  wieldNamedWeapon("throneOfSkulls");
+  let oneWielded = totalBonus("bossSlayer") > 0 && totalBonus("opener") === 0;
+  let namedGear = gearName(specialSlot(), 0).includes("Warlord's Wrath");
+  showTab("town");
+  updateScreen();
+  check("named weapons: " + allNamed.length + " in the game, none works until wielded, one works at a time, and it names the gear (" + gearName(specialSlot(), 12) + ")",
+    allNamed.every(function (t) { return t.weapon !== undefined; }) && noneWielded === 0 && oneWielded && namedGear && !document.getElementById("named-picker").hidden && document.getElementById("named-buttons").children.length === allNamed.length + 1);
+  namedWeapon = "";
+  trophies = trophiesWere;
+  recalcStats();
+
   // 3g. The rewards ladder: with every trophy won, the abilities work and the techniques bite
   let trophiesBefore = trophies;
   trophies = Object.keys(trophyIds);
