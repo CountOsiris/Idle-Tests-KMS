@@ -56,7 +56,7 @@ classes.elementalist = {
     fire: { name: "Fire", text: "Each spell hits for 90% of your attack and adds two burn stacks. Every stack burns for 23% of your attack each turn." },
     ice: { name: "Ice", text: "Each spell has a chance of a critical hit for triple damage." },
     lightning: { name: "Lightning", text: "Two bolts every turn, each for 65% of your attack. Skills add a chance of more bolts." },
-    earth: { name: "Earth", text: "Every second turn, starting with the first, one boulder for 220% of your attack, with a chance to stun." }
+    earth: { name: "Earth", text: "Every second turn, starting with the first, one boulder for 190% of your attack, with a chance to stun." }
   },
 
   upgrades: [
@@ -115,9 +115,9 @@ classes.elementalist = {
         { id: "avatarOfStorms", name: "Avatar of Storms", text: "+36% attack", bonus: { attackPercent: 0.36 } },
         { id: "avatarOfStone", name: "Avatar of Stone", text: "health x1.5 and +5 armor", bonus: { armor: 5 }, multiply: { health: 1.5 } },
         { id: "inferno", name: "Inferno", text: "Fire: burning damage x2.3", multiply: { burn: 2.3 } },
-        { id: "glacier", name: "Glacier", text: "Ice: critical hit damage x2", multiply: { iceCrit: 2 } },
+        { id: "glacier", name: "Glacier", text: "Ice: critical hit damage x1.6", multiply: { iceCrit: 1.6 } },
         { id: "tempest", name: "Tempest", text: "Lightning: bolt damage x1.8", multiply: { bolt: 1.8 } },
-        { id: "mountain", name: "Mountain", text: "Earth: boulder damage x1.8", multiply: { boulder: 1.8 } }
+        { id: "mountain", name: "Mountain", text: "Earth: boulder damage x1.3", multiply: { boulder: 1.3 } }
       ]
     },
     // KEYSTONES: each changes a rule of one weapon, and costs something. This milestone is
@@ -141,7 +141,7 @@ classes.elementalist = {
         { id: "firestorm", name: "Firestorm", text: "Fire: +25% attack, +4 burn stacks and burning deals +50% damage", bonus: { attackPercent: 0.25, burnStacks: 4, dotPower: 0.5 } },
         { id: "absoluteZero", name: "Absolute Zero", text: "Ice: +25% attack, +10% critical chance and +80% critical damage", bonus: { attackPercent: 0.25, critChance: 0.1, critPower: 0.8 } },
         { id: "chainLightning", name: "Chain Lightning", text: "Lightning: +25% attack, +60% chance of an extra bolt and bolts deal +8% damage", bonus: { attackPercent: 0.25, extraBolts: 0.6, boltPower: 0.08 } },
-        { id: "avalanche", name: "Avalanche", text: "Earth: +25% attack, boulders deal +100% damage and +8% stun chance", bonus: { attackPercent: 0.25, crush: 1, stunChance: 0.08 } },
+        { id: "avalanche", name: "Avalanche", text: "Earth: +25% attack, boulders deal +50% damage and +8% stun chance", bonus: { attackPercent: 0.25, crush: 0.5, stunChance: 0.08 } },
         { id: "stoneSkinSpell", name: "Stoneskin", text: "You take 25% less damage", multiply: { damageTaken: 0.75 } }
       ]
     },
@@ -151,9 +151,9 @@ classes.elementalist = {
         { id: "masterOfElements", name: "Master of Elements", text: "+70% attack", bonus: { attackPercent: 0.7 } },
         { id: "avatarOfTides", name: "Avatar of Tides", text: "health x2 and +6 armor", bonus: { armor: 6 }, multiply: { health: 2 } },
         { id: "phoenixFlame", name: "Phoenix Flame", text: "Fire: burning damage x2.3 again", multiply: { burn: 2.3 } },
-        { id: "iceAge", name: "Ice Age", text: "Ice: critical hit damage x2 again", multiply: { iceCrit: 2 } },
+        { id: "iceAge", name: "Ice Age", text: "Ice: critical hit damage x1.6 again", multiply: { iceCrit: 1.6 } },
         { id: "thunderGod", name: "Thunder God", text: "Lightning: bolt damage x1.8 again", multiply: { bolt: 1.8 } },
-        { id: "earthquake", name: "Earthquake", text: "Earth: boulder damage x1.8 again", multiply: { boulder: 1.8 } }
+        { id: "earthquake", name: "Earthquake", text: "Earth: boulder damage x1.3 again", multiply: { boulder: 1.3 } }
       ]
     }
   ],
@@ -213,7 +213,7 @@ const fireBurn = 0.23;      // and each burn stack burns for this share every tu
 const iceCrit = 3;          // an ice critical multiplies the hit by this
 const lightningBolts = 2;   // lightning casts this many bolts a turn
 const lightningHit = 0.65;  // each for this share of your attack
-const earthHit = 2.2;       // a boulder hits for this many times your attack
+const earthHit = 1.9;       // a boulder hits for this many times your attack
 
 // Earth: has the boulder been gathered, ready to throw this turn?
 let elementalistCharged = false;

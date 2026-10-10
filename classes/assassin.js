@@ -94,9 +94,9 @@ classes.assassin = {
       perks: [
         { id: "nightStalker", name: "Nightwalker", text: "+24% attack and +10% dodge", bonus: { attackPercent: 0.24, dodge: 0.1 } },
         { id: "deathMark", name: "Death Mark", text: "Ambush damage x2, and health x1.4", multiply: { ambush: 2, health: 1.4 } },
-        { id: "plaguebringer", name: "Plaguebringer", text: "Venom Dagger: poison damage x3", multiply: { poison: 3 } },
-        { id: "throatCutter", name: "Throat Cutter", text: "Stiletto: critical hit damage x2", multiply: { stilettoCrit: 2 } },
-        { id: "shade", name: "Shade", text: "Shadow Blade: damage of the hit after a dodge x3, and +8% dodge", bonus: { dodge: 0.08 }, multiply: { counter: 3 } },
+        { id: "plaguebringer", name: "Plaguebringer", text: "Venom Dagger: poison damage x3, and attack x1.3", multiply: { poison: 3, attack: 1.3 } },
+        { id: "throatCutter", name: "Throat Cutter", text: "Stiletto: critical hit damage x1.6", multiply: { stilettoCrit: 1.6 } },
+        { id: "shade", name: "Shade", text: "Shadow Blade: damage of the hit after a dodge x3, +8% dodge, attack x1.5 and health x1.3", bonus: { dodge: 0.08 }, multiply: { counter: 3, attack: 1.5, health: 1.3 } },
         { id: "ironNerves", name: "Iron Nerves", text: "health x1.5 and +5% dodge", bonus: { dodge: 0.05 }, multiply: { health: 1.5 } }
       ]
     },
@@ -129,9 +129,9 @@ classes.assassin = {
       perks: [
         { id: "shadowMaster", name: "Master Assassin", text: "+40% attack and +10% dodge", bonus: { attackPercent: 0.4, dodge: 0.1 } },
         { id: "grimReaper", name: "Grim Reaper", text: "Ambush damage x2 again, and health x1.6", multiply: { ambush: 2, health: 1.6 } },
-        { id: "blightlord", name: "Blightlord", text: "Venom Dagger: poison damage x3 again", multiply: { poison: 3 } },
-        { id: "kingslayer", name: "Kingslayer", text: "Stiletto: critical hit damage x2 again", multiply: { stilettoCrit: 2 } },
-        { id: "umbra", name: "Umbra", text: "Shadow Blade: damage of the hit after a dodge x3 again, and +8% dodge", bonus: { dodge: 0.08 }, multiply: { counter: 3 } },
+        { id: "blightlord", name: "Blightlord", text: "Venom Dagger: poison damage x3 again, and attack x1.6", multiply: { poison: 3, attack: 1.6 } },
+        { id: "kingslayer", name: "Kingslayer", text: "Stiletto: critical hit damage x1.6 again", multiply: { stilettoCrit: 1.6 } },
+        { id: "umbra", name: "Umbra", text: "Shadow Blade: damage of the hit after a dodge x3 again, +8% dodge, attack x1.5 and health x1.5", bonus: { dodge: 0.08 }, multiply: { counter: 3, attack: 1.5, health: 1.5 } },
         { id: "untouchable", name: "Untouchable", text: "health x2 and +10% dodge", bonus: { dodge: 0.1 }, multiply: { health: 2 } }
       ]
     }

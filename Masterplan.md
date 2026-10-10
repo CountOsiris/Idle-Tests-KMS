@@ -62,9 +62,9 @@ The gaps the plan set out to close (1 to 6 are now built; what is left is below)
 
 ## Still open
 
-- **Earth and the Void Tome** are about 35% faster than their classes to floor 75,
-  though inside the target to floor 50
-  ([Classes and builds](docs/design/04-classes-and-builds.md)).
+- **A run starting above the floor the last one ended on**, as players reported, could
+  not be reproduced in thousands of simulated deaths. A guard now makes it impossible
+  and the check watches every death for it, but its cause was never seen.
 - **"Layers get distinct jobs"**: milestone perks still hand out percentages.
 - The Beast Tamer has no art.
 

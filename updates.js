@@ -13,6 +13,17 @@
 
 const gameUpdates = [
   {
+    version: "20261010t",
+    title: "Runaway builds reined in",
+    changes: [
+      "The Void Tome's tear is now a true share of the enemy's health. Fame used to multiply it, until it killed anything in one spell on any floor.",
+      "The same relic can be held three times in a run, not without limit, and no cooldown or armor can be pushed past a fixed limit.",
+      "Late-game balance: the Stiletto's and Ice's critical perks are x1.6, and the big perks of the Axe, Shadow Blade, Venom Dagger and Mace and Shield now also multiply attack.",
+      "The Tactician's list says what every boon does, and warns when your favourite does not work with your weapon.",
+      "A run can never start above the floor the last one ended on, and the log says where the next run starts and why."
+    ]
+  },
+  {
     version: "20261010s",
     title: "Class relics do something too",
     changes: [

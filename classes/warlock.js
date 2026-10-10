@@ -102,7 +102,7 @@ classes.warlock = {
       perks: [
         { id: "cataclysm", name: "Cataclysm", text: "Arcane Tome: the extra damage of critical hits x1.7, and +10% critical chance", bonus: { critChance: 0.1 }, multiply: { arcaneCrit: 1.7 } },
         { id: "lichForm", name: "Lich Form", text: "health x1.5 and +5 armor", bonus: { armor: 5 }, multiply: { health: 1.5 } },
-        { id: "hungeringVoid", name: "Hungering Void", text: "Void Tome: spell damage x1.8, and every spell heals 0.5% more of your health", bonus: { voidHeal: 0.005 }, multiply: { void: 1.8 } },
+        { id: "hungeringVoid", name: "Hungering Void", text: "Void Tome: spell damage x2.2, and every spell heals 0.5% more of your health", bonus: { voidHeal: 0.005 }, multiply: { void: 2.2 } },
         { id: "runicStorm", name: "Runic Storm", text: "Rune Tome: echo damage x1.6, and +15% chance to cast twice", bonus: { echoChance: 0.15 }, multiply: { echo: 1.6 } },
         { id: "soulCollector", name: "Soul Collector", text: "Souls: the damage souls give x1.6, and +25% chance of an extra soul from a kill", bonus: { soulChance: 0.25 }, multiply: { souls: 1.6 } }
       ]
@@ -126,7 +126,7 @@ classes.warlock = {
         { id: "arcaneMight", name: "Arcane Supremacy", text: "+60% attack", bonus: { attackPercent: 0.6 } },
         { id: "arcaneBarrier", name: "Arcane Barrier", text: "health x1.75", multiply: { health: 1.75 } },
         { id: "spellblade", name: "Spellblade", text: "Arcane Tome: +35% attack, +10% critical chance and +80% critical damage", bonus: { attackPercent: 0.35, critChance: 0.1, critPower: 0.8 } },
-        { id: "abyss", name: "Abyss", text: "Void Tome: +35% attack and +8 void power", bonus: { attackPercent: 0.35, voidRend: 0.08 } },
+        { id: "abyss", name: "Abyss", text: "Void Tome: attack x1.5 and +8 void power", bonus: { voidRend: 0.08 }, multiply: { attack: 1.5 } },
         { id: "glyphmaster", name: "Glyphmaster", text: "Rune Tome: +35% attack, +20% chance to cast twice and echoes deal +50% damage", bonus: { attackPercent: 0.35, echoChance: 0.2, echoPower: 0.5 } },
         { id: "soulEater", name: "Soul Eater", text: "+35% attack, and Souls: +50% damage for every 100 souls", bonus: { attackPercent: 0.35, soulPower: 0.5 } },
         { id: "phaseShift", name: "Phase Shift", text: "You take 25% less damage", multiply: { damageTaken: 0.75 } }
@@ -136,7 +136,7 @@ classes.warlock = {
       floor: 100,
       perks: [
         { id: "annihilation", name: "Annihilation", text: "Arcane Tome: the extra damage of critical hits x1.7 again, and +10% critical chance", bonus: { critChance: 0.1 }, multiply: { arcaneCrit: 1.7 } },
-        { id: "voidLord", name: "Void Lord", text: "Void Tome: spell damage x1.8 again, and health x1.5", multiply: { void: 1.8, health: 1.5 } },
+        { id: "voidLord", name: "Void Lord", text: "Void Tome: spell damage x2.2 again, and health x1.5", multiply: { void: 2.2, health: 1.5 } },
         { id: "runeLord", name: "Rune Lord", text: "Rune Tome: echo damage x1.6 again, and +20% chance to cast twice", bonus: { echoChance: 0.2 }, multiply: { echo: 1.6 } },
         { id: "deathsHarvest", name: "Death's Harvest", text: "Souls: the damage souls give x1.6 again, and +50% chance of an extra soul from a kill", bonus: { soulChance: 0.5 }, multiply: { souls: 1.6 } },
         { id: "undying", name: "Undying", text: "health x2 and +6 armor", bonus: { armor: 6 }, multiply: { health: 2 } }
@@ -272,21 +272,27 @@ function warlockCast(power) {
     damage = damage * multiplier("void");
   }
 
-  // The void tears away a share of the enemy's full health, and can feed you.
-  // Souls do NOT strengthen this part: a share of the enemy's health that kept
-  // growing would end up killing everything in one hit, on any floor, forever.
-  // (Event Horizon, a keystone: twice the share, but of the health it has LEFT)
-  if (weapon === "void") {
-    if (totalBonus("eventHorizon") > 0) {
-      damage = damage + Math.max(0, monsterHp) * voidShare() * 2;
-    } else {
-      damage = damage + monsterMaxHp * voidShare();
-    }
-    healPlayer(playerMaxHp * totalBonus("voidHeal"));
-  }
-
   // Spells ignore armor, but not ward
   spellHitMonster(damage, "arcane");
+
+  // The void also tears away a share of the enemy's full health, and can feed you.
+  // NOTHING makes this part bigger: not souls, not fame, not a boost from an ability.
+  // It is taken straight off the enemy (less its ward), because a share of the enemy's
+  // health that grows ends up killing everything in one hit, on any floor, forever.
+  // (That happened: it used to go through the spell's damage, fame's Might multiplied
+  // it, and a Void Tome reached floor 23,195 without falling. October 2026.)
+  // (Event Horizon, a keystone: twice the share, but of the health it has LEFT)
+  if (weapon === "void") {
+    let torn = monsterMaxHp * voidShare();
+    if (totalBonus("eventHorizon") > 0) {
+      torn = Math.max(0, monsterHp) * voidShare() * 2;
+    }
+    torn = Math.round(torn * (1 - wardNow()));
+    monsterHp = monsterHp - torn;
+    damageNotCounted = damageNotCounted + torn;
+    noteDamage("arcane", torn);
+    healPlayer(playerMaxHp * totalBonus("voidHeal"));
+  }
 }
 
 function warlockAttack() {

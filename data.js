@@ -593,7 +593,7 @@ const classes = {};
 // them was given back: see upgradeSave in game/save.js. Don't reuse their ids.)
 
 const townUpgrades = [
-  { id: "tactician", name: "Tactician", text: "Pick a favourite boon. Bosses give you that one every time, whenever it suits your weapon.", bonus: { favouriteUpgrade: 1 }, maxLevel: 1, cost: 5000, growth: 1 },
+  { id: "tactician", name: "Tactician", text: "Pick a favourite boon from a list that says what each one does. Bosses give you that one every time, as long as it works with the weapon you are using.", bonus: { favouriteUpgrade: 1 }, maxLevel: 1, cost: 5000, growth: 1 },
   { id: "whetstone", name: "Whetstone", text: "+10% penetration. Penetration cuts through everything a monster blocks: its armor, its ward, and the damage types it resists.", bonus: { penetration: 0.1 }, maxLevel: 0, cost: 2000, growth: 1.4 },
   { id: "trainingGrounds", name: "Training Grounds", text: "+5% experience.", bonus: { experience: 0.05 }, maxLevel: 0, cost: 500, growth: 1.4 },
   { id: "treasureMaps", name: "Treasure Maps", text: "+5% gold.", bonus: { gold: 0.05 }, maxLevel: 0, cost: 500, growth: 1.4 },
@@ -611,6 +611,17 @@ const townUpgrades = [
 // another class's tower). The same relic can be held more than once, and it stacks.
 const relicBossEvery = 25;
 const relicRareChance = 0.15;
+
+// The same relic can be held this many times in one run and no more. Without a limit, a
+// run that lasts hundreds of floors piles one effect up until it breaks the game: abilities
+// with no cooldown, armor that blocks everything. (It did: a Void Tome run reached floor
+// 5,494 holding over a thousand boons. October 2026.)
+const relicMostCopies = 3;
+
+// However it is come by (relics, trophies, keystones, the week), no more than this share
+// can be taken off an ability's cooldown, and armor can never block more than this share.
+const mostCooldownCut = 0.6;
+const mostArmorShare = 0.85;
 
 // The relics every class can find. Each class also has relics for its own weapons, in
 // its file: each of those gives something to that weapon, and one of the effects below.

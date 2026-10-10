@@ -228,6 +228,7 @@ function die() {
 
   deaths = deaths + 1;
   sheatheBossWeapon();
+  let fellOn = floor;
 
   // Stuck at a wall? Say once where to go instead (see "Stuck at a wall" in data.js)
   runsSinceBest = runsSinceBest + 1;
@@ -255,12 +256,13 @@ function die() {
     cruiseFloor = 1;
   }
 
-  floor = startFloor();
+  // A run never starts above the floor the last one ended on, whatever the sweep says
+  floor = Math.max(1, Math.min(startFloor(), fellOn));
   runStartFloor = floor;
   cruiseFloor = floor;
   cruising = true;
   if (floor > 1) {
-    say("You sweep through floors 1 to " + (floor - 1) + " without slowing down.");
+    say("The next run starts on floor " + floor + ": you sweep through floors 1 to " + (floor - 1) + ", which this class clears without slowing down.");
   }
 
   // The weapon and armor are kept. Only the kind of weapon may change, if another was picked.
@@ -509,6 +511,7 @@ function fightMonster() {
   // (Measured before a boss's mechanics answer, so a shield does not shrink your abilities.)
   let hpBeforeTurn = monsterHp;
   notedThisPhase = 0;
+  damageNotCounted = 0;
   if (!losesTurn) {
     currentClass().attack();
   }
@@ -551,7 +554,7 @@ function fightMonster() {
       }
     }
   }
-  recordTurnDamage(dealtThisTurn);
+  recordTurnDamage(dealtThisTurn - damageNotCounted);
 
   tickAbilityTimers();
 

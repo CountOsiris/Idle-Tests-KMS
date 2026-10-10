@@ -11,7 +11,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&family=EB+Garamond:wght@400;500;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css?v=20261010s">
+  <link rel="stylesheet" href="style.css?v=20261010t">
 </head>
 <body data-tab="tower">
 
@@ -380,7 +380,9 @@
           <!-- Only shown once the Tactician has been hired -->
           <div id="favourite-upgrade" class="picker" hidden>
             <p class="row-title">Favourite boon</p>
-            <div id="favourite-upgrade-buttons" class="choices"></div>
+            <p id="favourite-upgrade-note" class="note"></p>
+            <!-- One row for each boon of the class, saying what it does. Made by the game (game/). -->
+            <div id="favourite-upgrade-rows"></div>
           </div>
 
           <!-- The rest is made by the game (game/) from the townUpgrades list in data.js -->
@@ -568,34 +570,34 @@
          3. the file version.txt
        The ?v= makes browsers fetch the new files instead of old remembered ones, and
        version.txt is how a game left open finds out it is out of date (see game/start.js). -->
-  <script>const gameVersion = "20261010s";</script>
-  <script src="data.js?v=20261010s"></script>
-  <script src="updates.js?v=20261010s"></script>
-  <script src="towers.js?v=20261010s"></script>
-  <script src="classes/barbarian.js?v=20261010s"></script>
-  <script src="classes/warden.js?v=20261010s"></script>
-  <script src="classes/ranger.js?v=20261010s"></script>
-  <script src="classes/assassin.js?v=20261010s"></script>
-  <script src="classes/warlock.js?v=20261010s"></script>
-  <script src="classes/elementalist.js?v=20261010s"></script>
-  <script src="classes/zealot.js?v=20261010s"></script>
-  <script src="classes/beasttamer.js?v=20261010s"></script>
+  <script>const gameVersion = "20261010t";</script>
+  <script src="data.js?v=20261010t"></script>
+  <script src="updates.js?v=20261010t"></script>
+  <script src="towers.js?v=20261010t"></script>
+  <script src="classes/barbarian.js?v=20261010t"></script>
+  <script src="classes/warden.js?v=20261010t"></script>
+  <script src="classes/ranger.js?v=20261010t"></script>
+  <script src="classes/assassin.js?v=20261010t"></script>
+  <script src="classes/warlock.js?v=20261010t"></script>
+  <script src="classes/elementalist.js?v=20261010t"></script>
+  <script src="classes/zealot.js?v=20261010t"></script>
+  <script src="classes/beasttamer.js?v=20261010t"></script>
   <!-- The game's rules, in this order (start.js last) -->
-  <script src="game/state.js?v=20261010s"></script>
-  <script src="game/bonuses.js?v=20261010s"></script>
-  <script src="game/legend.js?v=20261010s"></script>
-  <script src="game/weekly.js?v=20261010s"></script>
-  <script src="game/equipment.js?v=20261010s"></script>
-  <script src="game/abilities.js?v=20261010s"></script>
-  <script src="game/bosses.js?v=20261010s"></script>
-  <script src="game/summary.js?v=20261010s"></script>
-  <script src="game/skills.js?v=20261010s"></script>
-  <script src="game/save.js?v=20261010s"></script>
-  <script src="game/page-build.js?v=20261010s"></script>
-  <script src="game/page-show.js?v=20261010s"></script>
-  <script src="game/fights.js?v=20261010s"></script>
-  <script src="game/feel.js?v=20261010s"></script>
-  <script src="game/start.js?v=20261010s"></script>
-  <script src="cloud.js?v=20261010s"></script>
+  <script src="game/state.js?v=20261010t"></script>
+  <script src="game/bonuses.js?v=20261010t"></script>
+  <script src="game/legend.js?v=20261010t"></script>
+  <script src="game/weekly.js?v=20261010t"></script>
+  <script src="game/equipment.js?v=20261010t"></script>
+  <script src="game/abilities.js?v=20261010t"></script>
+  <script src="game/bosses.js?v=20261010t"></script>
+  <script src="game/summary.js?v=20261010t"></script>
+  <script src="game/skills.js?v=20261010t"></script>
+  <script src="game/save.js?v=20261010t"></script>
+  <script src="game/page-build.js?v=20261010t"></script>
+  <script src="game/page-show.js?v=20261010t"></script>
+  <script src="game/fights.js?v=20261010t"></script>
+  <script src="game/feel.js?v=20261010t"></script>
+  <script src="game/start.js?v=20261010t"></script>
+  <script src="cloud.js?v=20261010t"></script>
 </body>
 </html>

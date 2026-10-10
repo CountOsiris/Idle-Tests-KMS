@@ -83,6 +83,12 @@ function damagePerTurn() {
   return recentDamage;
 }
 
+// Damage a class deals that must NOT count as "your damage per turn": the Void Tome's
+// tear is a share of the enemy's health, and an ability worth "3 turns" of that would
+// take three shares at once, on any floor. A class adds to this as it deals such damage,
+// and the fight takes it off before it calls recordTurnDamage.
+let damageNotCounted = 0;
+
 // Runs at the end of each turn with the damage the normal turn did. Each turn counts
 // for a fifth, so the number follows changes quickly but is not thrown by one big hit.
 function recordTurnDamage(dealt) {
@@ -208,7 +214,7 @@ function useAbilities() {
       announce("banner", ability.name + ": rank " + abilityRank(id), "Everything it does is now x" + big(1 + abilityRankPower * abilityRank(id)) + ".");
     }
     // (the Quick Hands keystone shortens every cooldown: "quickHands")
-    abilityCooldowns[id] = Math.max(1, Math.ceil(ability.cooldown * (1 - totalBonus("quickHands"))));
+    abilityCooldowns[id] = Math.max(1, Math.ceil(ability.cooldown * (1 - Math.min(mostCooldownCut, totalBonus("quickHands")))));
     abilityPressed[id] = false;
     lastAbilityUsed = ability;
     say("You use " + ability.name + "!");

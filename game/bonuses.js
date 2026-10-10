@@ -446,7 +446,8 @@ function townUpgradeIsMaxed(item) {
 // (The Iron Skin keystone raises the limit: "armorLimit".)
 function armorShareBlocked() {
   let armor = Math.max(0, totalArmor());
-  return (maxArmorShare + totalBonus("armorLimit")) * armor / (armor + armorHalfBase + armorHalfPerFloor * floor);
+  let limit = Math.min(mostArmorShare, maxArmorShare + totalBonus("armorLimit"));
+  return limit * armor / (armor + armorHalfBase + armorHalfPerFloor * floor);
 }
 
 function totalArmor() {
@@ -466,11 +467,16 @@ function fitsBuild(thing) {
 // Rare finds that change how a run plays (see "Relics" in data.js for where they come from).
 // A relic that only works with another weapon is never given.
 function gainRelic() {
+  // (and never one that is already held as often as a relic can be: relicMostCopies in data.js)
   let choices = [];
   for (let relic of allRelics()) {
-    if (fitsBuild(relic)) {
+    let held = ownedRelics.filter(function (id) { return id === relic.id; }).length;
+    if (fitsBuild(relic) && held < relicMostCopies) {
       choices.push(relic);
     }
+  }
+  if (choices.length === 0) {
+    return;
   }
   let relic = choices[Math.floor(Math.random() * choices.length)];
 

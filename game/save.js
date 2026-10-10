@@ -340,9 +340,10 @@ function unpackClass(saved) {
   ascensionSeconds = data.ascensionSeconds;
   lastAscensionFame = data.lastAscensionFame;
   ascensionFame = data.ascensionFame;
-  runStartFloor = data.runStartFloor;
+  // (a run cannot have started, or swept, above the floor it is on)
+  runStartFloor = Math.max(1, Math.min(data.runStartFloor, floor));
   cruising = data.cruising;
-  cruiseFloor = data.cruiseFloor;
+  cruiseFloor = Math.max(runStartFloor, Math.min(data.cruiseFloor, floor));
 
   // Saves from before this was counted: until then, fame only came from new floors
   if (saved !== undefined && saved.ascensionFame === undefined) {

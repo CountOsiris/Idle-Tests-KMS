@@ -278,9 +278,26 @@ function showTown() {
     }
   }
 
-  // The picker only appears once the Tactician has been hired
+  // The Tactician's list only appears once he has been hired. Every boon says what it
+  // does, and one that needs another weapon says so: a boss never gives it meanwhile.
   document.getElementById("favourite-upgrade").hidden = totalBonus("favouriteUpgrade") < 1;
-  showFavourite("favourite-upgrade-buttons", "favourite-upgrade-" + favouriteUpgrade);
+  fillRow("favourite-upgrade-", "No favourite", "Every boss gives a boon picked at random from the ones that suit your weapon.", favouriteUpgrade === "" ? "Chosen" : "Choose", favouriteUpgrade === "");
+  document.getElementById("favourite-upgrade-").className = favouriteUpgrade === "" ? "chosen" : "";
+
+  let favouriteNote = "Bosses give your favourite every time. Each level of a boon also gives +" + percent(bossUpgradePower) + " attack and health.";
+  for (let upgrade of currentClass().upgrades) {
+    let chosen = favouriteUpgrade === upgrade.id;
+    let note = upgrade.text + " per level.";
+    if (!fitsBuild(upgrade)) {
+      note = note + " NOT GIVEN RIGHT NOW: it only works with the " + buildKinds()[upgrade.build] + ", and you are using the " + buildKinds()[kindInHand()] + ".";
+      if (chosen) {
+        favouriteNote = "Your favourite, " + upgrade.name + ", only works with the " + buildKinds()[upgrade.build] + ". While you use the " + buildKinds()[kindInHand()] + ", bosses give a random boon instead.";
+      }
+    }
+    fillRow("favourite-upgrade-" + upgrade.id, upgrade.name, note, chosen ? "Chosen" : "Choose", chosen);
+    document.getElementById("favourite-upgrade-" + upgrade.id).className = chosen ? "chosen" : "";
+  }
+  document.getElementById("favourite-upgrade-note").textContent = favouriteNote;
 
   showBlacksmith();
 

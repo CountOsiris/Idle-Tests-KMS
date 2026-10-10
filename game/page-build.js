@@ -155,13 +155,14 @@ function buildClassScreen() {
     });
   }
 
-  let favouriteBox = document.getElementById("favourite-upgrade-buttons");
+  // The Tactician's list: one row for each boon, with what it does (filled in by showTown)
+  let favouriteBox = document.getElementById("favourite-upgrade-rows");
   favouriteBox.innerHTML = "";
-  addFavouriteButton(favouriteBox, "favourite-upgrade-", "None", function () {
+  addRow(favouriteBox, "favourite-upgrade-", function () {
     chooseFavouriteUpgrade("");
   });
   for (let upgrade of currentClass().upgrades) {
-    addFavouriteButton(favouriteBox, "favourite-upgrade-" + upgrade.id, upgrade.name, function () {
+    addRow(favouriteBox, "favourite-upgrade-" + upgrade.id, function () {
       chooseFavouriteUpgrade(upgrade.id);
     });
   }

@@ -80,6 +80,41 @@ element (20% faster than its class to floor 50, about 35% to floor 75). Lowering
 perks and its stun chance did not change that. Void Tome is the other build well ahead
 of its class late (about 35% to floor 75). Both are inside the target to floor 50.
 
+## Deep scaling, measured and fixed (later in October 2026)
+
+Players reported that some characters scale out of control. `bash tools/run.sh sim
+"h=100,every,ascend,killers"` plays every build for 100 hours and reports floors 150 to
+500 and the deepest floor reached. The first run: the deepest floor ranged from 121
+(Mace and Shield) to 539 (Stiletto), and a Void Tome reached floor 23,195 without
+falling. Three causes, in the order found:
+
+1. **The Void Tome's tear was multiplied by fame.** It is "a share of the enemy's
+   health", but it went through the spell's damage, so fame's Might multiplied it until
+   one spell removed more than all of any monster's health. It is now taken straight
+   off the enemy and nothing makes it bigger. It also no longer counts as "your damage
+   per turn", or an ability worth 3 turns would take three shares at once.
+2. **Relics piled up without limit.** A run hundreds of floors long held the same relic
+   dozens of times: abilities with no cooldown, armor that blocked everything. One relic
+   can now be held three times (`relicMostCopies`), cooldowns are never cut by more than
+   60%, and armor never blocks more than 85%. This also removed the luck: two 100-hour
+   runs of the same build used to differ by a factor of three, and now agree within 10%.
+3. **Builds whose damage comes late in a fight fell behind.** Deep in the tower a fight
+   lasts a turn or two, so bleeding, poison, and blows that answer a dodge or a block
+   never arrive. The floor 50 and 100 perks of the Axe, Shadow Blade, Mace and Shield
+   and Venom Dagger now also multiply attack (and health for the first three). The
+   Barbarian's floor 75 perks multiply attack where they used to add to it. The
+   Stiletto's and Ice's critical perks went from x2 to x1.6, and Earth was trimmed.
+
+After (one 100-hour run of each build; two runs differ by about 10%):
+
+| | before | after |
+|---|---|---|
+| Hours to floor 100 | 13.6 to 49 | 15.3 to 33.6 |
+| Deepest floor in 100 hours | 121 to 539, and one that never fell | 164 to 285 |
+
+Slowest to floor 100 now: Shadow Blade (33.6), Mace and Shield (33.3), Axe (32.5).
+Fastest: Arcane Tome (15.3), Longbow (16.6), Stiletto (17.2).
+
 ## Proposed
 
 - **Balance target:** for every class, each weapon build reaches floor 50 within

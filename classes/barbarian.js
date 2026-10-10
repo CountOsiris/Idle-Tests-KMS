@@ -112,9 +112,9 @@ classes.barbarian = {
       perks: [
         { id: "juggernaut", name: "Juggernaut", text: "health x1.5 and +5 armor", bonus: { armor: 5 }, multiply: { health: 1.5 } },
         { id: "berserker", name: "Ravager", text: "+30% attack and +10% lifesteal", bonus: { attackPercent: 0.3, lifesteal: 0.1 } },
-        { id: "flayer", name: "Flayer", text: "Axe: bleeding damage x2.5", multiply: { bleed: 2.5 } },
-        { id: "swordmaster", name: "Swordmaster", text: "Sword: critical hit damage x1.5", multiply: { swordCrit: 1.5 } },
-        { id: "bonebreaker", name: "Bonebreaker", text: "Club: damage of every hit x1.6", multiply: { club: 1.6 } },
+        { id: "flayer", name: "Flayer", text: "Axe: bleeding damage x2.5, attack x1.8 and health x1.3", multiply: { bleed: 2.5, attack: 1.8, health: 1.3 } },
+        { id: "swordmaster", name: "Swordmaster", text: "Sword: critical hit damage x1.8", multiply: { swordCrit: 1.8 } },
+        { id: "bonebreaker", name: "Bonebreaker", text: "Club: damage of every hit x1.9", multiply: { club: 1.9 } },
         { id: "frenzy", name: "Frenzy", text: "Rage x3: three times the bonus damage while below half health", multiply: { rage: 3 } }
       ]
     },
@@ -134,12 +134,12 @@ classes.barbarian = {
     {
       floor: 75,
       perks: [
-        { id: "warlord", name: "Warlord", text: "+50% attack", bonus: { attackPercent: 0.5 } },
+        { id: "warlord", name: "Warlord", text: "attack x1.6", multiply: { attack: 1.6 } },
         { id: "unbreakable", name: "Unbreakable", text: "health x1.75", multiply: { health: 1.75 } },
-        { id: "bloodletter", name: "Bloodletter", text: "Axe: +25% attack, +4 bleed stacks and bleeding deals +50% damage", bonus: { attackPercent: 0.25, bleedStacks: 4, dotPower: 0.5 } },
-        { id: "blademaster", name: "Blademaster", text: "Sword: +25% attack, +10% critical and parry chance, +60% critical damage", bonus: { attackPercent: 0.25, critChance: 0.1, parryChance: 0.1, critPower: 0.6 } },
-        { id: "earthshaker", name: "Earthshaker", text: "Club: +25% attack, +10% stun chance and hits deal +40% damage", bonus: { attackPercent: 0.25, stunChance: 0.1, clubPower: 0.4 } },
-        { id: "bloodrage", name: "Unchained", text: "+25% attack, and Rage: +100% damage while below half health", bonus: { attackPercent: 0.25, rage: 1 } },
+        { id: "bloodletter", name: "Bloodletter", text: "Axe: attack x1.4, +4 bleed stacks and bleeding deals +50% damage", bonus: { bleedStacks: 4, dotPower: 0.5 }, multiply: { attack: 1.4 } },
+        { id: "blademaster", name: "Blademaster", text: "Sword: attack x1.4, +10% critical and parry chance, +60% critical damage", bonus: { critChance: 0.1, parryChance: 0.1, critPower: 0.6 }, multiply: { attack: 1.4 } },
+        { id: "earthshaker", name: "Earthshaker", text: "Club: attack x1.4, +10% stun chance and hits deal +40% damage", bonus: { stunChance: 0.1, clubPower: 0.4 }, multiply: { attack: 1.4 } },
+        { id: "bloodrage", name: "Unchained", text: "attack x1.4, and Rage: +100% damage while below half health", bonus: { rage: 1 }, multiply: { attack: 1.4 } },
         { id: "scarredHide", name: "Scarred Hide", text: "You take 25% less damage", multiply: { damageTaken: 0.75 } }
       ]
     },
@@ -148,7 +148,7 @@ classes.barbarian = {
       perks: [
         { id: "bloodGod", name: "Blood God", text: "+15% lifesteal, and Rage x3 again", bonus: { lifesteal: 0.15 }, multiply: { rage: 3 } },
         { id: "titan", name: "Titan", text: "health x2 and +10 armor", bonus: { armor: 10 }, multiply: { health: 2 } },
-        { id: "reaver", name: "Reaver", text: "Axe: bleeding damage x2.5 again", multiply: { bleed: 2.5 } },
+        { id: "reaver", name: "Reaver", text: "Axe: bleeding damage x2.5 again, attack x2 and health x1.5", multiply: { bleed: 2.5, attack: 2, health: 1.5 } },
         { id: "swordSaint", name: "Sword Saint", text: "Sword: critical hit damage x1.5 again", multiply: { swordCrit: 1.5 } },
         { id: "worldbreaker", name: "Worldbreaker", text: "Club: damage of every hit x1.6 again", multiply: { club: 1.6 } }
       ]

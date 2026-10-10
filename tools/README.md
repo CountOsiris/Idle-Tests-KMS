@@ -27,7 +27,15 @@ bash tools/balance.sh 30 5 50 ranger  hours, runs, floor, and one class only
 ```
 
 Says how each weapon or element compares with the average of its class, and marks any
-that is more than 25% off. Run it after changing a class, a boss or a tower. When a
+that is more than 25% off. For the deep game, play everything for 100 hours and read
+floors 100 to 500 and "best":
+
+```
+bash tools/run.sh sim "h=100,every,ascend,killers"
+```
+
+A build whose "best" is several times the others', or that has no killers at all, has
+found something that grows without limit. Run it after changing a class, a boss or a tower. When a
 build looks wrong, ask the bot what is killing it before changing its numbers:
 
 ```

@@ -226,7 +226,7 @@ function run(className, weaponType, stanceId, hours, ascending, keepAccount) {
   lastBestAt = 0;
   maxSouls = 0;
 
-  let marks = [5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 60, 75, 100];
+  let marks = [5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 60, 75, 100, 150, 200, 300, 500];
   let reached = {};
   let deathsBefore = deaths;
   let lastDeaths = deaths;
@@ -266,7 +266,7 @@ function run(className, weaponType, stanceId, hours, ascending, keepAccount) {
 
   let line = className + "/" + (stanceId || weaponType) + (TOWER !== "" ? " in " + towers[tower].name : "") + "  ";
   line = line + marks.map(function (m) { return "F" + m + " " + (reached[m] === undefined ? "-" : hoursText(reached[m])); }).join("  ");
-  line = line + "  | deaths " + (deaths - deathsBefore) + ", level " + level + ", most boons " + mostBoons + ", attack " + big(playerAttack) + ", health " + big(playerMaxHp) + ", armor " + big(totalArmor());
+  line = line + "  | best " + bestFloor + ", deaths " + (deaths - deathsBefore) + ", level " + level + ", most boons " + mostBoons + ", attack " + big(playerAttack) + ", health " + big(playerMaxHp) + ", armor " + big(totalArmor());
   if (ascending) {
     line = line + ", ascensions " + ascensionsDone;
   }

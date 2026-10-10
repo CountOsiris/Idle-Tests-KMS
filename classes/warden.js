@@ -114,7 +114,7 @@ classes.warden = {
       perks: [
         { id: "bastion", name: "Bastion", text: "health x1.5 and +6 armor", bonus: { armor: 6 }, multiply: { health: 1.5 } },
         { id: "retribution", name: "Retribution", text: "+25% attack and +25% shield damage (reflected or thrown)", bonus: { attackPercent: 0.25, shieldPower: 0.25 } },
-        { id: "thornwall", name: "Thornwall", text: "Spiked Shield: reflected damage x2.5", multiply: { reflect: 2.5 } },
+        { id: "thornwall", name: "Thornwall", text: "Spiked Shield: reflected damage x2.5, and health x1.3", multiply: { reflect: 2.5, health: 1.3 } },
         { id: "phalanxCaptain", name: "Phalanx Captain", text: "Tower Shield: spear damage x1.6", multiply: { spear: 1.6 } },
         { id: "razorDisc", name: "Razor Disc", text: "Bladed Shield: thrown shield damage x2", multiply: { throw: 2 } },
         { id: "bloodDebt", name: "Blood Debt", text: "Vengeance x4: four times as much of each hit you take is paid back", multiply: { vengeance: 4 } }
@@ -150,7 +150,7 @@ classes.warden = {
       perks: [
         { id: "unyielding", name: "Unyielding", text: "health x2 and +12 armor", bonus: { armor: 12 }, multiply: { health: 2 } },
         { id: "vengeance", name: "Wrath", text: "+50% attack and +50% shield damage (reflected or thrown)", bonus: { attackPercent: 0.5, shieldPower: 0.5 } },
-        { id: "crownOfThorns", name: "Crown of Thorns", text: "Spiked Shield: reflected damage x2.5 again", multiply: { reflect: 2.5 } },
+        { id: "crownOfThorns", name: "Crown of Thorns", text: "Spiked Shield: reflected damage x2.5 again, and health x1.5", multiply: { reflect: 2.5, health: 1.5 } },
         { id: "lastLine", name: "Last Line", text: "Tower Shield: spear damage x1.6 again", multiply: { spear: 1.6 } },
         { id: "stormOfSteel", name: "Storm of Steel", text: "Bladed Shield: thrown shield damage x2 again", multiply: { throw: 2 } },
         { id: "reckoning", name: "Reckoning", text: "Vengeance x4 again", multiply: { vengeance: 4 } }

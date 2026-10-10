@@ -91,6 +91,18 @@ try {
   showClassButtons();
   check("locked classes (" + lockedClasses.length + ") stay locked until opened" + (lockProblems.length === 0 ? "" : ": " + lockProblems.join("; ")), lockedClasses.length === 1 && lockProblems.length === 0);
 
+  // A probe on every death for the rest of the check: no run may start above the floor
+  // the last one ended on (players reported that it sometimes did)
+  let higherStarts = [];
+  let realDie = die;
+  die = function () {
+    let fellOn = floor;
+    realDie();
+    if (floor > fellOn) {
+      higherStarts.push(playerClass + " fell on " + fellOn + " and started on " + floor);
+    }
+  };
+
   // 2. Every class plays, and every tab draws
   for (let className in classes) {
     if (className !== playerClass) {
@@ -753,6 +765,87 @@ try {
   animationsOn = animating;
   check("double speed: " + fastSteps + " steps a second with it on" + (document.hidden ? " (the test page is hidden, so it stays at 1)" : "") + ", " + stepsTaken + " with it off",
     stepsTaken === 1 && fastSteps === (document.hidden ? 1 : watchSpeedFast));
+  startEncounter();
+
+  // 3i2. The Void Tome's tear is a share of the enemy's health that nothing makes bigger
+  if (classes.warlock !== undefined) {
+    let playing = playerClass;
+    switchClass("warlock");
+    let tomeWas = weapon;
+    let fameWas = fameLevels;
+    weapon = "void";
+    fameLevels = { might: 60 };
+    ascensions = 60;
+    recalcStats();
+    floor = 300;
+    encounterType = "monster";
+    spawnMonster(false);
+    monsterWard = 0;
+    let hpWas = monsterHp;
+    let attackWas = playerAttack;
+    playerAttack = 0;
+    warlockCast(1);
+    let tornShare = (hpWas - monsterHp) / monsterMaxHp;
+    playerAttack = attackWas;
+    check("Void Tome: one spell tears away " + percent(voidShare()) + " of the enemy's health, however much fame the account has (" + percent(tornShare) + " at Might 60)", Math.abs(tornShare - voidShare()) < 0.01 && tornShare <= maxVoidShare);
+    weapon = tomeWas;
+    fameLevels = fameWas;
+    ascensions = 0;
+    floor = 1;
+    recalcStats();
+    startEncounter();
+    switchClass(playing);
+  }
+
+  // 3i3. Nothing piles up without limit: relic copies, cooldown cuts, armor
+  ownedRelics = [];
+  for (let i = 0; i < 400; i++) {
+    gainRelic();
+  }
+  let mostHeld = 0;
+  for (let relic of allRelics()) {
+    mostHeld = Math.max(mostHeld, ownedRelics.filter(function (id) { return id === relic.id; }).length);
+  }
+  let anyAbilityNow = classAbilities().find(function (ability) { return fitsBuild(ability); });
+  abilitySlots = [anyAbilityNow.id];
+  resetAbilitiesForRun();
+  abilityPressed[anyAbilityNow.id] = true;
+  encounterType = "monster";
+  monsterMaxHp = 1e12;
+  monsterHp = 1e12;
+  useAbilities();
+  forgeLevels = { weapon: 0, armor: 400 };
+  recalcStats();
+  check("limits: at most " + relicMostCopies + " of one relic (" + ownedRelics.length + " held after 400 finds), cooldowns never cut by more than " + percent(mostCooldownCut) + " (" + anyAbilityNow.name + " " + abilityCooldowns[anyAbilityNow.id] + " of " + anyAbilityNow.cooldown + "), armor never past " + percent(mostArmorShare) + " (" + percent(armorShareBlocked()) + ")",
+    mostHeld === relicMostCopies && abilityCooldowns[anyAbilityNow.id] >= Math.ceil(anyAbilityNow.cooldown * (1 - mostCooldownCut)) && armorShareBlocked() <= mostArmorShare);
+  ownedRelics = [];
+  abilitySlots = [];
+  forgeLevels = { weapon: 0, armor: 0 };
+  resetAbilitiesForRun();
+  recalcStats();
+  startEncounter();
+
+  // 3j. Starting floors, and the Tactician's list
+  cruiseFloor = 40;
+  runStartFloor = 1;
+  floor = 12;
+  realDie();
+  check("a run never starts above the floor the last one ended on (fell on 12 with a sweep of 40 remembered: started on " + floor + "; " + (deaths - 0) + " deaths watched, " + higherStarts.length + " started higher)", floor <= 12 && higherStarts.length === 0);
+
+  townLevels.tactician = 1;
+  let otherBoon = currentClass().upgrades.find(function (u) { return u.build !== undefined && !fitsBuild(u); });
+  if (otherBoon !== undefined) {
+    favouriteUpgrade = otherBoon.id;
+    showTab("town");
+    updateScreen();
+    let rowNote = document.getElementById("favourite-upgrade-" + otherBoon.id + "-note").textContent;
+    let topNote = document.getElementById("favourite-upgrade-note").textContent;
+    check("the Tactician's list says what each boon does, and that " + otherBoon.name + " is not given with this weapon",
+      rowNote.includes(otherBoon.text) && rowNote.includes("NOT GIVEN RIGHT NOW") && topNote.includes(otherBoon.name) && !document.getElementById("favourite-upgrade").hidden);
+    favouriteUpgrade = "";
+  }
+  delete townLevels.tactician;
+  recalcStats();
   startEncounter();
 
   // A newer tab taking over stops this one from saving
