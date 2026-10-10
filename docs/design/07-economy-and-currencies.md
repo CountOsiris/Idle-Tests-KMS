@@ -51,5 +51,7 @@ in on rather than click in.
 - **Blacksmith milestones:** every 25 steps, a multiplier (x2 power) that shows as a
   banner: AdVenture Capitalist's purchase-spike trick, and a "HUGE" moment that costs
   nothing to build.
-- Potions: price scales with floor reached; a "keep stocked" toggle buys them at death.
+- **Built October 2026.** Potions: the price rises by 150 gold for every 10 floors of the
+  class's best since ascending, and a tick box in town fills the belt from the bank at
+  every fall.
 - Show expected experience on the Character tab ("about 3 more falls to level 46").

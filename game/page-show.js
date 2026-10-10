@@ -302,8 +302,10 @@ function showTown() {
   showBlacksmith();
 
   document.getElementById("potions").textContent = potions + " / " + potionLimit();
-  document.getElementById("potion-btn").textContent = potionPrice + " gold";
-  document.getElementById("potion-btn").disabled = potions >= potionLimit() || bank < potionPrice;
+  document.getElementById("potion-btn").textContent = big(potionCost()) + " gold";
+  document.getElementById("potion-btn").disabled = potions >= potionLimit() || bank < potionCost();
+  document.getElementById("keep-potions-box").checked = keepPotions;
+  document.getElementById("potion-price-note").textContent = "The price rises by " + potionPrice + " gold for every " + potionPriceFloors + " floors of your best since ascending (" + ascensionBest + ").";
 }
 
 // What a piece of equipment gives at a step: "+12 attack" or "+6 armor"

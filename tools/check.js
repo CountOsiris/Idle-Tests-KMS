@@ -858,6 +858,29 @@ try {
   recalcStats();
   startEncounter();
 
+  // 3i6. Potions: the price follows the best floor, and the belt can keep itself full
+  let bestWas = ascensionBest;
+  ascensionBest = 9;
+  let cheap = potionCost();
+  ascensionBest = 25;
+  let dear = potionCost();
+  potions = 0;
+  gold = 0;
+  bank = dear * 3 + 5;
+  keepPotions = true;
+  realDie();
+  let stocked = potions;
+  let bankLeft = bank;
+  keepPotions = false;
+  potions = 0;
+  bank = dear * 3;
+  realDie();
+  check("potions: " + cheap + " gold below floor 10 and " + dear + " at floor 25; a full bank buys " + stocked + " on a fall with the box ticked and " + potions + " without",
+    cheap === potionPrice && dear === potionPrice * 3 && stocked === 3 && bankLeft === 5 && potions === 0);
+  ascensionBest = bestWas;
+  bank = 0;
+  startEncounter();
+
   // 3j. Starting floors, and the Tactician's list
   cruiseFloor = 40;
   runStartFloor = 1;

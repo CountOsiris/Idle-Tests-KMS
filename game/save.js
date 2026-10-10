@@ -241,7 +241,8 @@ function freshClass(className) {
     legends: 0,
     abilityUses: {},
     namedWeapon: "",
-    bossWeapon: ""
+    bossWeapon: "",
+    keepPotions: false
   };
 }
 
@@ -292,7 +293,8 @@ function packClass() {
     legends: legends,
     abilityUses: abilityUses,
     namedWeapon: namedWeapon,
-    bossWeapon: bossWeapon
+    bossWeapon: bossWeapon,
+    keepPotions: keepPotions
   };
 }
 
@@ -321,6 +323,7 @@ function unpackClass(saved) {
   townLevels = data.townLevels;
   favouriteUpgrade = data.favouriteUpgrade;
   potions = data.potions;
+  keepPotions = data.keepPotions === true;
 
   // In case a favourite was renamed or removed since the save was made
   let favouriteExists = false;

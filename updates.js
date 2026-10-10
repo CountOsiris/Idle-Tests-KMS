@@ -13,6 +13,14 @@
 
 const gameUpdates = [
   {
+    version: "20261010y",
+    title: "Potions that keep themselves stocked",
+    changes: [
+      "A tick box in town fills your potion belt from the bank every time you fall.",
+      "A potion now costs more the deeper you have been: 150 gold more for every 10 floors."
+    ]
+  },
+  {
     version: "20261010x",
     title: "More time away",
     changes: [

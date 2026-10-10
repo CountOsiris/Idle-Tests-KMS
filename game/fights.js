@@ -265,6 +265,10 @@ function die() {
   levelUpWhilePossible();
   bank = bank + gold;
   gold = 0;
+  let restocked = restockPotions();
+  if (restocked > 0) {
+    say("You restock " + restocked + " healing " + (restocked === 1 ? "potion" : "potions") + " for " + big(restocked * potionCost()) + " gold.");
+  }
   upgrades = {};
   // (relic slots, won in other towers, keep the first relics claimed this run)
   ownedRelics = ownedRelics.slice(0, totalBonus("relicSlots"));

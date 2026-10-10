@@ -300,12 +300,34 @@ function potionLimit() {
   return maxPotions + totalBonus("potionSlots");
 }
 
+// What one potion costs right now (see potionPriceFloors in data.js)
+function potionCost() {
+  return potionPrice * (1 + Math.floor(ascensionBest / potionPriceFloors));
+}
+
 function buyPotion() {
-  if (potions < potionLimit() && bank >= potionPrice) {
-    bank = bank - potionPrice;
+  if (potions < potionLimit() && bank >= potionCost()) {
+    bank = bank - potionCost();
     potions = potions + 1;
     updateScreen();
   }
+}
+
+function setKeepPotions(on) {
+  keepPotions = on;
+  updateScreen();
+}
+
+// Runs when you fall, after the gold has been banked: fills the belt if asked to.
+// Gives back how many were bought.
+function restockPotions() {
+  let bought = 0;
+  while (keepPotions && potions < potionLimit() && bank >= potionCost()) {
+    bank = bank - potionCost();
+    potions = potions + 1;
+    bought = bought + 1;
+  }
+  return bought;
 }
 
 // ----- Boss upgrades (the page calls them BOONS) -----

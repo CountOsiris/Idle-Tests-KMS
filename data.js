@@ -496,6 +496,12 @@ const awayReportAfter = 60;
 // Healing potions: the price of one, how many you can carry before any town
 // upgrades, and how much of your health one heals (0.5 means half)
 const potionPrice = 150;
+
+// A potion costs more the deeper the class has been since it last ascended: the price
+// above, again for every potionPriceFloors floors of its best (10 means 150 up to floor
+// 9, 300 from floor 10, 450 from floor 20...). A potion heals a share of your health, so
+// it is worth more deep down, and a price that never moved made it free by floor 30.
+const potionPriceFloors = 10;
 const maxPotions = 5;
 const potionHealing = 0.5;
 

@@ -57,6 +57,9 @@ let townLevels = {};
 let favouriteUpgrade = "";
 let potions = 0;
 
+// true = the belt is filled from the bank every time the class falls (the tick box in town)
+let keepPotions = false;
+
 // Which tower the class is climbing, which one it enters after its next death,
 // and the best floor it has reached in each, for example { barbarian: 12, warden: 4 }
 let tower = "";
