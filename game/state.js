@@ -240,9 +240,10 @@ function typeMultiplier(type) {
   if (type === undefined) {
     return 1;
   }
+  // (the Exploit technique makes a hit on a weakness worth more)
   if (listHasType(monsterWeak, type)) {
     boostedHits = boostedHits + 1;
-    return 1 + weakAmount;
+    return 1 + weakAmount + totalBonus("exploit");
   }
   if (listHasType(monsterResist, type)) {
     resistedHits = resistedHits + 1;

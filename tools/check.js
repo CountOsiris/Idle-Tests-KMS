@@ -393,6 +393,72 @@ try {
   check("the Towers tab lists the tiers", document.getElementById("towers").textContent.includes("Rule for challengers") && document.getElementById("towers").textContent.includes("floor 100"));
   startEncounter();
 
+  // 3g. The rewards ladder: with every trophy won, the abilities work and the techniques bite
+  let trophiesBefore = trophies;
+  trophies = Object.keys(trophyIds);
+  recalcStats();
+  playerHp = playerMaxHp;
+  let ladderProblems = [];
+  for (let towerName in towers) {
+    let kinds = towers[towerName].trophies.map(function (t) {
+      return t.ability !== undefined ? "ability" : (t.bonus !== undefined && t.bonus.relicSlots !== undefined ? "slot" : "other");
+    });
+    if (kinds[3] !== "ability" || kinds[4] !== "slot") {
+      ladderProblems.push(towers[towerName].name + " does not teach an ability at 50 and give a relic slot at 75");
+    }
+  }
+  let taught = classAbilities().filter(function (a) { return a.id.startsWith("tower"); });
+  for (let ability of taught) {
+    floor = 10;
+    encounterType = "boss";
+    spawnMonster(true);
+    let hpWas = monsterHp;
+    playerHp = Math.round(playerMaxHp / 2);
+    let mineWas = playerHp;
+    ability.use();
+    if (!(monsterHp < hpWas || playerHp > mineWas || guardTurns > 0 || boostTurns > 0 || monsterStunned)) {
+      ladderProblems.push(ability.name + " did nothing");
+    }
+    resetAbilitiesForRun();
+    monsterStunned = false;
+  }
+  check("the ladder: " + taught.length + " abilities taught by trophies" + (ladderProblems.length === 0 ? ", all work" : ": " + ladderProblems.join("; ")), taught.length === 7 && ladderProblems.length === 0);
+
+  ownedRelics = ["trollHeart", "whetstone", "dragonscale", "goldenIdol", "trollHeart", "trollHeart", "trollHeart", "trollHeart"];
+  let slotsWon = totalBonus("relicSlots");
+  die();
+  check("relic slots: " + slotsWon + " won, " + ownedRelics.length + " relics kept through a fall", slotsWon === 7 && ownedRelics.length === 7);
+
+  encounterType = "monster";
+  spawnMonster(false);
+  monsterAttack = 100;
+  monsterMaxHp = 1000000;
+  monsterHp = 1000000;
+  let dodging = currentClass().whenAttacked;
+  currentClass().whenAttacked = function () { return false; };
+  let landed = 0;
+  let thrownBack = 0;
+  for (let i = 0; i < 400; i++) {
+    playerHp = playerMaxHp;
+    let before = monsterHp;
+    let mine = playerHp;
+    monsterAttack = 100;
+    monsterAttacks();
+    if (playerHp < mine) {
+      landed = landed + 1;
+      thrownBack = thrownBack + (before - monsterHp);
+    }
+  }
+  currentClass().whenAttacked = dodging;
+  check("techniques: Sidestep avoids some attacks (" + (400 - landed) + " of 400) and Brace throws the rest back", landed < 400 && landed > 320 && thrownBack > 0);
+
+  trophies = trophiesBefore;
+  ownedRelics = [];
+  recalcStats();
+  playerHp = playerMaxHp;
+  runStats = freshRunStats();
+  startEncounter();
+
   // A newer tab taking over stops this one from saving
   let markBefore = localStorage.getItem(saveName);
   window.dispatchEvent(new StorageEvent("storage", { key: tabMarkName, newValue: "a newer tab" }));

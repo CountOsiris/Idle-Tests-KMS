@@ -49,11 +49,19 @@ function recordTurnDamage(dealt) {
 
 const abilityModeNames = { auto: "Auto", bosses: "Bosses only", manual: "Manual" };
 
+// The abilities the class can put in a slot: its own, and the ones its trophies have
+// taught it (a trophy with an  ability:  in towers.js)
 function classAbilities() {
-  if (currentClass().abilities === undefined) {
-    return [];
+  let list = currentClass().abilities === undefined ? [] : currentClass().abilities;
+
+  for (let towerName in towers) {
+    for (let trophy of towers[towerName].trophies) {
+      if (trophy.ability !== undefined && trophies.includes(trophy.id)) {
+        list = list.concat([trophy.ability]);
+      }
+    }
   }
-  return currentClass().abilities;
+  return list;
 }
 
 function abilityById(id) {
@@ -246,14 +254,29 @@ function abilityDamageBoost() {
   return runDamageBoost();
 }
 
-// Keystones that grow stronger as a run goes on (see keystoneMilestones in data.js):
+// Damage that depends on how the run or the fight stands. From keystones (see
+// keystoneMilestones in data.js):
 //   killStreak  every kill this run adds this much damage
 //   momentum    every floor swept through at the start of the run adds this much
-// Each stops at keystoneRunLimit (1 means +100%).
+// Each of those stops at keystoneRunLimit (1 means +100%). And from trophies (towers.js):
+//   bossSlayer  against a boss
+//   opener      on the first turn of a fight
+//   finisher    against an enemy below half health
 function runDamageBoost() {
   let streak = Math.min(keystoneRunLimit, totalBonus("killStreak") * runStats.kills);
   let momentum = Math.min(keystoneRunLimit, totalBonus("momentum") * (runStartFloor - 1));
-  return 1 + streak + momentum;
+  let boost = 1 + streak + momentum;
+
+  if (encounterType === "boss") {
+    boost = boost + totalBonus("bossSlayer");
+  }
+  if (fightTurns === 1) {
+    boost = boost + totalBonus("opener");
+  }
+  if (monsterHp < monsterMaxHp / 2) {
+    boost = boost + totalBonus("finisher");
+  }
+  return boost;
 }
 
 // What a monster's hit is multiplied by while a guard is up (0 means it does nothing)
@@ -293,7 +316,7 @@ function showAbilities() {
   document.getElementById("ability-next").textContent = next;
   document.getElementById("ability-damage").textContent = big(Math.round(damagePerTurn()));
 
-  let key = playerClass + weapon + stance + JSON.stringify(abilitySlots) + JSON.stringify(abilityModes) + openAbilitySlots();
+  let key = playerClass + weapon + stance + JSON.stringify(abilitySlots) + JSON.stringify(abilityModes) + openAbilitySlots() + classAbilities().length;
   if (key === abilitiesShown) {
     return;
   }

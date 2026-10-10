@@ -611,7 +611,7 @@ function showGoals() {
 let relicsShown = "";
 
 function showRelics() {
-  let key = playerClass + ownedRelics.join(",");
+  let key = playerClass + ownedRelics.join(",") + totalBonus("relicSlots");
   if (key === relicsShown) {
     return;
   }
@@ -620,6 +620,10 @@ function showRelics() {
   let box = document.getElementById("relics");
   box.innerHTML = "";
   document.getElementById("relic-count").textContent = ownedRelics.length;
+  let slots = totalBonus("relicSlots");
+  document.getElementById("relic-slots-note").textContent = slots === 0
+    ? "Floor 75 of another class's tower wins a relic slot: a relic you keep when you fall."
+    : "You have " + countOf(slots, "relic slot", "relic slots") + ": the first " + countOf(slots, "relic", "relics") + " you claim in a run " + (slots === 1 ? "is" : "are") + " kept when you fall.";
   document.getElementById("relics-empty").hidden = ownedRelics.length > 0;
 
   // One card for each different relic, saying how many of it are held

@@ -13,6 +13,14 @@
 
 const gameUpdates = [
   {
+    version: "20261010i",
+    title: "Trophies worth the trip",
+    changes: [
+      "Floor 30 of another class's tower now teaches a technique borrowed from that class, such as Brace or Sidestep.",
+      "Floor 50 teaches an ability any class can slot, floor 75 lets you keep a relic when you fall, and floor 100 gives a new rule of your own."
+    ]
+  },
+  {
     version: "20261010h",
     title: "Challenge towers",
     changes: [

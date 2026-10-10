@@ -225,7 +225,8 @@ function die() {
   bank = bank + gold;
   gold = 0;
   upgrades = {};
-  ownedRelics = [];
+  // (relic slots, won in other towers, keep the first relics claimed this run)
+  ownedRelics = ownedRelics.slice(0, totalBonus("relicSlots"));
   lastRunCounter = runCounter;
   runCounter = 0;
   room = 1;
@@ -336,6 +337,12 @@ function monsterAttacks() {
     return;
   }
 
+  // The Sidestep technique: a chance to avoid any attack, whatever the class
+  if (chance(totalBonus("sidestep"))) {
+    say("You sidestep the attack!");
+    return;
+  }
+
   let avoided = currentClass().whenAttacked();
 
   // An avoided attack does nothing more. A reflected attack still lands, even if the
@@ -354,6 +361,11 @@ function monsterAttacks() {
   damage = Math.max(1, Math.round(damage / damageDivider() * multiplier("damageTaken") * abilityGuardFactor()));
   playerHp = playerHp - damage;
   noteTaken(damage);
+
+  // The Brace technique: part of every attack that lands is thrown back
+  if (totalBonus("brace") > 0) {
+    magicHitMonster(monsterAttack * totalBonus("brace"), "piercing");
+  }
 
   if (playerHp <= 0 && !survivesDeath()) {
     die();
@@ -401,12 +413,22 @@ function fightMonster() {
     say("You grope for the enemy in the dark and lose your turn.");
   }
 
+  // TECHNIQUES WON IN OTHER TOWERS (see the trophies in towers.js)
+  // Prayer: a little healing every turn
+  if (totalBonus("prayer") > 0) {
+    healSource = "Prayer";
+    healPlayer(playerMaxHp * totalBonus("prayer"));
+    healSource = "";
+  }
+  // Keen Eye: an enemy that is not a boss misses its first turn
+  let keenEye = fightTurns === 1 && encounterType !== "boss" && totalBonus("headStart") > 0;
+
   // Each time something hurts the monster, a boss's mechanics get to answer (bossTakes
   // in game/bosses.js): a shield puts health back, a minion takes the hit, an aura
   // hurts you for it.
 
   // A lunging monster strikes before you can, unless your class fights from range
-  if (fightTurns === 1 && monsterLunges && currentClass().ranged !== true) {
+  if (fightTurns === 1 && monsterLunges && currentClass().ranged !== true && !keenEye) {
     say("The " + monsterName + " lunges at you before you are ready!");
     let hpBeforeLunge = monsterHp;
     monsterAttacks();
@@ -451,6 +473,17 @@ function fightMonster() {
   }
   let dealtThisTurn = hpBeforeTurn - monsterHp;
   noteRestOfTurn(dealtThisTurn);
+
+  // Bloodthirst: part of what the turn dealt comes back as health (never more than
+  // the enemy had left to lose)
+  if (totalBonus("leech") > 0 && dealtThisTurn > 0) {
+    healSource = "Bloodthirst";
+    healPlayer(Math.min(dealtThisTurn, Math.max(0, hpBeforeTurn)) * totalBonus("leech"));
+    healSource = "";
+  }
+  if (keenEye) {
+    monsterStunned = true;
+  }
   bossTakes(hpBeforeTurn);
   if (deaths !== deathsBefore) {
     return;

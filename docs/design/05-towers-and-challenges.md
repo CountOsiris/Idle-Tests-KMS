@@ -38,6 +38,14 @@ and can challenge the others for permanent unlocks.
   drain in the Abbey. A rule is a set of bonus words added to the challenger's own, so
   a new rule is one line.
 - Every tower has **six tiers**: floors 10, 20, 30, 50, 75 and 100.
+- The tiers pay on a **ladder**, the same in every tower: a percentage at 10 and 20; a
+  percentage and a **technique** at 30 (Bloodthirst, Brace, Keen Eye, Sidestep, Soul
+  Siphon, Exploit, Prayer: each a small piece of that tower's class); an **ability**
+  any class can slot at 50; a **relic slot** at 75 (a relic kept through death; seven
+  towers, so up to six for any one class); and at 100 a **passive** that changes a rule.
+  Techniques and passives are bonus words on the trophy; an ability is written on the
+  trophy the way a class writes its own.
+- Not built: the named weapon at tier 100.
 - Not built: a rule on a single tier ("floor 50 boss within 30 turns"). The plan below
   describes it; a rule for the whole tower was simpler to read and to play idle.
 
