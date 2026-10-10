@@ -116,7 +116,9 @@ throw its own number (shield power from the blacksmith) instead of reading armor
 
 ### D. Readability
 
-- A **run summary** on death: damage by source, healing by source, what killed you,
-  boons held. Two lines in the log and a fuller card on the Character tab.
+- **Built October 2026.** A **run summary** on death: damage by source, healing by
+  source, what killed you, boons held. Two lines in the log and a fuller card ("Last
+  run") on the Character tab. Damage is sorted by its type, with the class's damage
+  over time and its abilities as their own lines (`game/summary.js`).
 - Ability and boss-mechanic icons above the health bars.
 - Optional "watch mode" speed: 1x or 2x step speed while the tab is open.

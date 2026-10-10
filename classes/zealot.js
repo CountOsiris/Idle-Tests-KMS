@@ -37,6 +37,7 @@ classes.zealot = {
   base: { maxHp: 100, attack: 7, armor: 1, devotion: 0.03, smite: 0.15, judgement: 0.6, blockChance: 0.25, counter: 0.6, crusade: 0.01 },
 
   gearLabel: "Holy weapon",
+  healLabel: "Devotion",      // what the class's own healing is called in the run summary
   gearTypes: { mace: "Holy Mace", shield: "Mace and Shield", tome: "Holy Tome" },
   gearIcons: { mace: "🔨", shield: "🛡️", tome: "📖" },
 

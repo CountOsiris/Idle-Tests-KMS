@@ -13,6 +13,14 @@
 
 const gameUpdates = [
   {
+    version: "20261010d",
+    title: "Run summary",
+    changes: [
+      "When you fall, the log says what your damage and healing were made of and what killed you.",
+      "The Character tab has a Last run card with the full breakdown."
+    ]
+  },
+  {
     version: "20261010c",
     title: "Bosses with rules of their own",
     changes: [

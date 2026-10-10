@@ -51,6 +51,7 @@ classes.barbarian = {
   gearIcons: { axe: "🪓", sword: "⚔️", club: "🏏" },
   dotLabel: "Bleeding",
   dotType: "affliction",
+  healLabel: "Lifesteal",     // what the class's own healing is called in the run summary
 
   upgrades: [
     { id: "bloodthirst", name: "Bloodthirst", text: "+5% lifesteal", bonus: { lifesteal: 0.05 } },

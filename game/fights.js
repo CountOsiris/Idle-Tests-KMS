@@ -213,6 +213,7 @@ function die() {
   }
   payout = Math.round(payout);
   say("You fell on floor " + floor + ", earned " + big(payout) + " experience and banked " + big(gold) + " gold.");
+  finishRun();
 
   deaths = deaths + 1;
   experience = experience + payout;
@@ -270,7 +271,14 @@ function victory() {
   reward = Math.round(reward * monsterGold * (1 + totalBonus("gold")) * multiplier("gold"));
   gold = gold + reward;
 
+  healSource = "After a kill";
   healPlayer(playerMaxHp * (healOnKill + fameAdd("healOnKill")));
+  healSource = "";
+
+  runStats.kills = runStats.kills + 1;
+  if (encounterType === "boss") {
+    runStats.bosses = runStats.bosses + 1;
+  }
 
   say("You defeat the " + monsterName + " and earn " + big(reward) + " gold.");
 
@@ -321,12 +329,15 @@ function monsterAttacks() {
   damage = damage + Math.round(attackNow * monsterPoison);
   damage = Math.max(1, Math.round(damage / damageDivider() * multiplier("damageTaken") * abilityGuardFactor()));
   playerHp = playerHp - damage;
+  noteTaken(damage);
 
   if (playerHp <= 0) {
     die();
   } else if (potions > 0 && playerHp <= playerMaxHp * 0.3) {
     potions = potions - 1;
+    healSource = "Potions";
     healPlayer(playerMaxHp * (potionHealing + totalBonus("potionPower")));
+    healSource = "";
     say("You drink a healing potion!");
   }
 }
@@ -371,8 +382,12 @@ function fightMonster() {
   }
 
   // Abilities come first, then the normal attack
+  // (what they do is counted as theirs in the run summary: see game/summary.js)
   let hpBeforeAbilities = monsterHp;
+  abilityPhase = true;
   useAbilities();
+  abilityPhase = false;
+  noteAbilityDamage(hpBeforeAbilities - monsterHp);
   bossTakes(hpBeforeAbilities);
   if (deaths !== deathsBefore) {
     return;
@@ -386,8 +401,10 @@ function fightMonster() {
   // What your normal turn does is measured, for abilities that deal "turns of your damage".
   // (Measured before a boss's mechanics answer, so a shield does not shrink your abilities.)
   let hpBeforeTurn = monsterHp;
+  notedThisPhase = 0;
   currentClass().attack();
   let dealtThisTurn = hpBeforeTurn - monsterHp;
+  noteRestOfTurn(dealtThisTurn);
   bossTakes(hpBeforeTurn);
   if (deaths !== deathsBefore) {
     return;
@@ -426,11 +443,14 @@ function fightMonster() {
 // One second of the game
 function step() {
   ascensionSeconds = ascensionSeconds + 1;
+  runStats.seconds = runStats.seconds + 1;
 
   if (encounterType === "monster" || encounterType === "boss") {
     fightMonster();
   } else if (encounterType === "rest") {
-    playerHp = playerMaxHp;
+    healSource = "Rest rooms";
+    healPlayer(playerMaxHp);
+    healSource = "";
     say("You rest and recover all your health.");
     nextRoom();
   } else if (encounterType === "chest") {

@@ -163,6 +163,39 @@ try {
   check("armor up: +" + percent(bossMechanics.armorUp.perTurn) + " armor a turn", Math.abs(monsterArmor - 0.1 - bossMechanics.armorUp.perTurn) < 0.0001);
   startEncounter();
 
+  // 3c. The run summary: a run's damage adds up, and falling keeps it and shows the card
+  runStats = freshRunStats();
+  let deathsAtStart = deaths;
+  for (let i = 0; i < 20000 && deaths === deathsAtStart; i++) {
+    step();
+  }
+  let ended = lastRun;
+  let summaryProblems = [];
+  if (deaths === deathsAtStart || ended === null) {
+    summaryProblems.push("no run ended in 20000 seconds");
+  } else {
+    if (tallyRanked(ended.damage).length === 0 || tallyRanked(ended.taken).length === 0) {
+      summaryProblems.push("a finished run has no damage dealt or taken");
+    }
+    if (ended.killer === "" || !(ended.lastHit > 0) || !(ended.kills > 0)) {
+      summaryProblems.push("killer, last hit or kills missing");
+    }
+    for (let source in ended.damage) {
+      if (isNaN(ended.damage[source]) || source === "undefined") {
+        summaryProblems.push("bad damage source " + source);
+      }
+    }
+    showTab("character");
+    updateScreen();
+    if (document.getElementById("last-run-card").hidden || document.getElementById("last-run").children.length < 8) {
+      summaryProblems.push("the Last run card is not shown");
+    }
+    if (!logLines.some(function (line) { return line.startsWith("Run summary:"); }) || !logLines.some(function (line) { return line.startsWith("Killed by"); })) {
+      summaryProblems.push("the two log lines are missing");
+    }
+  }
+  check("run summary: " + (summaryProblems.length === 0 ? "killed by " + ended.killer + "; damage " + tallyText(ended.damage, 3) + "; healing " + tallyText(ended.healing, 2) : summaryProblems.join("; ")), summaryProblems.length === 0);
+
   // 4. The content lists: no name used twice in a class, no old wording
   for (let className in classes) {
     let c = classes[className];

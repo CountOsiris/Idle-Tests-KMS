@@ -916,6 +916,11 @@ body[data-tab="tower"] #tab-character {
   background: linear-gradient(#8fa6bd, #4c6178);
 }
 
+/* The small headings inside the "Last run" card */
+.tally-title {
+  margin: 14px 0 2px;
+}
+
 /* The ability buttons under the fight */
 .ability-bar {
   justify-content: center;

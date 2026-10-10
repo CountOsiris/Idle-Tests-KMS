@@ -5,8 +5,8 @@
 //
 //  The game's rules are split over the files in game/, loaded in this order
 //  (see the script tags in index.html):
-//    state, bonuses, equipment, abilities, bosses, skills, save, page-build,
-//    page-show, fights, feel, start
+//    state, bonuses, equipment, abilities, bosses, summary, skills, save,
+//    page-build, page-show, fights, feel, start
 //  They all share one set of names, as if they were one long file, so the order
 //  matters only for start.js, which must be last. Lists you are likely to edit
 //  live elsewhere:
@@ -270,6 +270,7 @@ function hitMonster(damage, type, armorShare) {
 
   damage = Math.max(1, Math.round(damage * multiplier("damage") * abilityDamageBoost() * typeMultiplier(type) * (1 - armorNow() * armorShare)));
   monsterHp = monsterHp - damage;
+  noteDamage(type, damage);
   return damage;
 }
 
@@ -278,6 +279,7 @@ function hitMonster(damage, type, armorShare) {
 function spellHitMonster(damage, type) {
   damage = Math.max(1, Math.round(damage * multiplier("damage") * abilityDamageBoost() * typeMultiplier(type) * (1 - wardNow())));
   monsterHp = monsterHp - damage;
+  noteDamage(type, damage);
   return damage;
 }
 
@@ -286,11 +288,15 @@ function spellHitMonster(damage, type) {
 function magicHitMonster(damage, type) {
   damage = Math.max(1, Math.round(damage * multiplier("damage") * abilityDamageBoost() * typeMultiplier(type)));
   monsterHp = monsterHp - damage;
+  noteDamage(type, damage);
   return damage;
 }
 
+// (What was really gained is counted for the run summary: see game/summary.js)
 function healPlayer(amount) {
+  let before = playerHp;
   playerHp = Math.min(playerMaxHp, playerHp + Math.round(amount));
+  noteHealing(playerHp - before);
 }
 
 // Adds one stack of damage over time, up to a limit

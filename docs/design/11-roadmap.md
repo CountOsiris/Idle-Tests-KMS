@@ -39,7 +39,7 @@ first 3 hours, and no reward in the game is a flat number.
    [Combat](03-combat.md)
 3. ~~Boss mechanics, one or two per tower.~~ Done: one per boss, five kinds.
    [Combat](03-combat.md)
-4. Run summary on death. [Combat](03-combat.md)
+4. ~~Run summary on death.~~ Done. [Combat](03-combat.md)
 5. Build balance pass: every weapon within ±25% of its class to floor 50.
    [Classes](04-classes-and-builds.md)
 6. Keystone perks at 50, 75, 100. [Classes](04-classes-and-builds.md)

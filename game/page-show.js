@@ -685,6 +685,7 @@ function updateScreen() {
   showTown();
   showTowers();
   showAscension();
+  showLastRun();
   showGoals();
   showLog();
 

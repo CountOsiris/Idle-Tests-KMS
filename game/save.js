@@ -231,7 +231,8 @@ function freshClass(className) {
     savedBuild: {},
     autoBuild: false,
     abilitySlots: [],
-    abilityModes: {}
+    abilityModes: {},
+    lastRun: null
   };
 }
 
@@ -274,7 +275,8 @@ function packClass() {
     savedBuild: savedBuild,
     autoBuild: autoBuild,
     abilitySlots: abilitySlots,
-    abilityModes: abilityModes
+    abilityModes: abilityModes,
+    lastRun: lastRun
   };
 }
 
@@ -342,6 +344,13 @@ function unpackClass(saved) {
   }).slice(0, openAbilitySlots());
   abilityModes = data.abilityModes;
   resetAbilitiesForRun();
+
+  // The run summary: the last finished run is kept, the count of the one being played is not
+  lastRun = data.lastRun;
+  if (lastRun === undefined || lastRun === null || typeof lastRun.damage !== "object" || !Array.isArray(lastRun.killerRules)) {
+    lastRun = null;
+  }
+  runStats = freshRunStats();
 
   // In case a tower or gear type was renamed or removed since the save was made
   if (towers[tower] === undefined) {

@@ -40,6 +40,7 @@ classes.warlock = {
 
   // A caster's spells reach a flying monster as easily as any other
   ranged: true,
+  healLabel: "Void Tome",     // what the class's own healing is called in the run summary
   gearTypes: { arcane: "Arcane Tome", void: "Void Tome", rune: "Rune Tome" },
   gearIcons: { arcane: "📘", void: "📓", rune: "📕" },
   // Tomes are not made of bronze: these are the names of their tiers at the blacksmith

@@ -353,6 +353,7 @@ function ascend() {
   // What is kept: fame and fame upgrades, best floors, milestones and perks, trophies and town helpers
   startRunGear();
   resetAbilitiesForRun();
+  runStats = freshRunStats();
   playerHp = playerMaxHp;
   logLines = [];
   say("You ascend! Every floor will pay fame again.");
