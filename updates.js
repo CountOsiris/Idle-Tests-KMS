@@ -13,6 +13,14 @@
 
 const gameUpdates = [
   {
+    version: "20261010w",
+    title: "How you stand against the floor",
+    changes: [
+      "Two bars under the fight show your damage against an ordinary monster's health here, and its hit against yours.",
+      "The level card says what falling now would pay and how many such falls the next level needs."
+    ]
+  },
+  {
     version: "20261010v",
     title: "Updates button in Settings",
     changes: [

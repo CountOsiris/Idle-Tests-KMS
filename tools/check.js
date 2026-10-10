@@ -825,6 +825,23 @@ try {
   recalcStats();
   startEncounter();
 
+  // 3i4. Context numbers: the two bars under the fight, and falls to the next level
+  floor = 1;
+  recalcStats();
+  recentDamage = ordinaryMonster().hp / 4;
+  updateScreen();
+  let damageWords = document.getElementById("pressure-damage").textContent;
+  let dangerWords = document.getElementById("pressure-danger").textContent;
+  recentDamage = ordinaryMonster().hp * 3;
+  updateScreen();
+  let oneTurn = document.getElementById("pressure-damage").textContent;
+  check("pressure: a quarter of a monster's health a turn reads as 4 turns a kill, and three times its health as one turn (" + damageWords + " / " + dangerWords + ")",
+    damageWords.includes("25%") && damageWords.includes("4 turns") && oneTurn.includes("one turn") && dangerWords.includes("%") && document.getElementById("pressure-damage-bar").style.width === "100%");
+  recentDamage = 0;
+  experience = 0;
+  let fallWords = document.getElementById("level-falls").textContent;
+  check("the level card says what a fall pays (" + fallWords + ")", fallWords.includes(big(deathPayout())) && fallWords.includes("level " + (level + 1)));
+
   // 3j. Starting floors, and the Tactician's list
   cruiseFloor = 40;
   runStartFloor = 1;

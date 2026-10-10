@@ -27,6 +27,54 @@ function traitOf(type, trait) {
   return type[trait];
 }
 
+// How many times stronger than floor 1 the monsters of a floor are (see data.js)
+function towerGrowth(onFloor) {
+  let growth = Math.pow(1 + monsterGrowth * (onFloor - 1), monsterCurve);
+
+  // The climb gets steeper between midFloor and deepFloor
+  if (onFloor > midFloor) {
+    growth = growth * Math.pow(midGrowth, Math.min(onFloor, deepFloor) - midFloor);
+  }
+
+  // The deep tower: every floor past deepFloor multiplies it again
+  if (onFloor > deepFloor) {
+    growth = growth * Math.pow(deepGrowth, onFloor - deepFloor);
+  }
+
+  // The walls: every one at or below this floor multiplies it once more
+  for (let wall of towerWalls) {
+    if (onFloor >= wall.floor) {
+      growth = growth * wall.strength;
+    }
+  }
+  return growth;
+}
+
+// An ordinary monster of the floor being climbed: the health and attack of one whose
+// own numbers are all 1, in this tower (stronger away from home). For the page, which
+// uses it to say how the class stands against the floor.
+function ordinaryMonster() {
+  let growth = towerGrowth(floor);
+  let ordinary = { hp: monsterHealth * growth, attack: monsterDamage * growth };
+
+  if (isAway()) {
+    ordinary.hp = ordinary.hp * (1 + awayTowerHealth);
+    ordinary.attack = ordinary.attack * (1 + awayTowerAttack);
+  }
+  return ordinary;
+}
+
+// What falling right now would pay in experience
+function deathPayout() {
+  // Experience is for the floors this run actually climbed: the ones swept through at
+  // the start were climbed by an earlier run, which was paid for them already
+  let payout = (floor - runStartFloor + 1) * experiencePerFloor * (1 + totalBonus("experience")) * multiplier("experience");
+  if (isAway()) {
+    payout = payout * (1 + awayTowerExperience);
+  }
+  return Math.round(payout);
+}
+
 function spawnMonster(isBoss) {
   let type = pickMonsterType(isBoss);
 
@@ -37,25 +85,7 @@ function spawnMonster(isBoss) {
 
   monsterName = type.name;
   monsterText = type.text;
-  // How many times stronger than floor 1 the monsters are here (see data.js)
-  let growth = Math.pow(1 + monsterGrowth * (floor - 1), monsterCurve);
-
-  // The climb gets steeper between midFloor and deepFloor
-  if (floor > midFloor) {
-    growth = growth * Math.pow(midGrowth, Math.min(floor, deepFloor) - midFloor);
-  }
-
-  // The deep tower: every floor past deepFloor multiplies it again
-  if (floor > deepFloor) {
-    growth = growth * Math.pow(deepGrowth, floor - deepFloor);
-  }
-
-  // The walls: every one at or below this floor multiplies it once more
-  for (let wall of towerWalls) {
-    if (floor >= wall.floor) {
-      growth = growth * wall.strength;
-    }
-  }
+  let growth = towerGrowth(floor);
   monsterMaxHp = Math.round(monsterHealth * growth * type.hp);
   monsterAttack = Math.round(monsterDamage * growth * type.attack);
   monsterArmor = Math.min(maxArmorShare, armorPerPoint * type.armor);
@@ -216,13 +246,7 @@ function nextRoom() {
 
 // ----- What happens in a room -----
 function die() {
-  // Experience is for the floors this run actually climbed: the ones swept through at
-  // the start were climbed by an earlier run, which was paid for them already
-  let payout = (floor - runStartFloor + 1) * experiencePerFloor * (1 + totalBonus("experience")) * multiplier("experience");
-  if (isAway()) {
-    payout = payout * (1 + awayTowerExperience);
-  }
-  payout = Math.round(payout);
+  let payout = deathPayout();
   say("You fell on floor " + floor + ", earned " + big(payout) + " experience and banked " + big(gold) + " gold.");
   finishRun();
 

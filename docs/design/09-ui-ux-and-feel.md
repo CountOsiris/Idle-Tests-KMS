@@ -61,6 +61,12 @@ Three tiers of announcement:
 
 ### Context numbers
 
+**Built October 2026.** Two thin bars under the fight: your damage per turn as a share of
+an ordinary monster's health on this floor ("about 3 turns a kill"), and one of its hits
+as a share of your health ("4 to kill you"). The level card says what falling now would
+pay and how many such falls the next level needs. The run summary and the fame-per-hour
+comparison were built earlier.
+
 - On the stage: a "pressure" bar: your damage per turn against the floor's average
   monster health, so a wall is visible as it approaches.
 - On the Ascension tab: fame per hour if you ascend now vs. keep pushing (from the

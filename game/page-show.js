@@ -665,6 +665,30 @@ function showGoals() {
   markTab("legend", canBecomeLegend() || canBuyLegendUnlock());
 }
 
+// HOW THE CLASS STANDS AGAINST THE FLOOR: two bars under the fight.
+//   Your damage:  what your turns have been dealing, as a share of an ordinary
+//                 monster's health here. A full bar kills in one turn.
+//   Their damage: one of its hits, after your armor, as a share of your health.
+//                 A full bar is a single hit that kills.
+// (An ordinary monster is one whose own numbers are all 1: see ordinaryMonster.)
+function showPressure() {
+  let ordinary = ordinaryMonster();
+
+  let dealt = damagePerTurn() / ordinary.hp;
+  let turns = Math.max(1, Math.ceil(1 / dealt));
+  document.getElementById("pressure-damage-bar").style.width = Math.min(100, dealt * 100) + "%";
+  document.getElementById("pressure-damage").textContent = dealt >= 1
+    ? "kills an ordinary monster here in one turn"
+    : percent(dealt) + " of an ordinary monster's health a turn (about " + turns + " turns a kill)";
+
+  let hit = ordinary.attack * (1 - armorShareBlocked()) / damageDivider() * multiplier("damageTaken") / playerMaxHp;
+  let hits = Math.max(1, Math.ceil(1 / hit));
+  document.getElementById("pressure-danger-bar").style.width = Math.min(100, hit * 100) + "%";
+  document.getElementById("pressure-danger").textContent = hit >= 1
+    ? "one ordinary hit here kills you"
+    : "an ordinary hit takes " + percent(hit) + " of your health (" + hits + " to kill you)";
+}
+
 // The relic list is rebuilt only when the relics held change
 let relicsShown = "";
 
@@ -781,6 +805,17 @@ function updateScreen() {
     document.getElementById("tower-note").textContent = note;
   } else {
     document.getElementById("tower-note").textContent = "Your home tower. " + towers[tower].text;
+  }
+
+  showPressure();
+
+  // The level card: what falling now would pay, and how far that goes
+  let payout = deathPayout();
+  let missing = levelCost() - experience;
+  if (payout >= missing) {
+    document.getElementById("level-falls").textContent = "Falling now would pay " + big(payout) + " experience: enough for level " + (level + 1) + ".";
+  } else {
+    document.getElementById("level-falls").textContent = "Falling now would pay " + big(payout) + " experience. About " + Math.ceil(missing / payout) + " falls like that to level " + (level + 1) + ".";
   }
 
   // The week's modifier, under the tower's note
