@@ -45,6 +45,10 @@ and can challenge the others for permanent unlocks.
   towers, so up to six for any one class); and at 100 a **passive** that changes a rule.
   Techniques and passives are bonus words on the trophy; an ability is written on the
   trophy the way a class writes its own.
+- **The suggested challenge.** The Towers tab always names the tower where the class's
+  current damage does best among those with a trophy left, and what its next tier pays.
+  After 12 runs in a row with no new best floor at home (`stuckAfterRuns`), a banner, a
+  line under the fight and a dot on the Towers tab point there too.
 - Not built: the named weapon at tier 100.
 - Not built: a rule on a single tier ("floor 50 boss within 30 turns"). The plan below
   describes it; a rule for the whole tower was simpler to read and to play idle.

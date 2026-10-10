@@ -168,6 +168,7 @@ function nextRoom() {
     if (floor > bestFloor) {
       bestFloor = floor;
       newBest = true;
+      runsSinceBest = 0;
     }
 
     if (cruising) {
@@ -219,6 +220,13 @@ function die() {
   finishRun();
 
   deaths = deaths + 1;
+
+  // Stuck at a wall? Say once where to go instead (see "Stuck at a wall" in data.js)
+  runsSinceBest = runsSinceBest + 1;
+  if (runsSinceBest === stuckAfterRuns && !isAway() && suggestedChallenge() !== null) {
+    let idea = suggestedChallenge();
+    announce("banner", "Try another tower", "Floor " + bestFloor + " is holding. " + towers[idea.tower].name + " suits your damage best, and floor " + idea.trophy.floor + " there wins " + idea.trophy.name + " (Towers tab).");
+  }
   experience = experience + payout;
   experienceEarned = experienceEarned + payout;
   levelUpWhilePossible();

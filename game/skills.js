@@ -208,6 +208,71 @@ function chooseTower(towerName) {
   updateScreen();
 }
 
+// How the damage the class is dealing RIGHT NOW (its weapon or element) does against a
+// tower's monsters and bosses: the share of it that is resisted, and the share that
+// hits a weakness
+function towerMatch(towerName) {
+  let types = currentClass().damageTypes();
+  let place = towers[towerName];
+  let all = place.monsters.concat(place.bosses);
+  let weak = 0;
+  let resisted = 0;
+
+  for (let monster of all) {
+    for (let type of types) {
+      if (listHasType(monster.weak || [], type)) {
+        weak = weak + 1;
+      } else if (listHasType(monster.resist || [], type)) {
+        resisted = resisted + 1;
+      }
+    }
+  }
+
+  let chances = all.length * types.length;
+  return { weak: weak / chances, resisted: resisted / chances };
+}
+
+// The next trophy this class has not won in a tower (null if it has them all, or at home)
+function nextTrophy(towerName) {
+  if (towerName === playerClass) {
+    return null;
+  }
+  for (let trophy of towers[towerName].trophies) {
+    if (!trophies.includes(trophy.id)) {
+      return trophy;
+    }
+  }
+  return null;
+}
+
+// THE SUGGESTED CHALLENGE: of the towers that still have a trophy for this class, the
+// one its damage does best in (most weaknesses hit, least resisted). Between two that
+// suit it equally, the one whose next trophy is on the lower floor.
+// Gives back { tower, trophy }, or null when every trophy is won.
+function suggestedChallenge() {
+  let best = null;
+  let bestScore = 0;
+
+  for (let towerName in towers) {
+    let trophy = nextTrophy(towerName);
+    if (trophy === null) {
+      continue;
+    }
+    let match = towerMatch(towerName);
+    let score = match.weak - match.resisted - trophy.floor / 10000;
+    if (best === null || score > bestScore) {
+      best = { tower: towerName, trophy: trophy };
+      bestScore = score;
+    }
+  }
+  return best;
+}
+
+// Has the class stopped making progress at home, with a challenge worth trying instead?
+function isStuck() {
+  return runsSinceBest >= stuckAfterRuns && !isAway() && tabIsOpen("travel") && suggestedChallenge() !== null;
+}
+
 // Runs every time a new floor is reached
 function checkTowerProgress() {
   if (towerBest[tower] === undefined || floor > towerBest[tower]) {

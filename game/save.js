@@ -236,7 +236,8 @@ function freshClass(className) {
     abilitySlots: [],
     abilityModes: {},
     lastRun: null,
-    runStats: null
+    runStats: null,
+    runsSinceBest: 0
   };
 }
 
@@ -281,7 +282,8 @@ function packClass() {
     abilitySlots: abilitySlots,
     abilityModes: abilityModes,
     lastRun: lastRun,
-    runStats: runStats
+    runStats: runStats,
+    runsSinceBest: runsSinceBest
   };
 }
 
@@ -339,6 +341,7 @@ function unpackClass(saved) {
   }
   lastAscensionSeconds = data.lastAscensionSeconds;
   trophies = data.trophies;
+  runsSinceBest = data.runsSinceBest;
   runCounter = data.runCounter;
   savedBuild = data.savedBuild;
   autoBuild = data.autoBuild;

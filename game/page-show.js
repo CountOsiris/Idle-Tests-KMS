@@ -334,22 +334,8 @@ function showBlacksmith() {
 function towerMatchup(towerName) {
   let types = currentClass().damageTypes();
   let place = towers[towerName];
-  let all = place.monsters.concat(place.bosses);
-  let weak = 0;
-  let resisted = 0;
-
-  for (let monster of all) {
-    for (let type of types) {
-      if (listHasType(monster.weak || [], type)) {
-        weak = weak + 1;
-      } else if (listHasType(monster.resist || [], type)) {
-        resisted = resisted + 1;
-      }
-    }
-  }
-
-  let chances = all.length * types.length;
-  let note = "Against your " + typeNames(types) + " damage: " + percent(resisted / chances) + " of it is resisted here and " + percent(weak / chances) + " hits a weakness.";
+  let match = towerMatch(towerName);
+  let note = "Against your " + typeNames(types) + " damage: " + percent(match.resisted) + " of it is resisted here and " + percent(match.weak) + " hits a weakness.";
   if (place.ward !== undefined) {
     note = note + " Its monsters are warded against spells.";
   }
@@ -360,6 +346,17 @@ function towerMatchup(towerName) {
 }
 
 function showTowers() {
+  // The suggested challenge, in a line above the list and marked on its row
+  let idea = suggestedChallenge();
+  let ideaBox = document.getElementById("tower-suggestion");
+  ideaBox.hidden = idea === null;
+  if (idea !== null) {
+    let match = towerMatch(idea.tower);
+    ideaBox.textContent = (isStuck() ? "Floor " + bestFloor + " is holding at home. " : "") + "Suggested challenge: " + towers[idea.tower].name
+      + ". Your damage does best there (" + percent(match.weak) + " hits a weakness, " + percent(match.resisted) + " is resisted), and floor "
+      + idea.trophy.floor + " wins " + idea.trophy.name + ": " + idea.trophy.text + ".";
+  }
+
   for (let towerName in towers) {
     let place = towers[towerName];
     let name = "tower-" + towerName;
@@ -367,6 +364,9 @@ function showTowers() {
     let title = place.icon + " " + place.name + " · " + classes[towerName].name + "'s tower";
     if (towerName === playerClass) {
       title = place.icon + " " + place.name + " · your home tower";
+    }
+    if (idea !== null && idea.tower === towerName) {
+      title = title + " · suggested";
     }
 
     let best = 0;
@@ -548,6 +548,12 @@ function canBuyFameUpgrade() {
 function nextGoals() {
   let goals = [];
 
+  // Stuck at a wall comes first: it is the one line that says what to do differently
+  if (isStuck()) {
+    let idea = suggestedChallenge();
+    goals.push("Floor " + bestFloor + " is holding. Challenge " + towers[idea.tower].name + ": floor " + idea.trophy.floor + " there wins " + idea.trophy.name + " (Towers).");
+  }
+
   // Things waiting to be used
   if (skillPointsLeft() > 0) {
     goals.push("You have " + skillPointsLeft() + " skill points to spend (Skills).");
@@ -602,6 +608,7 @@ function showGoals() {
 
   // The same things put a dot on their tab
   markTab("town", canAffordForge());
+  markTab("travel", isStuck());
   markTab("skills", skillPointsLeft() > 0 || hasEmptyAbilitySlot());
   markTab("milestones", hasPerkToPick());
   markTab("ascension", canAscend() || canBuyFameUpgrade());

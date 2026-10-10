@@ -84,6 +84,9 @@ let lastAscensionSeconds = 0;
 // The ids of the trophies this class has won in other towers (see towers.js)
 let trophies = [];
 
+// How many runs in a row have ended without a new best floor (see stuckAfterRuns in data.js)
+let runsSinceBest = 0;
+
 // ----- The account -----
 // Fame, and what it has bought, belong to the ACCOUNT: every class earns into the
 // same fame and every class is made stronger by the same fame upgrades,

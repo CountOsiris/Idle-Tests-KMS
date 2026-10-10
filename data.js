@@ -309,6 +309,12 @@ const breakthroughPerks = [
 //   - After ascending, and on entering another tower, runs start on floor 1 again.
 const cruiseTurns = 2;
 
+// ----- Stuck at a wall -----
+// A class that has fallen this many times in a row without reaching a new best floor is
+// "stuck". The game then points it at another class's tower: the one its damage does
+// best in that still has a trophy to win (see suggestedChallenge in game/skills.js).
+const stuckAfterRuns = 12;
+
 // ----- Abilities -----
 // Special moves on a cooldown (each class's list is in its file; the rules are in
 // game/abilities.js). A class opens one ability slot on each of these floors.

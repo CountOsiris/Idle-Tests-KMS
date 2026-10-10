@@ -57,7 +57,7 @@ announces what it does.
 2. ~~Rewards ladder: % stats → techniques → abilities → relic slot → keystone and named
    weapon.~~ Done, except the named weapon. [Towers](05-towers-and-challenges.md),
    [Equipment](08-equipment-and-items.md)
-3. Suggest the best away tower when the home tower hits a wall.
+3. ~~Suggest the best away tower when the home tower hits a wall.~~ Done.
 4. Separate relics (mechanical, rarer) from boons. [Equipment](08-equipment-and-items.md)
 
 Done when: a class stuck at a wall has a visible, worthwhile challenge to go and win.

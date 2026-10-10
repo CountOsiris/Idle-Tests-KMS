@@ -393,6 +393,37 @@ try {
   check("the Towers tab lists the tiers", document.getElementById("towers").textContent.includes("Rule for challengers") && document.getElementById("towers").textContent.includes("floor 100"));
   startEncounter();
 
+  // 3f2. Stuck at a wall: the suggestion is a tower with a trophy left, and the best match
+  let idea = suggestedChallenge();
+  let ideaProblems = [];
+  if (idea === null || idea.tower === playerClass || trophies.includes(idea.trophy.id)) {
+    ideaProblems.push("no suggestion, or one that cannot be won");
+  } else {
+    let ideaScore = towerMatch(idea.tower).weak - towerMatch(idea.tower).resisted;
+    for (let towerName in towers) {
+      let other = towerMatch(towerName);
+      if (towerName !== playerClass && nextTrophy(towerName) !== null && other.weak - other.resisted > ideaScore + 0.02) {
+        ideaProblems.push(towers[towerName].name + " suits the class better than the suggestion");
+      }
+    }
+    let runsBefore = runsSinceBest;
+    let tabsBefore = unlockedTabs;
+    unlockedTabs = unlockedTabs.concat(["travel"]);
+    runsSinceBest = stuckAfterRuns;
+    let stuckGoal = nextGoals().some(function (goal) { return goal.includes(towers[idea.tower].name); });
+    runsSinceBest = 0;
+    let calmGoal = nextGoals().some(function (goal) { return goal.includes("is holding"); });
+    if (!stuckGoal || calmGoal) {
+      ideaProblems.push("the goal line does not follow being stuck");
+    }
+    runsSinceBest = runsBefore;
+    unlockedTabs = tabsBefore;
+    if (document.getElementById("tower-suggestion").hidden || !document.getElementById("tower-suggestion").textContent.includes(towers[idea.tower].name)) {
+      ideaProblems.push("the Towers tab does not show it");
+    }
+  }
+  check("suggested challenge: " + (ideaProblems.length === 0 ? towers[idea.tower].name + ", for " + idea.trophy.name : ideaProblems.join("; ")), ideaProblems.length === 0);
+
   // 3g. The rewards ladder: with every trophy won, the abilities work and the techniques bite
   let trophiesBefore = trophies;
   trophies = Object.keys(trophyIds);

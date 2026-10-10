@@ -13,6 +13,14 @@
 
 const gameUpdates = [
   {
+    version: "20261010j",
+    title: "Where to go when you are stuck",
+    changes: [
+      "The Towers tab suggests the tower your current damage suits best, and what its next trophy pays.",
+      "When your home tower stops giving way, the game points you there."
+    ]
+  },
+  {
     version: "20261010i",
     title: "Trophies worth the trip",
     changes: [
