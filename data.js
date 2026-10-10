@@ -207,7 +207,9 @@ const legendUnlocks = [
   { id: "twiceBlessed", name: "Twice Blessed", text: "Every boss leaves one more boon.", bonus: { extraBoons: 1 }, cost: 10, growth: 1, maxLevel: 1 },
   { id: "reliquary", name: "Reliquary", text: "Every class keeps 1 more relic when it falls.", bonus: { relicSlots: 1 }, cost: 5, growth: 2, maxLevel: 3 },
   { id: "oldRoads", name: "Old Roads", text: "Every class starts again 10 levels higher after ascending or becoming a legend.", bonus: { startLevels: 10 }, cost: 4, growth: 2, maxLevel: 3 },
-  { id: "quartermaster", name: "Quartermaster", text: "Every run starts with 2 healing potions, free.", bonus: { freePotions: 2 }, cost: 4, growth: 1, maxLevel: 1 }
+  { id: "quartermaster", name: "Quartermaster", text: "Every run starts with 2 healing potions, free.", bonus: { freePotions: 2 }, cost: 4, growth: 1, maxLevel: 1 },
+  // (a class with  unlock: "beastTamer"  in its file is hidden until this is bought)
+  { id: "beastTamer", name: "The Beast Tamer", text: "Opens the eighth class: a tamer who fights beside a wolf pack, a bear or a hawk.", bonus: {}, cost: 12, growth: 1, maxLevel: 1 }
 ];
 
 // ----- Breakthroughs -----
@@ -484,6 +486,8 @@ const maxLogLines = 40;
 // Every file in classes/ adds one class to this list.
 // To add a class: copy one of those files, change it, add a <script> line for it
 // in index.html (above the game/ files), and give it a tower of its own in towers.js.
+// A class with  unlock: "someId"  in its file stays hidden until the entry with that id
+// in legendUnlocks (above) has been bought.
 // ----- Damage types -----
 // Every hit has a type. Monsters can be weak to some types and resist others;
 // which ones is written on each monster in towers.js, like this:

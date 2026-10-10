@@ -14,7 +14,11 @@ Back to the [Masterplan](../../Masterplan.md).
 | Elementalist | Four elements | One pair of gloves; element picked any time: Fire → burn · Ice → crits · Lightning → bolts · Earth → boulders and stun | None (the element choice is the identity) |
 | Zealot | Holy crusader | Holy Mace → holy damage, Judgement · Mace and Shield → block and strike back · Holy Tome → overflow healing burns | Devotion (healing per turn), Crusade (damage grows per turn) |
 
-Planned eighth: **Beast Tamer**. Animal companions first, mythical beasts much later.
+| Beast Tamer | A staff, and an animal that fights | Wolf Pack → many bites, each harder than the last · Bear → a maul that stuns, and it takes hits for you · Hawk → critical dives, and the enemy misses | Bond (the companion hits harder the more hurt you are) |
+
+The **Beast Tamer** was built in October 2026 with animal companions; mythical beasts
+are still for much later. It is opened with 12 legend marks, so it is a late reward, and
+its tower, the Wild Reaches, can be challenged by every class from the start.
 
 ## Rules every class follows (user decisions)
 

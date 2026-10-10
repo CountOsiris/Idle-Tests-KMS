@@ -433,6 +433,10 @@ function fightMonster() {
       return;
     }
   }
+  // "hunted": you begin every fight already hurt
+  if (fightTurns === 1 && totalBonus("hunted") > 0) {
+    playerHp = Math.min(playerHp, Math.max(1, Math.round(playerMaxHp * (1 - totalBonus("hunted")))));
+  }
   // "lostOpening": you do nothing on the first turn of a fight
   let losesTurn = fightTurns === 1 && totalBonus("lostOpening") > 0;
   if (losesTurn) {

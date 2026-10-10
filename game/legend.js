@@ -51,6 +51,7 @@ function buyLegendUnlock(item) {
     legendMarks = legendMarks - legendCost(item);
     legendLevels[item.id] = legendLevel(item.id) + 1;
     recalcStats();
+    showClassButtons();
     announce("banner", item.name, item.text);
     updateScreen();
     saveGame();
@@ -64,6 +65,13 @@ function canBuyLegendUnlock() {
     }
   }
   return false;
+}
+
+// A class that has to be opened with legend marks (unlock: "..." in its file) cannot be
+// played until then. Its tower is there for the other classes from the start.
+function classIsOpen(className) {
+  let unlock = classes[className].unlock;
+  return unlock === undefined || legendLevel(unlock) > 0;
 }
 
 // ----- Becoming a legend -----

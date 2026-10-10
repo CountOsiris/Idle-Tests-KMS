@@ -31,6 +31,23 @@ try {
   }
   check("fame is a number (" + big(fame) + ")", typeof fame === "number" && !isNaN(fame));
 
+  // 1b. A class that needs legend marks cannot be played before they are spent
+  let lockedClasses = Object.keys(classes).filter(function (name) { return classes[name].unlock !== undefined; });
+  let lockProblems = [];
+  for (let name of lockedClasses) {
+    let playingBefore = playerClass;
+    switchClass(name);
+    if (playerClass !== playingBefore || !document.getElementById("class-" + name).hidden) {
+      lockProblems.push(classes[name].name + " can be played without being opened");
+    }
+    if (!legendUnlocks.some(function (item) { return item.id === classes[name].unlock; })) {
+      lockProblems.push(classes[name].name + " has no entry in legendUnlocks");
+    }
+    legendLevels[classes[name].unlock] = 1;
+  }
+  showClassButtons();
+  check("locked classes (" + lockedClasses.length + ") stay locked until opened" + (lockProblems.length === 0 ? "" : ": " + lockProblems.join("; ")), lockedClasses.length === 1 && lockProblems.length === 0);
+
   // 2. Every class plays, and every tab draws
   for (let className in classes) {
     if (className !== playerClass) {
@@ -519,12 +536,12 @@ try {
     resetAbilitiesForRun();
     monsterStunned = false;
   }
-  check("the ladder: " + taught.length + " abilities taught by trophies" + (ladderProblems.length === 0 ? ", all work" : ": " + ladderProblems.join("; ")), taught.length === 7 && ladderProblems.length === 0);
+  check("the ladder: " + taught.length + " abilities taught by trophies" + (ladderProblems.length === 0 ? ", all work" : ": " + ladderProblems.join("; ")), taught.length === Object.keys(towers).length && ladderProblems.length === 0);
 
   ownedRelics = ["bloodstone", "prism", "rosary", "smokeVial", "bloodstone", "bloodstone", "bloodstone", "bloodstone"];
   let slotsWon = totalBonus("relicSlots");
   die();
-  check("relic slots: " + slotsWon + " won, " + ownedRelics.length + " relics kept through a fall", slotsWon === 7 && ownedRelics.length === 7);
+  check("relic slots: " + slotsWon + " won, " + ownedRelics.length + " relics kept through a fall", slotsWon === Object.keys(towers).length && ownedRelics.length === slotsWon);
 
   encounterType = "monster";
   spawnMonster(false);
@@ -595,6 +612,9 @@ try {
   check("the Legend tab opens and lists what marks buy", document.body.dataset.tab === "legend" && document.getElementById("legend-unlocks").children.length === legendUnlocks.length);
   legendMarks = marksThen;
   legendLevels = {};
+  for (let name of lockedClasses) {
+    legendLevels[classes[name].unlock] = 1;
+  }
   trophies = [];
   recalcStats();
   startEncounter();

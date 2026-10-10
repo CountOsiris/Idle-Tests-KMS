@@ -491,7 +491,7 @@ function loadGame() {
       // When the game was last running, so we know how long you were away
       lastTick = data.lastTick;
 
-      if (classes[data.playerClass] !== undefined) {
+      if (classes[data.playerClass] !== undefined && classIsOpen(data.playerClass)) {
         playerClass = data.playerClass;
       }
 
@@ -538,7 +538,7 @@ function startNewSave() {
 }
 
 function switchClass(className) {
-  if (className === playerClass) {
+  if (className === playerClass || !classIsOpen(className)) {
     return;
   }
 

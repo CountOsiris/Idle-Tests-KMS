@@ -13,6 +13,14 @@
 
 const gameUpdates = [
   {
+    version: "20261010m",
+    title: "The Beast Tamer",
+    changes: [
+      "An eighth class, opened with legend marks: a tamer who fights beside a wolf pack, a bear or a hawk.",
+      "An eighth tower, the Wild Reaches, that every class can challenge now."
+    ]
+  },
+  {
     version: "20261010l",
     title: "Legend",
     changes: [

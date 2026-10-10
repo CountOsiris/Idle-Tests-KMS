@@ -79,6 +79,9 @@ function showClassButtons() {
   for (let className in classes) {
     let button = document.getElementById("class-" + className);
 
+    // A class still to be opened with legend marks has no button yet
+    button.hidden = !classIsOpen(className);
+
     if (className === playerClass) {
       button.className = "chosen";
     } else {

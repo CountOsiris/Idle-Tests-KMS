@@ -59,9 +59,8 @@ A class that has reached floor 100 can become a legend on the new Legend tab
 ascension loses and also its best floors, picked perks, slotted abilities and place in
 other towers; it keeps fame, trophies and town helpers. It is paid the square root of
 its best floor in legend marks (floor 100 pays 10), shared by the account. Marks buy
-five things, none of them a multiplier: an ability slot from floor 1, a second boon
-from every boss, relic slots, starting levels, and free potions. The eighth class joins
-that list when it is built. Not built: a second weapon carried into each run.
+six things, none of them a multiplier: an ability slot from floor 1, a second boon
+from every boss, relic slots, starting levels, free potions, and the eighth class. Not built: a second weapon carried into each run.
 
 ## Proposed: the second prestige layer ("Legend")
 

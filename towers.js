@@ -65,6 +65,7 @@
 //   noKillHeal   1 = no healing after a kill
 //   quickHands   share taken off ability cooldowns (so -0.5 makes them half as long again)
 //   drain        share of full health lost every turn of a fight   (0.02 means 2%)
+//   hunted       share of your health you are missing when a fight begins   (0.2 means a fifth)
 //
 // ----- Trophies: the tiers of the challenge -----
 // A trophy is a permanent bonus for the class that wins it (each class wins its own).
@@ -308,6 +309,36 @@ const towers = {
         ability: { id: "towerLayOnHands", name: "Lay on Hands", text: "Heal 35% of your health", cooldown: 12, use: function () { abilityHeal(0.35); } } },
       { floor: 75, id: "bishopsMitre", name: "Bishop's Mitre", text: "a relic slot: you keep 1 more relic when you fall", bonus: { relicSlots: 1 } },
       { floor: 100, id: "abbeyBell", name: "Abbey Bell", text: "Vespers: your abilities are ready a quarter sooner", bonus: { quickHands: 0.25 } }
+    ]
+  },
+
+  beasttamer: {
+    awayRule: { name: "Hunted", text: "something has already drawn blood: you begin every fight missing a fifth of your health", bonus: { hunted: 0.2 } },
+    name: "The Wild Reaches",
+    sky: "#3d3520",
+    icon: "🦁",
+    text: "Open country full of things with teeth. Nothing here wears armor worth the name, and nothing here is afraid of you.",
+    monsters: [
+      { name: "Hyena", icon: "🐕", text: "Laughs, then bites.", minFloor: 1, hp: 0.9, attack: 1.1, armor: 0.5, gold: 1, weak: ["nature", "fire"], resist: ["arcane"] },
+      { name: "Tusker", icon: "🐗", text: "A lot of animal behind two tusks.", minFloor: 1, hp: 1.3, attack: 1, armor: 0.5, gold: 1.1, weak: ["crushing"], resist: ["piercing", "earth"] },
+      { name: "Viper", icon: "🐍", text: "Venomous: 30% of its attack ignores your armor.", minFloor: 2, hp: 0.8, attack: 1.1, armor: 0, gold: 1.1, poison: 0.3, weak: ["crushing", "ice"], resist: ["affliction", "arcane"] },
+      { name: "Sabrecat", icon: "🐅", text: "Fast, and all of it is claws.", minFloor: 4, hp: 1, attack: 1.4, armor: 0.5, gold: 1.2, weak: ["nature", "fire"], resist: ["slashing", "arcane"] },
+      { name: "Rhino", icon: "🦏", text: "A hide like plate: double armor.", minFloor: 7, hp: 1.7, attack: 1.1, armor: 2, gold: 1.4, weak: ["nature", "lightning"], resist: ["piercing", "slashing", "holy"] },
+      { name: "Great Ape", icon: "🦍", text: "Enrages: its attack grows by 10% every turn.", minFloor: 10, hp: 1.4, attack: 1.2, armor: 0.5, gold: 1.5, enrage: 0.1, weak: ["crushing", "fire"], resist: ["affliction", "ice"] }
+    ],
+    bosses: [
+      { name: "Pride Lord", icon: "🦁", text: "Never hunts alone.", hp: 1, attack: 1.2, armor: 0.5, gold: 1.3, weak: ["nature", "fire"], resist: ["slashing", "arcane", "holy"], mechanics: ["summons"] },
+      { name: "Elder Serpent", icon: "🐍", text: "Venomous: 40% of its attack ignores your armor.", hp: 1.2, attack: 1, armor: 1, gold: 1.2, poison: 0.4, weak: ["crushing", "ice"], resist: ["affliction", "arcane", "piercing"], mechanics: ["shield"] },
+      { name: "Mammoth Matriarch", icon: "🦣", text: "Slow to anger, and then it is too late.", hp: 1.5, attack: 1, armor: 1.5, gold: 1.5, weak: ["nature", "fire"], resist: ["piercing", "slashing", "ice"], mechanics: ["enrage"] }
+    ],
+    trophies: [
+      { floor: 10, id: "hyenaFang", name: "Hyena Fang", text: "attack x1.1", multiply: { attack: 1.1 } },
+      { floor: 20, id: "sabrecatPelt", name: "Sabrecat Pelt", text: "health x1.15", multiply: { health: 1.15 } },
+      { floor: 30, id: "packTotem", name: "Pack Totem", text: "attack x1.15, and the technique Scent of Blood: all your damage +15% against an enemy below half health", multiply: { attack: 1.15 }, bonus: { finisher: 0.15 } },
+      { floor: 50, id: "huntingHorn", name: "Hunting Horn", text: "teaches the ability Call the Pack: wolves from the long grass, for 3 turns of your damage",
+        ability: { id: "towerCallThePack", name: "Call the Pack", text: "Wolves from the long grass, for 3 turns of your damage", cooldown: 9, use: function () { abilityTurns(3); } } },
+      { floor: 75, id: "mammothIvory", name: "Mammoth Ivory", text: "a relic slot: you keep 1 more relic when you fall", bonus: { relicSlots: 1 } },
+      { floor: 100, id: "apexPredator", name: "Apex Predator", text: "Devour: you heal for 5% of the damage your turns deal", bonus: { leech: 0.05 } }
     ]
   }
 };
