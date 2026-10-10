@@ -842,6 +842,22 @@ try {
   let fallWords = document.getElementById("level-falls").textContent;
   check("the level card says what a fall pays (" + fallWords + ")", fallWords.includes(big(deathPayout())) && fallWords.includes("level " + (level + 1)));
 
+  // 3i5. Time away: the limit is shown, and the Night Watch raises it
+  let limitBefore = awayLimit();
+  townLevels.nightWatch = 1;
+  showTab("save");
+  updateScreen();
+  let limitWords = document.getElementById("away-limit-note").textContent;
+  closeAwayReport();
+  playTimeAway(20 * 3600);
+  let longAway = document.getElementById("away-text").textContent;
+  closeAwayReport();
+  delete townLevels.nightWatch;
+  check("time away: " + timeText(limitBefore) + " count, and " + timeText(limitBefore + 8 * 3600) + " with the Night Watch (" + limitWords + ")",
+    limitBefore === maxAwaySeconds && limitWords.includes("16h 0m") && longAway.includes("only 16h 0m counts"));
+  recalcStats();
+  startEncounter();
+
   // 3j. Starting floors, and the Tactician's list
   cruiseFloor = 40;
   runStartFloor = 1;

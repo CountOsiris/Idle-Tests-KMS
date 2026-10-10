@@ -488,7 +488,8 @@ const awayTowerExperience = 0.5;
 // This is what makes a boss kill felt straight away, whatever the upgrade was.
 const bossUpgradePower = 0.1;
 
-// The most time away that counts, and how long away before you get a report
+// The most time away that counts (the Night Watch in town adds to it: see awayLimit in
+// game/start.js), and how long away before you get a report
 const maxAwaySeconds = 8 * 60 * 60;
 const awayReportAfter = 60;
 
@@ -587,12 +588,14 @@ const classes = {};
 //   potionSlots      extra potions you can carry              (1 means +1)
 //   potionPower      extra potion healing                     (0.1 means +10% of your health)
 //   favouriteUpgrade 1 = you may pick a favourite upgrade
+//   awayHours        hours added to the most time away that counts   (8 means +8 hours)
 //
 // (The Squire, Quartermaster, Weaponsmith, Armory and Lucky Charm were sold here while
 // equipment was still found in the tower. They are gone, and what players paid for
 // them was given back: see upgradeSave in game/save.js. Don't reuse their ids.)
 
 const townUpgrades = [
+  { id: "nightWatch", name: "Night Watch", text: "Time away counts for up to 16 hours instead of 8.", bonus: { awayHours: 8 }, maxLevel: 1, cost: 20000, growth: 1 },
   { id: "tactician", name: "Tactician", text: "Pick a favourite boon from a list that says what each one does. Bosses give you that one every time, as long as it works with the weapon you are using.", bonus: { favouriteUpgrade: 1 }, maxLevel: 1, cost: 5000, growth: 1 },
   { id: "whetstone", name: "Whetstone", text: "+10% penetration. Penetration cuts through everything a monster blocks: its armor, its ward, and the damage types it resists.", bonus: { penetration: 0.1 }, maxLevel: 0, cost: 2000, growth: 1.4 },
   { id: "trainingGrounds", name: "Training Grounds", text: "+5% experience.", bonus: { experience: 0.05 }, maxLevel: 0, cost: 500, growth: 1.4 },

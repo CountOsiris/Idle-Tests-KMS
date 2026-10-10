@@ -80,7 +80,9 @@ Ascending and changing tower start from floor 1. Numbers in `data.js` (`cruiseTu
    whenever progress slows can leave a player at floor 15 for hours. The "Ascension"
    tab should show the expected fame per hour of ascending now vs. pushing (a simple
    comparison, like Realm Grinder's prestige preview).
-3. **Offline is capped at 8 hours** with no visible note of it until the report. Show
+3. *(Done October 2026: the Settings tab says how much time away counts, and the Night
+   Watch in town, a helper kept through ascensions, raises it from 8 hours to 16.)*
+   **Offline is capped at 8 hours** with no visible note of it until the report. Show
    the cap on the Settings tab, and consider raising it with a fame upgrade.
 4. **Runs are long and samey after a wall.** During a wall the player has nothing to
    do but wait. Idle games fill walls with *a different thing to work on*: here, away

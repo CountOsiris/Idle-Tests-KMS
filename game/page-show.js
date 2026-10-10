@@ -809,6 +809,10 @@ function updateScreen() {
 
   showPressure();
 
+  // Settings: how much time away counts, and how to get more
+  document.getElementById("away-limit-note").textContent = "The tower is climbed while the game is closed. Up to " + timeText(awayLimit()) + " away count for this class."
+    + (totalBonus("awayHours") > 0 ? "" : " The Night Watch in town doubles that.");
+
   // The level card: what falling now would pay, and how far that goes
   let payout = deathPayout();
   let missing = levelCost() - experience;

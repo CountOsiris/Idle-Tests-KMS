@@ -11,8 +11,13 @@
 // keeps growing until the player closes it.
 let awayTotals = null;
 
+// The most seconds away that count for the class being played
+function awayLimit() {
+  return maxAwaySeconds + totalBonus("awayHours") * 3600;
+}
+
 function playTimeAway(seconds) {
-  let counted = Math.min(seconds, maxAwaySeconds);
+  let counted = Math.min(seconds, awayLimit());
 
   if (awayTotals === null || document.getElementById("away-report").hidden) {
     awayTotals = {

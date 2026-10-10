@@ -13,6 +13,14 @@
 
 const gameUpdates = [
   {
+    version: "20261010x",
+    title: "More time away",
+    changes: [
+      "Settings now says how much time away counts: 8 hours.",
+      "The Night Watch in town raises it to 16 hours, and is kept through ascensions."
+    ]
+  },
+  {
     version: "20261010w",
     title: "How you stand against the floor",
     changes: [
