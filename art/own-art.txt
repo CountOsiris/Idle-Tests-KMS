@@ -1,0 +1,6 @@
+# Pictures made for this game (drawn, commissioned or generated), one file name a line.
+# tools/monster-art.py never replaces a picture named here, and art/CREDITS.md lists
+# it as the game's own. See art/README.md.
+#
+# Example (remove the # to use it):
+# wild-boar.png
