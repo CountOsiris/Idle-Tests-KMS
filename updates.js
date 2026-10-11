@@ -13,6 +13,14 @@
 
 const gameUpdates = [
   {
+    version: "20261011n",
+    title: "A page that holds still",
+    changes: [
+      "The page no longer jumps up and down while a fight runs. The fight box changed height every few turns, and the browser moved the page to follow it, which made buying skills a chase.",
+      "The fight box now keeps one height through monsters, bosses, rest rooms and chests."
+    ]
+  },
+  {
     version: "20261011m",
     title: "A tidier page, and milestone perks worth picking",
     changes: [

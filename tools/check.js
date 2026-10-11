@@ -1102,6 +1102,27 @@ try {
     helpHidden && helpShown && foldedNow && unfolded && shortRow === 2 && longRow >= 2 + towers[awayTower].trophies.length
     && document.getElementById("stage").closest(".card").dataset.card === undefined);
 
+  // 3i14. The fight keeps one height through monsters, bosses, rest rooms and chests, so
+  // the page does not move under the pointer
+  showTab("skills");
+  let fightCard = document.getElementById("stage").closest(".card");
+  if (fightCard.offsetHeight === 0) {
+    // (a narrow window: the fight is a tab of its own there)
+    showTab("tower");
+  }
+  let fightHeights = {};
+  let roomKinds = {};
+  let boonsWere = upgrades;
+  for (let i = 0; i < 400; i++) {
+    step();
+    upgrades = boonsWere;
+    updateScreen();
+    fightHeights[fightCard.offsetHeight] = true;
+    roomKinds[encounterType] = true;
+  }
+  check("the fight box kept one height (" + Object.keys(fightHeights).join(", ") + " pixels) through 400 turns of " + Object.keys(roomKinds).join(", ") + " rooms, and the page does not adjust its own scroll",
+    Object.keys(fightHeights).length === 1 && fightCard.offsetHeight > 300 && Object.keys(roomKinds).length >= 3 && getComputedStyle(document.documentElement).overflowAnchor === "none");
+
   // 3j. Starting floors, and the Tactician's list
   cruiseFloor = 40;
   runStartFloor = 1;

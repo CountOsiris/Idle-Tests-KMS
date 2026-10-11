@@ -31,6 +31,18 @@
   box-sizing: border-box;
 }
 
+/* ----- A page that holds still -----
+   The fight changes every turn: a line of words wraps, a boss's rules appear, a picture
+   replaces an emoji. Each of those once changed the height of the left column, and the
+   browser, trying to keep what you were looking at in place, moved the whole page: the
+   right column jumped under the pointer while you were buying skills (reported October
+   2026). So the parts of the fight that change keep a fixed height (min-height on
+   .stage, .pressure-row and .boss-rules below), and the browser is told not to adjust
+   the scroll by itself. */
+html {
+  overflow-anchor: none;
+}
+
 body {
   margin: 0;
   padding: 22px;
@@ -744,6 +756,7 @@ body[data-tab="tower"] #tab-character {
    Change artHeight to make the figures bigger or smaller. */
 .stage {
   --art-height: 170px;
+  min-height: 342px;
 }
 
 .icon img,
@@ -986,10 +999,20 @@ body[data-tab="tower"] #tab-character {
 
 .boss-rules {
   color: var(--text);
+  min-height: 62px;
 }
 
+/* The line of weaknesses, and the monster's own line of words, keep their height when empty */
+.weak-line,
+#monster-text {
+  min-height: 21px;
+}
+
+/* (the monster's numbers keep their line in a rest room or at a chest, for the same reason) */
+#monster-numbers[hidden],
 .boss-rules[hidden] {
-  display: none;
+  display: block;
+  visibility: hidden;
 }
 
 /* While a boss's shield is up its health bar turns steel blue */
@@ -1089,6 +1112,7 @@ body[data-tab="tower"] #tab-character {
   gap: 10px;
   margin: 3px 0;
   font-size: 14px;
+  min-height: 38px;
 }
 
 .pressure-label {
