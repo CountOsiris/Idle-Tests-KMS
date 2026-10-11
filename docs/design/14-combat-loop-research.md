@@ -146,3 +146,60 @@ are a few days of measuring, and old saves are not affected (only numbers change
 - Melvor Idle player threads on [max hit and auto-eat](https://steamcommunity.com/app/1267910/discussions/0/3780248001143951330) and [one-hit kills wasting time](https://steamcommunity.com/app/1267910/discussions/0/561358251644477337) (search summaries)
 - Trimps wiki, [Dominance and Heap formations](https://trimps.fandom.com/wiki/Dominance) (search summary; the combat page itself would not load)
 - [How Obsidian fixed combat in The Outer Worlds 2](https://www.thumbsticks.com/how-obsidian-fixed-combat-in-the-outer-worlds-2/), [a hits-to-kill design thread](https://community.gamedev.tv/t/hits-to-kill-design-metric/102107), [Health/Damage Asymmetry](https://tropedia.fandom.com/wiki/Health_Damage_Asymmetry) (search summaries)
+
+## 5. What was built (11 October 2026, versions 20261011u and v)
+
+The owner agreed the targets, "as long as you've referenced all the perks, skills and
+milestones and balanced to account for this, while making perks and skills not
+duplicate in the same brackets".
+
+**Fights last** (`longFights` in data.js). From floor 10, rising to floor 35 and staying
+there, monsters have 3 times the health and 0.15 times the attack, and deep attack
+growth is 1.3% a floor. What that needed, each found by measuring:
+
+- Healing a turn got ceilings (Devotion 6% of health a turn, the Void Tome 3% a spell):
+  with fights of several turns a hero that out-healed a hit could not be killed.
+- Crusade counts 8 turns of a fight at most, for the same reason.
+- The Void Tome tears a share of the health an enemy has LEFT. A share of full health
+  kills anything in a fixed number of turns; it reached floor 520.
+- A blow thrown back (Spiked Shield, vengeance, Brace) counts 4 times, because it is a
+  share of an attack that is now small.
+
+**One shape for every weapon's perks** (`python tools/brackets.py` lists them). Floor 50
+and 100: the build's own multiplier and nothing else. Floor 75: attack x1.3 and
+additions to its own words. The "attack x" and "health x" riders that differed from
+build to build are gone, and each build is balanced by its own multiplier. The script
+fails on two skills of a class that give the same words, a build with no multiplier or
+breakthrough of its own, and builds of one class with multipliers on different numbers
+of milestones. It prints nothing wrong.
+
+The "second word for every build" of section 3 was not needed: the table shows every
+build already has two or more added words of its own and one multiplier.
+
+**Measured against the targets**, all 25 builds, 100 hours:
+
+| | Target | Floors 35 to 50 | Floors 100 to 200 |
+|---|---|---|---|
+| Turns to kill an ordinary monster | 3 to 5 | 2.9 to 3.3 | 2.4 to 2.9 |
+| Ordinary hits a hero survives | 5 to 8 | 7 to 9 | about 3 |
+
+So the early and middle game meet the targets, and the deep game is better than it was
+(3 hits, from 1.3) but short of 5. Hero health has fewer ways to grow than damage, and
+every attempt to hold 5 hits deep by slowing monster attack further made runs endless:
+within a run boons add about 2% health a floor, and monster attack must outgrow that.
+Closing the gap needs health to gain what damage has, not a softer monster. Open.
+
+Deepest floor in 100 hours: 286 to 345. Hours to floor 35: 2.6 to 7.3, every build within
+25% of its class after the Shadow Blade and Bear were adjusted. Boss fights were not
+measured separately.
+
+**Skills, to floor 50** (`skillcheck`, 8 climbs each): most within 10% either way.
+Toughness makes the climb to floor 50 faster when SKIPPED for the Elementalist (20% to
+36%), the Beast Tamer and the Barbarian (8% to 18%): up to floor 50 a hero now survives 7
+to 9 hits, so more health buys nothing there. It matters deeper, where it is 3. Open.
+
+**Perks, one at a time** (`perkcheck`, 40 hours, one climb each, so only gaps of about 40
+floors mean anything here). Most milestones are level. Two clear gaps were fixed: the
+Wolf Pack's own floor 50 perk was 59 floors behind the general Beastlord beside it, and
+Opening Volley was 54 behind Longshot. Still apart and not yet fixed: Scarred Hide (46
+behind the Axe's floor 75 perk), and Fire's Inferno 52 ahead of its two neighbours.

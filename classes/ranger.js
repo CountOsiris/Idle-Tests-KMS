@@ -111,7 +111,7 @@ classes.ranger = {
     {
       floor: 50,
       perks: [
-        { id: "hawksVolley", name: "Opening Volley", text: "+30% attack, and Range: the enemy misses 1 more turn at the start of a fight", bonus: { attackPercent: 0.3, firstStrike: 1 } },
+        { id: "hawksVolley", name: "Opening Volley", text: "attack x1.4, and Range: the enemy misses 1 more turn at the start of a fight", bonus: { firstStrike: 1 }, multiply: { attack: 1.4 } },
         { id: "forestGuardian", name: "Forest Guardian", text: "health x1.5, armor x1.4, and all your damage +30% against an enemy below half health", bonus: { finisher: 0.3 }, multiply: { health: 1.5, armor: 1.4 } },
         { id: "longshot", name: "Longshot", text: "Longbow: critical shot damage x1.6, and +10% critical shot chance", bonus: { aimChance: 0.1 }, multiply: { longbowCrit: 1.6 } },
         { id: "volleyer", name: "Volleyer", text: "Shortbow: arrow damage x1.6", multiply: { shortbow: 1.6 } },

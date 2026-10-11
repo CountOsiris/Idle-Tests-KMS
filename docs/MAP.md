@@ -10,6 +10,9 @@ Two files go with this one:
 
 - [MAP-WORDS.md](MAP-WORDS.md) lists every bonus word, who gives it and where it is read.
   It is written by `python tools/map.py`. Run it after changing content.
+- [MAP-BRACKETS.md](MAP-BRACKETS.md) lists, build by build, its own words, its multipliers
+  and what its path collects at floors 50, 75 and 100. `python tools/brackets.py` writes it
+  and prints what breaks the rule of section 3.
 - [design/](design/) holds the reasons, one file a subject. This file holds the wiring.
 
 ---
@@ -132,7 +135,8 @@ fourth, and look here first if one of them pulls ahead.
 ```
 health on floor F  =  38 x (1 + 0.22 x (F - 1))^2  x 1.05 a floor from 20 to 50
                       x 1.03 a floor past 50  x the walls (35, 50, 75, 100)
-attack on floor F  =  the same up to floor 35; past it only the first term and 1.016 a floor
+attack on floor F  =  the same up to floor 35; past it only the first term and 1.013 a floor
+and from floor 10, rising to floor 35: health x3 and attack x0.15 (longFights in data.js)
 ```
 
 A boss has 2.2 times the health and 1.3 times the attack. Deep in the tower health grows
@@ -178,9 +182,11 @@ about 4% a floor, so 20% more damage is worth about 5 floors.
 
 7. **Then** bump the version (`bash tools/version.sh`), add the Updates entry, commit.
 
-**Where the game stands** (October 2026, the numbers to compare against): floor 35 in 3 to
-7 hours, floor 50 in 5 to 10, floor 100 in 9 to 16; deepest floor in 100 hours 276 to 333
-across the 25 builds; in 300 hours 319 to 428.
+**Where the game stands** (11 October 2026, version 20261011v, the numbers to compare
+against): floor 35 in 2.6 to 7.3 hours, floor 50 in 4 to 10, floor 100 in 6 to 15; deepest
+floor in 100 hours 286 to 345 across the 25 builds. An ordinary fight at the edge is about
+3 turns; a hero survives 7 to 9 ordinary hits at floors 35 to 50 and about 3 at floors 100
+to 200 (`probe`). 300 hours has not been run since fights were lengthened.
 
 ---
 

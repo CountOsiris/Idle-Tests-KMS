@@ -111,9 +111,9 @@ classes.beasttamer = {
     {
       floor: 50,
       perks: [
-        { id: "beastlord", name: "Beastlord", text: "attack x1.2, and every kill makes all your damage 0.5% stronger for the rest of the run (up to +100%)", bonus: { killStreak: 0.005 }, multiply: { attack: 1.2 } },
+        { id: "beastlord", name: "Beastlord", text: "attack x1.1, and every kill makes all your damage 0.5% stronger for the rest of the run (up to +100%)", bonus: { killStreak: 0.005 }, multiply: { attack: 1.1 } },
         { id: "oldGrowth", name: "Old Growth", text: "health x1.5 and armor x1.4", multiply: { health: 1.5, armor: 1.4 } },
-        { id: "direPack", name: "Dire Pack", text: "Wolf Pack: bite damage x1.35", multiply: { wolf: 1.35 } },
+        { id: "direPack", name: "Dire Pack", text: "Wolf Pack: bite damage x1.5", multiply: { wolf: 1.5 } },
         { id: "caveBear", name: "Cave Bear", text: "Bear: maul damage x1.8", multiply: { bear: 1.8 } },
         { id: "stormHawk", name: "Storm Hawk", text: "Hawk: critical dive damage x1.8", multiply: { hawkCrit: 1.8 } },
         { id: "oneSoul", name: "One Soul", text: "Bond x3: three times the companion damage for your missing health", multiply: { bond: 3 } }

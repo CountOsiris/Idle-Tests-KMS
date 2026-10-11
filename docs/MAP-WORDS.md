@@ -34,8 +34,8 @@ something that is not multiplied again by another endless word.
 | `armorLimit` | + perk (1), + relic (2), + skill (1), + trophy (1) | skill | added: game/bonuses.js:462 |
 | `armorPercent` | + skill (1) | skill | added: game/bonuses.js:467 |
 | `arrowPower` | + skill (1) | skill | added: classes/ranger.js:306, classes/ranger.js:343 |
-| `attack` | + base (8), x breakthrough (2), x perk (67), x trophy (8) | no | added: game/skills.js:314; multiplied: game/skills.js:317, classes/warden.js:232; recalcStats (game/skills.js): flat attack |
-| `attackPercent` | + boon (8), + perk (10), + relic (1), + skill (10) | boon, skill | added: game/skills.js:317 |
+| `attack` | + base (8), x breakthrough (2), x perk (68), x trophy (8) | no | added: game/skills.js:314; multiplied: game/skills.js:317, classes/warden.js:232; recalcStats (game/skills.js): flat attack |
+| `attackPercent` | + boon (8), + perk (9), + relic (1), + skill (10) | boon, skill | added: game/skills.js:317 |
 | `awayHours` | + town (1) | no | added: game/page-show.js:859, game/start.js:16 |
 | `bear` | x breakthrough (1), x perk (3), x relic (1) | no | multiplied: classes/beasttamer.js:256 |
 | `bitePower` | + boon (1), + perk (1), + skill (1) | boon, skill | added: classes/beasttamer.js:242, classes/beasttamer.js:309, classes/beasttamer.js:311 |

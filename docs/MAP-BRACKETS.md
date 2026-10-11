@@ -26,7 +26,7 @@ Nothing.
 
 | Build | Its own words (added) | Its own multipliers | Multiplier perks on its path, floors 50 / 75 / 100 | Breakthroughs |
 |---|---|---|---|---|
-| Wolf Pack | bitePower, finisher, packSize, packTactics | wolf | x1.35 wolf / x1.3 attack / x1.15 wolf | x1.4 wolf |
+| Wolf Pack | bitePower, finisher, packSize, packTactics | wolf | x1.5 wolf / x1.3 attack / x1.15 wolf | x1.4 wolf |
 | Bear | brace, guard, maulPower, stunChance | bear | x1.8 bear / x1.3 attack / x1.8 bear | x1.4 bear |
 | Hawk | critChance, critPower, opener | hawkCrit | x1.8 hawkCrit / x1.3 attack / x1.8 hawkCrit | x1.5 hawkCrit |
 
