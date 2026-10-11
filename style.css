@@ -1972,3 +1972,81 @@ body:not([data-tab="tower"]) .fight-card .ghost {
     position: static;
   }
 }
+
+/* ----- A wide screen: the tabs across the top -----
+   Along the bottom suits a phone, which is held at the bottom. On a computer the tabs
+   are looked for at the top (asked for the day after the bottom bar was made). So from
+   1000 pixels wide the same bar sits under the header and stays there as the page
+   scrolls. (".side" is taken out of the grid so that its bar can span both columns.) */
+@media (min-width: 1000px) {
+  body {
+    padding-bottom: 24px;
+  }
+
+  .side {
+    display: contents;
+  }
+
+  .tabs {
+    position: sticky;
+    top: 0;
+    bottom: auto;
+    grid-column: 1 / -1;
+    grid-row: 1;
+    justify-content: center;
+    padding: 0;
+    background: var(--background);
+    border-top: none;
+    border-bottom: 1px solid var(--gold-dark);
+    overflow: visible;
+  }
+
+  .tabs button {
+    flex-direction: row;
+    gap: 8px;
+    min-width: 0;
+    padding: 10px 16px;
+    font-size: 12px;
+    letter-spacing: 1.5px;
+    border-top: none;
+    border-bottom: 2px solid transparent;
+    margin-bottom: -1px;
+  }
+
+  .tabs button::before {
+    font-size: 16px;
+    line-height: 18px;
+  }
+
+  .tabs button:hover {
+    border-bottom: 2px solid var(--gold-dark);
+  }
+
+  .tabs button.open {
+    border-top: none;
+    border-bottom: 2px solid var(--gold);
+  }
+
+  .tabs button.alert::after {
+    top: 6px;
+    right: 6px;
+  }
+
+  .play {
+    grid-column: 1;
+    grid-row: 2;
+  }
+
+  body:not([data-tab="tower"]) .play {
+    top: 56px;
+  }
+
+  body[data-tab="tower"] .play {
+    grid-column: 1 / -1;
+  }
+
+  .page {
+    grid-column: 2;
+    grid-row: 2;
+  }
+}

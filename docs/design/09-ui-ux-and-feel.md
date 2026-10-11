@@ -124,3 +124,7 @@ under it moves.
 Stacked on a computer the fight left the page a strip one row tall (reported the same
 day). From 1000 pixels wide the short fight stands in a left column instead, and the
 page has the whole height.
+
+The bottom bar was wrong for a computer (the owner: tabs belong on the side or the top
+there; the bottom suits a phone because that is where it is held). From 1000 pixels
+wide the same bar is across the top, sticky. Picture: [wide](pictures/layout-wide.png).

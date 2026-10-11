@@ -13,6 +13,13 @@
 
 const gameUpdates = [
   {
+    version: "20261011r",
+    title: "Tabs across the top on a computer",
+    changes: [
+      "On a wide screen the tabs are now a bar across the top, under the header, and stay there as the page scrolls. On a phone they stay along the bottom."
+    ]
+  },
+  {
     version: "20261011q",
     title: "Milestones that are choices",
     changes: [
