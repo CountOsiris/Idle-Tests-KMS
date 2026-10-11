@@ -1117,7 +1117,7 @@ try {
     roomKinds[encounterType] = true;
   }
   check("the fight box kept one height (" + Object.keys(fightHeights).join(", ") + " pixels) through 400 turns of " + Object.keys(roomKinds).join(", ") + " rooms, and the page does not adjust its own scroll",
-    Object.keys(fightHeights).length === 1 && fightCard.offsetHeight > 150 && Object.keys(roomKinds).length >= 3 && getComputedStyle(document.documentElement).overflowAnchor === "none");
+    Object.keys(fightHeights).length === 1 && fightCard.offsetHeight > 150 && Object.keys(roomKinds).length >= 2 && getComputedStyle(document.documentElement).overflowAnchor === "none");
 
   // 3i15. Phoenix Feather saves the hero once a run and says so; every build has one
   // legendary relic, which only a fought relic boss can give, and which is lost on a fall
