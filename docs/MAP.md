@@ -92,13 +92,21 @@ far stronger than its number looks.
 | Fame | first time on a floor since ascending; bosses | none; cost x1.45 a level | never | Might x1.2 damage, Vitality x1.2 health and armor |
 | Legend marks | square root of best floor, on becoming a legend | each unlock once | never | account-wide unlocks |
 
-**The rule that keeps it from running away.** Exactly one layer with no top level may
-multiply damage: fame's Might. Everything else with no top level (skills, boons, levels,
-the blacksmith) feeds a bracket that is ADDED. When a skill, a boon or anything else that
-can be bought forever starts to MULTIPLY damage, or to feed a number that is multiplied by
-another such number, the game breaks. That is what souls did: a skill with no top level
+**The rule that keeps it from running away.** Multiplying is what makes an idle game
+fun, and it is safe when it is ACROSS THE BOARD: every class and every build gets the
+same brackets (the owner's rule, 11 October 2026). What breaks the game is a bracket
+that one class has and the others do not, most of all one fed by something with no top
+level. That is what souls did: only the Warlock had them, a skill with no top level
 raised soul power, souls multiplied spells, and spells were already critical hits times
-echoes. `MAP-WORDS.md` marks every word that has a source with no top level.
+echoes. So, before adding anything that multiplies:
+
+- does every build get one like it? If not, either give them one or make it added;
+- what feeds it? If a skill, a boon or anything else that can be bought forever does,
+  it is a bracket that never stops growing: every build must then have the same one.
+
+`MAP-WORDS.md` marks every word that has a source with no top level.
+[design/14](design/14-combat-loop-research.md) proposes the brackets every build should
+have, and how long a fight should last.
 
 **The watch list: builds whose own words multiply each other.** Every build is attack
 (grown by Power) times its weapon's word (grown by its mastery), which is two things
