@@ -415,6 +415,12 @@ body[data-tab="tower"] #tab-character {
 }
 
 /* ----- An item of equipment: its picture, name and stats ----- */
+/* A legendary relic stands out in the list */
+.item.legendary .row-title,
+.item.legendary .item-slot {
+  color: var(--gold-bright);
+}
+
 .item {
   display: flex;
   align-items: flex-start;

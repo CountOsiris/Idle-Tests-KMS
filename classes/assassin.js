@@ -169,7 +169,10 @@ classes.assassin = {
     { id: "viperFang", name: "Viper Fang", text: "Venom Dagger: +1 poison stack, and all your damage +20% against an enemy below half health", build: "venom", bonus: { poisonStacks: 1, finisher: 0.2 } },
     { id: "assassinsMark", name: "Assassin's Mark", text: "Ambush: the first hit of a fight deals +25% more, and all your damage +50% on the first turn of every fight", bonus: { ambush: 0.25, opener: 0.5 } },
     { id: "needlePoint", name: "Needle Point", text: "Stiletto: +8% critical chance, and all your damage +25% against bosses", build: "stiletto", bonus: { critChance: 0.08, bossSlayer: 0.25 } },
-    { id: "duskMantle", name: "Dusk Mantle", text: "Shadow Blade: +25% damage after a dodge, and an enemy that is not a boss misses its first turn", build: "shadow", bonus: { counter: 0.25, headStart: 1 } }
+    { id: "duskMantle", name: "Dusk Mantle", text: "Shadow Blade: +25% damage after a dodge, and an enemy that is not a boss misses its first turn", build: "shadow", bonus: { counter: 0.25, headStart: 1 } },
+    { id: "blackLotus", name: "Black Lotus", legendary: true, text: "Venom Dagger: poison damage x3, and health x1.5", build: "venom", bonus: {}, multiply: { poison: 3, health: 1.5 } },
+    { id: "kingsbane", name: "Kingsbane", legendary: true, text: "Stiletto: critical hit damage x2.5, and health x1.5", build: "stiletto", bonus: {}, multiply: { stilettoCrit: 2.5, health: 1.5 } },
+    { id: "eclipse", name: "Eclipse", legendary: true, text: "Shadow Blade: damage of the hit after a dodge x3, and health x1.5", build: "shadow", bonus: {}, multiply: { counter: 3, health: 1.5 } }
   ],
 
   startFight: assassinStartFight,

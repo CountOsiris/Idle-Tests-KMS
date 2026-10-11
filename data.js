@@ -715,6 +715,16 @@ const relicRareChance = 0.15;
 // 5,494 holding over a thousand boons. October 2026.)
 const relicMostCopies = 3;
 
+// LEGENDARY RELICS. Every weapon (and element) has one, in its class file, marked
+// legendary: true. One multiplies that build's own damage by 2.5 or 3 and its health
+// by 1.5: the run that finds one goes far past the class's usual wall.
+//   - Only a relic boss you actually FIGHT can drop one, with this chance (0.03 means
+//     3 in 100). The bosses a run sweeps past never do, so deep classes do not find
+//     one every run.
+//   - Only the one for the weapon in hand can drop, and only one can be held.
+//   - It is lost when you fall, always: a relic slot cannot keep it.
+const legendaryRelicChance = 0.03;
+
 // However it is come by (relics, trophies, keystones, the week), no more than this share
 // can be taken off an ability's cooldown, and armor can never block more than this share.
 const mostCooldownCut = 0.6;

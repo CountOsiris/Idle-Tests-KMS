@@ -281,7 +281,10 @@ function die() {
   }
   upgrades = {};
   // (relic slots, won in other towers, keep the first relics claimed this run)
-  ownedRelics = ownedRelics.slice(0, totalBonus("relicSlots"));
+  // (a legendary relic is never kept)
+  ownedRelics = ownedRelics.filter(function (id) {
+    return !allRelics().some(function (relic) { return relic.id === id && relic.legendary === true; });
+  }).slice(0, totalBonus("relicSlots"));
   lastRunCounter = runCounter;
   runCounter = 0;   // (set again below, once the floor the run starts on is known)
   room = 1;
@@ -342,7 +345,15 @@ function survivesDeath() {
   if ((runStats.secondWinds || 0) < totalBonus("secondWind")) {
     runStats.secondWinds = (runStats.secondWinds || 0) + 1;
     playerHp = Math.round(playerMaxHp / 2);
-    say("Second Wind! The blow that should have killed you does not.");
+
+    // Said aloud, and by name: it used to be one quiet line in the log, and players who
+    // held a Phoenix Feather reported that it did nothing
+    let left = totalBonus("secondWind") - runStats.secondWinds;
+    let source = ownedRelics.includes("phoenixFeather") ? "Phoenix Feather" : "Second Wind";
+    say(source + "! The blow that should have killed you does not: you stand on half your health" + (left > 0 ? " (" + left + " more this run)." : " (used up for this run)."));
+    if (!catchingUp) {
+      toast(source + ": you survive a killing blow", "good");
+    }
     return true;
   }
   return false;
@@ -393,6 +404,7 @@ function victory() {
     }
     if (floor % relicBossEvery === 0) {
       gainRelic();
+      maybeGainLegendaryRelic();
     }
 
     let earned = bossFameAt(floor);

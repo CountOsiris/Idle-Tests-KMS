@@ -189,7 +189,10 @@ classes.warden = {
     { id: "mirrorShard", name: "Mirror Shard", text: "Spiked Shield: reflects +15% more of the enemy's attack, and 15% of every attack against you is thrown back at the enemy", build: "spiked", bonus: { reflect: 0.15, brace: 0.15 } },
     { id: "bulwarkCrest", name: "Tower Crest", text: "Tower Shield: +6% block chance, and your armor can block 5% more of every hit", build: "tower", bonus: { blockChance: 0.06, armorLimit: 0.05 } },
     { id: "razorRim", name: "Razor Rim", text: "Bladed Shield: each throw hits for +0.5 times your armor, and all your damage +20% against an enemy below half health", build: "bladed", bonus: { throwPower: 0.5, finisher: 0.2 } },
-    { id: "grudgeStone", name: "Grudge Stone", text: "Vengeance: +12% of each hit you take is added to your next spear thrust, and all your damage +25% against bosses", bonus: { vengeance: 0.12, bossSlayer: 0.25 } }
+    { id: "grudgeStone", name: "Grudge Stone", text: "Vengeance: +12% of each hit you take is added to your next spear thrust, and all your damage +25% against bosses", bonus: { vengeance: 0.12, bossSlayer: 0.25 } },
+    { id: "hedgehogHeart", name: "Hedgehog Heart", legendary: true, text: "Spiked Shield: reflected damage x3, and health x1.5", build: "spiked", bonus: {}, multiply: { reflect: 3, health: 1.5 } },
+    { id: "unbrokenLine", name: "The Unbroken Line", legendary: true, text: "Tower Shield: spear damage x2.5, and health x1.5", build: "tower", bonus: {}, multiply: { spear: 2.5, health: 1.5 } },
+    { id: "sawtoothSun", name: "Sawtooth Sun", legendary: true, text: "Bladed Shield: thrown shield damage x3, and health x1.5", build: "bladed", bonus: {}, multiply: { throw: 3, health: 1.5 } }
   ],
 
   startFight: wardenStartFight,

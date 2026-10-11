@@ -13,6 +13,14 @@
 
 const gameUpdates = [
   {
+    version: "20261011o",
+    title: "Legendary relics, and a Phoenix Feather you can see",
+    changes: [
+      "Every weapon and element now has a legendary relic. It multiplies that build's damage by 2.5 or 3 and your health by 1.5 until you fall. A relic boss you fight has a 3% chance to carry it.",
+      "Phoenix Feather always worked, but only wrote one quiet line. It now says its name, pops up over the fight, and shows as used up in the relic list."
+    ]
+  },
+  {
     version: "20261011n",
     title: "A page that holds still",
     changes: [

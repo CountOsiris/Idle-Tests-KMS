@@ -189,7 +189,12 @@ classes.barbarian = {
     { id: "serratedEdge", name: "Serrated Edge", text: "Axe: +1 bleed stack, and all your damage +20% against an enemy below half health", build: "axe", bonus: { bleedStacks: 1, finisher: 0.2 } },
     { id: "duelistsGlove", name: "Duelist's Glove", text: "Sword: +5% critical and parry chance, and a 4% chance to avoid any attack", build: "sword", bonus: { critChance: 0.05, parryChance: 0.05, sidestep: 0.04 } },
     { id: "giantsKnuckle", name: "Giant's Knuckle", text: "Club: +10% stun chance, and all your damage +40% on the first turn of every fight", build: "club", bonus: { stunChance: 0.1, opener: 0.4 } },
-    { id: "berserkersTorc", name: "Berserker's Torc", text: "Rage: +25% damage while below half health, and every kill makes all your damage 0.5% stronger for the rest of the run", bonus: { rage: 0.25, killStreak: 0.005 } }
+    { id: "berserkersTorc", name: "Berserker's Torc", text: "Rage: +25% damage while below half health, and every kill makes all your damage 0.5% stronger for the rest of the run", bonus: { rage: 0.25, killStreak: 0.005 } },
+    // LEGENDARY RELICS: one for each weapon, very rare, and worth a run to remember
+    // (see "Legendary relics" in data.js). "multiply" works as it does on a perk.
+    { id: "gorefather", name: "Gorefather", legendary: true, text: "Axe: bleeding damage x3, and health x1.5", build: "axe", bonus: {}, multiply: { bleed: 3, health: 1.5 } },
+    { id: "kingsplitter", name: "Kingsplitter", legendary: true, text: "Sword: critical hit damage x2.5, and health x1.5", build: "sword", bonus: {}, multiply: { swordCrit: 2.5, health: 1.5 } },
+    { id: "mountainsRoot", name: "Mountain's Root", legendary: true, text: "Club: damage of every hit x2.5, and health x1.5", build: "club", bonus: {}, multiply: { club: 2.5, health: 1.5 } }
   ],
 
   // The functions below, which make the class fight its own way

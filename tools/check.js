@@ -1123,6 +1123,61 @@ try {
   check("the fight box kept one height (" + Object.keys(fightHeights).join(", ") + " pixels) through 400 turns of " + Object.keys(roomKinds).join(", ") + " rooms, and the page does not adjust its own scroll",
     Object.keys(fightHeights).length === 1 && fightCard.offsetHeight > 300 && Object.keys(roomKinds).length >= 3 && getComputedStyle(document.documentElement).overflowAnchor === "none");
 
+  // 3i15. Phoenix Feather saves the hero once a run and says so; every build has one
+  // legendary relic, which only a fought relic boss can give, and which is lost on a fall
+  let relicsWere = ownedRelics;
+  let windsWere = runStats.secondWinds;
+  let chosenWere = chosenPerks;
+  chosenPerks = {};
+  ownedRelics = ["phoenixFeather"];
+  runStats.secondWinds = 0;
+  recalcStats();
+  let windsAllowed = totalBonus("secondWind");
+  playerHp = 0;
+  let saved = survivesDeath();
+  let savedOnce = saved && playerHp === Math.round(playerMaxHp / 2) && logLines[0].includes("Phoenix Feather");
+  for (let i = 1; i < windsAllowed; i++) {
+    survivesDeath();
+  }
+  playerHp = 0;
+  let notAgain = !survivesDeath();
+  check("Phoenix Feather: a killing blow leaves you on half health, the log names it, and it stops working once it is used up", savedOnce && notAgain);
+
+  let withoutOne = [];
+  for (let className in classes) {
+    let c = classes[className];
+    for (let kind in (c.stances || c.gearTypes)) {
+      if (c.relics.filter(function (relic) { return relic.legendary === true && relic.build === kind; }).length !== 1) {
+        withoutOne.push(className + "/" + kind);
+      }
+    }
+  }
+  ownedRelics = [];
+  runStats.secondWinds = 0;
+  recalcStats();
+  let plainHealth = playerMaxHp;
+  for (let i = 0; i < 50; i++) {
+    gainRelic();
+  }
+  let noneByChance = !ownedRelics.some(function (id) { return allRelics().find(function (relic) { return relic.id === id; }).legendary === true; });
+  ownedRelics = [];
+  recalcStats();
+  let realChance = chance;
+  chance = function () { return true; };
+  maybeGainLegendaryRelic();
+  maybeGainLegendaryRelic();
+  chance = realChance;
+  let legend = legendaryRelic();
+  let heldOnce = legend !== undefined && ownedRelics.length === 1 && ownedRelics[0] === legend.id && Math.abs(playerMaxHp - plainHealth * legend.multiply.health) <= 2;
+  check("legendary relics: every weapon and element has one (" + (withoutOne.length === 0 ? "all" : "missing: " + withoutOne.join(", ")) + "), an ordinary relic drop never gives one, a relic boss gives " + (legend === undefined ? "none" : legend.name) + " once, and it multiplies health by " + (legend === undefined ? "?" : legend.multiply.health),
+    withoutOne.length === 0 && noneByChance && heldOnce);
+  ownedRelics = relicsWere;
+  runStats.secondWinds = windsWere;
+  chosenPerks = chosenWere;
+  recalcStats();
+  playerHp = playerMaxHp;
+  closeMoment();
+
   // 3j. Starting floors, and the Tactician's list
   cruiseFloor = 40;
   runStartFloor = 1;

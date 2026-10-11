@@ -175,7 +175,10 @@ classes.warlock = {
     { id: "magesEye", name: "Mage's Eye", text: "Arcane Tome: +8% critical chance, and a hit on a weakness deals 20% more", build: "arcane", bonus: { critChance: 0.08, exploit: 0.2 } },
     { id: "voidShard", name: "Void Shard", text: "Void Tome: +2 void power, and you heal for 3% of the damage your turns deal", build: "void", bonus: { voidRend: 0.02, leech: 0.03 } },
     { id: "echoStone", name: "Echo Stone", text: "Rune Tome: +8% chance to cast twice, and your abilities are ready 15% sooner", build: "rune", bonus: { echoChance: 0.08, quickHands: 0.15 } },
-    { id: "soulLantern", name: "Soul Lantern", text: "+10% attack, and every kill makes all your damage 0.5% stronger for the rest of the run", bonus: { attackPercent: 0.1, killStreak: 0.005 } }
+    { id: "soulLantern", name: "Soul Lantern", text: "+10% attack, and every kill makes all your damage 0.5% stronger for the rest of the run", bonus: { attackPercent: 0.1, killStreak: 0.005 } },
+    { id: "starChart", name: "Star Chart", legendary: true, text: "Arcane Tome: the extra damage of critical hits x2.5, and health x1.5", build: "arcane", bonus: {}, multiply: { arcaneCrit: 2.5, health: 1.5 } },
+    { id: "hungeringDark", name: "The Hungering Dark", legendary: true, text: "Void Tome: spell damage x2.5, and health x1.5", build: "void", bonus: {}, multiply: { void: 2.5, health: 1.5 } },
+    { id: "endlessEcho", name: "Endless Echo", legendary: true, text: "Rune Tome: echo damage x2.5, and health x1.5", build: "rune", bonus: {}, multiply: { echo: 2.5, health: 1.5 } }
   ],
 
   startRun: warlockStartRun,

@@ -88,3 +88,16 @@ after, so a class can climb with one build and bring another to bosses.
 
 Design it only after Phase 1 to 3 of the [Roadmap](11-roadmap.md): it needs the late
 game to be in balance first.
+
+## Legendary relics (11 October 2026)
+
+The owner asked for relics that match a build and give "an OP run", rarely. **Built.**
+Every weapon and element has one legendary relic in its class file (`legendary: true`):
+it multiplies that build's own damage by 2.5 or 3 and health by 1.5 until the hero
+falls. A relic boss that is actually fought has a 3% chance to carry the one for the
+weapon in hand (`legendaryRelicChance`); swept bosses never do, only one can be held,
+and a relic slot cannot keep it.
+
+Phoenix Feather was reported as not working. It fired in every way a hero can die
+(checked), but said only "Second Wind!" in the log and stayed in the relic list looking
+unused. It now names itself, pops up over the fight, and is marked used up.

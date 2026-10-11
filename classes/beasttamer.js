@@ -185,7 +185,10 @@ classes.beasttamer = {
     { id: "wolfsTooth", name: "Wolf's Tooth", text: "Wolf Pack: one more wolf, and all your damage +20% against an enemy below half health", build: "wolf", bonus: { packSize: 1, finisher: 0.2 } },
     { id: "bearClaw", name: "Bear Claw", text: "Bear: +10% stun chance, and 15% of every attack against you is thrown back at the enemy", build: "bear", bonus: { stunChance: 0.1, brace: 0.15 } },
     { id: "hawkHood", name: "Hawk Hood", text: "Hawk: +8% critical dive chance, and all your damage +50% on the first turn of every fight", build: "hawk", bonus: { critChance: 0.08, opener: 0.5 } },
-    { id: "tamersWhistle", name: "Tamer's Whistle", text: "Bond: +4% companion damage for every 10% of your health that is missing, and you heal for 3% of the damage your turns deal", bonus: { bond: 0.04, leech: 0.03 } }
+    { id: "tamersWhistle", name: "Tamer's Whistle", text: "Bond: +4% companion damage for every 10% of your health that is missing, and you heal for 3% of the damage your turns deal", bonus: { bond: 0.04, leech: 0.03 } },
+    { id: "alphasFang", name: "Alpha's Fang", legendary: true, text: "Wolf Pack: bite damage x2.5, and health x1.5", build: "wolf", bonus: {}, multiply: { wolf: 2.5, health: 1.5 } },
+    { id: "ursineHeart", name: "Ursine Heart", legendary: true, text: "Bear: maul damage x2.5, and health x1.5", build: "bear", bonus: {}, multiply: { bear: 2.5, health: 1.5 } },
+    { id: "skyTalon", name: "Sky Talon", legendary: true, text: "Hawk: critical dive damage x2.5, and health x1.5", build: "hawk", bonus: {}, multiply: { hawkCrit: 2.5, health: 1.5 } }
   ],
 
   damageTypes: tamerDamageTypes,

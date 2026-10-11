@@ -731,7 +731,7 @@ function showPressure() {
 let relicsShown = "";
 
 function showRelics() {
-  let key = playerClass + ownedRelics.join(",") + totalBonus("relicSlots");
+  let key = playerClass + ownedRelics.join(",") + totalBonus("relicSlots") + "/" + (runStats.secondWinds || 0);
   if (key === relicsShown) {
     return;
   }
@@ -775,7 +775,8 @@ function showRelics() {
 
     let label = document.createElement("p");
     label.className = "item-slot";
-    label.textContent = "Relic";
+    label.textContent = relic.legendary === true ? "Legendary relic" : "Relic";
+    card.classList.toggle("legendary", relic.legendary === true);
     text.appendChild(label);
 
     let name = document.createElement("p");
@@ -792,6 +793,9 @@ function showRelics() {
     let effect = document.createElement("p");
     effect.className = "item-stats";
     effect.textContent = relic.text;
+    if (relic.id === "phoenixFeather" && (runStats.secondWinds || 0) >= totalBonus("secondWind")) {
+      effect.textContent = relic.text + " (used up for this run)";
+    }
     if (held > 1) {
       effect.textContent = relic.text + " (each)";
     }

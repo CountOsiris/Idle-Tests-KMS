@@ -111,7 +111,20 @@ function trophyMultiplier(stat) {
 // trophies, and the week's modifier.
 // The stats are damage, attack, health, armor, experience, gold, gear and fame.
 function multiplier(stat) {
-  return fameMultiplier(stat) * perkMultiplier(stat) * trophyMultiplier(stat) * weeklyMultiplier(stat);
+  return fameMultiplier(stat) * perkMultiplier(stat) * trophyMultiplier(stat) * weeklyMultiplier(stat) * relicMultiplier(stat);
+}
+
+// What the relics held multiply (only legendary relics multiply anything: see data.js)
+function relicMultiplier(stat) {
+  let total = 1;
+
+  for (let relic of allRelics()) {
+    if (relic.multiply !== undefined && relic.multiply[stat] !== undefined && ownedRelics.includes(relic.id)) {
+      total = total * relic.multiply[stat];
+    }
+  }
+
+  return total;
 }
 
 // The relics this class can find: the shared ones plus its own
@@ -471,7 +484,7 @@ function gainRelic() {
   let choices = [];
   for (let relic of allRelics()) {
     let held = ownedRelics.filter(function (id) { return id === relic.id; }).length;
-    if (fitsBuild(relic) && held < relicMostCopies) {
+    if (fitsBuild(relic) && held < relicMostCopies && relic.legendary !== true) {
       choices.push(relic);
     }
   }
@@ -483,4 +496,23 @@ function gainRelic() {
   ownedRelics.push(relic.id);
   recalcStats();
   announce("banner", "Relic: " + relic.name, relic.text + ".");
+}
+
+// The legendary relic of the weapon in hand, if the class has one for it
+function legendaryRelic() {
+  return currentClass().relics.find(function (relic) { return relic.legendary === true && fitsBuild(relic); });
+}
+
+// A relic boss has just been beaten in a fight: now and then it carries the legendary
+// relic of the weapon in hand (see "Legendary relics" in data.js)
+function maybeGainLegendaryRelic() {
+  let relic = legendaryRelic();
+  if (relic === undefined || ownedRelics.includes(relic.id) || !chance(legendaryRelicChance)) {
+    return;
+  }
+  ownedRelics.push(relic.id);
+  recalcStats();
+  playerHp = playerMaxHp;
+  say("LEGENDARY RELIC: " + relic.name + ". " + relic.text + ".");
+  announce("banner", "Legendary relic: " + relic.name, relic.text + ". It lasts until you fall. Make this run count.");
 }

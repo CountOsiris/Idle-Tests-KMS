@@ -184,7 +184,10 @@ classes.ranger = {
     { id: "bodkinQuiver", name: "Bodkin Quiver", text: "Shortbow: +30% armor piercing (arrows ignore more of the enemy's armor), and all your damage +20% against an enemy below half health", build: "shortbow", bonus: { bodkin: 0.3, finisher: 0.2 } },
     { id: "windlass", name: "Windlass", text: "Crossbow: bolts gain +100% penetration, and a hit on a weakness deals 20% more", build: "crossbow", bonus: { boltPierce: 1, exploit: 0.2 } },
     { id: "fletchersGlove", name: "Fletcher's Glove", text: "Shortbow: +15% chance of an extra arrow, and every kill makes all your damage 0.5% stronger for the rest of the run", build: "shortbow", bonus: { quickShot: 0.15, killStreak: 0.005 } },
-    { id: "steelBolts", name: "Steel Bolts", text: "Crossbow: bolts deal +12% damage, and all your damage +25% against bosses", build: "crossbow", bonus: { boltPower: 0.12, bossSlayer: 0.25 } }
+    { id: "steelBolts", name: "Steel Bolts", text: "Crossbow: bolts deal +12% damage, and all your damage +25% against bosses", build: "crossbow", bonus: { boltPower: 0.12, bossSlayer: 0.25 } },
+    { id: "widowmaker", name: "Widowmaker", legendary: true, text: "Longbow: critical shot damage x2.5, and health x1.5", build: "longbow", bonus: {}, multiply: { longbowCrit: 2.5, health: 1.5 } },
+    { id: "swarmQuiver", name: "Swarm Quiver", legendary: true, text: "Shortbow: arrow damage x2.5, and health x1.5", build: "shortbow", bonus: {}, multiply: { shortbow: 2.5, health: 1.5 } },
+    { id: "siegeEngine", name: "Siege Engine", legendary: true, text: "Crossbow: bolt damage x2.5, and health x1.5", build: "crossbow", bonus: {}, multiply: { crossbow: 2.5, health: 1.5 } }
   ],
 
   startFight: rangerStartFight,
