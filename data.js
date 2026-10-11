@@ -201,6 +201,16 @@ const resetTable = [
   { what: "Legend marks and what they opened", fall: "kept", ascend: "kept", legend: "kept" }
 ];
 
+// ----- The bestiary -----
+// The account remembers how many of each kind of monster and boss it has killed, with
+// every class added together (the Bestiary card on the Inventory tab). Knowing a
+// monster well makes it pay better: at each of these kill counts it reaches a new RANK,
+// and every rank adds bestiaryGold to the gold that kind drops (0.1 means +10%).
+//
+// TO ADD A RANK: add a number to the end of the list.
+const bestiaryRanks = [10, 100, 1000, 10000];
+const bestiaryGold = 0.1;
+
 // ----- Legend -----
 // The layer above ascension (rules in game/legend.js). A class that has reached
 // legendFloor can become a legend: it starts over from floor 1 with every milestone to

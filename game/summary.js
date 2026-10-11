@@ -154,6 +154,124 @@ function finishRun() {
   runStats = freshRunStats();
 }
 
+// ----- The bestiary -----
+// How many of each kind the account has killed, and what that knowledge is worth
+// (the numbers are in data.js; the count itself is "bestiary" in game/state.js).
+
+function killsOf(kind) {
+  return bestiary[kind] || 0;
+}
+
+// How many of the bestiaryRanks a kind has reached
+function bestiaryRank(kind) {
+  let rank = 0;
+  for (let needed of bestiaryRanks) {
+    if (killsOf(kind) >= needed) {
+      rank = rank + 1;
+    }
+  }
+  return rank;
+}
+
+function countKill(kind) {
+  let rankBefore = bestiaryRank(kind);
+  bestiary[kind] = killsOf(kind) + 1;
+
+  if (killsOf(kind) === 1) {
+    announce("toast", "New in the bestiary: " + kind, "The first of its kind to fall. See the Bestiary on the Inventory tab.");
+  } else if (bestiaryRank(kind) > rankBefore) {
+    announce("banner", kind + ": rank " + bestiaryRank(kind), "You have killed " + big(killsOf(kind)) + " of them. They now drop +" + percent(bestiaryGold * bestiaryRank(kind)) + " gold.");
+  }
+}
+
+// The Bestiary card: every kind of monster in every tower, a shadow until the first
+// one falls. Made again only when something on it would look different.
+let bestiaryShown = "";
+
+function showBestiary() {
+  if (document.body.dataset.tab !== "inventory") {
+    return;
+  }
+
+  let known = 0;
+  let total = 0;
+  let key = "";
+  for (let towerName in towers) {
+    for (let type of towers[towerName].monsters.concat(towers[towerName].bosses)) {
+      total = total + 1;
+      if (killsOf(type.name) > 0) {
+        known = known + 1;
+      }
+      key = key + killsOf(type.name) + ",";
+    }
+  }
+  document.getElementById("bestiary-count").textContent = known + " / " + total;
+  if (key === bestiaryShown) {
+    return;
+  }
+  bestiaryShown = key;
+
+  let box = document.getElementById("bestiary");
+  box.innerHTML = "";
+  for (let towerName in towers) {
+    let place = towers[towerName];
+
+    let title = document.createElement("p");
+    title.className = "row-title tally-title";
+    title.textContent = place.icon + " " + place.name;
+    box.appendChild(title);
+
+    let grid = document.createElement("div");
+    grid.className = "bestiary-grid";
+
+    for (let type of place.monsters.concat(place.bosses)) {
+      let kills = killsOf(type.name);
+      let isBoss = place.bosses.includes(type);
+
+      let cell = document.createElement("div");
+      cell.className = "bestiary-cell" + (kills === 0 ? " unknown" : "") + (isBoss ? " boss" : "");
+
+      if (type.art !== undefined) {
+        let image = document.createElement("img");
+        image.src = type.art;
+        image.alt = "";
+        cell.appendChild(image);
+      } else {
+        let icon = document.createElement("span");
+        icon.className = "bestiary-icon";
+        icon.textContent = type.icon || place.icon;
+        cell.appendChild(icon);
+      }
+
+      let name = document.createElement("p");
+      name.className = "bestiary-name";
+      name.textContent = kills === 0 ? "???" : type.name;
+      cell.appendChild(name);
+
+      let count = document.createElement("p");
+      count.className = "note";
+      if (kills === 0) {
+        count.textContent = isBoss ? "a boss" : "from floor " + type.minFloor;
+      } else {
+        let rank = bestiaryRank(type.name);
+        count.textContent = big(kills) + " killed" + (rank > 0 ? " · +" + percent(bestiaryGold * rank) + " gold" : "");
+      }
+      cell.appendChild(count);
+
+      // Hovering says what is known of it, and when the next rank comes
+      if (kills > 0) {
+        let next = bestiaryRanks.find(function (needed) { return kills < needed; });
+        cell.title = type.text
+          + (type.weak ? " Weak to " + typeNames(type.weak) + "." : "")
+          + (type.resist ? " Resists " + typeNames(type.resist) + "." : "")
+          + (next === undefined ? "" : " Next rank at " + big(next) + " killed: +" + percent(bestiaryGold) + " gold from it.");
+      }
+      grid.appendChild(cell);
+    }
+    box.appendChild(grid);
+  }
+}
+
 // ----- On the page -----
 
 // The "Last run" card on the Character tab: rebuilt only when another run ends

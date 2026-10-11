@@ -13,6 +13,14 @@
 
 const gameUpdates = [
   {
+    version: "20261011e",
+    title: "Bestiary",
+    changes: [
+      "The Inventory tab has a Bestiary: every kind of monster and boss, a shadow until you kill your first.",
+      "A kind you know well drops more gold: +10% at 10, 100, 1,000 and 10,000 killed, across all your classes."
+    ]
+  },
+  {
     version: "20261011d",
     title: "Pictures for every monster",
     changes: [

@@ -19,6 +19,11 @@ function showTab(name) {
     document.getElementById("tab-" + tabName).classList.toggle("open", tabName === name);
   }
 
+  // (the Bestiary is only drawn while its tab is open, so draw it now)
+  if (name === "inventory") {
+    showBestiary();
+  }
+
   // The tab is remembered, so that reloading the page does not throw you back to the first one
   openTab = name;
   saveSettings();
@@ -791,6 +796,7 @@ function updateScreen() {
   showAscension();
   showLegend();
   showLastRun();
+  showBestiary();
   showGoals();
   showLog();
 

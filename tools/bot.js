@@ -73,6 +73,7 @@ function freshStart(className, weaponType, keepAccount) {
     classSaves = {};
     fame = 0;
     fameLevels = {};
+    bestiary = {};
   }
   unpackClass(classSaves[className]);
   buildClassScreen();

@@ -21,6 +21,15 @@ Back to the [Masterplan](../../Masterplan.md).
 | Trophies | away-tower floors | no | no | no |
 | Fame and fame upgrades | new floors since ascending; bosses from floor 15 | no | no (spent fame is kept) | **yes** (full power up to the class's own ascension count, a quarter beyond) |
 
+## The bestiary (added October 2026, not in the original plan)
+
+The account counts its kills of every kind of monster and boss, all classes together,
+and shows them on the Inventory tab as a grid of the monsters' pictures: a shadow until
+the first one falls. A kind reaches a rank at 10, 100, 1,000 and 10,000 kills, and each
+rank adds 10% to the gold that kind drops. Its job among the layers is collection and
+a reason to visit every tower; it pays in gold only, so it does not add another damage
+multiplier. Numbers in `data.js` (`bestiaryRanks`, `bestiaryGold`).
+
 ## Flaws found in review
 
 1. **Too many layers do the same job.** Trials, breakthroughs, fame (Might, Vitality),

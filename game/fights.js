@@ -84,6 +84,7 @@ function spawnMonster(isBoss) {
   }
 
   monsterName = type.name;
+  monsterKind = type.name;
   monsterText = type.text;
   let growth = towerGrowth(floor);
   monsterMaxHp = Math.round(monsterHealth * growth * type.hp);
@@ -346,8 +347,10 @@ function victory() {
   if (monsterIsRare) {
     reward = reward * rareGold;
   }
-  reward = Math.round(reward * monsterGold * (1 + totalBonus("gold")) * multiplier("gold"));
+  // (a kind of monster the account knows well pays more: see "The bestiary" in data.js)
+  reward = Math.round(reward * monsterGold * (1 + totalBonus("gold")) * multiplier("gold") * (1 + bestiaryGold * bestiaryRank(monsterKind)));
   gold = gold + reward;
+  countKill(monsterKind);
 
   // (some keystones give this up: "noKillHeal")
   if (totalBonus("noKillHeal") === 0) {

@@ -480,6 +480,7 @@ function saveGame() {
     fameLevels: fameLevels,
     legendMarks: legendMarks,
     legendLevels: legendLevels,
+    bestiary: bestiary,
     unlockedTabs: unlockedTabs,
     lastTick: lastTick
   };
@@ -506,6 +507,9 @@ function loadGame() {
       fame = data.fame;
       fameLevels = keepKnownIds(data.fameLevels, fameUpgrades);
 
+      // The bestiary: saves from before it existed start it empty
+      bestiary = (typeof data.bestiary === "object" && data.bestiary !== null) ? data.bestiary : {};
+
       // Legend marks: saves from before they existed have none
       legendMarks = typeof data.legendMarks === "number" ? data.legendMarks : 0;
       legendLevels = keepKnownIds(data.legendLevels || {}, legendUnlocks);
@@ -530,6 +534,7 @@ function loadGame() {
       fameLevels = {};
       legendMarks = 0;
       legendLevels = {};
+      bestiary = {};
       playerClass = "barbarian";
       lastTick = Date.now();
     }

@@ -935,6 +935,53 @@ body[data-tab="tower"] #tab-character {
   background: linear-gradient(#8fa6bd, #4c6178);
 }
 
+/* The Bestiary: a grid of small pictures for each tower */
+.bestiary-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(104px, 1fr));
+  gap: 8px;
+  margin-bottom: 6px;
+}
+
+.bestiary-cell {
+  padding: 8px 4px 6px;
+  text-align: center;
+  background: var(--inset);
+  border: 1px solid #1c1815;
+}
+
+.bestiary-cell.boss {
+  border-color: var(--gold-dark);
+}
+
+.bestiary-cell img {
+  width: 64px;
+  height: 64px;
+  image-rendering: pixelated;
+}
+
+.bestiary-icon {
+  display: block;
+  font-size: 40px;
+  line-height: 64px;
+}
+
+.bestiary-name {
+  margin: 2px 0 0;
+  font-size: 14px;
+}
+
+.bestiary-cell .note {
+  margin: 0;
+  font-size: 12px;
+}
+
+/* A kind not yet killed is only a shadow */
+.bestiary-cell.unknown img,
+.bestiary-cell.unknown .bestiary-icon {
+  filter: brightness(0) opacity(0.55);
+}
+
 /* The table of what is kept and lost, on the Ascension tab */
 .reset-table {
   width: 100%;

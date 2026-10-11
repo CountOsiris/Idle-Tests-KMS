@@ -944,6 +944,36 @@ try {
     && Math.abs(parseFloat(document.getElementById("mini-player-bar").style.width) - 50) < 1 && Math.abs(parseFloat(document.getElementById("mini-monster-bar").style.width) - 25) < 1);
   playerHp = playerMaxHp;
 
+  // 3i8. The bestiary: kills are counted by kind, ranks pay gold, and the card shows them
+  let bestiaryWas = bestiary;
+  bestiary = {};
+  floor = 3;
+  room = 1;
+  encounterType = "monster";
+  spawnMonster(false);
+  let kind = monsterKind;
+  monsterIsRare = true;
+  monsterName = "Rare " + kind;
+  let goldWas = gold;
+  monsterHp = 0;
+  victory();
+  let plainGold = gold - goldWas;
+  let countedOnce = killsOf(kind) === 1 && bestiary["Rare " + kind] === undefined;
+  bestiary[kind] = bestiaryRanks[1];
+  let rankNow = bestiaryRank(kind);
+  showTab("inventory");
+  updateScreen();
+  let cells = document.querySelectorAll("#bestiary .bestiary-cell").length;
+  let unknownCells = document.querySelectorAll("#bestiary .bestiary-cell.unknown").length;
+  let totalKinds = 0;
+  for (let towerName in towers) {
+    totalKinds = totalKinds + towers[towerName].monsters.length + towers[towerName].bosses.length;
+  }
+  check("bestiary: a rare " + kind + " counts as a " + kind + ", " + bestiaryRanks[1] + " killed is rank " + rankNow + " (+" + percent(bestiaryGold * rankNow) + " gold), and the card shows " + cells + " kinds with " + unknownCells + " still unknown",
+    countedOnce && plainGold > 0 && rankNow === 2 && cells === totalKinds && unknownCells === totalKinds - 1 && document.getElementById("bestiary-count").textContent === "1 / " + totalKinds);
+  bestiary = bestiaryWas;
+  startEncounter();
+
   // 3j. Starting floors, and the Tactician's list
   cruiseFloor = 40;
   runStartFloor = 1;

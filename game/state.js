@@ -110,6 +110,10 @@ let legends = 0;
 let fame = 0;
 let fameLevels = {};
 
+// The bestiary also belongs to the account: kills of each kind of monster, by its name
+// in towers.js, for example { "Goblin": 412, "Orc Warlord": 9 } (see data.js)
+let bestiary = {};
+
 // ----- Numbers the game works out as it goes (not saved) -----
 let playerClass = "barbarian";
 let playerMaxHp = 0;
@@ -117,6 +121,7 @@ let playerAttack = 0;
 
 let encounterType = "monster";
 let monsterName = "";
+let monsterKind = "";       // its name in towers.js, without "Rare" in front: what the bestiary counts
 let monsterText = "";
 let monsterMaxHp = 0;
 let monsterHp = 0;
