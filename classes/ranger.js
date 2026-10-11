@@ -112,7 +112,7 @@ classes.ranger = {
       floor: 50,
       perks: [
         { id: "hawksVolley", name: "Opening Volley", text: "+30% attack, and Range: the enemy misses 1 more turn at the start of a fight", bonus: { attackPercent: 0.3, firstStrike: 1 } },
-        { id: "forestGuardian", name: "Forest Guardian", text: "health x1.5 and +4 armor", bonus: { armor: 4 }, multiply: { health: 1.5 } },
+        { id: "forestGuardian", name: "Forest Guardian", text: "health x1.5, armor x1.4, and all your damage +30% against an enemy below half health", bonus: { finisher: 0.3 }, multiply: { health: 1.5, armor: 1.4 } },
         { id: "longshot", name: "Longshot", text: "Longbow: critical shot damage x1.6, and +10% critical shot chance", bonus: { aimChance: 0.1 }, multiply: { longbowCrit: 1.6 } },
         { id: "volleyer", name: "Volleyer", text: "Shortbow: arrow damage x1.6", multiply: { shortbow: 1.6 } },
         { id: "siegeArcher", name: "Siege Archer", text: "Crossbow: bolt damage x1.6", multiply: { crossbow: 1.6 } }
@@ -133,19 +133,19 @@ classes.ranger = {
     {
       floor: 75,
       perks: [
-        { id: "deadeye", name: "Deadeye", text: "attack x1.4", multiply: { attack: 1.4 } },
-        { id: "wildHeart", name: "Wild Heart", text: "health x1.75", multiply: { health: 1.75 } },
+        { id: "deadeye", name: "Deadeye", text: "attack x1.3, all your damage +75% against bosses, and your abilities are ready a fifth sooner", bonus: { bossSlayer: 0.75, quickHands: 0.2 }, multiply: { attack: 1.3 } },
+        { id: "wildHeart", name: "Wild Heart", text: "health x1.6, and once a run a blow that would kill you leaves you alive on half your health", bonus: { secondWind: 1 }, multiply: { health: 1.6 } },
         { id: "eagleOfTheWood", name: "Eagle of the Wood", text: "Longbow: +30% attack, +10% critical shot chance and critical shots deal +100% damage", bonus: { attackPercent: 0.3, aimChance: 0.1, aimPower: 1 } },
         { id: "hailOfArrows", name: "Hail of Arrows", text: "Shortbow: +30% attack and +60% chance of an extra arrow", bonus: { attackPercent: 0.3, quickShot: 0.6 } },
         { id: "ironbreaker", name: "Ironbreaker", text: "Crossbow: +30% attack, bolts deal +45% damage and gain +150% penetration", bonus: { attackPercent: 0.3, boltPower: 0.45, boltPierce: 1.5 } },
-        { id: "outOfReach", name: "Out of Reach", text: "You take 25% less damage", multiply: { damageTaken: 0.75 } }
+        { id: "outOfReach", name: "Out of Reach", text: "You take 25% less damage, and have a 10% chance to avoid any attack", bonus: { sidestep: 0.1 }, multiply: { damageTaken: 0.75 } }
       ]
     },
     {
       floor: 100,
       perks: [
         { id: "stormOfArrows", name: "First Blood", text: "+60% attack, and Range: the enemy misses 1 more turn at the start of a fight", bonus: { attackPercent: 0.6, firstStrike: 1 } },
-        { id: "wardenOfTheWood", name: "Keeper of the Wood", text: "health x2 and +6 armor", bonus: { armor: 6 }, multiply: { health: 2 } },
+        { id: "wardenOfTheWood", name: "Keeper of the Wood", text: "health x2, armor x1.5, and you heal 2% of your health every turn of a fight", bonus: { prayer: 0.02 }, multiply: { health: 2, armor: 1.5 } },
         { id: "oneShot", name: "One Shot", text: "Longbow: critical shot damage x1.6 again", multiply: { longbowCrit: 1.6 } },
         { id: "arrowStorm", name: "Arrow Storm", text: "Shortbow: arrow damage x2.8 again", multiply: { shortbow: 2.8 } },
         { id: "siegeMaster", name: "Siege Master", text: "Crossbow: bolt damage x2 again", multiply: { crossbow: 2 } }

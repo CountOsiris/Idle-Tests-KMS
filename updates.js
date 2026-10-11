@@ -13,6 +13,16 @@
 
 const gameUpdates = [
   {
+    version: "20261011q",
+    title: "Milestones that are choices",
+    changes: [
+      "At floors 50, 75 and 100 every class had a plain attack perk and a plain health perk beside perks that gave the same and more, so they were never the right pick. They are now different kinds of choice.",
+      "Floor 75: the plain attack perk is a boss hunter (attack x1.3, +75% against bosses, abilities a fifth sooner). The plain health perk is a second life (health x1.6, and once a run a killing blow leaves you on half health).",
+      "Floor 100: the plain health perk also heals 2% of your health every turn. Floor 50: it gives armor x1.4 in place of a few points of armor.",
+      "The Warlock's three soul perks were the same perk three times. Now: damage that builds with every kill, healing from damage dealt, and damage from the floors swept."
+    ]
+  },
+  {
     version: "20261011p",
     title: "A new layout: the fight on top, the tabs along the bottom",
     changes: [

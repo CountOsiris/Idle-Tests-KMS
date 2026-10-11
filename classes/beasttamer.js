@@ -111,8 +111,8 @@ classes.beasttamer = {
     {
       floor: 50,
       perks: [
-        { id: "beastlord", name: "Beastlord", text: "attack x1.3", multiply: { attack: 1.3 } },
-        { id: "oldGrowth", name: "Old Growth", text: "health x1.5 and +5 armor", bonus: { armor: 5 }, multiply: { health: 1.5 } },
+        { id: "beastlord", name: "Beastlord", text: "attack x1.2, and every kill makes all your damage 0.5% stronger for the rest of the run (up to +100%)", bonus: { killStreak: 0.005 }, multiply: { attack: 1.2 } },
+        { id: "oldGrowth", name: "Old Growth", text: "health x1.5 and armor x1.4", multiply: { health: 1.5, armor: 1.4 } },
         { id: "direPack", name: "Dire Pack", text: "Wolf Pack: bite damage x1.8", multiply: { wolf: 1.8 } },
         { id: "caveBear", name: "Cave Bear", text: "Bear: maul damage x1.8", multiply: { bear: 1.8 } },
         { id: "stormHawk", name: "Storm Hawk", text: "Hawk: critical dive damage x1.8", multiply: { hawkCrit: 1.8 } },
@@ -134,8 +134,8 @@ classes.beasttamer = {
     {
       floor: 75,
       perks: [
-        { id: "apex", name: "Apex", text: "attack x1.4", multiply: { attack: 1.4 } },
-        { id: "ironwoodHeart", name: "Ironwood Heart", text: "health x1.75", multiply: { health: 1.75 } },
+        { id: "apex", name: "Apex", text: "attack x1.3, all your damage +75% against bosses, and your abilities are ready a fifth sooner", bonus: { bossSlayer: 0.75, quickHands: 0.2 }, multiply: { attack: 1.3 } },
+        { id: "ironwoodHeart", name: "Ironwood Heart", text: "health x1.6, and once a run a blow that would kill you leaves you alive on half your health", bonus: { secondWind: 1 }, multiply: { health: 1.6 } },
         { id: "wolfKing", name: "Wolf King", text: "Wolf Pack: +25% attack, one more wolf, and bites deal +10% of your attack more", bonus: { attackPercent: 0.25, packSize: 1, bitePower: 0.1 } },
         { id: "ursine", name: "Ursine", text: "Bear: +25% attack, the maul deals +80% of your attack more, and +8% stun chance", bonus: { attackPercent: 0.25, maulPower: 0.8, stunChance: 0.08 } },
         { id: "skyHunter", name: "Sky Hunter", text: "Hawk: +25% attack, +10% critical dive chance and +80% critical damage", bonus: { attackPercent: 0.25, critChance: 0.1, critPower: 0.8 } },
@@ -150,7 +150,7 @@ classes.beasttamer = {
         { id: "ursaMajor", name: "Ursa Major", text: "Bear: maul damage x1.8 again", multiply: { bear: 1.8 } },
         { id: "roc", name: "Roc", text: "Hawk: critical dive damage x1.8 again", multiply: { hawkCrit: 1.8 } },
         { id: "oneHeart", name: "One Heart", text: "Bond x3 again", multiply: { bond: 3 } },
-        { id: "ancientOne", name: "Ancient One", text: "health x2 and +8 armor", bonus: { armor: 8 }, multiply: { health: 2 } }
+        { id: "ancientOne", name: "Ancient One", text: "health x2, armor x1.5, and you heal 2% of your health every turn of a fight", bonus: { prayer: 0.02 }, multiply: { health: 2, armor: 1.5 } }
       ]
     }
   ],

@@ -274,3 +274,27 @@ Tried and dropped: a faster deep attack growth (1.02 for 1.016) left the spread 
 (295 to 378) and sent the Spiked Shield to 445, since its reflection grows with the
 monster's attack; and taking fame's Might out of reflection with a fixed x6 to make up
 for it put floor 35 at 1.7 hours. The slow drift of the Spiked Shield stays open.
+
+## Milestones as choices (11 October 2026, last)
+
+The owner: "75f Soul Eater way stronger than Arcane Supremacy? What's even the point.
+Cull any repeats, make milestones meaningful choices not forced decisions."
+
+Every class had the same shape at floors 50, 75 and 100: a plain "attack x", a plain
+"health x", a perk for each weapon, and a class-theme perk. The weapon and theme perks
+gave attack as well, so the plain attack perk was a worse copy of four neighbours.
+
+**Built.** The plain perks keep their ids and names and became different kinds of
+choice: a boss hunter and a second life at floor 75, a mending perk at floor 100, armor
+as a multiplier at floor 50. The Warlock's three soul perks, which were one perk three
+times, are a kill streak, leech and momentum. The Ranger's defensive perks carry
+something an archer can use.
+
+**Kept from coming back.** The check now fails if any milestone perk gives nothing that
+a neighbour does not give as much of or more (run against the old files it names
+Warlord against four perks and Arcane Supremacy against Abyss and Soul Eater).
+
+Forced one perk at a time (`perkcheck`, 40 hours, one climb each, so gaps under 20 floors
+are noise): the boss hunter first came out 18 to 28 floors behind on three of four
+classes and was raised; Soul Collector came out 24 ahead and was lowered. Not measured
+again after those two changes.

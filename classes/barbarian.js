@@ -113,8 +113,8 @@ classes.barbarian = {
     {
       floor: 50,
       perks: [
-        { id: "juggernaut", name: "Juggernaut", text: "health x1.5 and +5 armor", bonus: { armor: 5 }, multiply: { health: 1.5 } },
-        { id: "berserker", name: "Ravager", text: "attack x1.5 and +10% lifesteal", bonus: { lifesteal: 0.1 }, multiply: { attack: 1.5 } },
+        { id: "juggernaut", name: "Juggernaut", text: "health x1.5 and armor x1.4", multiply: { health: 1.5, armor: 1.4 } },
+        { id: "berserker", name: "Ravager", text: "attack x1.5, health x1.2 and +10% lifesteal", bonus: { lifesteal: 0.1 }, multiply: { attack: 1.5, health: 1.2 } },
         { id: "flayer", name: "Flayer", text: "Axe: bleeding damage x1.4, attack x1.5 and health x1.3", multiply: { bleed: 1.4, attack: 1.5, health: 1.3 } },
         { id: "swordmaster", name: "Swordmaster", text: "Sword: critical hit damage x1.8", multiply: { swordCrit: 1.8 } },
         { id: "bonebreaker", name: "Bonebreaker", text: "Club: damage of every hit x1.9", multiply: { club: 1.9 } },
@@ -137,8 +137,8 @@ classes.barbarian = {
     {
       floor: 75,
       perks: [
-        { id: "warlord", name: "Warlord", text: "attack x1.4", multiply: { attack: 1.4 } },
-        { id: "unbreakable", name: "Unbreakable", text: "health x1.75", multiply: { health: 1.75 } },
+        { id: "warlord", name: "Warlord", text: "attack x1.3, all your damage +75% against bosses, and your abilities are ready a fifth sooner", bonus: { bossSlayer: 0.75, quickHands: 0.2 }, multiply: { attack: 1.3 } },
+        { id: "unbreakable", name: "Unbreakable", text: "health x1.6, and once a run a blow that would kill you leaves you alive on half your health", bonus: { secondWind: 1 }, multiply: { health: 1.6 } },
         { id: "bloodletter", name: "Bloodletter", text: "Axe: attack x1.4, +4 bleed stacks and bleeding deals +50% damage", bonus: { bleedStacks: 4, dotPower: 0.5 }, multiply: { attack: 1.4 } },
         { id: "blademaster", name: "Blademaster", text: "Sword: attack x1.4, +10% critical and parry chance, +60% critical damage", bonus: { critChance: 0.1, parryChance: 0.1, critPower: 0.6 }, multiply: { attack: 1.4 } },
         { id: "earthshaker", name: "Earthshaker", text: "Club: attack x1.4, +10% stun chance and hits deal +40% damage", bonus: { stunChance: 0.1, clubPower: 0.4 }, multiply: { attack: 1.4 } },

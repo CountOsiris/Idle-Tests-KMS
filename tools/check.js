@@ -1257,6 +1257,57 @@ try {
   otherTabOpen = false;
   document.getElementById("other-tab").hidden = true;
 
+  // 4b. No milestone perk is simply a worse copy of another on the same milestone: every
+  // number it gives, the other gives as well, as big or bigger. Such a perk is never the
+  // right pick, for a weapon the other one works with. (Soul Eater once gave attack x1.5
+  // and health x1.3 beside Arcane Supremacy's attack x1.4.)
+  let scopeOf = function (c, perk) {
+    let kinds = c.stances !== undefined ? c.stances : c.gearTypes;
+    for (let kind in kinds) {
+      let name = c.stances !== undefined ? c.stances[kind].name : c.gearTypes[kind];
+      if (perk.text.startsWith(name + ":")) {
+        return kind;
+      }
+    }
+    return "";
+  };
+  let numbersOf = function (perk) {
+    let numbers = {};
+    for (let key in (perk.bonus || {})) { numbers["+" + key] = perk.bonus[key]; }
+    for (let key in (perk.multiply || {})) { numbers["x" + key] = key === "damageTaken" ? 1 / perk.multiply[key] : perk.multiply[key]; }
+    return numbers;
+  };
+  let worseCopies = [];
+  for (let className in classes) {
+    let c = classes[className];
+    for (let milestone of c.milestones.concat(trialMilestones)) {
+      if (milestone.keystones === true) {
+        continue;
+      }
+      for (let lesser of milestone.perks) {
+        for (let better of milestone.perks) {
+          if (lesser === better) {
+            continue;
+          }
+          let lesserScope = scopeOf(c, lesser);
+          let betterScope = scopeOf(c, better);
+          if (lesserScope !== "" && betterScope !== "" && lesserScope !== betterScope) {
+            continue;
+          }
+          let mine = numbersOf(lesser);
+          let theirs = numbersOf(better);
+          let covered = Object.keys(mine).length > 0 && Object.keys(mine).every(function (key) { return theirs[key] !== undefined && theirs[key] >= mine[key]; });
+          let more = Object.keys(theirs).some(function (key) { return mine[key] === undefined || theirs[key] > mine[key]; });
+          if (covered && more) {
+            worseCopies.push(c.name + " floor " + milestone.floor + ": " + lesser.name + " is a worse " + better.name);
+          }
+        }
+      }
+    }
+  }
+  worseCopies = worseCopies.filter(function (line, index) { return worseCopies.indexOf(line) === index; });
+  check("milestone perks: " + (worseCopies.length === 0 ? "none is a worse copy of another on its milestone" : worseCopies.join("; ")), worseCopies.length === 0);
+
   // 4. The content lists: no name used twice in a class, no old wording
   for (let className in classes) {
     let c = classes[className];
