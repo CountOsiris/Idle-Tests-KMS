@@ -104,7 +104,7 @@ classes.ranger = {
     {
       floor: 35,
       perks: [
-        { id: "plunderer", name: "Plunderer", text: "+50% gold", bonus: { gold: 0.5 } },
+        { id: "plunderer", name: "Plunderer", text: "gold x2, and the gear the blacksmith makes is 10% stronger", multiply: { gold: 2, gear: 1.1 } },
         { id: "veteran", name: "Veteran", text: "+25% experience", bonus: { experience: 0.25 } }
       ]
     },

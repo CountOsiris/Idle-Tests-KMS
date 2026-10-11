@@ -91,7 +91,7 @@ classes.zealot = {
     {
       floor: 35,
       perks: [
-        { id: "plunderer", name: "Plunderer", text: "+50% gold", bonus: { gold: 0.5 } },
+        { id: "plunderer", name: "Plunderer", text: "gold x2, and the gear the blacksmith makes is 10% stronger", multiply: { gold: 2, gear: 1.1 } },
         { id: "veteran", name: "Veteran", text: "+25% experience", bonus: { experience: 0.25 } }
       ]
     },
@@ -99,7 +99,7 @@ classes.zealot = {
       floor: 50,
       perks: [
         { id: "avenger", name: "Hammer of Light", text: "Holy Mace: holy damage and Judgement damage x2, and +15% attack", bonus: { attackPercent: 0.15 }, multiply: { mace: 2 } },
-        { id: "saint", name: "Saint", text: "health x1.5, and Devotion: +2% of your health healed every turn", bonus: { devotion: 0.02 }, multiply: { health: 1.5 } },
+        { id: "saint", name: "Saint", text: "health x1.6, attack x1.3, and Devotion: +2% of your health healed every turn", bonus: { devotion: 0.02 }, multiply: { health: 1.6, attack: 1.3 } },
         { id: "bulwarkOfFaith", name: "Bulwark of Faith", text: "Mace and Shield: strike back damage x2, +10% block chance, attack x1.5 and health x1.3", bonus: { blockChance: 0.1 }, multiply: { shieldCounter: 2, attack: 1.5, health: 1.3 } },
         { id: "hierophant", name: "Hierophant", text: "Holy Tome: the burn from healing you do not need x2.5. Devotion: +1% of your health healed every turn", bonus: { devotion: 0.01 }, multiply: { sacred: 2.5 } },
         { id: "zealous", name: "Zealous", text: "Crusade x3: three times the damage for every turn a fight lasts", multiply: { crusade: 3 } }
@@ -133,8 +133,8 @@ classes.zealot = {
     {
       floor: 100,
       perks: [
-        { id: "handOfGod", name: "Hand of God", text: "Holy Mace: holy damage and Judgement damage x2 again, +20% attack and health x1.4", bonus: { attackPercent: 0.2 }, multiply: { mace: 2, health: 1.4 } },
-        { id: "martyr", name: "Martyr", text: "health x2, and Devotion: +2% of your health healed every turn", bonus: { devotion: 0.02 }, multiply: { health: 2 } },
+        { id: "handOfGod", name: "Hand of God", text: "Holy Mace: holy damage and Judgement damage x2 again, attack x1.3 and health x1.5", multiply: { mace: 2, attack: 1.3, health: 1.5 } },
+        { id: "martyr", name: "Martyr", text: "health x2.2, attack x1.5, and Devotion: +2% of your health healed every turn", bonus: { devotion: 0.02 }, multiply: { health: 2.2, attack: 1.5 } },
         { id: "aegisOfHeaven", name: "Aegis of Heaven", text: "Mace and Shield: strike back damage x2 again, +10% block chance, attack x1.3 and health x1.3", bonus: { blockChance: 0.1 }, multiply: { shieldCounter: 2, attack: 1.3, health: 1.3 } },
         { id: "voiceOfGod", name: "Voice of God", text: "Holy Tome: the burn from healing you do not need x2.5 again. Devotion: +2% of your health healed every turn", bonus: { devotion: 0.02 }, multiply: { sacred: 2.5 } },
         { id: "lastCrusade", name: "Last Crusade", text: "Crusade x3 again", multiply: { crusade: 3 } }

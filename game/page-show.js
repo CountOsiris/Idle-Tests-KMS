@@ -445,18 +445,31 @@ function showTowers() {
     if (towerBest[towerName] !== undefined) {
       best = towerBest[towerName];
     }
-    // One line each (style.css keeps the line breaks): the place, its rule, then its tiers
-    let text = place.text + " " + towerMatchup(towerName) + " Your best floor here: " + best + ".";
+    // One line each (style.css keeps the line breaks). A short row: the place, how your
+    // damage does there, and the next trophy. The rule and every trophy are behind
+    // "All trophies" (game/tidy.js), or the tab was a wall of text.
+    let open = towersOpen[towerName] === true;
+    let text = place.text + " Your best floor here: " + best + ".";
+    let more = document.getElementById(name + "-more");
+    more.hidden = towerName === playerClass;
 
     if (towerName === playerClass) {
       text = text + "\nYour home tower: no rule against you, and its trophies are for the other classes to win.";
     } else {
-      if (place.awayRule !== undefined) {
-        text = text + "\nRule for challengers · " + place.awayRule.name + ": " + place.awayRule.text + ".";
-      }
-      for (let trophy of place.trophies) {
-        let mark = trophies.includes(trophy.id) ? "✓ won" : "floor " + trophy.floor;
-        text = text + "\n" + mark + " · " + trophy.name + ": " + trophy.text;
+      let won = place.trophies.filter(function (trophy) { return trophies.includes(trophy.id); }).length;
+      let next = place.trophies.find(function (trophy) { return !trophies.includes(trophy.id); });
+      more.textContent = open ? "Hide the trophies" : "All trophies (" + won + " of " + place.trophies.length + " won)";
+      if (!open) {
+        text = text + "\n" + (next === undefined ? "Every trophy here is won." : "Next trophy · floor " + next.floor + " · " + next.name + ": " + next.text);
+      } else {
+        text = text + " " + towerMatchup(towerName);
+        if (place.awayRule !== undefined) {
+          text = text + "\nRule for challengers · " + place.awayRule.name + ": " + place.awayRule.text + ".";
+        }
+        for (let trophy of place.trophies) {
+          let mark = trophies.includes(trophy.id) ? "✓ won" : "floor " + trophy.floor;
+          text = text + "\n" + mark + " · " + trophy.name + ": " + trophy.text;
+        }
       }
     }
 

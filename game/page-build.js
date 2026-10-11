@@ -107,6 +107,15 @@ function buildTowerList() {
     addRow(box, "tower-" + towerName, function () {
       chooseTower(towerName);
     });
+
+    // "All trophies": opens the tower's full list under its row (game/tidy.js)
+    let more = document.createElement("button");
+    more.className = "link-button";
+    more.id = "tower-" + towerName + "-more";
+    more.onclick = function () {
+      toggleTowerDetails(towerName);
+    };
+    document.getElementById("tower-" + towerName + "-note").after(more);
   }
 }
 

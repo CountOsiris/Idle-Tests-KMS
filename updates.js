@@ -13,6 +13,16 @@
 
 const gameUpdates = [
   {
+    version: "20261011m",
+    title: "A tidier page, and milestone perks worth picking",
+    changes: [
+      "Press a box's heading to fold it away. Explanations now wait behind the \"?\" by each heading (Settings can show them all).",
+      "The Towers tab shows one short row a tower, with the next trophy to win. \"All trophies\" opens the full list.",
+      "Plunderer (floor 35) was a trap beside Veteran: it now doubles gold and makes the blacksmith's gear 10% stronger.",
+      "Floor 50 and 100 perks that added a percentage where the others multiplied now multiply: Ravager, Nightwalker, Master Assassin, Titan, Saint, Martyr and Hand of God."
+    ]
+  },
+  {
     version: "20261011l",
     title: "Rage and Crusade are builds now",
     changes: [

@@ -94,3 +94,13 @@ it goes to the fight. Checked in a 400 pixel wide window, not on a real phone.
 
 Friends will play on phones. The two-column layout stacks into one below 900px today; check
 that the stage stays on screen while a tab is open (sticky stage, tabs scroll).
+
+## Tidying (11 October 2026)
+
+The owner: "still a lot of clutter on some pages". Idle games with many systems keep
+the page quiet by showing a summary and opening detail on request. **Built**
+(`game/tidy.js`): a card folds to its heading when the heading is pressed, remembered
+per device ("What is kept, and what is lost" starts folded); the paragraph of
+explanation under each heading waits behind a "?", with a Settings switch to show them
+all; and the Towers tab shows one short row a tower with the next trophy, the full list
+behind "All trophies". A card in index.html needs nothing added for this to work.

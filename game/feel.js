@@ -266,12 +266,17 @@ function loadSettings() {
         seenVersion = settings.seenVersion;
       }
       watchFast = settings.watchFast === true;
+      helpAlways = settings.helpAlways === true;
+      if (Array.isArray(settings.foldedCards)) {
+        foldedCards = settings.foldedCards;
+      }
     } catch (error) {
       animationsOn = true;
     }
   }
 
   settingsLoaded = true;
+  tidyCards();
   showTab(openTab);
   showSettings();
 }
@@ -279,7 +284,7 @@ function loadSettings() {
 function saveSettings() {
   // Not before they have been read, or the first showTab would overwrite them
   if (settingsLoaded) {
-    localStorage.setItem(settingsName, JSON.stringify({ animationsOn: animationsOn, momentsOn: momentsOn, openTab: openTab, seenVersion: seenVersion, watchFast: watchFast }));
+    localStorage.setItem(settingsName, JSON.stringify({ animationsOn: animationsOn, momentsOn: momentsOn, openTab: openTab, seenVersion: seenVersion, watchFast: watchFast, helpAlways: helpAlways, foldedCards: foldedCards }));
   }
 }
 
@@ -306,6 +311,7 @@ function showSettings() {
   document.getElementById("animations-box").checked = animationsOn;
   document.getElementById("moments-box").checked = momentsOn;
   document.getElementById("fast-box").checked = watchFast;
+  document.getElementById("help-box").checked = helpAlways;
 
   // style.css switches every animation off when the body has "no-motion"
   document.body.classList.toggle("no-motion", !animationsOn);

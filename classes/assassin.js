@@ -86,14 +86,14 @@ classes.assassin = {
     {
       floor: 35,
       perks: [
-        { id: "plunderer", name: "Plunderer", text: "+50% gold", bonus: { gold: 0.5 } },
+        { id: "plunderer", name: "Plunderer", text: "gold x2, and the gear the blacksmith makes is 10% stronger", multiply: { gold: 2, gear: 1.1 } },
         { id: "veteran", name: "Veteran", text: "+25% experience", bonus: { experience: 0.25 } }
       ]
     },
     {
       floor: 50,
       perks: [
-        { id: "nightStalker", name: "Nightwalker", text: "+24% attack and +10% dodge", bonus: { attackPercent: 0.24, dodge: 0.1 } },
+        { id: "nightStalker", name: "Nightwalker", text: "attack x1.4 and +10% dodge", bonus: { dodge: 0.1 }, multiply: { attack: 1.4 } },
         { id: "deathMark", name: "Death Mark", text: "Ambush damage x2, and health x1.4", multiply: { ambush: 2, health: 1.4 } },
         { id: "plaguebringer", name: "Plaguebringer", text: "Venom Dagger: poison damage x1.4, and attack x1.3", multiply: { poison: 1.4, attack: 1.3 } },
         { id: "throatCutter", name: "Throat Cutter", text: "Stiletto: critical hit damage x1.6", multiply: { stilettoCrit: 1.6 } },
@@ -128,7 +128,7 @@ classes.assassin = {
     {
       floor: 100,
       perks: [
-        { id: "shadowMaster", name: "Master Assassin", text: "+40% attack and +10% dodge", bonus: { attackPercent: 0.4, dodge: 0.1 } },
+        { id: "shadowMaster", name: "Master Assassin", text: "attack x1.6, health x1.4 and +10% dodge", bonus: { dodge: 0.1 }, multiply: { attack: 1.6, health: 1.4 } },
         { id: "grimReaper", name: "Grim Reaper", text: "Ambush damage x2 again, and health x1.6", multiply: { ambush: 2, health: 1.6 } },
         { id: "blightlord", name: "Blightlord", text: "Venom Dagger: poison damage x1.4 again, attack x1.5 and health x1.8", multiply: { poison: 1.4, attack: 1.5, health: 1.8 } },
         { id: "kingslayer", name: "Kingslayer", text: "Stiletto: critical hit damage x1.6 again", multiply: { stilettoCrit: 1.6 } },

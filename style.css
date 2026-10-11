@@ -198,6 +198,69 @@ strong {
   margin: 0 auto 18px;
 }
 
+/* ----- Folding cards and hidden explanations (game/tidy.js) ----- */
+.fold-heading {
+  cursor: pointer;
+  user-select: none;
+}
+
+.fold-heading::after {
+  content: "▾";
+  margin-left: 8px;
+  font-size: 12px;
+  color: var(--faded);
+}
+
+.card.folded .fold-heading::after {
+  content: "▸";
+}
+
+/* A folded card is its heading and nothing else */
+.card.folded > *:not(h2):not(.card-head) {
+  display: none;
+}
+
+.card.folded {
+  padding-bottom: 6px;
+}
+
+/* The "?" by a heading, and the explanation it shows */
+.help-button {
+  margin-left: 10px;
+  padding: 0 7px;
+  min-width: 0;
+  font-size: 12px;
+  line-height: 18px;
+  border-radius: 50%;
+  vertical-align: middle;
+  color: var(--gold);
+}
+
+.card-help {
+  display: none;
+}
+
+.card.help-open > .card-help,
+body.help-always .card-help {
+  display: block;
+}
+
+body.help-always .help-button {
+  display: none;
+}
+
+/* A button that looks like a line of text: "All trophies" on the Towers tab */
+.link-button {
+  margin-top: 4px;
+  padding: 0;
+  border: none;
+  background: none;
+  color: var(--gold);
+  font-size: 14px;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
 /* A title on the left and a number on the right */
 .card-head {
   display: flex;

@@ -36,6 +36,10 @@
 //              of that floor would)
 //  probe       also say what the class was made of when it first reached floors 100 and
 //              150: level, fame levels, attack and health against an ordinary monster's
+//  perkcheck   for the first weapon of every class, play once for each perk of each
+//              milestone with that perk forced, and say how deep each got. A perk far
+//              behind the others of its milestone is a trap; one far ahead is the only
+//              real choice. One climb each, so only trust gaps of 20 floors or more.
 //  killers     also say what killed it most in its last two hours, and on which floor
 //  duo         a Barbarian for 6 hours, then a new Ranger and Warden on the same account
 // =====================================================================
@@ -64,6 +68,9 @@ const TOWER = (location.hash.match(/t=(\w+)/) || [0, ""])[1];
 const STALL = Number((location.hash.match(/stall=(\d+)/) || [0, 600])[1]);
 let ASCEND = location.hash.includes("ascend");
 const PROBE = location.hash.includes("probe");
+
+// A perk the bot must take at its milestone (the perkcheck mode sets this)
+let forcedPerk = null;
 
 // Skills left unbought (the skillcheck mode sets this)
 let SKIP_SKILLS = [];
@@ -190,6 +197,9 @@ function manage() {
         if (PERK !== "" && p.text.includes(PERK)) {
           perk = p;
         }
+      }
+      if (forcedPerk !== null && forcedPerk.floor === milestone.floor) {
+        perk = milestone.perks.find(function (p) { return p.id === forcedPerk.id; });
       }
       chosenPerks[milestone.floor] = perk.id;
     }
@@ -381,6 +391,40 @@ function hoursToFloor(className, weaponType, stanceId, runs) {
   return total / runs / 3600;
 }
 
+function perkCheck() {
+  for (let className in classes) {
+    if (ONLY_CLASS !== "" && ONLY_CLASS !== className) {
+      continue;
+    }
+    let c = classes[className];
+    let weaponType = Object.keys(c.gearTypes)[0];
+    let stanceId = c.stances !== undefined ? Object.keys(c.stances)[0] : undefined;
+    freshStart(className, weaponType, false);
+    if (stanceId !== undefined) {
+      stance = stanceId;
+    }
+    let milestones = allMilestones().filter(function (m) { return m.keystones !== true && m.floor <= 100; });
+    out.push(className + "/" + (stanceId || weaponType) + ", deepest floor in " + HOURS + " hours with each perk forced:");
+    for (let milestone of milestones) {
+      let parts = [];
+      for (let perk of milestone.perks) {
+        if (otherBuildNote(perk.text) !== "") {
+          continue;
+        }
+        forcedPerk = { floor: milestone.floor, id: perk.id };
+        let kept = out.length;
+        run(className, weaponType, stanceId, HOURS, true, false);
+        while (out.length > kept) {
+          out.pop();
+        }
+        parts.push(perk.name + " " + bestFloor);
+      }
+      forcedPerk = null;
+      out.push("  floor " + milestone.floor + ": " + parts.join(" | "));
+    }
+  }
+}
+
 // The luck of one climb moves it by 20% or more, so each figure is the average of this many
 const SKILL_FLOOR = Number((location.hash.match(/to=(\d+)/) || [0, 35])[1]);
 const SKILL_ONLY = ((location.hash.match(/sk=([\w+]+)/) || [0, ""])[1]).split("+").filter(function (x) { return x !== ""; });
@@ -424,7 +468,9 @@ function skillCheck() {
 }
 
 try {
-  if (location.hash.includes("skillcheck")) {
+  if (location.hash.includes("perkcheck")) {
+    perkCheck();
+  } else if (location.hash.includes("skillcheck")) {
     skillCheck();
   } else if (location.hash.includes("duo")) {
     run("barbarian", "axe", undefined, 6, true, false);

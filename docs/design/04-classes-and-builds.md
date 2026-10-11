@@ -248,3 +248,17 @@ Crusade counts the first turn, and Frenzy and Blood God carry attack and health.
 Still traps, left on purpose or not yet solved: Vengeance behind a Tower Shield (a
 blocked hit owes nothing), Rage with a Club (a stunned enemy does not hurt you), and
 the Ranger's health perks (an archer is seldom hit).
+
+## Milestone perks, tested one at a time (11 October 2026)
+
+`perkcheck` plays the first weapon of each class for 40 hours once for every perk of
+every milestone, with that perk forced. One climb each, so only gaps of 20 floors mean
+anything. Most milestones came out level. The traps it found:
+
+- **Plunderer** (floor 35, every class): 5 to 40 floors behind Veteran in seven classes
+  of eight. Now gold x2 and gear 10% stronger.
+- **Perks that add a percentage beside ones that multiply**: Ravager, Nightwalker,
+  Master Assassin, Titan, Saint, Martyr, Hand of God. Now multipliers.
+- **Health for the Ranger** (Hardy, Trial of Endurance, Forest Guardian): 40 to 50
+  floors behind, because an archer is seldom hit. Not solved: it is the class, not
+  the perks.

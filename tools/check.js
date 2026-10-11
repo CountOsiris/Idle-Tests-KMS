@@ -476,8 +476,13 @@ try {
   recalcStats();
   playerHp = playerMaxHp;
   showTab("travel");
+  for (let towerName in towers) {
+    towersOpen[towerName] = true;
+  }
   updateScreen();
-  check("the Towers tab lists the tiers", document.getElementById("towers").textContent.includes("Rule for challengers") && document.getElementById("towers").textContent.includes("floor 100"));
+  check("the Towers tab lists the tiers, once a tower's trophies are opened", document.getElementById("towers").textContent.includes("Rule for challengers") && document.getElementById("towers").textContent.includes("floor 100"));
+  towersOpen = {};
+  updateScreen();
   startEncounter();
 
   // 3f2. Stuck at a wall: the suggestion is a tower with a trophy left, and the best match
@@ -696,9 +701,13 @@ try {
     }
   }
   showTab("ascension");
+  let tableCard = document.getElementById("reset-table").closest(".card");
+  let tableFolded = tableCard.classList.contains("folded");
+  tableCard.classList.remove("folded");
   if (document.getElementById("reset-table").rows.length !== resetTable.length + 1 || document.getElementById("reset-table").offsetHeight === 0) {
     tableProblems.push("the table is not on the Ascension tab");
   }
+  tableCard.classList.toggle("folded", tableFolded);
   check("the kept-and-lost table agrees with what falling, ascending and becoming a legend really do" + (tableProblems.length === 0 ? "" : ": " + tableProblems.join("; ")), tableProblems.length === 0);
   townLevels = {};
   abilityUses = {};
@@ -1068,6 +1077,30 @@ try {
   addHitStacks(2);
   check("bleed and poison: with a limit of 9 one hit adds " + afterOne + " stacks and four hits stop at " + afterFour + "; with a limit of 2 a hit adds " + dotStacks, afterOne === 4 && afterFour === 9 && dotStacks === 1);
   dotStacks = stacksWas;
+
+  // 3i13. Tidy: a heading folds its card and the choice is saved; explanations wait
+  // behind "?"; a tower's row is short until its trophies are asked for
+  showTab("travel");
+  updateScreen();
+  let towersCard = document.getElementById("towers").closest(".card");
+  let towersHelp = towersCard.querySelector(".card-help");
+  let helpHidden = towersHelp !== null && towersHelp.offsetHeight === 0;
+  towersCard.querySelector(".help-button").click();
+  let helpShown = towersHelp !== null && towersHelp.offsetHeight > 0;
+  towersCard.querySelector(".help-button").click();
+  let heightOpen = towersCard.offsetHeight;
+  towersCard.querySelector("h2").click();
+  let foldedNow = towersCard.offsetHeight < heightOpen / 3 && JSON.parse(localStorage.getItem(settingsName)).foldedCards.includes(towersCard.dataset.card);
+  towersCard.querySelector("h2").click();
+  let unfolded = towersCard.offsetHeight === heightOpen && !JSON.parse(localStorage.getItem(settingsName)).foldedCards.includes(towersCard.dataset.card);
+  let awayTower = Object.keys(towers).find(function (name) { return name !== playerClass; });
+  let shortRow = document.getElementById("tower-" + awayTower + "-note").textContent.split(String.fromCharCode(10)).length;
+  document.getElementById("tower-" + awayTower + "-more").click();
+  let longRow = document.getElementById("tower-" + awayTower + "-note").textContent.split(String.fromCharCode(10)).length;
+  document.getElementById("tower-" + awayTower + "-more").click();
+  check("tidy: an explanation is hidden until \"?\" is pressed, a heading folds its card and that is saved, and a tower's row is " + shortRow + " lines until \"All trophies\" makes it " + longRow,
+    helpHidden && helpShown && foldedNow && unfolded && shortRow === 2 && longRow >= 2 + towers[awayTower].trophies.length
+    && document.getElementById("stage").closest(".card").dataset.card === undefined);
 
   // 3j. Starting floors, and the Tactician's list
   cruiseFloor = 40;
