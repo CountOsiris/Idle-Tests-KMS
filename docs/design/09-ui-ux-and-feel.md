@@ -32,6 +32,15 @@ Back to the [Masterplan](../../Masterplan.md).
 - Banners for a new blacksmith tier, a skill rank, a wall, a trophy, and "you can ascend".
 - The Ascension tab compares this ascension's fame per hour with the last one's.
 
+## Pictures (October 2026)
+
+Every monster and boss has pixel art: 72 tiles from Dungeon Crawl Stone Soup, which its
+artists released under CC0. They are 32 pixels tall and drawn at exactly five times
+that, kept sharp. `tools/monster-art.py` fetches them and holds the list of which tile
+is which monster; `art/CREDITS.md` and a line on the Settings tab give the credit. The
+check loads every picture named in `towers.js` and the class files, so a wrong file
+name fails before an upload.
+
 ## Proposed
 
 ### Unlock the interface

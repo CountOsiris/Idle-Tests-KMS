@@ -13,6 +13,14 @@
 
 const gameUpdates = [
   {
+    version: "20261011d",
+    title: "Pictures for every monster",
+    changes: [
+      "All 72 monsters and bosses have pixel art in place of emoji, and so does the Beast Tamer.",
+      "The art is from Dungeon Crawl Stone Soup, given to the public domain by its artists. Credits are in Settings."
+    ]
+  },
+  {
     version: "20261011c",
     title: "Tidier windows",
     changes: [

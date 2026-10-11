@@ -15,6 +15,9 @@
 // PIXEL ART: to give a monster or boss a real picture instead of an emoji, put the
 // image file in a folder called "art" next to index.html and add  art: "art/goblin.png"
 // to its line. The emoji stays as the fallback and is still used in lists.
+// Every monster and boss has one, in art/monsters/. They are free-to-use (CC0) tiles
+// from Dungeon Crawl Stone Soup, fetched by tools/monster-art.py, which holds the list
+// of which tile is which monster; art/CREDITS.md is written from that list.
 // A class gets art the same way, with an  art:  line in its file under  icon:
 //
 // ----- Monsters -----
@@ -108,17 +111,17 @@ const towers = {
     icon: "👹",
     text: "Big, loud and lightly armored. Plenty of flesh to steal life from.",
     monsters: [
-      { name: "Goblin", icon: "👺",text: "Carries more gold than it should.", minFloor: 1, hp: 0.9, attack: 1, armor: 0.5, gold: 1.5, weak: ["slashing", "fire"], resist: ["arcane"] },
-      { name: "Orc Grunt", text: "Thick-skulled and thick-skinned.", minFloor: 1, hp: 1.2, attack: 1, armor: 0.5, gold: 1, weak: ["slashing"], resist: ["piercing", "arcane"] },
-      { name: "Warg", icon: "🐺",text: "Bites hard, drops fast.", minFloor: 2, hp: 0.9, attack: 1.3, armor: 0.5, gold: 1, weak: ["fire", "crushing"], resist: ["nature", "ice"] },
-      { name: "Orc Warrior", text: "Tough and stubborn.", minFloor: 4, hp: 1.5, attack: 1.1, armor: 0.5, gold: 1.2, weak: ["crushing"], resist: ["piercing", "arcane", "nature"] },
-      { name: "Orc Berserker", icon: "😡",text: "Enrages: its attack grows by 10% every turn.", minFloor: 8, hp: 1.2, attack: 0.9, armor: 0, gold: 1.4, enrage: 0.1, weak: ["affliction", "ice"], resist: ["piercing", "arcane", "holy"] },
-      { name: "Ogre", icon: "🦍",text: "A mountain of health.", minFloor: 10, hp: 2, attack: 1.2, armor: 0.5, gold: 1.5, weak: ["slashing", "lightning"], resist: ["piercing", "nature", "earth"] }
+      { name: "Goblin", art: "art/monsters/goblin.png", icon: "👺",text: "Carries more gold than it should.", minFloor: 1, hp: 0.9, attack: 1, armor: 0.5, gold: 1.5, weak: ["slashing", "fire"], resist: ["arcane"] },
+      { name: "Orc Grunt", art: "art/monsters/orc-grunt.png", text: "Thick-skulled and thick-skinned.", minFloor: 1, hp: 1.2, attack: 1, armor: 0.5, gold: 1, weak: ["slashing"], resist: ["piercing", "arcane"] },
+      { name: "Warg", art: "art/monsters/warg.png", icon: "🐺",text: "Bites hard, drops fast.", minFloor: 2, hp: 0.9, attack: 1.3, armor: 0.5, gold: 1, weak: ["fire", "crushing"], resist: ["nature", "ice"] },
+      { name: "Orc Warrior", art: "art/monsters/orc-warrior.png", text: "Tough and stubborn.", minFloor: 4, hp: 1.5, attack: 1.1, armor: 0.5, gold: 1.2, weak: ["crushing"], resist: ["piercing", "arcane", "nature"] },
+      { name: "Orc Berserker", art: "art/monsters/orc-berserker.png", icon: "😡",text: "Enrages: its attack grows by 10% every turn.", minFloor: 8, hp: 1.2, attack: 0.9, armor: 0, gold: 1.4, enrage: 0.1, weak: ["affliction", "ice"], resist: ["piercing", "arcane", "holy"] },
+      { name: "Ogre", art: "art/monsters/ogre.png", icon: "🦍",text: "A mountain of health.", minFloor: 10, hp: 2, attack: 1.2, armor: 0.5, gold: 1.5, weak: ["slashing", "lightning"], resist: ["piercing", "nature", "earth"] }
     ],
     bosses: [
-      { name: "Orc Warlord", text: "The first real test.", hp: 1, attack: 1, armor: 1, gold: 1, weak: ["slashing"], resist: ["piercing", "arcane", "nature"], mechanics: ["enrage"] },
-      { name: "Ogre Chieftain", icon: "🦍",text: "Even more health than the rest of them.", hp: 1.4, attack: 1, armor: 0.5, gold: 1.2, weak: ["affliction", "lightning"], resist: ["piercing", "earth", "holy"], mechanics: ["reflect"] },
-      { name: "Warg Mother", icon: "🐺",text: "Enrages: her attack grows by 10% every turn.", hp: 1.1, attack: 1, armor: 0.5, gold: 1.2, enrage: 0.1, weak: ["fire", "crushing"], resist: ["nature", "ice", "arcane"], mechanics: ["summons"] }
+      { name: "Orc Warlord", art: "art/monsters/orc-warlord.png", text: "The first real test.", hp: 1, attack: 1, armor: 1, gold: 1, weak: ["slashing"], resist: ["piercing", "arcane", "nature"], mechanics: ["enrage"] },
+      { name: "Ogre Chieftain", art: "art/monsters/ogre-chieftain.png", icon: "🦍",text: "Even more health than the rest of them.", hp: 1.4, attack: 1, armor: 0.5, gold: 1.2, weak: ["affliction", "lightning"], resist: ["piercing", "earth", "holy"], mechanics: ["reflect"] },
+      { name: "Warg Mother", art: "art/monsters/warg-mother.png", icon: "🐺",text: "Enrages: her attack grows by 10% every turn.", hp: 1.1, attack: 1, armor: 0.5, gold: 1.2, enrage: 0.1, weak: ["fire", "crushing"], resist: ["nature", "ice", "arcane"], mechanics: ["summons"] }
     ],
     trophies: [
       { floor: 10, id: "warlordsBanner", name: "Warlord's Banner", text: "attack x1.1", multiply: { attack: 1.1 } },
@@ -139,17 +142,17 @@ const towers = {
     icon: "🤺",
     text: "Reckless raiders who hit hard and fall quickly. Every blow they land comes straight back.",
     monsters: [
-      { name: "Cutpurse", icon: "🦹",text: "Quick hands and a full purse.", minFloor: 1, hp: 0.7, attack: 1.1, armor: 0.5, gold: 1.6, weak: ["piercing", "fire"], resist: ["affliction"] },
-      { name: "Raider", text: "All attack, no defence.", minFloor: 1, hp: 0.8, attack: 1.4, armor: 1, gold: 1, weak: ["piercing"], resist: ["crushing", "arcane"] },
-      { name: "Crossbowman", icon: "🏹",text: "A heavy bolt and a thin jacket.", minFloor: 3, hp: 0.7, attack: 1.6, armor: 0.5, gold: 1, weak: ["slashing", "nature"], resist: ["crushing", "ice"] },
-      { name: "Duelist", text: "Strikes fast and hard.", minFloor: 5, hp: 0.9, attack: 1.5, armor: 1, gold: 1.2, weak: ["piercing", "lightning"], resist: ["crushing", "affliction", "arcane"] },
-      { name: "Raider Captain", icon: "⚔️",text: "The hardest hitter in the pass.", minFloor: 8, hp: 1.1, attack: 1.6, armor: 1, gold: 1.4, weak: ["slashing", "lightning"], resist: ["crushing", "fire", "holy"] },
-      { name: "Pit Fighter", icon: "🥊",text: "Enrages: his attack grows by 10% every turn.", minFloor: 10, hp: 1, attack: 1.2, armor: 0.5, gold: 1.4, enrage: 0.1, weak: ["piercing", "ice"], resist: ["crushing", "affliction", "nature"] }
+      { name: "Cutpurse", art: "art/monsters/cutpurse.png", icon: "🦹",text: "Quick hands and a full purse.", minFloor: 1, hp: 0.7, attack: 1.1, armor: 0.5, gold: 1.6, weak: ["piercing", "fire"], resist: ["affliction"] },
+      { name: "Raider", art: "art/monsters/raider.png", text: "All attack, no defence.", minFloor: 1, hp: 0.8, attack: 1.4, armor: 1, gold: 1, weak: ["piercing"], resist: ["crushing", "arcane"] },
+      { name: "Crossbowman", art: "art/monsters/crossbowman.png", icon: "🏹",text: "A heavy bolt and a thin jacket.", minFloor: 3, hp: 0.7, attack: 1.6, armor: 0.5, gold: 1, weak: ["slashing", "nature"], resist: ["crushing", "ice"] },
+      { name: "Duelist", art: "art/monsters/duelist.png", text: "Strikes fast and hard.", minFloor: 5, hp: 0.9, attack: 1.5, armor: 1, gold: 1.2, weak: ["piercing", "lightning"], resist: ["crushing", "affliction", "arcane"] },
+      { name: "Raider Captain", art: "art/monsters/raider-captain.png", icon: "⚔️",text: "The hardest hitter in the pass.", minFloor: 8, hp: 1.1, attack: 1.6, armor: 1, gold: 1.4, weak: ["slashing", "lightning"], resist: ["crushing", "fire", "holy"] },
+      { name: "Pit Fighter", art: "art/monsters/pit-fighter.png", icon: "🥊",text: "Enrages: his attack grows by 10% every turn.", minFloor: 10, hp: 1, attack: 1.2, armor: 0.5, gold: 1.4, enrage: 0.1, weak: ["piercing", "ice"], resist: ["crushing", "affliction", "nature"] }
     ],
     bosses: [
-      { name: "Bandit King", icon: "👑",text: "Hits harder than anyone in the pass.", hp: 1, attack: 1.3, armor: 1, gold: 1.5, weak: ["piercing"], resist: ["crushing", "arcane", "affliction"], mechanics: ["summons"] },
-      { name: "The Twin Blades", icon: "⚔️",text: "Two swords, very little patience.", hp: 0.9, attack: 1.5, armor: 0.5, gold: 1.2, weak: ["slashing", "lightning"], resist: ["crushing", "fire", "nature"], mechanics: ["enrage"] },
-      { name: "Warlord of the Pass", icon: "🏇",text: "Enrages: his attack grows by 10% every turn.", hp: 1.1, attack: 1.1, armor: 1, gold: 1.2, enrage: 0.1, weak: ["piercing"], resist: ["crushing", "elemental", "holy"], mechanics: ["shield"] }
+      { name: "Bandit King", art: "art/monsters/bandit-king.png", icon: "👑",text: "Hits harder than anyone in the pass.", hp: 1, attack: 1.3, armor: 1, gold: 1.5, weak: ["piercing"], resist: ["crushing", "arcane", "affliction"], mechanics: ["summons"] },
+      { name: "The Twin Blades", art: "art/monsters/twin-blades.png", icon: "⚔️",text: "Two swords, very little patience.", hp: 0.9, attack: 1.5, armor: 0.5, gold: 1.2, weak: ["slashing", "lightning"], resist: ["crushing", "fire", "nature"], mechanics: ["enrage"] },
+      { name: "Warlord of the Pass", art: "art/monsters/warlord-of-the-pass.png", icon: "🏇",text: "Enrages: his attack grows by 10% every turn.", hp: 1.1, attack: 1.1, armor: 1, gold: 1.2, enrage: 0.1, weak: ["piercing"], resist: ["crushing", "elemental", "holy"], mechanics: ["shield"] }
     ],
     trophies: [
       { floor: 10, id: "raidersShield", name: "Raider's Shield", text: "+3 armor", bonus: { armor: 3 } },
@@ -171,17 +174,17 @@ const towers = {
     icon: "🐗",
     text: "Slow, heavy beasts. They take a long time to reach an archer.",
     monsters: [
-      { name: "Wild Boar", text: "Charges in a straight line.", minFloor: 1, hp: 1.2, attack: 1.1, armor: 0.5, gold: 1, weak: ["piercing"], resist: ["crushing", "earth"] },
-      { name: "Giant Spider", icon: "🕷️",text: "Venomous: 30% of its attack ignores your armor.", minFloor: 1, hp: 0.9, attack: 1, armor: 1, gold: 1.1, poison: 0.3, weak: ["fire", "piercing"], resist: ["affliction", "arcane"] },
-      { name: "Dire Wolf", icon: "🐺",text: "Bites hard, drops fast.", minFloor: 3, hp: 1, attack: 1.3, armor: 0.5, gold: 1, weak: ["piercing", "fire"], resist: ["arcane", "holy"] },
-      { name: "Treant", icon: "🌳",text: "Slow, tough and covered in bark.", minFloor: 5, hp: 1.8, attack: 0.8, armor: 1.5, gold: 1.2, weak: ["fire", "slashing"], resist: ["crushing", "earth", "arcane"] },
-      { name: "Forest Troll", icon: "👹",text: "Regenerates 4% of its health every turn.", minFloor: 7, hp: 1.3, attack: 1, armor: 1, gold: 1.3, regen: 0.04, weak: ["fire", "nature"], resist: ["crushing", "affliction", "holy"] },
-      { name: "Dire Bear", icon: "🐻",text: "Huge, and hits like it.", minFloor: 10, hp: 1.8, attack: 1.4, armor: 1, gold: 1.5, weak: ["piercing"], resist: ["crushing", "earth", "arcane"] }
+      { name: "Wild Boar", art: "art/monsters/wild-boar.png", text: "Charges in a straight line.", minFloor: 1, hp: 1.2, attack: 1.1, armor: 0.5, gold: 1, weak: ["piercing"], resist: ["crushing", "earth"] },
+      { name: "Giant Spider", art: "art/monsters/giant-spider.png", icon: "🕷️",text: "Venomous: 30% of its attack ignores your armor.", minFloor: 1, hp: 0.9, attack: 1, armor: 1, gold: 1.1, poison: 0.3, weak: ["fire", "piercing"], resist: ["affliction", "arcane"] },
+      { name: "Dire Wolf", art: "art/monsters/dire-wolf.png", icon: "🐺",text: "Bites hard, drops fast.", minFloor: 3, hp: 1, attack: 1.3, armor: 0.5, gold: 1, weak: ["piercing", "fire"], resist: ["arcane", "holy"] },
+      { name: "Treant", art: "art/monsters/treant.png", icon: "🌳",text: "Slow, tough and covered in bark.", minFloor: 5, hp: 1.8, attack: 0.8, armor: 1.5, gold: 1.2, weak: ["fire", "slashing"], resist: ["crushing", "earth", "arcane"] },
+      { name: "Forest Troll", art: "art/monsters/forest-troll.png", icon: "👹",text: "Regenerates 4% of its health every turn.", minFloor: 7, hp: 1.3, attack: 1, armor: 1, gold: 1.3, regen: 0.04, weak: ["fire", "nature"], resist: ["crushing", "affliction", "holy"] },
+      { name: "Dire Bear", art: "art/monsters/dire-bear.png", icon: "🐻",text: "Huge, and hits like it.", minFloor: 10, hp: 1.8, attack: 1.4, armor: 1, gold: 1.5, weak: ["piercing"], resist: ["crushing", "earth", "arcane"] }
     ],
     bosses: [
-      { name: "Spider Queen", icon: "🕸️",text: "Venomous: 40% of her attack ignores your armor.", hp: 1, attack: 1, armor: 1, gold: 1.2, poison: 0.4, weak: ["fire", "piercing"], resist: ["affliction", "arcane", "holy"], mechanics: ["summons"] },
-      { name: "Elder Treant", icon: "🌲",text: "Ancient, armored and very hard to fell.", hp: 1.5, attack: 0.9, armor: 1.5, gold: 1.2, weak: ["fire", "slashing"], resist: ["crushing", "earth", "arcane"], mechanics: ["shield"] },
-      { name: "Troll King", icon: "👹",text: "Regenerates 3% of his health every turn.", hp: 1.2, attack: 1, armor: 1, gold: 1.2, regen: 0.03, weak: ["fire", "nature"], resist: ["crushing", "affliction", "holy"], mechanics: ["reflect"] }
+      { name: "Spider Queen", art: "art/monsters/spider-queen.png", icon: "🕸️",text: "Venomous: 40% of her attack ignores your armor.", hp: 1, attack: 1, armor: 1, gold: 1.2, poison: 0.4, weak: ["fire", "piercing"], resist: ["affliction", "arcane", "holy"], mechanics: ["summons"] },
+      { name: "Elder Treant", art: "art/monsters/elder-treant.png", icon: "🌲",text: "Ancient, armored and very hard to fell.", hp: 1.5, attack: 0.9, armor: 1.5, gold: 1.2, weak: ["fire", "slashing"], resist: ["crushing", "earth", "arcane"], mechanics: ["shield"] },
+      { name: "Troll King", art: "art/monsters/troll-king.png", icon: "👹",text: "Regenerates 3% of his health every turn.", hp: 1.2, attack: 1, armor: 1, gold: 1.2, regen: 0.03, weak: ["fire", "nature"], resist: ["crushing", "affliction", "holy"], mechanics: ["reflect"] }
     ],
     trophies: [
       { floor: 10, id: "heartOfTheWild", name: "Heart of the Wild", text: "health x1.1", multiply: { health: 1.1 } },
@@ -202,17 +205,17 @@ const towers = {
     icon: "🐀",
     text: "Thugs and vermin in the dark. Frail enough to fall to one well-placed blade.",
     monsters: [
-      { name: "Sewer Rat", text: "Weak. Everyone starts somewhere.", minFloor: 1, hp: 0.8, attack: 0.9, armor: 0, gold: 0.7, weak: ["affliction", "fire"], resist: ["nature"] },
-      { name: "Thug", icon: "😠",text: "Swings first, thinks never.", minFloor: 1, hp: 0.95, attack: 1.2, armor: 0.5, gold: 0.9, weak: ["piercing"], resist: ["crushing", "holy"] },
-      { name: "Smuggler", icon: "🕵️",text: "More gold than anyone else down here.", minFloor: 2, hp: 0.9, attack: 1, armor: 0.5, gold: 1.4, weak: ["slashing", "lightning"], resist: ["crushing", "arcane"] },
-      { name: "Watchman", icon: "💂",text: "Wears real armor: double.", minFloor: 4, hp: 1, attack: 1, armor: 2, gold: 1, weak: ["piercing", "affliction"], resist: ["crushing", "fire", "holy"] },
-      { name: "Plague Bearer", icon: "🤢",text: "Venomous: 30% of its attack ignores your armor.", minFloor: 6, hp: 1, attack: 1, armor: 0.5, gold: 1, poison: 0.3, weak: ["fire", "piercing"], resist: ["nature", "ice", "holy"] },
-      { name: "Enforcer", icon: "👊",text: "The guild's muscle.", minFloor: 9, hp: 1.2, attack: 1.4, armor: 1.5, gold: 1.2, weak: ["affliction"], resist: ["crushing", "arcane", "earth"] }
+      { name: "Sewer Rat", art: "art/monsters/sewer-rat.png", text: "Weak. Everyone starts somewhere.", minFloor: 1, hp: 0.8, attack: 0.9, armor: 0, gold: 0.7, weak: ["affliction", "fire"], resist: ["nature"] },
+      { name: "Thug", art: "art/monsters/thug.png", icon: "😠",text: "Swings first, thinks never.", minFloor: 1, hp: 0.95, attack: 1.2, armor: 0.5, gold: 0.9, weak: ["piercing"], resist: ["crushing", "holy"] },
+      { name: "Smuggler", art: "art/monsters/smuggler.png", icon: "🕵️",text: "More gold than anyone else down here.", minFloor: 2, hp: 0.9, attack: 1, armor: 0.5, gold: 1.4, weak: ["slashing", "lightning"], resist: ["crushing", "arcane"] },
+      { name: "Watchman", art: "art/monsters/watchman.png", icon: "💂",text: "Wears real armor: double.", minFloor: 4, hp: 1, attack: 1, armor: 2, gold: 1, weak: ["piercing", "affliction"], resist: ["crushing", "fire", "holy"] },
+      { name: "Plague Bearer", art: "art/monsters/plague-bearer.png", icon: "🤢",text: "Venomous: 30% of its attack ignores your armor.", minFloor: 6, hp: 1, attack: 1, armor: 0.5, gold: 1, poison: 0.3, weak: ["fire", "piercing"], resist: ["nature", "ice", "holy"] },
+      { name: "Enforcer", art: "art/monsters/enforcer.png", icon: "👊",text: "The guild's muscle.", minFloor: 9, hp: 1.2, attack: 1.4, armor: 1.5, gold: 1.2, weak: ["affliction"], resist: ["crushing", "arcane", "earth"] }
     ],
     bosses: [
-      { name: "Rat King", text: "Venomous: 30% of its attack ignores your armor.", hp: 1, attack: 1, armor: 0.5, gold: 1.2, poison: 0.3, weak: ["affliction", "fire"], resist: ["nature", "crushing", "holy"], mechanics: ["summons"] },
-      { name: "Guildmaster", icon: "🎩",text: "Did not get the job by fighting fair.", hp: 1, attack: 1.3, armor: 1, gold: 1.5, weak: ["piercing"], resist: ["crushing", "arcane", "lightning"], mechanics: ["shield"] },
-      { name: "The Butcher", icon: "🔪",text: "Enrages: his attack grows by 10% every turn.", hp: 1.1, attack: 1, armor: 0.5, gold: 1.2, enrage: 0.1, weak: ["slashing", "affliction"], resist: ["crushing", "holy", "ice"], mechanics: ["enrage"] }
+      { name: "Rat King", art: "art/monsters/rat-king.png", text: "Venomous: 30% of its attack ignores your armor.", hp: 1, attack: 1, armor: 0.5, gold: 1.2, poison: 0.3, weak: ["affliction", "fire"], resist: ["nature", "crushing", "holy"], mechanics: ["summons"] },
+      { name: "Guildmaster", art: "art/monsters/guildmaster.png", icon: "🎩",text: "Did not get the job by fighting fair.", hp: 1, attack: 1.3, armor: 1, gold: 1.5, weak: ["piercing"], resist: ["crushing", "arcane", "lightning"], mechanics: ["shield"] },
+      { name: "The Butcher", art: "art/monsters/butcher.png", icon: "🔪",text: "Enrages: his attack grows by 10% every turn.", hp: 1.1, attack: 1, armor: 0.5, gold: 1.2, enrage: 0.1, weak: ["slashing", "affliction"], resist: ["crushing", "holy", "ice"], mechanics: ["enrage"] }
     ],
     trophies: [
       { floor: 10, id: "thievesPurse", name: "Thieves' Purse", text: "+25% gold", bonus: { gold: 0.25 } },
@@ -232,17 +235,17 @@ const towers = {
     icon: "💀",
     text: "The armored dead. Steel means nothing to a spell.",
     monsters: [
-      { name: "Skeleton", text: "Old bones are hard to cut: double armor.", minFloor: 1, hp: 0.9, attack: 0.9, armor: 2, gold: 1, weak: ["crushing", "holy"], resist: ["piercing", "slashing", "affliction"] },
-      { name: "Armored Ghoul", icon: "🧟",text: "Somebody buried it in its plate.", minFloor: 2, hp: 1, attack: 1, armor: 2.5, gold: 1, weak: ["fire", "holy"], resist: ["slashing", "affliction", "nature"] },
-      { name: "Bone Knight", icon: "☠️",text: "Triple armor.", minFloor: 4, hp: 1.1, attack: 1.1, armor: 3, gold: 1.2, weak: ["crushing", "holy"], resist: ["piercing", "slashing", "affliction"] },
-      { name: "Iron Golem", icon: "🤖",text: "Slow, with four times the armor.", minFloor: 6, hp: 1.4, attack: 0.7, armor: 4, gold: 1.4, weak: ["lightning", "arcane"], resist: ["physical", "affliction", "nature"] },
-      { name: "Crypt Guardian", icon: "🗿",text: "Triple armor and a lot of health.", minFloor: 9, hp: 1.5, attack: 1.1, armor: 3, gold: 1.3, weak: ["arcane", "earth"], resist: ["slashing", "piercing", "fire"] },
-      { name: "Death Knight", icon: "⚰️",text: "Triple armor, and it hits back hard.", minFloor: 12, hp: 1.3, attack: 1.3, armor: 3, gold: 1.5, weak: ["holy", "arcane"], resist: ["slashing", "affliction", "ice"] }
+      { name: "Skeleton", art: "art/monsters/skeleton.png", text: "Old bones are hard to cut: double armor.", minFloor: 1, hp: 0.9, attack: 0.9, armor: 2, gold: 1, weak: ["crushing", "holy"], resist: ["piercing", "slashing", "affliction"] },
+      { name: "Armored Ghoul", art: "art/monsters/armored-ghoul.png", icon: "🧟",text: "Somebody buried it in its plate.", minFloor: 2, hp: 1, attack: 1, armor: 2.5, gold: 1, weak: ["fire", "holy"], resist: ["slashing", "affliction", "nature"] },
+      { name: "Bone Knight", art: "art/monsters/bone-knight.png", icon: "☠️",text: "Triple armor.", minFloor: 4, hp: 1.1, attack: 1.1, armor: 3, gold: 1.2, weak: ["crushing", "holy"], resist: ["piercing", "slashing", "affliction"] },
+      { name: "Iron Golem", art: "art/monsters/iron-golem.png", icon: "🤖",text: "Slow, with four times the armor.", minFloor: 6, hp: 1.4, attack: 0.7, armor: 4, gold: 1.4, weak: ["lightning", "arcane"], resist: ["physical", "affliction", "nature"] },
+      { name: "Crypt Guardian", art: "art/monsters/crypt-guardian.png", icon: "🗿",text: "Triple armor and a lot of health.", minFloor: 9, hp: 1.5, attack: 1.1, armor: 3, gold: 1.3, weak: ["arcane", "earth"], resist: ["slashing", "piercing", "fire"] },
+      { name: "Death Knight", art: "art/monsters/death-knight.png", icon: "⚰️",text: "Triple armor, and it hits back hard.", minFloor: 12, hp: 1.3, attack: 1.3, armor: 3, gold: 1.5, weak: ["holy", "arcane"], resist: ["slashing", "affliction", "ice"] }
     ],
     bosses: [
-      { name: "Bone Lich", icon: "🧙",text: "Double armor, and hits harder than most.", hp: 1, attack: 1.2, armor: 2, gold: 1.2, weak: ["crushing", "holy"], resist: ["piercing", "affliction", "ice"], mechanics: ["summons"] },
-      { name: "Iron Colossus", icon: "🤖",text: "Four times the armor.", hp: 1.3, attack: 0.9, armor: 4, gold: 1.2, weak: ["lightning", "arcane"], resist: ["physical", "affliction", "nature"], mechanics: ["armorUp"] },
-      { name: "The Entombed King", icon: "👑",text: "Triple armor, and regenerates 2% of his health every turn.", hp: 1.1, attack: 1, armor: 3, gold: 1.5, regen: 0.02, weak: ["holy", "arcane"], resist: ["slashing", "piercing", "affliction"], mechanics: ["shield"] }
+      { name: "Bone Lich", art: "art/monsters/bone-lich.png", icon: "🧙",text: "Double armor, and hits harder than most.", hp: 1, attack: 1.2, armor: 2, gold: 1.2, weak: ["crushing", "holy"], resist: ["piercing", "affliction", "ice"], mechanics: ["summons"] },
+      { name: "Iron Colossus", art: "art/monsters/iron-colossus.png", icon: "🤖",text: "Four times the armor.", hp: 1.3, attack: 0.9, armor: 4, gold: 1.2, weak: ["lightning", "arcane"], resist: ["physical", "affliction", "nature"], mechanics: ["armorUp"] },
+      { name: "The Entombed King", art: "art/monsters/entombed-king.png", icon: "👑",text: "Triple armor, and regenerates 2% of his health every turn.", hp: 1.1, attack: 1, armor: 3, gold: 1.5, regen: 0.02, weak: ["holy", "arcane"], resist: ["slashing", "piercing", "affliction"], mechanics: ["shield"] }
     ],
     trophies: [
       { floor: 10, id: "cryptLore", name: "Crypt Lore", text: "+20% experience", bonus: { experience: 0.2 } },
@@ -262,17 +265,17 @@ const towers = {
     icon: "🐉",
     text: "A bit of everything: armor, venom and fury. The right element answers each of them.",
     monsters: [
-      { name: "Harpy", icon: "🦅",text: "Dives fast, breaks easily.", minFloor: 1, hp: 0.95, attack: 1.2, armor: 0.5, gold: 0.9, weak: ["lightning", "piercing"], resist: ["arcane", "nature"], flying: true },
-      { name: "Rock Imp", icon: "👿",text: "Small, but made of stone.", minFloor: 1, hp: 0.9, attack: 0.8, armor: 2.5, gold: 1, weak: ["ice", "crushing"], resist: ["slashing", "piercing", "affliction"] },
-      { name: "Frost Wisp", icon: "❄️",text: "Hits very hard, but barely holds together.", minFloor: 3, hp: 0.6, attack: 1.5, armor: 0, gold: 1.2, weak: ["fire"], resist: ["slashing", "affliction", "arcane"], flying: true },
-      { name: "Venom Drake", icon: "🐍",text: "Venomous: 30% of its attack ignores your armor.", minFloor: 5, hp: 1, attack: 1, armor: 1, gold: 1.2, poison: 0.3, weak: ["lightning"], resist: ["affliction", "nature", "slashing"] },
-      { name: "Magma Hound", icon: "🌋",text: "Enrages: its attack grows by 10% every turn.", minFloor: 8, hp: 1.1, attack: 1, armor: 0.5, gold: 1.4, enrage: 0.1, weak: ["ice"], resist: ["slashing", "arcane", "holy"] },
-      { name: "Storm Giant", icon: "⛈️",text: "Huge, armored and angry.", minFloor: 11, hp: 1.8, attack: 1.3, armor: 1.5, gold: 1.5, weak: ["earth"], resist: ["piercing", "arcane", "nature"] }
+      { name: "Harpy", art: "art/monsters/harpy.png", icon: "🦅",text: "Dives fast, breaks easily.", minFloor: 1, hp: 0.95, attack: 1.2, armor: 0.5, gold: 0.9, weak: ["lightning", "piercing"], resist: ["arcane", "nature"], flying: true },
+      { name: "Rock Imp", art: "art/monsters/rock-imp.png", icon: "👿",text: "Small, but made of stone.", minFloor: 1, hp: 0.9, attack: 0.8, armor: 2.5, gold: 1, weak: ["ice", "crushing"], resist: ["slashing", "piercing", "affliction"] },
+      { name: "Frost Wisp", art: "art/monsters/frost-wisp.png", icon: "❄️",text: "Hits very hard, but barely holds together.", minFloor: 3, hp: 0.6, attack: 1.5, armor: 0, gold: 1.2, weak: ["fire"], resist: ["slashing", "affliction", "arcane"], flying: true },
+      { name: "Venom Drake", art: "art/monsters/venom-drake.png", icon: "🐍",text: "Venomous: 30% of its attack ignores your armor.", minFloor: 5, hp: 1, attack: 1, armor: 1, gold: 1.2, poison: 0.3, weak: ["lightning"], resist: ["affliction", "nature", "slashing"] },
+      { name: "Magma Hound", art: "art/monsters/magma-hound.png", icon: "🌋",text: "Enrages: its attack grows by 10% every turn.", minFloor: 8, hp: 1.1, attack: 1, armor: 0.5, gold: 1.4, enrage: 0.1, weak: ["ice"], resist: ["slashing", "arcane", "holy"] },
+      { name: "Storm Giant", art: "art/monsters/storm-giant.png", icon: "⛈️",text: "Huge, armored and angry.", minFloor: 11, hp: 1.8, attack: 1.3, armor: 1.5, gold: 1.5, weak: ["earth"], resist: ["piercing", "arcane", "nature"] }
     ],
     bosses: [
-      { name: "Thunderbird", icon: "⚡",text: "Strikes like lightning.", hp: 0.9, attack: 1.3, armor: 0.5, gold: 1.2, weak: ["earth"], resist: ["slashing", "nature", "arcane"], flying: true, mechanics: ["enrage"] },
-      { name: "Mountain Heart", icon: "⛰️",text: "Triple armor, and regenerates 2% of its health every turn.", hp: 1.3, attack: 0.9, armor: 3, gold: 1.2, regen: 0.02, weak: ["ice", "crushing"], resist: ["slashing", "piercing", "affliction"], mechanics: ["armorUp"] },
-      { name: "Red Dragon", icon: "🐲",text: "Enrages: its attack grows by 10% every turn.", hp: 1.3, attack: 1, armor: 1, gold: 1.5, enrage: 0.1, weak: ["ice"], resist: ["slashing", "arcane", "affliction"], flying: true, mechanics: ["reflect"] }
+      { name: "Thunderbird", art: "art/monsters/thunderbird.png", icon: "⚡",text: "Strikes like lightning.", hp: 0.9, attack: 1.3, armor: 0.5, gold: 1.2, weak: ["earth"], resist: ["slashing", "nature", "arcane"], flying: true, mechanics: ["enrage"] },
+      { name: "Mountain Heart", art: "art/monsters/mountain-heart.png", icon: "⛰️",text: "Triple armor, and regenerates 2% of its health every turn.", hp: 1.3, attack: 0.9, armor: 3, gold: 1.2, regen: 0.02, weak: ["ice", "crushing"], resist: ["slashing", "piercing", "affliction"], mechanics: ["armorUp"] },
+      { name: "Red Dragon", art: "art/monsters/red-dragon.png", icon: "🐲",text: "Enrages: its attack grows by 10% every turn.", hp: 1.3, attack: 1, armor: 1, gold: 1.5, enrage: 0.1, weak: ["ice"], resist: ["slashing", "arcane", "affliction"], flying: true, mechanics: ["reflect"] }
     ],
     trophies: [
       { floor: 10, id: "stormShard", name: "Storm Shard", text: "attack and health x1.05", multiply: { attack: 1.05, health: 1.05 } },
@@ -292,17 +295,17 @@ const towers = {
     icon: "👻",
     text: "The restless dead. They wear you down slowly, which only works on those who cannot heal.",
     monsters: [
-      { name: "Zombie", icon: "🧟",text: "Slow, with a lot of health.", minFloor: 1, hp: 1.4, attack: 0.8, armor: 0.5, gold: 1, weak: ["holy", "fire"], resist: ["affliction", "piercing"] },
-      { name: "Ghoul", text: "Venomous: 20% of its attack ignores your armor.", minFloor: 1, hp: 1, attack: 0.9, armor: 0.5, gold: 1, poison: 0.2, weak: ["holy", "crushing"], resist: ["affliction", "slashing"] },
-      { name: "Restless Monk", icon: "🙏",text: "Still keeping his vows, more or less.", minFloor: 3, hp: 1, attack: 1, armor: 1, gold: 1.2, weak: ["crushing", "arcane"], resist: ["slashing", "affliction", "nature"] },
-      { name: "Wraith", text: "Hits very hard, but barely holds together.", minFloor: 5, hp: 0.7, attack: 1.5, armor: 0, gold: 1.5, weak: ["holy"], resist: ["slashing", "piercing", "affliction", "ice"] },
-      { name: "Vampire Thrall", icon: "🧛",text: "Regenerates 4% of its health every turn.", minFloor: 8, hp: 1.2, attack: 1, armor: 1, gold: 1.3, regen: 0.04, weak: ["holy", "fire"], resist: ["affliction", "ice", "arcane"] },
-      { name: "Banshee", icon: "😱",text: "Her wail goes through armor: 40% of her attack ignores it.", minFloor: 11, hp: 0.9, attack: 1.1, armor: 0.5, gold: 1.4, poison: 0.4, weak: ["holy"], resist: ["slashing", "piercing", "nature"] }
+      { name: "Zombie", art: "art/monsters/zombie.png", icon: "🧟",text: "Slow, with a lot of health.", minFloor: 1, hp: 1.4, attack: 0.8, armor: 0.5, gold: 1, weak: ["holy", "fire"], resist: ["affliction", "piercing"] },
+      { name: "Ghoul", art: "art/monsters/ghoul.png", text: "Venomous: 20% of its attack ignores your armor.", minFloor: 1, hp: 1, attack: 0.9, armor: 0.5, gold: 1, poison: 0.2, weak: ["holy", "crushing"], resist: ["affliction", "slashing"] },
+      { name: "Restless Monk", art: "art/monsters/restless-monk.png", icon: "🙏",text: "Still keeping his vows, more or less.", minFloor: 3, hp: 1, attack: 1, armor: 1, gold: 1.2, weak: ["crushing", "arcane"], resist: ["slashing", "affliction", "nature"] },
+      { name: "Wraith", art: "art/monsters/wraith.png", text: "Hits very hard, but barely holds together.", minFloor: 5, hp: 0.7, attack: 1.5, armor: 0, gold: 1.5, weak: ["holy"], resist: ["slashing", "piercing", "affliction", "ice"] },
+      { name: "Vampire Thrall", art: "art/monsters/vampire-thrall.png", icon: "🧛",text: "Regenerates 4% of its health every turn.", minFloor: 8, hp: 1.2, attack: 1, armor: 1, gold: 1.3, regen: 0.04, weak: ["holy", "fire"], resist: ["affliction", "ice", "arcane"] },
+      { name: "Banshee", art: "art/monsters/banshee.png", icon: "😱",text: "Her wail goes through armor: 40% of her attack ignores it.", minFloor: 11, hp: 0.9, attack: 1.1, armor: 0.5, gold: 1.4, poison: 0.4, weak: ["holy"], resist: ["slashing", "piercing", "nature"] }
     ],
     bosses: [
-      { name: "The Abbot", icon: "📿",text: "Regenerates 3% of his health every turn.", hp: 1.1, attack: 1, armor: 1, gold: 1.2, regen: 0.03, weak: ["crushing", "arcane"], resist: ["slashing", "affliction", "nature"], mechanics: ["shield"] },
-      { name: "Vampire Lord", icon: "🦇",text: "Hits hard, and regenerates 3% of his health every turn.", hp: 1, attack: 1.2, armor: 1, gold: 1.5, regen: 0.03, weak: ["holy", "fire"], resist: ["affliction", "ice", "arcane", "piercing"], mechanics: ["reflect"] },
-      { name: "Lich Bishop", icon: "☠️",text: "Double armor, and 30% of his attack ignores yours.", hp: 1, attack: 1, armor: 2, gold: 1.2, poison: 0.3, weak: ["holy", "crushing"], resist: ["piercing", "affliction", "ice"], mechanics: ["summons"] }
+      { name: "The Abbot", art: "art/monsters/abbot.png", icon: "📿",text: "Regenerates 3% of his health every turn.", hp: 1.1, attack: 1, armor: 1, gold: 1.2, regen: 0.03, weak: ["crushing", "arcane"], resist: ["slashing", "affliction", "nature"], mechanics: ["shield"] },
+      { name: "Vampire Lord", art: "art/monsters/vampire-lord.png", icon: "🦇",text: "Hits hard, and regenerates 3% of his health every turn.", hp: 1, attack: 1.2, armor: 1, gold: 1.5, regen: 0.03, weak: ["holy", "fire"], resist: ["affliction", "ice", "arcane", "piercing"], mechanics: ["reflect"] },
+      { name: "Lich Bishop", art: "art/monsters/lich-bishop.png", icon: "☠️",text: "Double armor, and 30% of his attack ignores yours.", hp: 1, attack: 1, armor: 2, gold: 1.2, poison: 0.3, weak: ["holy", "crushing"], resist: ["piercing", "affliction", "ice"], mechanics: ["summons"] }
     ],
     trophies: [
       { floor: 10, id: "abbeyBlessing", name: "Abbey Blessing", text: "health x1.1 and +1 armor", bonus: { armor: 1 }, multiply: { health: 1.1 } },
@@ -322,17 +325,17 @@ const towers = {
     icon: "🦁",
     text: "Open country full of things with teeth. Nothing here wears armor worth the name, and nothing here is afraid of you.",
     monsters: [
-      { name: "Hyena", icon: "🐕", text: "Laughs, then bites.", minFloor: 1, hp: 0.9, attack: 1.1, armor: 0.5, gold: 1, weak: ["nature", "fire"], resist: ["arcane"] },
-      { name: "Tusker", icon: "🐗", text: "A lot of animal behind two tusks.", minFloor: 1, hp: 1.3, attack: 1, armor: 0.5, gold: 1.1, weak: ["crushing"], resist: ["piercing", "earth"] },
-      { name: "Viper", icon: "🐍", text: "Venomous: 30% of its attack ignores your armor.", minFloor: 2, hp: 0.8, attack: 1.1, armor: 0, gold: 1.1, poison: 0.3, weak: ["crushing", "ice"], resist: ["affliction", "arcane"] },
-      { name: "Sabrecat", icon: "🐅", text: "Fast, and all of it is claws.", minFloor: 4, hp: 1, attack: 1.4, armor: 0.5, gold: 1.2, weak: ["nature", "fire"], resist: ["slashing", "arcane"] },
-      { name: "Rhino", icon: "🦏", text: "A hide like plate: double armor.", minFloor: 7, hp: 1.7, attack: 1.1, armor: 2, gold: 1.4, weak: ["nature", "lightning"], resist: ["piercing", "slashing", "holy"] },
-      { name: "Great Ape", icon: "🦍", text: "Enrages: its attack grows by 10% every turn.", minFloor: 10, hp: 1.4, attack: 1.2, armor: 0.5, gold: 1.5, enrage: 0.1, weak: ["crushing", "fire"], resist: ["affliction", "ice"] }
+      { name: "Hyena", art: "art/monsters/hyena.png", icon: "🐕", text: "Laughs, then bites.", minFloor: 1, hp: 0.9, attack: 1.1, armor: 0.5, gold: 1, weak: ["nature", "fire"], resist: ["arcane"] },
+      { name: "Tusker", art: "art/monsters/tusker.png", icon: "🐗", text: "A lot of animal behind two tusks.", minFloor: 1, hp: 1.3, attack: 1, armor: 0.5, gold: 1.1, weak: ["crushing"], resist: ["piercing", "earth"] },
+      { name: "Viper", art: "art/monsters/viper.png", icon: "🐍", text: "Venomous: 30% of its attack ignores your armor.", minFloor: 2, hp: 0.8, attack: 1.1, armor: 0, gold: 1.1, poison: 0.3, weak: ["crushing", "ice"], resist: ["affliction", "arcane"] },
+      { name: "Sabrecat", art: "art/monsters/sabrecat.png", icon: "🐅", text: "Fast, and all of it is claws.", minFloor: 4, hp: 1, attack: 1.4, armor: 0.5, gold: 1.2, weak: ["nature", "fire"], resist: ["slashing", "arcane"] },
+      { name: "Rhino", art: "art/monsters/rhino.png", icon: "🦏", text: "A hide like plate: double armor.", minFloor: 7, hp: 1.7, attack: 1.1, armor: 2, gold: 1.4, weak: ["nature", "lightning"], resist: ["piercing", "slashing", "holy"] },
+      { name: "Great Ape", art: "art/monsters/great-ape.png", icon: "🦍", text: "Enrages: its attack grows by 10% every turn.", minFloor: 10, hp: 1.4, attack: 1.2, armor: 0.5, gold: 1.5, enrage: 0.1, weak: ["crushing", "fire"], resist: ["affliction", "ice"] }
     ],
     bosses: [
-      { name: "Pride Lord", icon: "🦁", text: "Never hunts alone.", hp: 1, attack: 1.2, armor: 0.5, gold: 1.3, weak: ["nature", "fire"], resist: ["slashing", "arcane", "holy"], mechanics: ["summons"] },
-      { name: "Elder Serpent", icon: "🐍", text: "Venomous: 40% of its attack ignores your armor.", hp: 1.2, attack: 1, armor: 1, gold: 1.2, poison: 0.4, weak: ["crushing", "ice"], resist: ["affliction", "arcane", "piercing"], mechanics: ["shield"] },
-      { name: "Mammoth Matriarch", icon: "🦣", text: "Slow to anger, and then it is too late.", hp: 1.5, attack: 1, armor: 1.5, gold: 1.5, weak: ["nature", "fire"], resist: ["piercing", "slashing", "ice"], mechanics: ["enrage"] }
+      { name: "Pride Lord", art: "art/monsters/pride-lord.png", icon: "🦁", text: "Never hunts alone.", hp: 1, attack: 1.2, armor: 0.5, gold: 1.3, weak: ["nature", "fire"], resist: ["slashing", "arcane", "holy"], mechanics: ["summons"] },
+      { name: "Elder Serpent", art: "art/monsters/elder-serpent.png", icon: "🐍", text: "Venomous: 40% of its attack ignores your armor.", hp: 1.2, attack: 1, armor: 1, gold: 1.2, poison: 0.4, weak: ["crushing", "ice"], resist: ["affliction", "arcane", "piercing"], mechanics: ["shield"] },
+      { name: "Mammoth Matriarch", art: "art/monsters/mammoth-matriarch.png", icon: "🦣", text: "Slow to anger, and then it is too late.", hp: 1.5, attack: 1, armor: 1.5, gold: 1.5, weak: ["nature", "fire"], resist: ["piercing", "slashing", "ice"], mechanics: ["enrage"] }
     ],
     trophies: [
       { floor: 10, id: "hyenaFang", name: "Hyena Fang", text: "attack x1.1", multiply: { attack: 1.1 } },

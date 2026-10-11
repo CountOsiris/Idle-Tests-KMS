@@ -70,7 +70,8 @@ The gaps the plan set out to close (1 to 6 are now built; what is left is below)
   would throw away content written by hand. The plain attack perks at floors 50, 75 and
   100 were the one real trap (they added a percentage where the others multiplied) and
   now multiply.
-- The Beast Tamer has no art.
+- The Beast Tamer's picture is a 32 pixel tile, like the monsters', where the other
+  seven classes have large paintings. It reads as a different style beside them.
 
 ## The plan
 

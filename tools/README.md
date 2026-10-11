@@ -71,6 +71,18 @@ bash tools/version.sh 20261011a
 Sets the version in all three places (see the comment in `index.html`). Then add an
 entry for it at the top of `updates.js`: the pre-upload check fails without one.
 
+## The monsters' pictures
+
+```
+python tools/monster-art.py          fetch every picture again
+python tools/monster-art.py sheet    and save monster-sheet.png to look at them all
+```
+
+The monsters and bosses are tiles from Dungeon Crawl Stone Soup, released by their
+artists under CC0 (free to use, no conditions). The table at the top of the script says
+which tile is which monster; change a line and run it to swap a picture. It refuses any
+tile on that project's list of tiles with an unclear licence, and writes `art/CREDITS.md`.
+
 ## The saves
 
 - `save-v1.json`: made by the version before the blacksmith (save version 1).

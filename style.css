@@ -689,10 +689,13 @@ body[data-tab="tower"] #tab-character {
   display: block;
 }
 
-/* Small true pixel art is kept sharp when shown bigger (game.js adds "sharp") */
+/* Small true pixel art is kept sharp when shown bigger (game.js adds "sharp"). The
+   monsters' pictures are 32 pixels tall, so they are drawn at exactly five times that:
+   a whole number keeps every pixel of the drawing the same size. */
 .icon img.sharp,
 .ghost img.sharp {
   image-rendering: pixelated;
+  height: 160px;
 }
 
 /* A picture is not dimmed the way the emoji are: it only gets a shadow */

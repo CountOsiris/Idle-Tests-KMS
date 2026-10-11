@@ -1059,6 +1059,47 @@ try {
 // 7. Online saves, against a pretend server. A refresh once trapped the game in a loop:
 // the closing page sent its save, the new page saw a revision it did not know, took the
 // online save and reloaded, and the reload sent a save as it closed.
+// 8. Every picture named in the game is really there (a wrong file name only shows as a
+// broken image in the middle of a fight)
+function pictureLoads(path) {
+  return new Promise(function (resolve) {
+    let image = new Image();
+    image.onload = function () { resolve(image.naturalWidth > 0); };
+    image.onerror = function () { resolve(false); };
+    image.src = path;
+  });
+}
+
+async function checkPictures() {
+  let missing = [];
+  let without = [];
+  let count = 0;
+
+  for (let towerName in towers) {
+    for (let type of towers[towerName].monsters.concat(towers[towerName].bosses)) {
+      if (type.art === undefined) {
+        without.push(type.name);
+      } else {
+        count = count + 1;
+        if (!(await pictureLoads(type.art))) {
+          missing.push(type.name + " (" + type.art + ")");
+        }
+      }
+    }
+  }
+  for (let className in classes) {
+    if (classes[className].art === undefined) {
+      without.push(classes[className].name);
+    } else if (!(await pictureLoads(classes[className].art))) {
+      missing.push(classes[className].name + " (" + classes[className].art + ")");
+    }
+  }
+
+  check("pictures: " + count + " monsters and bosses and " + Object.keys(classes).length + " classes, every file there"
+    + (missing.length === 0 ? "" : "; MISSING: " + missing.join(", ")) + (without.length === 0 ? "" : "; WITHOUT ONE: " + without.join(", ")),
+    missing.length === 0 && without.length === 0);
+}
+
 async function checkOnlineSaves() {
   let realFetch = window.fetch;
   let realTake = takeCloudSave;
@@ -1149,4 +1190,4 @@ function finishCheck() {
   document.body.appendChild(pre);
 }
 
-checkOnlineSaves().then(finishCheck);
+checkOnlineSaves().then(checkPictures).then(finishCheck);
