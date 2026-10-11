@@ -205,3 +205,25 @@ Deepest floor in 100 hours: 268 to 314, the Warlock at 268 to 276. To floor 35: 
 A first attempt kept souls as the Warlock's own, at about a third of their size (x2.6
 at floor 200 against x1.6 for the others). The owner asked for the mechanic to stop
 being a source of scaling at all, and that is simpler to keep balanced.
+
+## Bleed, poison and burn (11 October 2026, later still)
+
+The owner: "some choices feel weak / useless such as bleed". Measured with `probe`:
+bleeding was 15% to 19% of an axe's damage up to floor 100, and poison 5% to 12% of a
+venom dagger's. A hit added one stack whatever the limit, and a fight lasts two or three
+turns, so the limit was never reached and everything that raised it did nothing.
+
+**Built.** A wounding hit adds a third of the limit (`dotShareAHit` in data.js). The
+masteries give damage only (a stack a level on top of 8% a level would have multiplied
+with itself), a stack is worth more (bleed 16% of attack, poison 13%, burn 16%), and
+the late multipliers are smaller (x1.4 where they were x2.5 and x3). Bleeding is now
+19% to 46% of an axe's damage and poison 16% to 30%. Deepest floor in 100 hours: Axe
+285, Venom 277, Fire 273.
+
+A share of the enemy's health for bleed, the owner's own idea, was not built: the Void
+Tome already does that, and damage that does not depend on the hero's strength has run
+away twice (the Void Tome to floor 23,195, the Spiked Shield to 442). The ramp was the
+real fault.
+
+Seen while measuring, not yet acted on: abilities are 35% to 60% of every build's
+damage, the same for all of them, which is a large part of why builds feel alike.

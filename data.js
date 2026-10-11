@@ -371,6 +371,16 @@ const trialMilestones = [
 //   armorLimit   added to the most your armor can block         (0.2 means 60% becomes 80%)
 // TO ADD ONE: add a perk to a block, or a block on a floor nothing else uses.
 // (Never rename an id or move a block's floor: saves remember perks by both.)
+// ----- Bleeding, poison and burning -----
+// A hit that wounds adds stacks, up to the class's limit, and every stack deals damage
+// each turn. One hit adds this share of the LIMIT (0.34 means a third, so three hits
+// reach it), and never less than one stack.
+// It used to add one stack a hit, whatever the limit. Most fights are over in two or
+// three turns, so the limit was never reached, everything that raised it (the Axe and
+// Venom masteries, half their perks) did nothing, and bleeding was a sixth of an axe's
+// damage. Measured October 2026 with the bot's "probe".
+const dotShareAHit = 0.34;
+
 // ----- What builds up over a run -----
 // Every class grows stronger with every kill of a run, and loses it all when it falls:
 // the Barbarian's Bloodlust, the Ranger's Focus, the Warlock's Souls (each class file

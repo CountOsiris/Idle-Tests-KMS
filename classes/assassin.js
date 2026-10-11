@@ -54,7 +54,7 @@ classes.assassin = {
     { id: "lethality", name: "Power", text: "+3% attack", bonus: { attackPercent: 0.03 }, cost: 1 },
     { id: "conditioning", name: "Toughness", text: "+3% health", bonus: { healthPercent: 0.03 }, cost: 1 },
     { id: "ambushTraining", name: "Ambush Training", text: "Ambush: the first hit of a fight deals +8% more. Vanish: +0.5% chance each turn to hide and ambush again", bonus: { ambush: 0.08, vanishChance: 0.005 }, cost: 1 },
-    { id: "venomMastery", name: "Venom Mastery", text: "Venom Dagger: +1 poison stack and poison deals +8% damage", bonus: { poisonStacks: 1, dotPower: 0.08 }, cost: 1 },
+    { id: "venomMastery", name: "Venom Mastery", text: "Venom Dagger: poison deals +8% damage", bonus: { dotPower: 0.08 }, cost: 1 },
     { id: "stilettoMastery", name: "Stiletto Mastery", text: "Stiletto: +1% critical chance and +2.5% critical damage", bonus: { critChance: 0.01, critPower: 0.025 }, cost: 1 },
     { id: "riposte", name: "Shadow Mastery", text: "Shadow Blade: +0.5% dodge and +8% damage after a dodge", bonus: { dodge: 0.005, counter: 0.08 }, cost: 1 }
   ],
@@ -95,7 +95,7 @@ classes.assassin = {
       perks: [
         { id: "nightStalker", name: "Nightwalker", text: "+24% attack and +10% dodge", bonus: { attackPercent: 0.24, dodge: 0.1 } },
         { id: "deathMark", name: "Death Mark", text: "Ambush damage x2, and health x1.4", multiply: { ambush: 2, health: 1.4 } },
-        { id: "plaguebringer", name: "Plaguebringer", text: "Venom Dagger: poison damage x3, and attack x1.3", multiply: { poison: 3, attack: 1.3 } },
+        { id: "plaguebringer", name: "Plaguebringer", text: "Venom Dagger: poison damage x1.4, and attack x1.3", multiply: { poison: 1.4, attack: 1.3 } },
         { id: "throatCutter", name: "Throat Cutter", text: "Stiletto: critical hit damage x1.6", multiply: { stilettoCrit: 1.6 } },
         { id: "shade", name: "Shade", text: "Shadow Blade: damage of the hit after a dodge x3, +8% dodge, attack x1.5 and health x1.3", bonus: { dodge: 0.08 }, multiply: { counter: 3, attack: 1.5, health: 1.3 } },
         { id: "ironNerves", name: "Iron Nerves", text: "health x1.5 and +5% dodge", bonus: { dodge: 0.05 }, multiply: { health: 1.5 } }
@@ -130,7 +130,7 @@ classes.assassin = {
       perks: [
         { id: "shadowMaster", name: "Master Assassin", text: "+40% attack and +10% dodge", bonus: { attackPercent: 0.4, dodge: 0.1 } },
         { id: "grimReaper", name: "Grim Reaper", text: "Ambush damage x2 again, and health x1.6", multiply: { ambush: 2, health: 1.6 } },
-        { id: "blightlord", name: "Blightlord", text: "Venom Dagger: poison damage x3 again, attack x1.8 and health x2.2", multiply: { poison: 3, attack: 1.8, health: 2.2 } },
+        { id: "blightlord", name: "Blightlord", text: "Venom Dagger: poison damage x1.4 again, attack x1.5 and health x1.8", multiply: { poison: 1.4, attack: 1.5, health: 1.8 } },
         { id: "kingslayer", name: "Kingslayer", text: "Stiletto: critical hit damage x1.6 again", multiply: { stilettoCrit: 1.6 } },
         { id: "umbra", name: "Umbra", text: "Shadow Blade: damage of the hit after a dodge x3 again, +8% dodge, attack x1.8 and health x3", bonus: { dodge: 0.08 }, multiply: { counter: 3, attack: 1.8, health: 3 } },
         { id: "untouchable", name: "Untouchable", text: "health x2 and +10% dodge", bonus: { dodge: 0.1 }, multiply: { health: 2 } }
@@ -141,7 +141,7 @@ classes.assassin = {
   // Extra choices at every BREAKTHROUGH (floor 150 and beyond), beside the ones every
   // class has. One for each build: it multiplies that build's own damage again.
   breakthroughs: [
-    { id: "strongerVenom", name: "Stronger Venom", text: "Venom Dagger: poison damage x1.5", multiply: { poison: 1.5 } },
+    { id: "strongerVenom", name: "Stronger Venom", text: "Venom Dagger: poison damage x1.3", multiply: { poison: 1.3 } },
     { id: "finerPoint", name: "Finer Point", text: "Stiletto: critical hit damage x1.5", multiply: { stilettoCrit: 1.5 } },
     { id: "deeperShadow", name: "Deeper Shadow", text: "Shadow Blade: damage of the hit after a dodge x1.5", multiply: { counter: 1.5 } },
     { id: "perfectAmbush", name: "Perfect Ambush", text: "Ambush damage x1.5", multiply: { ambush: 1.5 } }
@@ -253,7 +253,7 @@ function assassinAttack() {
 
   // Poison ignores armor
   if (weapon === "venom") {
-    addDotStack(totalBonus("poisonStacks"));
+    addHitStacks(totalBonus("poisonStacks"));
   }
   monsterHp = monsterHp - dotDamage();
 
@@ -308,7 +308,7 @@ function assassinWhenAttacked() {
 }
 
 function assassinDotPerStack() {
-  return Math.max(1, Math.round(playerAttack * 0.1 * multiplier("poison")));
+  return Math.max(1, Math.round(playerAttack * 0.13 * multiplier("poison")));
 }
 
 function assassinStatLine() {
@@ -317,7 +317,7 @@ function assassinStatLine() {
 
 function assassinGearInfo() {
   if (weapon === "venom") {
-    return "Venom Dagger: every hit poisons the enemy more each turn (up to " + totalBonus("poisonStacks") + " stacks).";
+    return "Venom Dagger: every hit adds a third of your poison stacks (" + totalBonus("poisonStacks") + " at most), and every stack poisons each turn.";
   }
   if (weapon === "stiletto") {
     return "Stiletto: " + percent(Math.min(1, totalBonus("critChance"))) + " chance of a critical hit for x" + (stilettoCritHit + totalBonus("critPower") + overflow("critChance", 1)).toFixed(1) + " damage.";

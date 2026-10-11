@@ -1055,6 +1055,20 @@ try {
   runCounter = countWas;
   startEncounter();
 
+  // 3i12. A wounding hit adds a third of the stack limit, and never passes the limit
+  let stacksWas = dotStacks;
+  dotStacks = 0;
+  addHitStacks(9);
+  let afterOne = dotStacks;
+  addHitStacks(9);
+  addHitStacks(9);
+  addHitStacks(9);
+  let afterFour = dotStacks;
+  dotStacks = 0;
+  addHitStacks(2);
+  check("bleed and poison: with a limit of 9 one hit adds " + afterOne + " stacks and four hits stop at " + afterFour + "; with a limit of 2 a hit adds " + dotStacks, afterOne === 4 && afterFour === 9 && dotStacks === 1);
+  dotStacks = stacksWas;
+
   // 3j. Starting floors, and the Tactician's list
   cruiseFloor = 40;
   runStartFloor = 1;

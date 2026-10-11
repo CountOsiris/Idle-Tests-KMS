@@ -342,6 +342,11 @@ function addDotStack(most) {
   }
 }
 
+// The stacks one wounding hit adds: a share of the limit (see dotShareAHit in data.js)
+function addHitStacks(most) {
+  dotStacks = Math.min(most, dotStacks + Math.max(1, Math.ceil(most * dotShareAHit)));
+}
+
 // The damage of all the bleeding, burning, poison or spirits this turn.
 // Its type is the class's dotType.
 function dotDamage() {

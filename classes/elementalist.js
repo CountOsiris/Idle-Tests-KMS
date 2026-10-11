@@ -54,7 +54,7 @@ classes.elementalist = {
   // The elements. The player picks one on the Skills tab; "stance" holds the choice.
   stanceLabel: "Element",
   stances: {
-    fire: { name: "Fire", text: "Each spell hits for 90% of your attack and adds two burn stacks. Every stack burns for 23% of your attack each turn." },
+    fire: { name: "Fire", text: "Each spell hits for 90% of your attack and adds two burn stacks. Every stack burns for 16% of your attack each turn." },
     ice: { name: "Ice", text: "Each spell has a chance of a critical hit for triple damage." },
     lightning: { name: "Lightning", text: "Two bolts every turn, each for 65% of your attack. Skills add a chance of more bolts." },
     earth: { name: "Earth", text: "Every second turn, starting with the first, one boulder for 190% of your attack, with a chance to stun." }
@@ -73,7 +73,7 @@ classes.elementalist = {
   skills: [
     { id: "attunement", name: "Power", text: "+3% attack", bonus: { attackPercent: 0.03 }, cost: 1 },
     { id: "resilience", name: "Toughness", text: "+3% health", bonus: { healthPercent: 0.03 }, cost: 1 },
-    { id: "fireMastery", name: "Fire Mastery", text: "Fire: +1 burn stack and burning deals +8% damage", bonus: { burnStacks: 1, dotPower: 0.08 }, cost: 1 },
+    { id: "fireMastery", name: "Fire Mastery", text: "Fire: burning deals +8% damage", bonus: { dotPower: 0.08 }, cost: 1 },
     { id: "iceMastery", name: "Ice Mastery", text: "Ice: +1.5% critical chance and +5% critical damage", bonus: { critChance: 0.015, critPower: 0.05 }, cost: 1 },
     { id: "lightningMastery", name: "Lightning Mastery", text: "Lightning: +3% chance of an extra bolt and bolts deal +1% damage", bonus: { extraBolts: 0.03, boltPower: 0.01 }, cost: 1 },
     { id: "earthMastery", name: "Earth Mastery", text: "Earth: boulders deal +18% damage and +2% stun chance", bonus: { crush: 0.18, stunChance: 0.02 }, cost: 1 }
@@ -115,7 +115,7 @@ classes.elementalist = {
       perks: [
         { id: "avatarOfStorms", name: "Avatar of Storms", text: "attack x1.3", multiply: { attack: 1.3 } },
         { id: "avatarOfStone", name: "Avatar of Stone", text: "health x1.5 and +5 armor", bonus: { armor: 5 }, multiply: { health: 1.5 } },
-        { id: "inferno", name: "Inferno", text: "Fire: burning damage x2.3", multiply: { burn: 2.3 } },
+        { id: "inferno", name: "Inferno", text: "Fire: burning damage x1.5", multiply: { burn: 1.5 } },
         { id: "glacier", name: "Glacier", text: "Ice: critical hit damage x1.6", multiply: { iceCrit: 1.6 } },
         { id: "tempest", name: "Tempest", text: "Lightning: bolt damage x1.8", multiply: { bolt: 1.8 } },
         { id: "mountain", name: "Mountain", text: "Earth: boulder damage x1.3", multiply: { boulder: 1.3 } }
@@ -151,7 +151,7 @@ classes.elementalist = {
       perks: [
         { id: "masterOfElements", name: "Master of Elements", text: "attack x1.5", multiply: { attack: 1.5 } },
         { id: "avatarOfTides", name: "Avatar of Tides", text: "health x2 and +6 armor", bonus: { armor: 6 }, multiply: { health: 2 } },
-        { id: "phoenixFlame", name: "Phoenix Flame", text: "Fire: burning damage x2.3 again, and health x1.5", multiply: { burn: 2.3, health: 1.5 } },
+        { id: "phoenixFlame", name: "Phoenix Flame", text: "Fire: burning damage x1.5 again, and health x1.5", multiply: { burn: 1.5, health: 1.5 } },
         { id: "iceAge", name: "Ice Age", text: "Ice: critical hit damage x1.9 again", multiply: { iceCrit: 1.9 } },
         { id: "thunderGod", name: "Thunder God", text: "Lightning: bolt damage x1.8 again", multiply: { bolt: 1.8 } },
         { id: "earthquake", name: "Earthquake", text: "Earth: boulder damage x1.7 again", multiply: { boulder: 1.7 } }
@@ -162,7 +162,7 @@ classes.elementalist = {
   // Extra choices at every BREAKTHROUGH (floor 150 and beyond), beside the ones every
   // class has. One for each build: it multiplies that build's own damage again.
   breakthroughs: [
-    { id: "hotterFlame", name: "Hotter Flame", text: "Fire: burning damage x1.5", multiply: { burn: 1.5 } },
+    { id: "hotterFlame", name: "Hotter Flame", text: "Fire: burning damage x1.3", multiply: { burn: 1.3 } },
     { id: "colderIce", name: "Colder Ice", text: "Ice: critical hit damage x1.5", multiply: { iceCrit: 1.5 } },
     { id: "wilderStorm", name: "Wilder Storm", text: "Lightning: bolt damage x1.4", multiply: { bolt: 1.4 } },
     { id: "biggerBoulders", name: "Bigger Boulders", text: "Earth: boulder damage x1.4", multiply: { boulder: 1.4 } }
@@ -210,7 +210,7 @@ function elementalistDamageTypes() {
 
 // The numbers behind each element. Change these to retune them.
 const fireHit = 0.9;        // a fire spell hits for this share of your attack
-const fireBurn = 0.23;      // and each burn stack burns for this share every turn
+const fireBurn = 0.16;      // and each burn stack burns for this share every turn
 const iceCrit = 3;          // an ice critical multiplies the hit by this
 const lightningBolts = 2;   // lightning casts this many bolts a turn
 const lightningHit = 0.65;  // each for this share of your attack
@@ -242,8 +242,8 @@ function elementalistAttack() {
       spellHitMonster(playerAttack * fireHit, "fire");
     }
 
-    // Fire catches quickly: every spell adds two burn stacks
-    addDotStack(totalBonus("burnStacks"));
+    // Fire catches quickly: every spell adds one burn stack more than a wound would
+    addHitStacks(totalBonus("burnStacks"));
     addDotStack(totalBonus("burnStacks"));
   }
 

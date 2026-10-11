@@ -13,6 +13,15 @@
 
 const gameUpdates = [
   {
+    version: "20261011k",
+    title: "Bleed, poison and burn that work",
+    changes: [
+      "A hit now adds a third of your bleed or poison stacks at once, not one stack. Fights are over in two or three turns, so the old way never reached the limit, and bleeding was a sixth of an axe's damage. It is now a fifth to a half, and poison likewise.",
+      "Everything that raises the stack limit now matters. The Axe, Venom and Fire masteries give damage only, and the bleed, poison and burn multipliers are smaller to match.",
+      "Tested for 100 hours: Axe, Venom Dagger and Fire reach floors 273 to 285, in line with every other weapon."
+    ]
+  },
+  {
     version: "20261011j",
     title: "Souls for everyone, and no more runaway Warlock",
     changes: [

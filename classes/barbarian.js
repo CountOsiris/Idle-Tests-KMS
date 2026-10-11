@@ -74,7 +74,7 @@ classes.barbarian = {
     { id: "might", name: "Power", text: "+3% attack", bonus: { attackPercent: 0.03 }, cost: 1 },
     { id: "toughness", name: "Toughness", text: "+3% health", bonus: { healthPercent: 0.03 }, cost: 1 },
     { id: "rage", name: "Rage", text: "Rage: +8% damage while below half health, and +1% lifesteal", bonus: { rage: 0.08, lifesteal: 0.01 }, cost: 1 },
-    { id: "axeMastery", name: "Axe Mastery", text: "Axe: +1 bleed stack and bleeding deals +8% damage", bonus: { bleedStacks: 1, dotPower: 0.08 }, cost: 1 },
+    { id: "axeMastery", name: "Axe Mastery", text: "Axe: bleeding deals +8% damage", bonus: { dotPower: 0.08 }, cost: 1 },
     { id: "swordMastery", name: "Sword Mastery", text: "Sword: +1% critical and parry chance, and +2% critical damage", bonus: { critChance: 0.01, parryChance: 0.01, critPower: 0.02 }, cost: 1 },
     { id: "clubMastery", name: "Club Mastery", text: "Club: hits deal +2% damage and +1.5% stun chance", bonus: { clubPower: 0.02, stunChance: 0.015 }, cost: 1 }
   ],
@@ -115,7 +115,7 @@ classes.barbarian = {
       perks: [
         { id: "juggernaut", name: "Juggernaut", text: "health x1.5 and +5 armor", bonus: { armor: 5 }, multiply: { health: 1.5 } },
         { id: "berserker", name: "Ravager", text: "+30% attack and +10% lifesteal", bonus: { attackPercent: 0.3, lifesteal: 0.1 } },
-        { id: "flayer", name: "Flayer", text: "Axe: bleeding damage x2.5, attack x1.8 and health x1.3", multiply: { bleed: 2.5, attack: 1.8, health: 1.3 } },
+        { id: "flayer", name: "Flayer", text: "Axe: bleeding damage x1.4, attack x1.5 and health x1.3", multiply: { bleed: 1.4, attack: 1.5, health: 1.3 } },
         { id: "swordmaster", name: "Swordmaster", text: "Sword: critical hit damage x1.8", multiply: { swordCrit: 1.8 } },
         { id: "bonebreaker", name: "Bonebreaker", text: "Club: damage of every hit x1.9", multiply: { club: 1.9 } },
         { id: "frenzy", name: "Frenzy", text: "Rage x3: three times the bonus damage while below half health", multiply: { rage: 3 } }
@@ -151,7 +151,7 @@ classes.barbarian = {
       perks: [
         { id: "bloodGod", name: "Blood God", text: "+15% lifesteal, and Rage x3 again", bonus: { lifesteal: 0.15 }, multiply: { rage: 3 } },
         { id: "titan", name: "Titan", text: "health x2 and +10 armor", bonus: { armor: 10 }, multiply: { health: 2 } },
-        { id: "reaver", name: "Reaver", text: "Axe: bleeding damage x2.5 again, attack x2 and health x1.5", multiply: { bleed: 2.5, attack: 2, health: 1.5 } },
+        { id: "reaver", name: "Reaver", text: "Axe: bleeding damage x1.4 again, attack x1.5 and health x1.5", multiply: { bleed: 1.4, attack: 1.5, health: 1.5 } },
         { id: "swordSaint", name: "Sword Saint", text: "Sword: critical hit damage x1.5 again", multiply: { swordCrit: 1.5 } },
         { id: "worldbreaker", name: "Worldbreaker", text: "Club: damage of every hit x1.6 again, and health x2", multiply: { club: 1.6, health: 2 } }
       ]
@@ -161,7 +161,7 @@ classes.barbarian = {
   // Extra choices at every BREAKTHROUGH (floor 150 and beyond), beside the ones every
   // class has. One for each build: it multiplies that build's own damage again.
   breakthroughs: [
-    { id: "deeperWounds", name: "Deeper Wounds", text: "Axe: bleeding damage x1.5", multiply: { bleed: 1.5 } },
+    { id: "deeperWounds", name: "Deeper Wounds", text: "Axe: bleeding damage x1.3", multiply: { bleed: 1.3 } },
     { id: "keenerEdge", name: "Keener Edge", text: "Sword: critical hit damage x1.5", multiply: { swordCrit: 1.5 } },
     { id: "heavierClub", name: "Heavier Club", text: "Club: damage of every hit x1.4", multiply: { club: 1.4 } },
     { id: "redMist", name: "Red Mist", text: "Rage x1.5", multiply: { rage: 1.5 } }
@@ -267,7 +267,7 @@ function barbarianAttack() {
   healPlayer(Math.max(1, dealt * totalBonus("lifesteal")));
 
   if (weapon === "axe") {
-    addDotStack(totalBonus("bleedStacks"));
+    addHitStacks(totalBonus("bleedStacks"));
 
     // The bleeding feeds lifesteal as well
     let bled = dotDamage();
@@ -309,7 +309,7 @@ function barbarianDamageDivider() {
 
 // Damage per turn of one bleed stack
 function barbarianDotPerStack() {
-  return Math.max(1, Math.round(playerAttack * 0.12 * multiplier("bleed")));
+  return Math.max(1, Math.round(playerAttack * 0.16 * multiplier("bleed")));
 }
 
 // The class's special line in the "You" panel
@@ -320,7 +320,7 @@ function barbarianStatLine() {
 // The description under the weapon
 function barbarianGearInfo() {
   if (weapon === "axe") {
-    return "Axe: every hit makes the enemy bleed more each turn (up to " + totalBonus("bleedStacks") + " stacks). The bleeding heals you through lifesteal too.";
+    return "Axe: every hit adds a third of your bleed stacks (" + totalBonus("bleedStacks") + " at most), and every stack bleeds each turn. The bleeding heals you through lifesteal too.";
   }
   if (weapon === "sword") {
     return "Sword: " + percent(Math.min(1, totalBonus("critChance"))) + " chance of a critical hit for x" + (2 + totalBonus("critPower") + overflow("critChance", 1)).toFixed(1) + " damage and " + percent(cappedChance("parryChance")) + " chance to parry an attack."

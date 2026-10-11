@@ -292,6 +292,12 @@ function run(className, weaponType, stanceId, hours, ascending, keepAccount) {
         reached[m] = i;
         if (PROBE && [10, 20, 35, 50, 75, 100, 150, 200].includes(m)) {
           probes.push("F" + m + " run buff: x" + runBuffNow().toFixed(2) + " (" + big(runCounter) + " counted up this run)");
+          if (lastRun !== null) {
+            let all = 0;
+            for (let source in lastRun.damage) { all = all + lastRun.damage[source]; }
+            probes.push("F" + m + " last run: " + Object.keys(lastRun.damage).map(function (source) { return source + " " + Math.round(lastRun.damage[source] / all * 100) + "%"; }).join(", ")
+              + "; " + (lastRun.seconds / Math.max(1, lastRun.kills)).toFixed(1) + " turns a kill");
+          }
           let ordinary = ordinaryMonster();
           probes.push("F" + m + ": level " + level + ", might " + fameLevel("might") + ", vitality " + fameLevel("vitality") + ", craft " + fameLevel("scavenger")
             + ", ascensions " + ascensionsDone + ", boons " + upgradesHeld() + ", forge " + forgeLevel("weapon") + "/" + forgeLevel("armor")
