@@ -1213,6 +1213,75 @@ try {
   check("layout: the fight is on top of every tab's page, the tabs are a bar along the bottom, and the Fight tab opens the whole fight" + (layoutProblems.length === 0 ? "" : ": " + layoutProblems.join("; ")), layoutProblems.length === 0);
   showTab("character");
 
+  // 3i17. The Second Climber: locked without the legend unlock; with it, another class
+  // takes its turns out of sight and the class being played is left exactly as it was
+  let marksWere = legendLevels;
+  let companionWas = companionClass;
+  let other = Object.keys(classes).find(function (name) { return name !== playerClass && classIsOpen(name); });
+  legendLevels = {};
+  companionClass = other;
+  companionOwed = 0;
+  step();
+  let lockedOwesNothing = !companionReady() && companionOwed === 0 && document.getElementById("companion-line").hidden;
+
+  legendLevels = Object.assign({}, marksWere, { secondClimber: 1 });
+  updateScreen();
+  let lineShown = !document.getElementById("companion-line").hidden && document.getElementById("companion-pick").value === other;
+  // (the turns are taken between two rooms, so no fight is under way: see playCompanionIfDue)
+  let sorted = function (value) {
+    return JSON.stringify(value, function (key, inner) {
+      if (inner !== null && typeof inner === "object" && !Array.isArray(inner)) {
+        let ordered = {};
+        for (let name of Object.keys(inner).sort()) { ordered[name] = inner[name]; }
+        return ordered;
+      }
+      return inner;
+    });
+  };
+  classSaves[playerClass] = packClass();
+  unpackClass(classSaves[playerClass]);
+  let mineBefore = sorted(packClass());
+  let turnsBefore = (classSaves[other] || { runStats: { seconds: 0 } }).runStats.seconds || 0;
+  let logBefore = logLines.length + "/" + logLines[0];
+  let deathsBeforeClimb = deaths;
+  let momentsBefore = moments.length;
+  playCompanion(300);
+  let untouched = sorted(packClass()) === mineBefore && playerClass !== other
+    && logLines.length + "/" + logLines[0] === logBefore && deaths === deathsBeforeClimb && moments.length === momentsBefore && !backgroundClimb && !catchingUp;
+  let climbed = classSaves[other].runStats !== undefined && (classSaves[other].deaths === undefined) && classSaves[other].floor >= 1
+    && JSON.stringify(classSaves[other]) !== "{}" && (classSaves[other].experience > 0 || classSaves[other].level > 1 || classSaves[other].floor > 1 || classSaves[other].gold > 0 || classSaves[other].bank > 0);
+
+  // A minute of turns is owed, and paid between two rooms
+  companionOwed = 0;
+  for (let i = 0; i < companionBatch; i++) {
+    noteCompanionTurn();
+  }
+  let owedAMinute = companionOwed === companionBatch;
+  let levelBefore = JSON.stringify(classSaves[other]);
+  playCompanionIfDue();
+  let paid = companionOwed === 0 && JSON.stringify(classSaves[other]) !== levelBefore;
+
+  // Playing the class that climbs beside you swaps the two
+  let first = playerClass;
+  switchClass(other);
+  let swapped = playerClass === other && companionClass === first;
+  switchClass(first);
+  let swappedBack = playerClass === first && companionClass === other;
+  saveGame();
+  let savedChoice = JSON.parse(localStorage.getItem(saveName)).companionClass === other;
+  showTab("skills");
+  updateScreen();
+  let stripShown = document.getElementById("class-" + other).offsetHeight > 0 && document.getElementById("class-" + other).classList.contains("climbing")
+    && document.getElementById("class-" + other).getBoundingClientRect().top < document.querySelector(".fight-card").getBoundingClientRect().top;
+  check("the Second Climber: nothing happens without the unlock; with it the " + classes[other].name + " takes 300 turns out of sight and the " + currentClass().name + " is left exactly as it was; a minute of turns is owed and paid between rooms; playing it swaps the two; the heroes are above the fight on every tab",
+    lockedOwesNothing && lineShown && untouched && climbed && owedAMinute && paid && swapped && swappedBack && savedChoice && stripShown);
+  legendLevels = marksWere;
+  companionClass = companionWas;
+  companionOwed = 0;
+  logLines = [];
+  startEncounter();
+  updateScreen();
+
   // 3j. Starting floors, and the Tactician's list
   cruiseFloor = 40;
   runStartFloor = 1;

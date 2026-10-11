@@ -251,6 +251,9 @@ function nextRoom() {
     }
   }
 
+  // Between two rooms is when the second climber takes the turns it is owed
+  playCompanionIfDue();
+
   startEncounter();
 }
 
@@ -622,6 +625,7 @@ function fightMonster() {
 
 // One second of the game
 function step() {
+  noteCompanionTurn();
   ascensionSeconds = ascensionSeconds + 1;
   runStats.seconds = runStats.seconds + 1;
 

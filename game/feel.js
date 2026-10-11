@@ -77,6 +77,10 @@ let momentsOn = true;
 
 // "choices" is optional: a list of { title, note, whenPicked } shown as rows with a button
 function announce(size, title, text, choices) {
+  // The second climber climbs out of sight: nothing it does is announced
+  if (backgroundClimb) {
+    return;
+  }
   say(title + ". " + text);
 
   if (size === "moment" && momentsOn) {

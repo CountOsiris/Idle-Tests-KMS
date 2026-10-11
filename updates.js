@@ -13,6 +13,15 @@
 
 const gameUpdates = [
   {
+    version: "20261011s",
+    title: "The Second Climber, and your heroes above the fight",
+    changes: [
+      "Your classes are now a row of buttons above the fight, on every tab, each with its floor. Press one to play it.",
+      "A new legend unlock, The Second Climber (30 marks): pick one other class to climb beside you. It goes on climbing its own tower by itself while you play, a minute of turns at a time, and while you are away.",
+      "Playing the class that climbs beside you swaps the two. A milestone it reaches waits for you to pick the perk."
+    ]
+  },
+  {
     version: "20261011r",
     title: "Tabs across the top on a computer",
     changes: [

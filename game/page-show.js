@@ -94,6 +94,7 @@ function showClassButtons() {
       button.className = "";
     }
   }
+  showHeroStrip();
 }
 
 // The list of upgrades collected this run. It stays on the page under the fight,

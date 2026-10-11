@@ -53,6 +53,11 @@ function playTimeAway(seconds) {
     report = report + " New best floor: " + bestFloor + "!";
   }
 
+  // (the second climber, if there is one, was climbing too: see game/companion.js)
+  if (companionReady() && classSaves[companionClass] !== undefined) {
+    report = report + " Your " + classes[companionClass].name + " climbed beside it, and stands on floor " + classSaves[companionClass].floor + " (best " + classSaves[companionClass].bestFloor + ").";
+  }
+
   document.getElementById("away-text").textContent = report;
   document.getElementById("away-report").hidden = false;
 }

@@ -101,3 +101,17 @@ and a relic slot cannot keep it.
 Phoenix Feather was reported as not working. It fired in every way a hero can die
 (checked), but said only "Second Wind!" in the log and stayed in the relic list looking
 unused. It now names itself, pops up over the fight, and is marked used up.
+
+## The Second Climber (11 October 2026)
+
+The owner asked for two characters at once as a long-term unlock, with the character
+select always above the fight and a clear way to say who idles. **Built**
+(`game/companion.js`): a legend unlock costing 30 marks (a class that becomes a legend at
+floor 100 earns 10). One other class is picked on the strip of heroes above the fight;
+it climbs its own tower out of sight, exactly as it was left.
+
+The game's state is one set of variables, so the second climber takes turns in batches
+of a minute, and only when the class being played is between two rooms. The check
+confirms the class being played is left exactly as it was. It doubles what an account
+earns, which is the reward; its effect on pacing has not been measured with the bot,
+which plays one class at a time.

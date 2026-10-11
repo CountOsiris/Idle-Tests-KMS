@@ -481,6 +481,7 @@ function saveGame() {
     legendMarks: legendMarks,
     legendLevels: legendLevels,
     bestiary: bestiary,
+    companionClass: companionClass,
     unlockedTabs: unlockedTabs,
     lastTick: lastTick
   };
@@ -509,6 +510,7 @@ function loadGame() {
 
       // The bestiary: saves from before it existed start it empty
       bestiary = (typeof data.bestiary === "object" && data.bestiary !== null) ? data.bestiary : {};
+      companionClass = typeof data.companionClass === "string" && classes[data.companionClass] !== undefined ? data.companionClass : "";
 
       // Legend marks: saves from before they existed have none
       legendMarks = typeof data.legendMarks === "number" ? data.legendMarks : 0;
@@ -571,6 +573,12 @@ function switchClass(className) {
   if (className === playerClass || !classIsOpen(className)) {
     return;
   }
+
+  // Playing the class that was climbing beside you: the one you leave takes its place
+  if (className === companionClass) {
+    companionClass = playerClass;
+  }
+  companionOwed = 0;
 
   classSaves[playerClass] = packClass();
   playerClass = className;

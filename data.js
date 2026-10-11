@@ -268,9 +268,15 @@ const legendUnlocks = [
   { id: "oldRoads", name: "Old Roads", text: "Every class starts again 10 levels higher after ascending or becoming a legend.", bonus: { startLevels: 10 }, cost: 4, growth: 2, maxLevel: 3 },
   { id: "quartermaster", name: "Quartermaster", text: "Every run starts with 2 healing potions, free.", bonus: { freePotions: 2 }, cost: 4, growth: 1, maxLevel: 1 },
   { id: "secondWeapon", name: "Second Weapon", text: "Every class can carry a second weapon (or element) and fight bosses with it. Pick it at the blacksmith.", bonus: { secondWeapon: 1 }, cost: 10, growth: 1, maxLevel: 1 },
+  // The Second Climber (game/companion.js). Dear on purpose: it doubles what an account
+  // earns, so it is something to play towards for a long time.
+  { id: "secondClimber", name: "The Second Climber", text: "Two classes climb at once. Pick one other class above the fight: it goes on climbing its own tower, by itself, while you play.", bonus: { secondClimber: 1 }, cost: 30, growth: 1, maxLevel: 1 },
   // (a class with  unlock: "beastTamer"  in its file is hidden until this is bought)
   { id: "beastTamer", name: "The Beast Tamer", text: "Opens the eighth class: a tamer who fights beside a wolf pack, a bear or a hawk.", bonus: {}, cost: 12, growth: 1, maxLevel: 1 }
 ];
+
+// How many turns the second climber saves up before it plays them (see game/companion.js)
+const companionBatch = 60;
 
 // ----- The week's modifier -----
 // One of these is in force each week, for every class in every tower, and they come
