@@ -18,6 +18,7 @@ const gameUpdates = [
     changes: [
       "The fight now stays at the top of the screen on every tab, in a short form: the two fighters and their health.",
       "The tabs are a bar along the bottom, a picture and a word each, the same on a computer and a phone.",
+      "On a wide screen the fight stands on the left and the page has the whole height on the right.",
       "The Fight tab opens the whole fight: what the monster is, how you stand against the floor, your goals, the boons of the run and the log.",
       "The header is one line."
     ]

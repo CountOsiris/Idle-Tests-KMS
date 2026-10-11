@@ -120,3 +120,7 @@ Pictures: [a tab](pictures/layout-hero-tab.png), [the Fight tab](pictures/layout
 
 The short fight keeps one height through every kind of room (checked), so nothing
 under it moves.
+
+Stacked on a computer the fight left the page a strip one row tall (reported the same
+day). From 1000 pixels wide the short fight stands in a left column instead, and the
+page has the whole height.
