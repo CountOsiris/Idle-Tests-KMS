@@ -13,6 +13,16 @@
 
 const gameUpdates = [
   {
+    version: "20261011l",
+    title: "Rage and Crusade are builds now",
+    changes: [
+      "Rage grows as your health falls and is all on below half health. It was all or nothing, and the Rage perks were 40 to 70 floors behind the weapon perks.",
+      "Crusade counts the first turn of a fight. Its perks now climb as deep as the Zealot's weapon perks.",
+      "Frenzy and Blood God also give attack and health. The Crusade skill is +2.5% a turn, since every turn now counts.",
+      "Small retunes to keep every weapon level: Crossbow and the Zealot's weapons down a little, Earth and the Arcane and Rune tomes up."
+    ]
+  },
+  {
     version: "20261011k",
     title: "Bleed, poison and burn that work",
     changes: [

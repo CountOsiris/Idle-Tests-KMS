@@ -227,3 +227,24 @@ real fault.
 
 Seen while measuring, not yet acted on: abilities are 35% to 60% of every build's
 damage, the same for all of them, which is a large part of why builds feel alike.
+
+## Perk paths that were traps (11 October 2026)
+
+The owner: "there's just not much to build". Each class offers its weapon's perks and a
+class-theme path beside them. Played for 60 hours on each path (the bot's `perk=`):
+
+| Path | Against the weapon perks, before | After |
+|---|---|---|
+| Rage (Barbarian) | 40 to 68 floors behind | Axe 6 behind, Sword 27, Club 43 |
+| Crusade (Zealot) | 46 to 67 behind | level (3 to 5 ahead) |
+| Ambush (Assassin) | level or ahead | unchanged |
+| The soul perks (Warlock) | about 20 ahead | unchanged |
+| Vengeance (Warden) | level with Spiked and Bladed, 53 behind with Tower | unchanged |
+
+Rage was all or nothing at half health and Crusade gave nothing on the first turn, and
+a fight lasts two or three turns. **Built.** Rage grows as health falls (`rageShare`),
+Crusade counts the first turn, and Frenzy and Blood God carry attack and health.
+
+Still traps, left on purpose or not yet solved: Vengeance behind a Tower Shield (a
+blocked hit owes nothing), Rage with a Club (a stunned enemy does not hurt you), and
+the Ranger's health perks (an archer is seldom hit).

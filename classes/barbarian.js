@@ -118,7 +118,7 @@ classes.barbarian = {
         { id: "flayer", name: "Flayer", text: "Axe: bleeding damage x1.4, attack x1.5 and health x1.3", multiply: { bleed: 1.4, attack: 1.5, health: 1.3 } },
         { id: "swordmaster", name: "Swordmaster", text: "Sword: critical hit damage x1.8", multiply: { swordCrit: 1.8 } },
         { id: "bonebreaker", name: "Bonebreaker", text: "Club: damage of every hit x1.9", multiply: { club: 1.9 } },
-        { id: "frenzy", name: "Frenzy", text: "Rage x3: three times the bonus damage while below half health", multiply: { rage: 3 } }
+        { id: "frenzy", name: "Frenzy", text: "Rage x3: three times its bonus damage. And attack x1.3 and health x1.3", multiply: { rage: 3, attack: 1.3, health: 1.3 } }
       ]
     },
     // KEYSTONES: each changes a rule of one weapon, and costs something. This milestone is
@@ -149,7 +149,7 @@ classes.barbarian = {
     {
       floor: 100,
       perks: [
-        { id: "bloodGod", name: "Blood God", text: "+15% lifesteal, and Rage x3 again", bonus: { lifesteal: 0.15 }, multiply: { rage: 3 } },
+        { id: "bloodGod", name: "Blood God", text: "+15% lifesteal, Rage x3 again, attack x1.5 and health x1.8", bonus: { lifesteal: 0.15 }, multiply: { rage: 3, attack: 1.5, health: 1.8 } },
         { id: "titan", name: "Titan", text: "health x2 and +10 armor", bonus: { armor: 10 }, multiply: { health: 2 } },
         { id: "reaver", name: "Reaver", text: "Axe: bleeding damage x1.4 again, attack x1.5 and health x1.5", multiply: { bleed: 1.4, attack: 1.5, health: 1.5 } },
         { id: "swordSaint", name: "Sword Saint", text: "Sword: critical hit damage x1.5 again", multiply: { swordCrit: 1.5 } },
@@ -234,13 +234,23 @@ function barbarianStartFight() {
 }
 
 // The class's turn, once per second
+// How much of Rage is burning right now: all of it below half health, and above that
+// as much as the health already lost (at three quarters health, half of it).
+// It used to be all or nothing at half health. A fight lasts two or three turns, so a
+// Barbarian was seldom below half for long, and the Rage perks were a trap: 40 to 70
+// floors behind the weapon perks in 60 hours (October 2026).
+// (the Death Wish keystone keeps all of it on at any health)
+function rageShare() {
+  if (totalBonus("alwaysRage") > 0) {
+    return 1;
+  }
+  return Math.min(1, (1 - playerHp / playerMaxHp) * 2);
+}
+
 function barbarianAttack() {
   let damage = playerAttack;
 
-  // (the Death Wish keystone keeps Rage on at any health)
-  if (playerHp < playerMaxHp / 2 || totalBonus("alwaysRage") > 0) {
-    damage = damage * (1 + totalBonus("rage") * multiplier("rage"));
-  }
+  damage = damage * (1 + totalBonus("rage") * multiplier("rage") * rageShare());
 
   // Critical chance past 100% adds to the critical damage instead
   if (weapon === "sword" && chance(totalBonus("critChance"))) {
@@ -314,7 +324,7 @@ function barbarianDotPerStack() {
 
 // The class's special line in the "You" panel
 function barbarianStatLine() {
-  return "Lifesteal: " + percent(totalBonus("lifesteal")) + ". Rage: +" + percent(totalBonus("rage") * multiplier("rage")) + " damage while below half health";
+  return "Lifesteal: " + percent(totalBonus("lifesteal")) + ". Rage: up to +" + percent(totalBonus("rage") * multiplier("rage")) + " damage, growing as your health falls and all of it below half health (right now +" + percent(totalBonus("rage") * multiplier("rage") * rageShare()) + ")";
 }
 
 // The description under the weapon

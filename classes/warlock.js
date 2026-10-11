@@ -136,9 +136,9 @@ classes.warlock = {
     {
       floor: 100,
       perks: [
-        { id: "annihilation", name: "Annihilation", text: "Arcane Tome: the extra damage of critical hits x1.7 again, and +10% critical chance", bonus: { critChance: 0.1 }, multiply: { arcaneCrit: 1.7 } },
+        { id: "annihilation", name: "Annihilation", text: "Arcane Tome: the extra damage of critical hits x1.7 again, +10% critical chance, and attack x1.25", bonus: { critChance: 0.1 }, multiply: { arcaneCrit: 1.7, attack: 1.25 } },
         { id: "voidLord", name: "Void Lord", text: "Void Tome: spell damage x2.2 again, and health x1.5", multiply: { void: 2.2, health: 1.5 } },
-        { id: "runeLord", name: "Rune Lord", text: "Rune Tome: echo damage x1.6 again, and +20% chance to cast twice", bonus: { echoChance: 0.2 }, multiply: { echo: 1.6 } },
+        { id: "runeLord", name: "Rune Lord", text: "Rune Tome: echo damage x1.6 again, +20% chance to cast twice, and attack x1.25", bonus: { echoChance: 0.2 }, multiply: { echo: 1.6, attack: 1.25 } },
         { id: "deathsHarvest", name: "Death's Harvest", text: "attack x1.6 and health x1.5", multiply: { attack: 1.6, health: 1.5 } },
         { id: "undying", name: "Undying", text: "health x2 and +6 armor", bonus: { armor: 6 }, multiply: { health: 2 } }
       ]

@@ -154,7 +154,7 @@ classes.elementalist = {
         { id: "phoenixFlame", name: "Phoenix Flame", text: "Fire: burning damage x1.5 again, and health x1.5", multiply: { burn: 1.5, health: 1.5 } },
         { id: "iceAge", name: "Ice Age", text: "Ice: critical hit damage x1.9 again", multiply: { iceCrit: 1.9 } },
         { id: "thunderGod", name: "Thunder God", text: "Lightning: bolt damage x1.8 again", multiply: { bolt: 1.8 } },
-        { id: "earthquake", name: "Earthquake", text: "Earth: boulder damage x1.7 again", multiply: { boulder: 1.7 } }
+        { id: "earthquake", name: "Earthquake", text: "Earth: boulder damage x2.1 again", multiply: { boulder: 2.1 } }
       ]
     }
   ],
