@@ -43,7 +43,7 @@ const midGrowth = 1.05;
 // How much stronger a boss is than an ordinary monster of its floor.
 // A big number here makes every boss a wall: nothing happens for hours, then several
 // floors fall at once. A smaller one lets the floors themselves do the slowing down.
-const bossHealth = 2.2;
+const bossHealth = 4;
 const bossAttack = 1.3;
 
 // THE DEEP TOWER. Past this floor, monsters also get stronger by a fixed percentage
@@ -103,12 +103,12 @@ const deepAttackGrowth = 1.013;
 // gives, rising evenly to "health" times and "attack" times by fullFloor and staying
 // there. The first floors are as they were: a fight there was already a fight.
 // (An object, not plain numbers, so that the balance bot can try others: see "long=".)
-const longFights = { fromFloor: 10, fullFloor: 35, health: 3, attack: 0.15 };
+const longFights = { fromFloor: 10, fullFloor: 35, health: 2, attack: 0.08 };
 
 // A blow thrown back at a monster (the Spiked Shield, vengeance, the Brace technique)
 // is a share of the monster's attack. Monsters now hit softly for their size, so a
 // thrown-back blow counts this many times: without it those builds stopped killing.
-const thrownBackStrength = 4;
+const thrownBackStrength = 3;
 
 // ARMOR AND WARD are a SHARE of every hit, not a fixed number, so they matter just as
 // much against a hit of 50,000 as against a hit of 50.
@@ -588,9 +588,15 @@ const roomsPerFloor = 4;
 // Rare monsters are tougher, but pay more gold
 const rareChance = 0.1;
 
-// After this many turns a fight "drags on" and the monster hits harder
-// every turn, so that no fight can last forever
-const longFightTurns = 30;
+// THE CLOCK. After "turns" turns a fight "drags on": the monster's attack grows by
+// "growth" every turn from then (1.3 means 30% more each turn), so the fight is soon
+// over one way or the other. A boss gives "bossTurns" before that.
+// This is what stops a climb. A hero is not meant to fall to one blow, or to win any
+// fight by waiting: it reaches the floor where it cannot kill inside the clock. (Until
+// October 2026 the clock was 30 turns for everything, and fights at the edge of a climb
+// lasted 9 to 15 turns each.)
+// (An object so that the balance bot can try other numbers: see "drag=".)
+const fightClock = { turns: 6, bossTurns: 14, growth: 1.3 };
 
 // In another class's tower, monsters have this much more health and attack,
 // and dying there pays this much more experience (0.5 means +50%)

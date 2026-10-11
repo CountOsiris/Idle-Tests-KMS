@@ -1284,6 +1284,44 @@ try {
   startEncounter();
   updateScreen();
 
+  // 3i18. The clock: an ordinary fight drags on after fightClock.turns turns and a boss
+  // after fightClock.bossTurns, and from then the monster's attack grows every turn
+  let attackAfter = function (isBoss, turns) {
+    floor = 20;
+    room = isBoss ? roomsPerFloor : 1;
+    encounterType = isBoss ? "boss" : "monster";
+    spawnMonster(isBoss);
+    monsterMaxHp = 1e15;
+    monsterHp = 1e15;
+    monsterEnrageStep = 0;
+    let start = monsterAttack;
+    let realAttack = currentClass().attack;
+    let realAttacks = monsterAttacks;
+    let realBossTurn = bossStartOfTurn;
+    currentClass().attack = function () {};
+    monsterAttacks = function () {};
+    bossStartOfTurn = function () {};
+    let slots = abilitySlots;
+    abilitySlots = [];
+    for (let i = 0; i < turns; i++) {
+      fightMonster();
+    }
+    abilitySlots = slots;
+    currentClass().attack = realAttack;
+    monsterAttacks = realAttacks;
+    bossStartOfTurn = realBossTurn;
+    return monsterAttack / start;
+  };
+  let calmOrdinary = attackAfter(false, fightClock.turns - 1);
+  let draggingOrdinary = attackAfter(false, fightClock.turns + 1);
+  let calmBoss = attackAfter(true, fightClock.bossTurns - 1);
+  let draggingBoss = attackAfter(true, fightClock.bossTurns + 1);
+  check("the clock: an ordinary monster's attack is unchanged after " + (fightClock.turns - 1) + " turns and x" + draggingOrdinary.toFixed(2) + " after " + (fightClock.turns + 1) + "; a boss's is unchanged after " + (fightClock.bossTurns - 1) + " and x" + draggingBoss.toFixed(2) + " after " + (fightClock.bossTurns + 1),
+    calmOrdinary === 1 && calmBoss === 1 && draggingOrdinary > 1.5 && draggingBoss > 1.5 && fightClock.bossTurns > fightClock.turns);
+  floor = 3;
+  room = 1;
+  startEncounter();
+
   // 3j. Starting floors, and the Tactician's list
   cruiseFloor = 40;
   runStartFloor = 1;

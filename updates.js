@@ -13,6 +13,17 @@
 
 const gameUpdates = [
   {
+    version: "20261011w",
+    title: "The clock: what stops a climb",
+    changes: [
+      "An ordinary fight now \"drags on\" after 6 turns and a boss after 14: from then the monster hits 30% harder every turn. You stop climbing where you can no longer win inside the clock, not because one blow kills you.",
+      "At the deepest floors you can reach, an ordinary fight is about 5 or 6 turns, a boss about 13, and an ordinary monster needs about 6 hits to bring you down.",
+      "Bosses have four times an ordinary monster's health, where they had 2.2 times.",
+      "Fixed: the Void Tome's Void Rift took a share of an enemy's full health that fame multiplied. It now takes a share of the health left, and nothing multiplies it. The Void Tome's own spells are stronger to make up for it.",
+      "The Holy Mace, Stiletto and Spiked Shield are a little weaker and the Tower Shield stronger, to keep every weapon level."
+    ]
+  },
+  {
     version: "20261011v",
     title: "Every weapon's perks take the same shape",
     changes: [
@@ -26,7 +37,7 @@ const gameUpdates = [
     version: "20261011u",
     title: "Fights that last",
     changes: [
-      "From floor 10, rising to floor 35, monsters have three times the health and hit far more softly. A fight at the edge of what you can climb is now about three turns, and you can take several hits, where it was two turns and a hero fell to the second hit.",
+      "From floor 10, rising to floor 35, monsters have twice the health and hit far more softly. You can take several hits, where a hero used to fall to the second.",
       "Bleeding, Rage, Crusade, blocking and healing now have time to matter.",
       "To match: healing each turn has a ceiling (the Zealot's Devotion, the Void Tome), Crusade counts 8 turns of a fight at most, and the Void Tome tears a share of the health an enemy has LEFT.",
       "A blow thrown back by a Spiked Shield, vengeance or Brace counts four times, since monsters hit softly now. Several floor 50 and 100 perks were retuned to keep every weapon level."

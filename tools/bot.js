@@ -42,7 +42,12 @@
 //              real choice. One climb each, so only trust gaps of 20 floors or more.
 //  long=H:A    try another length of fight: monsters with H times the health and A times
 //              the attack from floor 35 on (see longFights in data.js)
-//  bossx=N     and bosses with N times an ordinary monster's health
+//  drag=T:B:G  try another clock: an ordinary fight drags on after T turns, a boss after
+//              B, and the monster's attack then grows G times a turn (see fightClock)
+//  edge        also say how the fights near the class's deepest floor went, in the last
+//              third of the hours: turns to win an ordinary fight and a boss, the share of
+//              health an ordinary monster's attack took, and how fights were lost. This
+//              is the measure of how long a fight lasts (docs/design/14).
 //  killers     also say what killed it most in its last two hours, and on which floor
 //  duo         a Barbarian for 6 hours, then a new Ranger and Warden on the same account
 // =====================================================================
@@ -94,6 +99,13 @@ multiplier = function (stat) {
 if (location.hash.match(/long=([\d.]+):([\d.]+)/)) {
   longFights.health = Number(location.hash.match(/long=([\d.]+):([\d.]+)/)[1]);
   longFights.attack = Number(location.hash.match(/long=([\d.]+):([\d.]+)/)[2]);
+}
+
+if (location.hash.match(/drag=(\d+):(\d+):([\d.]+)/)) {
+  let clockTry = location.hash.match(/drag=(\d+):(\d+):([\d.]+)/);
+  fightClock.turns = Number(clockTry[1]);
+  fightClock.bossTurns = Number(clockTry[2]);
+  fightClock.growth = Number(clockTry[3]);
 }
 
 // A run stops early once this floor has been reached (0: play all the hours)
@@ -292,8 +304,10 @@ function run(className, weaponType, stanceId, hours, ascending, keepAccount) {
   let probes = [];
   let deepestRun = null;
 
+  edgeFights = { monster: [], boss: [], lostTurns: [], hitShare: [] };
   for (let i = 1; i <= hours * 3600; i++) {
     now = i;
+    edgeOn = EDGE && i > hours * 3600 * 2 / 3;
     step();
     if (NOUP) {
       upgrades = {};
@@ -366,6 +380,11 @@ function run(className, weaponType, stanceId, hours, ascending, keepAccount) {
     for (let source in deepestRun.taken) { taken = taken + deepestRun.taken[source]; }
     probes.push("deepest run (to floor " + deepestRun.floor + "): damage " + parts.join(", ") + "; healed " + big(healed) + ", taken " + big(taken) + ", " + deepestRun.kills + " kills in " + deepestRun.seconds + " turns");
   }
+  if (EDGE) {
+    let hit = median(edgeFights.hitShare);
+    out.push("    edge: ordinary fight " + median(edgeFights.monster) + " turns (" + edgeFights.monster.length + " won), boss " + median(edgeFights.boss) + " turns (" + edgeFights.boss.length
+      + " won), an ordinary hit takes " + (hit * 100).toFixed(1) + "% of health = " + (hit > 0 ? (1 / hit).toFixed(1) : "-") + " hits to die, lost fights lasted " + median(edgeFights.lostTurns) + " turns (" + edgeFights.lostTurns.length + " lost)");
+  }
   for (let probe of probes) {
     out.push("    " + probe);
   }
@@ -378,6 +397,45 @@ function run(className, weaponType, stanceId, hours, ascending, keepAccount) {
 // How many times stronger the kills of this run are making the class right now
 function runBuffNow() {
   return 1 + fervourBonus();
+}
+
+// ----- "edge": every fight near the deepest floor, counted as it ends -----
+const EDGE = location.hash.includes("edge");
+let edgeOn = false;
+let edgeFights = { monster: [], boss: [], lostTurns: [], hitShare: [] };
+let fightTakenHits = 0;
+let fightTakenTotal = 0;
+
+function median(list) {
+  if (list.length === 0) {
+    return 0;
+  }
+  let sorted = list.slice().sort(function (a, b) { return a - b; });
+  return sorted[Math.floor(sorted.length / 2)];
+}
+
+if (EDGE) {
+  let realVictory = victory;
+  victory = function () {
+    if (edgeOn && floor >= bestFloor - 10) {
+      edgeFights[encounterType === "boss" ? "boss" : "monster"].push(fightTurns);
+    }
+    realVictory();
+  };
+  let realDie = die;
+  die = function () {
+    if (edgeOn && floor >= bestFloor - 10) {
+      edgeFights.lostTurns.push(fightTurns);
+    }
+    realDie();
+  };
+  let realNoteTaken = noteTaken;
+  noteTaken = function (amount) {
+    if (edgeOn && floor >= bestFloor - 10 && encounterType === "monster" && !monsterIsRare && playerMaxHp > 0) {
+      edgeFights.hitShare.push(amount / playerMaxHp);
+    }
+    realNoteTaken(amount);
+  };
 }
 
 // The seconds at which the last run first reached each floor it was asked about

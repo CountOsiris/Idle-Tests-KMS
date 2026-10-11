@@ -29,7 +29,7 @@ something that is not multiplied again by another endless word.
 | `alwaysRage` | + perk (1) | no | added: classes/barbarian.js:249 |
 | `ambush` | + base (1), + boon (1), + perk (2), + relic (1), + skill (1), x breakthrough (1), x perk (3) | boon, skill | added: classes/assassin.js:273; multiplied: classes/assassin.js:273 |
 | `ambushed` | + tower rule (1), + week (1) | no | added: game/fights.js:131 |
-| `arcaneCrit` | x breakthrough (1), x perk (2), x relic (1) | no | multiplied: classes/warlock.js:247 |
+| `arcaneCrit` | x breakthrough (1), x perk (2), x relic (1) | no | multiplied: classes/warlock.js:258 |
 | `armor` | + base (2), + boon (2), + perk (7), + skill (1), + trophy (6), x breakthrough (1), x fame (1), x perk (22) | boon, fame, skill | added: game/bonuses.js:467; multiplied: game/bonuses.js:467, classes/warden.js:222, classes/warden.js:232 and 1 more |
 | `armorLimit` | + perk (1), + relic (2), + skill (1), + trophy (1) | skill | added: game/bonuses.js:462 |
 | `armorPercent` | + skill (1) | skill | added: game/bonuses.js:467 |
@@ -71,12 +71,12 @@ something that is not multiplied again by another endless word.
 | `devotion` | + base (1), + boon (1), + perk (6), + relic (1) | boon | added: classes/zealot.js:232 |
 | `dodge` | + base (1), + boon (1), + perk (9), + relic (1), + skill (1) | boon, skill | added: classes/assassin.js:278, classes/assassin.js:285; added, capped: classes/assassin.js:280 |
 | `dotPower` | + perk (3), + skill (3) | skill | added: game/state.js:356, classes/elementalist.js:322 |
-| `drain` | + tower rule (1) | no | added: game/fights.js:511, game/fights.js:512 |
-| `echo` | x breakthrough (1), x perk (2), x relic (1) | no | multiplied: classes/warlock.js:298 |
-| `echoChance` | + base (1), + boon (1), + perk (4), + relic (1), + skill (1) | boon, skill | added: classes/warlock.js:290, classes/warlock.js:291, classes/warlock.js:324 |
-| `echoPower` | + perk (1), + skill (1) | skill | added: classes/warlock.js:298, classes/warlock.js:324 |
+| `drain` | + tower rule (1) | no | added: game/fights.js:513, game/fights.js:514 |
+| `echo` | x breakthrough (1), x perk (2), x relic (1) | no | multiplied: classes/warlock.js:309 |
+| `echoChance` | + base (1), + boon (1), + perk (4), + relic (1), + skill (1) | boon, skill | added: classes/warlock.js:301, classes/warlock.js:302, classes/warlock.js:335 |
+| `echoPower` | + perk (1), + skill (1) | skill | added: classes/warlock.js:309, classes/warlock.js:335 |
 | `enrageAll` | + tower rule (1), + week (1) | no | added: game/fights.js:165 |
-| `eventHorizon` | + perk (1) | no | added: classes/warlock.js:272 |
+| `eventHorizon` | + perk (1) | no | added: classes/warlock.js:283 |
 | `experience` | + perk (8), + town (1), + trophy (3), x breakthrough (1), x fame (1), x perk (1), x week (2) | fame, town | added: game/fights.js:91; multiplied: game/fights.js:91 |
 | `exploit` | + perk (1), + relic (3), + trophy (2) | no | added: game/state.js:270 |
 | `extraBolts` | + boon (1), + perk (2), + relic (1), + skill (1) | boon, skill | added: classes/elementalist.js:273, classes/elementalist.js:274, classes/elementalist.js:328 |
@@ -88,16 +88,16 @@ something that is not multiplied again by another endless word.
 | `flyOn` | + perk (1) | no | added: classes/ranger.js:316 |
 | `freePotions` | + legend (1) | no | added: game/bonuses.js:389, game/fights.js:336 |
 | `gear` | x fame (1), x perk (8) | fame | multiplied: game/equipment.js:73 |
-| `gold` | + town (1), + trophy (3), x fame (1), x perk (8), x trophy (1), x week (2) | fame, town | added: game/fights.js:389, game/fights.js:653; multiplied: game/fights.js:389, game/fights.js:653 |
+| `gold` | + town (1), + trophy (3), x fame (1), x perk (8), x trophy (1), x week (2) | fame, town | added: game/fights.js:389, game/fights.js:655; multiplied: game/fights.js:389, game/fights.js:655 |
 | `guard` | + base (1), + perk (1) | no | added: classes/beasttamer.js:231 |
 | `harry` | + base (1) | no | added, capped: classes/beasttamer.js:282, classes/beasttamer.js:317 |
 | `hawkCrit` | x breakthrough (1), x perk (3), x relic (1) | no | multiplied: classes/beasttamer.js:268 |
-| `headStart` | + relic (2), + trophy (1) | no | added: game/fights.js:539 |
+| `headStart` | + relic (2), + trophy (1) | no | added: game/fights.js:541 |
 | `healOnKill` | nothing | no | added: game/fights.js:396 |
 | `health` | x breakthrough (2), x fame (1), x perk (57), x relic (25), x trophy (10) | fame | multiplied: game/skills.js:316 |
 | `healthPercent` | + boon (4), + perk (1), + skill (9) | boon, skill | added: game/skills.js:316 |
 | `heavyShot` | + skill (1) | skill | added: classes/ranger.js:281, classes/ranger.js:339 |
-| `hunted` | + tower rule (1) | no | added: game/fights.js:522, game/fights.js:523 |
+| `hunted` | + tower rule (1) | no | added: game/fights.js:524, game/fights.js:525 |
 | `huntersMark` | + skill (1) | skill | added: classes/ranger.js:271, classes/ranger.js:334 |
 | `iceCrit` | x breakthrough (1), x perk (3), x relic (1) | no | multiplied: classes/elementalist.js:259 |
 | `iceFreeze` | + perk (1) | no | added: classes/elementalist.js:263 |
@@ -105,10 +105,10 @@ something that is not multiplied again by another endless word.
 | `judgement` | + base (1), + perk (2), + skill (1) | skill | added: classes/zealot.js:286, classes/zealot.js:330 |
 | `killStreak` | + perk (3), + relic (5), + trophy (1) | no | added: game/abilities.js:352 |
 | `landslide` | + perk (1) | no | added: classes/elementalist.js:295, classes/elementalist.js:299, classes/elementalist.js:300 |
-| `leech` | + perk (1), + relic (4), + trophy (2) | no | added: game/fights.js:595, game/fights.js:597 |
+| `leech` | + perk (1), + relic (4), + trophy (2) | no | added: game/fights.js:597, game/fights.js:599 |
 | `lifesteal` | + base (1), + boon (1), + perk (3), + relic (1), + skill (1) | boon, skill | added: classes/barbarian.js:282, classes/barbarian.js:291, classes/barbarian.js:332 |
 | `longbowCrit` | x breakthrough (1), x perk (2), x relic (1) | no | multiplied: classes/ranger.js:290 |
-| `lostOpening` | + tower rule (1) | no | added: game/fights.js:526 |
+| `lostOpening` | + tower rule (1) | no | added: game/fights.js:528 |
 | `mace` | x breakthrough (1), x perk (2), x relic (1) | no | multiplied: classes/zealot.js:286, classes/zealot.js:292 |
 | `maim` | + perk (1) | no | added: classes/warden.js:273, classes/warden.js:274 |
 | `martyrsFlame` | + perk (1) | no | added: classes/zealot.js:268, classes/zealot.js:269 |
@@ -119,7 +119,7 @@ something that is not multiplied again by another endless word.
 | `noKillHeal` | + perk (3), + tower rule (1) | no | added: game/fights.js:394 |
 | `noPotions` | + tower rule (1), + week (1) | no | added: game/fights.js:483 |
 | `opener` | + relic (5), + trophy (1), + week (1) | no | added: game/abilities.js:360 |
-| `overchannel` | + perk (1) | no | added: classes/warlock.js:243 |
+| `overchannel` | + perk (1) | no | added: classes/warlock.js:254 |
 | `overcharge` | + perk (1) | no | added: classes/elementalist.js:280 |
 | `packSize` | + perk (2), + relic (1) | no | added: classes/beasttamer.js:226 |
 | `packTactics` | + base (1), + skill (1) | skill | added: classes/beasttamer.js:249, classes/beasttamer.js:311 |
@@ -130,14 +130,14 @@ something that is not multiplied again by another endless word.
 | `poisonStacks` | + base (1), + boon (1), + perk (2), + relic (1) | boon | added: classes/assassin.js:156, classes/assassin.js:156, classes/assassin.js:260 and 2 more |
 | `potionPower` | + town (1) | town | added: game/fights.js:486 |
 | `potionSlots` | + town (1) | town | added: game/equipment.js:310 |
-| `prayer` | + perk (5), + relic (2), + trophy (1), + week (1) | no | added: game/fights.js:533, game/fights.js:535 |
+| `prayer` | + perk (5), + relic (2), + trophy (1), + week (1) | no | added: game/fights.js:535, game/fights.js:537 |
 | `quickHands` | + perk (9), + relic (3), + tower rule (1), + trophy (1), + week (1) | no | added: game/abilities.js:217 |
 | `quickShot` | + base (1), + boon (1), + perk (2), + relic (1), + skill (1) | boon, skill | added: classes/ranger.js:300, classes/ranger.js:301, classes/ranger.js:344 |
 | `rage` | + boon (1), + perk (2), + relic (1), + skill (1), x breakthrough (1), x perk (2) | boon, skill | added: classes/barbarian.js:258, classes/barbarian.js:332, classes/barbarian.js:332; multiplied: classes/barbarian.js:258, classes/barbarian.js:332, classes/barbarian.js:332 |
 | `rareMore` | + week (1) | no | added: game/fights.js:146 |
 | `reflect` | + base (1), + boon (1), + perk (2), + relic (1), + skill (1), x breakthrough (1), x perk (2), x relic (1) | boon, skill | added: classes/warden.js:222, classes/warden.js:323, classes/warden.js:334; multiplied: classes/warden.js:223 |
 | `relicSlots` | + legend (1), + trophy (8) | no | added: game/fights.js:301, game/page-show.js:736, game/page-show.js:745 |
-| `resonance` | + perk (1) | no | added: classes/warlock.js:285, classes/warlock.js:298 |
+| `resonance` | + perk (1) | no | added: classes/warlock.js:296, classes/warlock.js:309 |
 | `retribution` | + perk (1) | no | added: classes/zealot.js:313, classes/zealot.js:314 |
 | `riposte` | + perk (1) | no | added: classes/barbarian.js:309 |
 | `sacred` | x breakthrough (1), x perk (2), x relic (1) | no | multiplied: classes/zealot.js:164, classes/zealot.js:274 |
@@ -168,7 +168,7 @@ something that is not multiplied again by another endless word.
 | `throwPower` | + boon (1), + perk (2), + relic (1), + skill (1) | boon, skill | added: classes/warden.js:233, classes/warden.js:340 |
 | `vanishChance` | + base (1), + perk (2), + skill (1) | skill | added, capped: classes/assassin.js:266, classes/assassin.js:319; overflow: classes/assassin.js:273 |
 | `vengeance` | + base (1), + boon (1), + perk (2), + relic (1), x breakthrough (1), x perk (3) | boon | added: classes/warden.js:247, classes/warden.js:249, classes/warden.js:317 and 1 more; multiplied: classes/warden.js:247, classes/warden.js:249 |
-| `void` | x breakthrough (1), x perk (3), x relic (1) | no | multiplied: classes/warlock.js:253 |
-| `voidHeal` | + base (1), + perk (1), + skill (1) | skill | added: classes/warlock.js:279, classes/warlock.js:322 |
-| `voidRend` | + base (1), + boon (1), + perk (2), + relic (1), + skill (1) | boon, skill | added: classes/warlock.js:233, classes/warlock.js:322 |
+| `void` | x breakthrough (1), x perk (3), x relic (1) | no | multiplied: classes/warlock.js:264 |
+| `voidHeal` | + base (1), + perk (1), + skill (1) | skill | added: classes/warlock.js:290, classes/warlock.js:333 |
+| `voidRend` | + base (1), + boon (1), + perk (2), + relic (1), + skill (1) | boon, skill | added: classes/warlock.js:244, classes/warlock.js:333 |
 | `wolf` | x breakthrough (1), x perk (2), x relic (1) | no | multiplied: classes/beasttamer.js:242 |

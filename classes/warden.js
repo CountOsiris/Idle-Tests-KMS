@@ -45,7 +45,7 @@ classes.warden = {
   fervour: "Resolve",
   text: "A spear and a shield. The shield you carry decides how you fight: throwing attacks back, blocking them, or being thrown itself.",
   perLevel: { maxHp: 12, attack: 1.5 },
-  base: { maxHp: 120, attack: 5, armor: 2, reflect: 0.3, blockChance: 0.25, spearPower: 0.4, vengeance: 0.15 },
+  base: { maxHp: 120, attack: 5, armor: 2, reflect: 0.22, blockChance: 0.25, spearPower: 0.4, vengeance: 0.15 },
 
   // The Warden's special gear is the shield, which sits in the armor slot.
   // The weapon slot holds a plain spear.
@@ -116,7 +116,7 @@ classes.warden = {
         { id: "bastion", name: "Bastion", text: "health x1.5 and armor x1.4", multiply: { health: 1.5, armor: 1.4 } },
         { id: "retribution", name: "Retribution", text: "+25% attack and +25% shield damage (reflected or thrown)", bonus: { attackPercent: 0.25, shieldPower: 0.25 } },
         { id: "thornwall", name: "Thornwall", text: "Spiked Shield: reflected damage x1.1", multiply: { reflect: 1.1 } },
-        { id: "phalanxCaptain", name: "Phalanx Captain", text: "Tower Shield: spear damage x1.3", multiply: { spear: 1.3 } },
+        { id: "phalanxCaptain", name: "Phalanx Captain", text: "Tower Shield: spear damage x1.6", multiply: { spear: 1.6 } },
         { id: "razorDisc", name: "Razor Disc", text: "Bladed Shield: thrown shield damage x2", multiply: { throw: 2 } },
         { id: "bloodDebt", name: "Blood Debt", text: "Vengeance x4: four times as much of each hit you take is paid back", multiply: { vengeance: 4 } }
       ]
@@ -152,7 +152,7 @@ classes.warden = {
         { id: "unyielding", name: "Unyielding", text: "health x2, armor x1.5, and you heal 2% of your health every turn of a fight", bonus: { prayer: 0.02 }, multiply: { health: 2, armor: 1.5 } },
         { id: "vengeance", name: "Wrath", text: "+50% attack and +50% shield damage (reflected or thrown)", bonus: { attackPercent: 0.5, shieldPower: 0.5 } },
         { id: "crownOfThorns", name: "Crown of Thorns", text: "Spiked Shield: reflected damage x1.1 again", multiply: { reflect: 1.1 } },
-        { id: "lastLine", name: "Last Line", text: "Tower Shield: spear damage x1.3 again", multiply: { spear: 1.3 } },
+        { id: "lastLine", name: "Last Line", text: "Tower Shield: spear damage x2.8 again", multiply: { spear: 2.8 } },
         { id: "stormOfSteel", name: "Storm of Steel", text: "Bladed Shield: thrown shield damage x3 again", multiply: { throw: 3 } },
         { id: "reckoning", name: "Reckoning", text: "Vengeance x4 again", multiply: { vengeance: 4 } }
       ]

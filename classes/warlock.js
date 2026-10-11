@@ -35,7 +35,7 @@ classes.warlock = {
   fervour: "Souls",
   text: "Master of arcane magic, read from a tome. Fragile, but every spell ignores armor.",
   perLevel: { maxHp: 6, attack: 2.5 },
-  base: { maxHp: 60, attack: 12, critChance: 0.25, critPower: 1.5, voidRend: 0.09, echoChance: 0.4, voidHeal: 0.015 },
+  base: { maxHp: 60, attack: 12, critChance: 0.25, critPower: 1.5, voidRend: 0.13, echoChance: 0.4, voidHeal: 0.015 },
 
   gearLabel: "Tome",
 
@@ -103,7 +103,7 @@ classes.warlock = {
       perks: [
         { id: "cataclysm", name: "Cataclysm", text: "Arcane Tome: the extra damage of critical hits x1.7, and +10% critical chance", bonus: { critChance: 0.1 }, multiply: { arcaneCrit: 1.7 } },
         { id: "lichForm", name: "Lich Form", text: "health x1.5 and armor x1.4", multiply: { health: 1.5, armor: 1.4 } },
-        { id: "hungeringVoid", name: "Hungering Void", text: "Void Tome: spell damage x1.25, and every spell heals 0.5% more of your health", bonus: { voidHeal: 0.005 }, multiply: { void: 1.25 } },
+        { id: "hungeringVoid", name: "Hungering Void", text: "Void Tome: spell damage x2.4, and every spell heals 0.5% more of your health", bonus: { voidHeal: 0.005 }, multiply: { void: 2.4 } },
         { id: "runicStorm", name: "Runic Storm", text: "Rune Tome: echo damage x1.6, and +15% chance to cast twice", bonus: { echoChance: 0.15 }, multiply: { echo: 1.6 } },
         { id: "soulCollector", name: "Soul Collector", text: "attack x1.2, and every kill makes all your damage 0.5% stronger for the rest of the run (up to +100%)", bonus: { killStreak: 0.005 }, multiply: { attack: 1.2 } }
       ]
@@ -137,7 +137,7 @@ classes.warlock = {
       floor: 100,
       perks: [
         { id: "annihilation", name: "Annihilation", text: "Arcane Tome: the extra damage of critical hits x1.7 again and +10% critical chance", bonus: { critChance: 0.1 }, multiply: { arcaneCrit: 1.7 } },
-        { id: "voidLord", name: "Void Lord", text: "Void Tome: spell damage x1.15 again", multiply: { void: 1.15 } },
+        { id: "voidLord", name: "Void Lord", text: "Void Tome: spell damage x2.4 again", multiply: { void: 2.4 } },
         { id: "runeLord", name: "Rune Lord", text: "Rune Tome: echo damage x1.6 again and +20% chance to cast twice", bonus: { echoChance: 0.2 }, multiply: { echo: 1.6 } },
         { id: "deathsHarvest", name: "Death's Harvest", text: "attack x1.4, and every floor swept through at the start of a run adds 1% to all your damage (up to +100%)", bonus: { momentum: 0.01 }, multiply: { attack: 1.4 } },
         { id: "undying", name: "Undying", text: "health x2, armor x1.5, and you heal 2% of your health every turn of a fight", bonus: { prayer: 0.02 }, multiply: { health: 2, armor: 1.5 } }
@@ -162,7 +162,7 @@ classes.warlock = {
     { id: "arcaneSurge", name: "Arcane Surge", text: "Arcane Tome: 3 turns of your damage in one spell", build: "arcane", cooldown: 6,
       use: function () { abilityTurns(3); } },
     { id: "voidRift", name: "Void Rift", text: "Void Tome: 2 turns of your damage, and tears away 6% of the health the enemy has left", build: "void", cooldown: 6,
-      use: function () { abilityTurns(2); abilityPure(monsterMaxHp * 0.06, "arcane"); } },
+      use: function () { abilityTurns(2); voidTear(0.06); } },
     { id: "runeStorm", name: "Rune Storm", text: "Rune Tome: 3.5 turns of your damage in a storm of runes", build: "rune", cooldown: 7,
       use: function () { abilityTurns(3.5); } },
     { id: "darkPact", name: "Dark Pact", text: "Heal 30% of your health", cooldown: 15,
@@ -221,9 +221,20 @@ function warlockStartFight() {
   warlockEchoes = 0;
 }
 
+// Tears away a share of the health the enemy has LEFT, straight off it (less its ward).
+// Nothing multiplies it: not fame, not an ability's rank. (Void Rift once took 6% of FULL
+// health through the ability damage path, where fame's Might multiplied it: with fights
+// made longer that alone carried a level 17 Warlock to floor 395.)
+function voidTear(share) {
+  let torn = Math.round(Math.max(0, monsterHp) * share * (1 - wardNow()));
+  monsterHp = monsterHp - torn;
+  damageNotCounted = damageNotCounted + torn;
+  return torn;
+}
+
 // The share of the health the enemy has left one void spell tears away. Void power always
 // adds to it, but less and less, so it creeps toward maxVoidShare and never reaches it.
-const maxVoidShare = 0.25;
+const maxVoidShare = 0.2;
 
 // The most of your health one void spell can heal. Its skill has no top level, and a
 // fight now lasts several turns: without a ceiling the Void Caller could not be killed.

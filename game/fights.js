@@ -493,11 +493,13 @@ function fightMonster() {
   fightTurns = fightTurns + 1;
 
   // A fight that drags on gets more dangerous, so that none can last forever
-  if (fightTurns === longFightTurns) {
+  // (see fightClock in data.js)
+  let clock = encounterType === "boss" ? fightClock.bossTurns : fightClock.turns;
+  if (fightTurns === clock) {
     say("The fight drags on. The " + monsterName + " grows more dangerous every turn!");
   }
-  if (fightTurns >= longFightTurns) {
-    monsterAttack = Math.ceil(monsterAttack * 1.1);
+  if (fightTurns >= clock) {
+    monsterAttack = Math.ceil(monsterAttack * fightClock.growth);
   }
 
   // If you die during this turn, a new run has already started and this fight is over.

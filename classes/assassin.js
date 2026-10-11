@@ -131,7 +131,7 @@ classes.assassin = {
         { id: "shadowMaster", name: "Master Assassin", text: "attack x1.6, health x1.4 and +10% dodge", bonus: { dodge: 0.1 }, multiply: { attack: 1.6, health: 1.4 } },
         { id: "grimReaper", name: "Grim Reaper", text: "Ambush damage x2 again, and health x1.6", multiply: { ambush: 2, health: 1.6 } },
         { id: "blightlord", name: "Blightlord", text: "Venom Dagger: poison damage x2 again", multiply: { poison: 2 } },
-        { id: "kingslayer", name: "Kingslayer", text: "Stiletto: critical hit damage x1.6 again", multiply: { stilettoCrit: 1.6 } },
+        { id: "kingslayer", name: "Kingslayer", text: "Stiletto: critical hit damage x1.3 again", multiply: { stilettoCrit: 1.3 } },
         { id: "umbra", name: "Umbra", text: "Shadow Blade: damage of the hit after a dodge x4 again and +8% dodge", bonus: { dodge: 0.08 }, multiply: { counter: 4 } },
         { id: "untouchable", name: "Untouchable", text: "health x2 and +10% dodge", bonus: { dodge: 0.1 }, multiply: { health: 2 } }
       ]

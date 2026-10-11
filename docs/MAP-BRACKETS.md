@@ -11,7 +11,7 @@ Nothing.
 | Build | Its own words (added) | Its own multipliers | Multiplier perks on its path, floors 50 / 75 / 100 | Breakthroughs |
 |---|---|---|---|---|
 | Venom Dagger | dotPower, finisher, poisonStacks | poison | x1.4 poison / x1.3 attack / x2 poison | x1.3 poison |
-| Stiletto | bossSlayer, critChance, critPower | stilettoCrit | x1.6 stilettoCrit / x1.3 attack / x1.6 stilettoCrit | x1.5 stilettoCrit |
+| Stiletto | bossSlayer, critChance, critPower | stilettoCrit | x1.6 stilettoCrit / x1.3 attack / x1.3 stilettoCrit | x1.5 stilettoCrit |
 | Shadow Blade | counter, dodge, headStart | counter | x3 counter / x1.3 attack / x4 counter | x1.5 counter |
 
 ## barbarian
@@ -52,7 +52,7 @@ Nothing.
 | Build | Its own words (added) | Its own multipliers | Multiplier perks on its path, floors 50 / 75 / 100 | Breakthroughs |
 |---|---|---|---|---|
 | Spiked Shield | brace, reflect, shieldPower | reflect | x1.1 reflect / x1.3 attack / x1.1 reflect | x1.2 reflect |
-| Tower Shield | armorLimit, blockChance, spearPower | spear | x1.3 spear / x1.3 attack / x1.3 spear | x1.4 spear |
+| Tower Shield | armorLimit, blockChance, spearPower | spear | x1.6 spear / x1.3 attack / x2.8 spear | x1.4 spear |
 | Bladed Shield | finisher, shieldPower, throwPower | throw | x2 throw / x1.3 attack / x3 throw | x1.5 throw |
 
 ## warlock
@@ -60,14 +60,14 @@ Nothing.
 | Build | Its own words (added) | Its own multipliers | Multiplier perks on its path, floors 50 / 75 / 100 | Breakthroughs |
 |---|---|---|---|---|
 | Arcane Tome | critChance, critPower, exploit | arcaneCrit | x1.7 arcaneCrit / x1.3 attack / x1.7 arcaneCrit | x1.5 arcaneCrit |
-| Void Tome | leech, voidHeal, voidRend | void | x1.25 void / x1.3 attack / x1.15 void | x1.4 void |
+| Void Tome | leech, voidHeal, voidRend | void | x2.4 void / x1.3 attack / x2.4 void | x1.4 void |
 | Rune Tome | echoChance, echoPower, quickHands | echo | x1.6 echo / x1.3 attack / x1.6 echo | x1.5 echo |
 
 ## zealot
 
 | Build | Its own words (added) | Its own multipliers | Multiplier perks on its path, floors 50 / 75 / 100 | Breakthroughs |
 |---|---|---|---|---|
-| Holy Mace | bossSlayer, judgement, smite | mace | x1.3 mace / x1.3 attack / x1.25 mace | x1.5 mace |
+| Holy Mace | bossSlayer, judgement, smite | mace | x1.1 mace / x1.3 attack / x1.1 mace | x1.2 mace |
 | Mace and Shield | blockChance, brace, counter | shieldCounter | x2 shieldCounter / x1.3 attack / x2.6 shieldCounter | x1.5 shieldCounter |
 | Holy Tome | devotion, sacredFlame, secondWind | sacred | x2.5 sacred / x1.3 attack / x3.5 sacred | x1.5 sacred |
 
