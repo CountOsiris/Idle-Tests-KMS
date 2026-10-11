@@ -13,6 +13,14 @@
 
 const gameUpdates = [
   {
+    version: "20261011g",
+    title: "Double speed you can see",
+    changes: [
+      "Double speed while watching now plays every fight twice as fast on screen. Before, it doubled the climb but looked the same.",
+      "\"x2 speed\" shows by the floor number while it is on."
+    ]
+  },
+  {
     version: "20261011f",
     title: "Smoother monsters",
     changes: [

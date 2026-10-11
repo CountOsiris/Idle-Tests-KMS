@@ -796,25 +796,33 @@ try {
     resetAbilitiesForRun();
     recentDamage = 0;
   }
-  let stepsTaken = 0;
-  let realStep = step;
-  step = function () { stepsTaken = stepsTaken + 1; };
+  // Double speed: the clock itself ticks twice a second, and every tick is a turn that is shown
   let wasFast = watchFast;
-  let animating = animationsOn;
-  animationsOn = false;
-  watchFast = true;
+  showTab("tower");
+  setWatchFast(true);
+  clearInterval(timer);
+  let fastLength = turnLength();
+  let chipShown = document.body.classList.contains("fast") && document.getElementById("speed-chip").offsetHeight > 0;
+  let shownTurns = 0;
+  let realAnimatedStep = animatedStep;
+  animatedStep = function () { shownTurns = shownTurns + 1; };
+  lastTick = Date.now() - fastLength;
+  tick();
+  let fastShown = shownTurns;
+  setWatchFast(false);
+  clearInterval(timer);
+  shownTurns = 0;
   lastTick = Date.now() - 1000;
   tick();
-  let fastSteps = stepsTaken;
-  stepsTaken = 0;
-  watchFast = false;
-  lastTick = Date.now() - 1000;
-  tick();
-  step = realStep;
+  animatedStep = realAnimatedStep;
+  let slowLength = turnLength();
+  check("double speed: a turn takes " + fastLength + " thousandths of a second with it on and " + slowLength + " with it off, each tick shows one turn, and \"x2 speed\" is on the page" + (document.hidden ? " (the test page is hidden, so it stays at normal speed)" : ""),
+    slowLength === 1000 && fastShown === 1 && shownTurns === 1 && !document.body.classList.contains("fast")
+    && (document.hidden ? fastLength === 1000 : (fastLength === 1000 / watchSpeedFast && chipShown)));
   watchFast = wasFast;
-  animationsOn = animating;
-  check("double speed: " + fastSteps + " steps a second with it on" + (document.hidden ? " (the test page is hidden, so it stays at 1)" : "") + ", " + stepsTaken + " with it off",
-    stepsTaken === 1 && fastSteps === (document.hidden ? 1 : watchSpeedFast));
+  saveSettings();
+  showSettings();
+  document.body.classList.remove("fast");
   startEncounter();
 
   // 3i2. The Void Tome's tear is a share of the enemy's health that nothing makes bigger

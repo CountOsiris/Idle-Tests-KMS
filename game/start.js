@@ -59,20 +59,34 @@ function playTimeAway(seconds) {
 
 // Runs once a second. If more than a second has passed (the game was closed,
 // or the browser slowed a hidden tab down), it catches up on what was missed.
+// DOUBLE SPEED WHILE WATCHING (Settings). The game's clock then ticks twice a second,
+// and every tick is one turn that is shown: the fighters really do trade blows twice as
+// fast. (At first the second turn of each second was played out of sight, so the climb
+// was twice as fast but the screen looked exactly the same, and players took the
+// setting for broken.) It only counts while the tab is on screen: a tab in the
+// background, and time away, run at one turn a second.
+
+// Is the game running fast right now?
+function runningFast() {
+  return watchFast && !document.hidden;
+}
+
+// How many thousandths of a second one turn takes right now
+function turnLength() {
+  return runningFast() ? 1000 / watchSpeedFast : 1000;
+}
+
 function tick() {
   let now = Date.now();
-  let seconds = Math.max(1, Math.round((now - lastTick) / 1000));
+  let elapsed = now - lastTick;
+  let seconds = Math.max(1, Math.round(elapsed / 1000));
   lastTick = now;
   announceWeek();
 
   if (seconds >= awayReportAfter) {
     playTimeAway(seconds);
   } else {
-    // Double speed while watching (Settings): only while the tab is really on screen
-    let steps = seconds;
-    if (watchFast && !document.hidden) {
-      steps = seconds * watchSpeedFast;
-    }
+    let steps = Math.max(1, Math.round(elapsed / turnLength()));
     for (let i = 0; i < steps; i++) {
       // Only the last step is animated when several are played at once
       if (i === steps - 1) {
@@ -85,6 +99,14 @@ function tick() {
 
   updateScreen();
   saveGame();
+}
+
+// Starts the game's clock, or starts it again at another pace. Runs when the game
+// opens, when the double speed setting changes, and when the tab is hidden or shown.
+function startClock() {
+  clearInterval(timer);
+  timer = setInterval(tick, turnLength());
+  document.body.classList.toggle("fast", runningFast());
 }
 
 // ----- New versions -----
@@ -154,4 +176,6 @@ if (fameWasRefunded) {
   say("Ascension has changed: fame and its upgrades are now shared by all your classes. All your fame has been given back to spend again (Ascension).");
 }
 tick();
-let timer = setInterval(tick, 1000);
+let timer = null;
+startClock();
+document.addEventListener("visibilitychange", startClock);

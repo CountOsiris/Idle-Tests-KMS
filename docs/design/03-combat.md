@@ -127,6 +127,9 @@ throw its own number (shield power from the blacksmith) instead of reading armor
   run") on the Character tab. Damage is sorted by its type, with the class's damage
   over time and its abilities as their own lines (`game/summary.js`).
 - Ability and boss-mechanic icons above the health bars.
-- **Built.** "Double speed while watching" in Settings: two steps a second while the
-  tab is on screen, one at all other times. Every pacing number in these files is at
+- **Built.** "Double speed while watching" in Settings: two turns a second while the
+  tab is on screen, one at all other times. The clock itself ticks twice a second and
+  the animations play at double rate, with "x2 speed" by the floor number. (The first
+  version played the second turn of each second out of sight: twice the climb, but the
+  screen looked the same, and players reported the setting as broken.) Every pacing number in these files is at
   one step a second, so a player who watches all day climbs about twice as fast.

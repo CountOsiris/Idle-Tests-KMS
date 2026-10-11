@@ -1036,6 +1036,24 @@ body[data-tab="tower"] #tab-character {
   color: var(--faded);
 }
 
+/* "x2 speed" by the floor number: only while the game is running at double speed
+   (game/start.js puts "fast" on the body) */
+.speed-chip {
+  display: none;
+  color: var(--ember);
+  font-size: 11px;
+  letter-spacing: 1px;
+}
+
+body.fast .speed-chip {
+  display: block;
+}
+
+/* The health bars' pale trail keeps up at double speed */
+body.fast .trail {
+  transition: width 0.35s 0.15s;
+}
+
 /* The week's modifier, under the tower's note */
 .week-note {
   color: var(--gold-bright);

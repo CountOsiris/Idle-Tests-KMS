@@ -293,6 +293,7 @@ function setWatchFast(on) {
   watchFast = on;
   saveSettings();
   showSettings();
+  startClock();
 }
 
 function setAnimations(on) {
@@ -532,5 +533,13 @@ function animatedStep() {
 
   if (newRoom) {
     animate("monster-mover", "appear");
+  }
+
+  // At double speed a turn is half as long, so every movement plays twice as fast
+  // (they are timed for one turn a second: see "Animations" in style.css)
+  if (runningFast() && document.getAnimations !== undefined) {
+    for (let animation of document.getAnimations()) {
+      animation.playbackRate = watchSpeedFast;
+    }
   }
 }

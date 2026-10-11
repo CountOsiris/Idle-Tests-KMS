@@ -421,8 +421,9 @@ const abilityRankPower = 0.1;
 
 // ----- Watching -----
 // While the game's tab is open and on screen, the player can let it run at this many
-// steps a second instead of one (Settings). Time away is always played at one a second,
-// and so is every pacing number in this file.
+// turns a second instead of one (Settings). The game's clock really ticks that fast, so
+// the fight is seen to speed up. Time away is always played at one a second, and so is
+// every pacing number in this file.
 const watchSpeedFast = 2;
 
 // ----- Boss mechanics -----
