@@ -70,7 +70,7 @@ classes.beasttamer = {
   skills: [
     { id: "command", name: "Power", text: "+3% attack", bonus: { attackPercent: 0.03 }, cost: 1 },
     { id: "hardiness", name: "Toughness", text: "+3% health", bonus: { healthPercent: 0.03 }, cost: 1 },
-    { id: "bond", name: "Bond", text: "Bond: +1% companion damage for every 10% of your health that is missing", bonus: { bond: 0.01 }, cost: 1 },
+    { id: "bond", name: "Bond", text: "Bond: +3.5% companion damage for every 10% of your health that is missing", bonus: { bond: 0.035 }, cost: 1 },
     { id: "wolfMastery", name: "Wolf Mastery", text: "Wolf Pack: bites deal +1.5% of your attack more, and each bite in a turn lands +1% harder than the one before", bonus: { bitePower: 0.015, packTactics: 0.01 }, cost: 1 },
     { id: "bearMastery", name: "Bear Mastery", text: "Bear: the maul deals +6% of your attack more and +1% stun chance", bonus: { maulPower: 0.06, stunChance: 0.01 }, cost: 1 },
     { id: "hawkMastery", name: "Hawk Mastery", text: "Hawk: +1.5% critical dive chance and +5% critical damage", bonus: { critChance: 0.015, critPower: 0.05 }, cost: 1 }

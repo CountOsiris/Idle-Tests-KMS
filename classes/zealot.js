@@ -60,7 +60,7 @@ classes.zealot = {
     { id: "radiance", name: "Mace Mastery", text: "Holy Mace: hits add +2.5% more of their damage as holy damage, and Judgement (every third hit) deals +5% more", bonus: { smite: 0.025, judgement: 0.05 }, cost: 1 },
     { id: "shieldMastery", name: "Shield Mastery", text: "Mace and Shield: +1.5% block chance, and the strike back after a block hits for +4% of your attack more", bonus: { blockChance: 0.015, counter: 0.04 }, cost: 1 },
     { id: "holyLight", name: "Tome Mastery", text: "Holy Tome: healing you do not need burns the enemy for +10% more", bonus: { sacredFlame: 0.1 }, cost: 1 },
-    { id: "holyWar", name: "Crusade", text: "Crusade: +1.5% damage for every turn a fight lasts", bonus: { crusade: 0.015 }, cost: 1 }
+    { id: "holyWar", name: "Crusade", text: "Crusade: +4% damage for every turn a fight lasts", bonus: { crusade: 0.04 }, cost: 1 }
   ],
 
   milestones: [
@@ -132,10 +132,10 @@ classes.zealot = {
     {
       floor: 100,
       perks: [
-        { id: "handOfGod", name: "Hand of God", text: "Holy Mace: holy damage and Judgement damage x2 again, and +20% attack", bonus: { attackPercent: 0.2 }, multiply: { mace: 2 } },
+        { id: "handOfGod", name: "Hand of God", text: "Holy Mace: holy damage and Judgement damage x2 again, +20% attack and health x1.4", bonus: { attackPercent: 0.2 }, multiply: { mace: 2, health: 1.4 } },
         { id: "martyr", name: "Martyr", text: "health x2, and Devotion: +2% of your health healed every turn", bonus: { devotion: 0.02 }, multiply: { health: 2 } },
         { id: "aegisOfHeaven", name: "Aegis of Heaven", text: "Mace and Shield: strike back damage x2 again, +10% block chance, attack x2 and health x2", bonus: { blockChance: 0.1 }, multiply: { shieldCounter: 2, attack: 2, health: 2 } },
-        { id: "voiceOfGod", name: "Voice of God", text: "Holy Tome: the burn from healing you do not need x2.5 again. Devotion: +2% of your health healed every turn", bonus: { devotion: 0.02 }, multiply: { sacred: 2.5 } },
+        { id: "voiceOfGod", name: "Voice of God", text: "Holy Tome: the burn from healing you do not need x2.5 again, and health x1.5. Devotion: +2% of your health healed every turn", bonus: { devotion: 0.02 }, multiply: { sacred: 2.5, health: 1.5 } },
         { id: "lastCrusade", name: "Last Crusade", text: "Crusade x3 again", multiply: { crusade: 3 } }
       ]
     }

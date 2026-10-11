@@ -50,12 +50,21 @@ function towerGrowth(onFloor) {
   return growth;
 }
 
+// How many times stronger than floor 1 a monster's ATTACK is on a floor. The same as its
+// health up to attackEaseFloor, and slower past it (see data.js for why).
+function attackGrowth(onFloor) {
+  if (onFloor <= attackEaseFloor) {
+    return towerGrowth(onFloor);
+  }
+  let formula = Math.pow((1 + monsterGrowth * (onFloor - 1)) / (1 + monsterGrowth * (attackEaseFloor - 1)), monsterCurve);
+  return towerGrowth(attackEaseFloor) * formula * Math.pow(deepAttackGrowth, onFloor - attackEaseFloor);
+}
+
 // An ordinary monster of the floor being climbed: the health and attack of one whose
 // own numbers are all 1, in this tower (stronger away from home). For the page, which
 // uses it to say how the class stands against the floor.
 function ordinaryMonster() {
-  let growth = towerGrowth(floor);
-  let ordinary = { hp: monsterHealth * growth, attack: monsterDamage * growth };
+  let ordinary = { hp: monsterHealth * towerGrowth(floor), attack: monsterDamage * attackGrowth(floor) };
 
   if (isAway()) {
     ordinary.hp = ordinary.hp * (1 + awayTowerHealth);
@@ -88,7 +97,7 @@ function spawnMonster(isBoss) {
   monsterText = type.text;
   let growth = towerGrowth(floor);
   monsterMaxHp = Math.round(monsterHealth * growth * type.hp);
-  monsterAttack = Math.round(monsterDamage * growth * type.attack);
+  monsterAttack = Math.round(monsterDamage * attackGrowth(floor) * type.attack);
   monsterArmor = Math.min(maxArmorShare, armorPerPoint * type.armor);
 
   // Ward works like armor. A monster can have its own, or it uses its tower's.

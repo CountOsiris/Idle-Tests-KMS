@@ -150,10 +150,10 @@ classes.elementalist = {
       perks: [
         { id: "masterOfElements", name: "Master of Elements", text: "attack x1.5", multiply: { attack: 1.5 } },
         { id: "avatarOfTides", name: "Avatar of Tides", text: "health x2 and +6 armor", bonus: { armor: 6 }, multiply: { health: 2 } },
-        { id: "phoenixFlame", name: "Phoenix Flame", text: "Fire: burning damage x2.3 again", multiply: { burn: 2.3 } },
-        { id: "iceAge", name: "Ice Age", text: "Ice: critical hit damage x1.6 again", multiply: { iceCrit: 1.6 } },
+        { id: "phoenixFlame", name: "Phoenix Flame", text: "Fire: burning damage x2.3 again, and health x1.5", multiply: { burn: 2.3, health: 1.5 } },
+        { id: "iceAge", name: "Ice Age", text: "Ice: critical hit damage x1.9 again", multiply: { iceCrit: 1.9 } },
         { id: "thunderGod", name: "Thunder God", text: "Lightning: bolt damage x1.8 again", multiply: { bolt: 1.8 } },
-        { id: "earthquake", name: "Earthquake", text: "Earth: boulder damage x1.3 again", multiply: { boulder: 1.3 } }
+        { id: "earthquake", name: "Earthquake", text: "Earth: boulder damage x1.7 again", multiply: { boulder: 1.7 } }
       ]
     }
   ],

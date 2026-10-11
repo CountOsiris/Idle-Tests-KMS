@@ -143,3 +143,44 @@ Fastest: Arcane Tome (15.3), Longbow (16.6), Stiletto (17.2).
   teaches every class "Brace: 10% of damage taken is reflected". Each tower teaches
   one technique per depth tier. See [Towers and challenges](05-towers-and-challenges.md).
 - **Abilities** per class, as in [Combat](03-combat.md).
+
+## Why shield builds stalled, and the fix (11 October 2026)
+
+Measured with the bot's `probe` option: an ordinary monster's hit against the hero's
+whole health was 5 to 7 hits to die on floor 10, one hit by floor 40, a tenth of a hit
+by floor 100 and a hundredth by floor 200, for every class. Monster attack grew exactly
+as fast as monster health, and monster health is set against player damage, which has
+far more multipliers than player health has. So from floor 40 the only way to climb was
+to kill on the first turn. Tripling health from floor 75 moved almost no build; tripling
+damage moved all of them. Shields, blocking, healing, armor and Toughness did nothing,
+and the builds made of them stopped 100 floors short.
+
+**Built.** Past floor 35 a monster's attack follows the floor formula and 1.6% a floor
+(`attackEaseFloor`, `deepAttackGrowth` in data.js); the walls and the steeper
+percentages are for health alone. A hit now stays near the size it has on floor 35:
+between half and twice the hero's health, all the way to floor 200.
+
+| | Before | After |
+|---|---|---|
+| Deepest floor in 100 hours, weakest to strongest build | 165 to 287 | 254 to 306 |
+| Hours to floor 100 | 16 to 32 | 9 to 16 |
+| Hours to floor 35 (the first wall) | 4 to 7 | 3.6 to 6.9, unchanged by this |
+| Floors gained from 2.5 times the health, floor 75 on | about 0 for most builds | 25 to 50 for most; none for the archers and the Stiletto, who are never hit |
+
+Two things were tried and dropped. Counting the spiked shield's reflection on the
+monster's "strength" (its attack before the easing) made reflection grow with the tower
+for free: floor 442. It is counted on the real attack. And the sweep rule (fights won
+in two turns) was tested as the cause and was not: five turns changed nothing.
+
+The floor 100 perks of twelve builds were then lifted, and the Spiked Shield's
+reflection perks cut (x2.5 to x1.25), since it now survives without them.
+
+**Skills, tested one at a time** (`skillcheck`: the climb to floor 50 with a skill left
+unbought, ten climbs each). Hunter's Mark, Bond, Crusade and Plating made a build 5% to
+12% FASTER when skipped; Rage and Ambush Training did nothing. All were strengthened and
+now measure between -5% and +8%, the noise of the test. Still open: the Warden's Power
+(about 11% faster without it, because shields do not use attack much) and Plating behind
+a Tower Shield (9%).
+
+Faster to floor 100 than before is accepted: the strongest builds lost about a quarter
+of that time, and the weak ones caught up with them.

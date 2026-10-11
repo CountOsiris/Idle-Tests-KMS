@@ -34,6 +34,24 @@ floors 100 to 500 and "best":
 bash tools/run.sh sim "h=100,every,ascend,killers"
 ```
 
+Two more options say WHY a build is where it is. `probe` prints, floor by floor, the
+hero's attack against a monster's health and its health against a monster's attack, and
+what the deepest run's damage was made of. `mul=health:3,after=75` is a what-if: play
+as if a floor 75 perk tripled health (any stat `multiplier` knows), to see what a build
+is short of before changing its perks.
+
+```
+bash tools/run.sh sim "h=100,every,ascend,probe,c=warden"
+bash tools/run.sh sim "h=100,every,ascend,c=warden,mul=damage:3+health:3,after=75"
+```
+
+And `skillcheck` tests every skill: how much slower a build climbs with that skill left
+unbought. A skill that makes the climb FASTER when skipped is a trap.
+
+```
+bash tools/run.sh sim "h=20,ascend,skillcheck,to=50,runs=10,c=ranger"
+```
+
 A build whose "best" is several times the others', or that has no killers at all, has
 found something that grows without limit. Run it after changing a class, a boss or a tower. When a
 build looks wrong, ask the bot what is killing it before changing its numbers:

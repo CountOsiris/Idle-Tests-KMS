@@ -63,7 +63,7 @@ classes.warlock = {
     { id: "arcaneMastery", name: "Arcane Mastery", text: "Arcane Tome: +1% critical chance and +2.5% critical damage", bonus: { critChance: 0.01, critPower: 0.025 }, cost: 1 },
     { id: "voidMastery", name: "Void Mastery", text: "Void Tome: +0.6 void power, and every spell heals 0.1% more of your health", bonus: { voidRend: 0.006, voidHeal: 0.001 }, cost: 1 },
     { id: "runeMastery", name: "Rune Mastery", text: "Rune Tome: +1% chance to cast twice, and the second cast (the echo) deals +2.5% damage", bonus: { echoChance: 0.01, echoPower: 0.025 }, cost: 1 },
-    { id: "harvester", name: "Soul Mastery", text: "Souls: +1.25% damage for every 100 souls, and +2.5% chance of an extra soul from a kill", bonus: { soulPower: 0.0125, soulChance: 0.025 }, cost: 1 }
+    { id: "harvester", name: "Soul Mastery", text: "Souls: +2% damage for every 100 souls, and +4% chance of an extra soul from a kill", bonus: { soulPower: 0.02, soulChance: 0.04 }, cost: 1 }
   ],
 
   milestones: [

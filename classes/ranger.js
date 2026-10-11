@@ -71,7 +71,7 @@ classes.ranger = {
   skills: [
     { id: "marksmanship", name: "Power", text: "+3% attack", bonus: { attackPercent: 0.03 }, cost: 1 },
     { id: "endurance", name: "Toughness", text: "+3% health", bonus: { healthPercent: 0.03 }, cost: 1 },
-    { id: "huntersMark", name: "Hunter's Mark", text: "Hunter's Mark: +4% damage against bosses and rare monsters", bonus: { huntersMark: 0.04 }, cost: 1 },
+    { id: "huntersMark", name: "Hunter's Mark", text: "Hunter's Mark: +2% attack, and +12% damage against bosses and rare monsters", bonus: { attackPercent: 0.02, huntersMark: 0.12 }, cost: 1 },
     { id: "longbowMastery", name: "Longbow Mastery", text: "Longbow: arrows deal +4% damage and critical shots deal +3% more", bonus: { heavyShot: 0.04, aimPower: 0.03 }, cost: 1 },
     { id: "shortbowMastery", name: "Shortbow Mastery", text: "Shortbow: +3% chance of an extra arrow, arrows deal +1% damage, and +2% armor piercing", bonus: { quickShot: 0.03, arrowPower: 0.01, bodkin: 0.02 }, cost: 1 },
     { id: "crossbowMastery", name: "Crossbow Mastery", text: "Crossbow: bolts deal +3% damage and gain +10% penetration", bonus: { boltPower: 0.03, boltPierce: 0.1 }, cost: 1 }
@@ -146,8 +146,8 @@ classes.ranger = {
         { id: "stormOfArrows", name: "First Blood", text: "+60% attack, and Range: the enemy misses 1 more turn at the start of a fight", bonus: { attackPercent: 0.6, firstStrike: 1 } },
         { id: "wardenOfTheWood", name: "Keeper of the Wood", text: "health x2 and +6 armor", bonus: { armor: 6 }, multiply: { health: 2 } },
         { id: "oneShot", name: "One Shot", text: "Longbow: critical shot damage x1.6 again", multiply: { longbowCrit: 1.6 } },
-        { id: "arrowStorm", name: "Arrow Storm", text: "Shortbow: arrow damage x1.6 again", multiply: { shortbow: 1.6 } },
-        { id: "siegeMaster", name: "Siege Master", text: "Crossbow: bolt damage x1.6 again", multiply: { crossbow: 1.6 } }
+        { id: "arrowStorm", name: "Arrow Storm", text: "Shortbow: arrow damage x2.8 again", multiply: { shortbow: 2.8 } },
+        { id: "siegeMaster", name: "Siege Master", text: "Crossbow: bolt damage x2.8 again", multiply: { crossbow: 2.8 } }
       ]
     }
   ],

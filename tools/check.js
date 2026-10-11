@@ -982,6 +982,22 @@ try {
   bestiary = bestiaryWas;
   startEncounter();
 
+  // 3i9. Past attackEaseFloor a monster's attack grows more slowly than its health
+  let sameEarly = attackGrowth(attackEaseFloor) === towerGrowth(attackEaseFloor) && attackGrowth(10) === towerGrowth(10);
+  let easedAt100 = towerGrowth(100) / attackGrowth(100);
+  let easedAt200 = towerGrowth(200) / attackGrowth(200);
+  let floorBeforeEase = floor;
+  floor = 100;
+  room = 1;
+  encounterType = "monster";
+  spawnMonster(false);
+  let hitToHealth = monsterAttack / monsterMaxHp * (monsterIsRare ? 2 / 1.25 : 1);
+  let ordinaryHit = monsterDamage / monsterHealth;
+  check("monster attack: grows with health up to floor " + attackEaseFloor + ", then more slowly (a hit is " + easedAt100.toFixed(1) + " times smaller against health on floor 100, " + easedAt200.toFixed(0) + " times on floor 200)",
+    sameEarly && easedAt100 > 5 && easedAt200 > easedAt100 && attackGrowth(101) > attackGrowth(100) && hitToHealth < ordinaryHit / 3);
+  floor = floorBeforeEase;
+  startEncounter();
+
   // 3j. Starting floors, and the Tactician's list
   cruiseFloor = 40;
   runStartFloor = 1;

@@ -13,6 +13,16 @@
 
 const gameUpdates = [
   {
+    version: "20261011h",
+    title: "Shields, healing and health matter again",
+    changes: [
+      "Past floor 35 a monster's attack now grows more slowly than its health. Before, one hit was more than any hero's whole health from about floor 40, so only killing on the first turn worked.",
+      "Every weapon now reaches about the same depth: in 100 hours of testing, floors 254 to 306, where it was 165 to 287.",
+      "Stronger class skills: Hunter's Mark, Bond, Crusade, Rage, Ambush Training, Soul Mastery and Plating. The Warden's Power also feeds its shield.",
+      "Floor 100 perks retuned for the builds that were behind. The Spiked Shield's reflection perks are smaller, as it no longer needs them."
+    ]
+  },
+  {
     version: "20261011g",
     title: "Double speed you can see",
     changes: [

@@ -26,6 +26,8 @@ const monsterDamage = 3.8;
 //   floor 10 in about 20 minutes, 15 in 45 minutes (the first ascension), 20 in 1.5 hours,
 //   30 in 2.5 to 4 hours, then the first wall at 35, reached after 4 to 7 hours and
 //   broken at 9 to 13. Floors 40 and 45 follow quickly, and the next wall is at 50.
+//   Floor 50 in 5 to 10 hours and floor 100 in 9 to 16 (measured 11 October 2026, after
+//   monster attack was eased past floor 35: see attackEaseFloor below).
 // The first hours must never stall: if you change the numbers, keep it that way.
 const monsterGrowth = 0.22;
 const monsterCurve = 2;
@@ -67,6 +69,28 @@ const towerWalls = [
   { floor: 75, strength: 2 },
   { floor: 100, strength: 2 }
 ];
+
+// A MONSTER'S ATTACK GROWS MORE SLOWLY THAN ITS HEALTH, past attackEaseFloor.
+// Up to that floor both grow together, exactly as above. Past it, health goes on as
+// above (the steeper percentages, the walls), but attack only follows the floor formula
+// and deepAttackGrowth (1.016 means 1.6% more a floor): the walls and the steeper
+// percentages are for health alone.
+//
+// WHY. A class's damage is multiplied by many things (its build's perks, critical hits,
+// its mechanic), and monster health is set against that. A class's HEALTH has far
+// fewer, so when attack grew as fast as health an ordinary monster's hit outgrew every
+// hero: measured in October 2026, it was the hero's whole health by floor 40, ten times
+// it by floor 100 and a hundred times by floor 200. From there the only way to climb
+// was to kill on the first turn, before the monster moved. Shields, blocking, healing,
+// armor and the Toughness skill all did nothing, and the builds made of them (the
+// Warden's, the Zealot's shield) stopped 100 floors short of the archers.
+// With these numbers a hit stays at roughly the size it has on floor 35: a hero who
+// keeps up their health can take a few, and one who does not still falls in one.
+//
+// tools/README.md ("the deep game") says how to measure it: the bot's "probe" option
+// prints a hero's health against a monster's attack floor by floor.
+const attackEaseFloor = 35;
+const deepAttackGrowth = 1.016;
 
 // ARMOR AND WARD are a SHARE of every hit, not a fixed number, so they matter just as
 // much against a hit of 50,000 as against a hit of 50.

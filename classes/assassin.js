@@ -52,7 +52,7 @@ classes.assassin = {
   skills: [
     { id: "lethality", name: "Power", text: "+3% attack", bonus: { attackPercent: 0.03 }, cost: 1 },
     { id: "conditioning", name: "Toughness", text: "+3% health", bonus: { healthPercent: 0.03 }, cost: 1 },
-    { id: "ambushTraining", name: "Ambush Training", text: "Ambush: the first hit of a fight deals +5% more. Vanish: +0.5% chance each turn to hide and ambush again", bonus: { ambush: 0.05, vanishChance: 0.005 }, cost: 1 },
+    { id: "ambushTraining", name: "Ambush Training", text: "Ambush: the first hit of a fight deals +8% more. Vanish: +0.5% chance each turn to hide and ambush again", bonus: { ambush: 0.08, vanishChance: 0.005 }, cost: 1 },
     { id: "venomMastery", name: "Venom Mastery", text: "Venom Dagger: +1 poison stack and poison deals +8% damage", bonus: { poisonStacks: 1, dotPower: 0.08 }, cost: 1 },
     { id: "stilettoMastery", name: "Stiletto Mastery", text: "Stiletto: +1% critical chance and +2.5% critical damage", bonus: { critChance: 0.01, critPower: 0.025 }, cost: 1 },
     { id: "riposte", name: "Shadow Mastery", text: "Shadow Blade: +0.5% dodge and +8% damage after a dodge", bonus: { dodge: 0.005, counter: 0.08 }, cost: 1 }
@@ -129,9 +129,9 @@ classes.assassin = {
       perks: [
         { id: "shadowMaster", name: "Master Assassin", text: "+40% attack and +10% dodge", bonus: { attackPercent: 0.4, dodge: 0.1 } },
         { id: "grimReaper", name: "Grim Reaper", text: "Ambush damage x2 again, and health x1.6", multiply: { ambush: 2, health: 1.6 } },
-        { id: "blightlord", name: "Blightlord", text: "Venom Dagger: poison damage x3 again, and attack x1.6", multiply: { poison: 3, attack: 1.6 } },
+        { id: "blightlord", name: "Blightlord", text: "Venom Dagger: poison damage x3 again, attack x1.8 and health x2.2", multiply: { poison: 3, attack: 1.8, health: 2.2 } },
         { id: "kingslayer", name: "Kingslayer", text: "Stiletto: critical hit damage x1.6 again", multiply: { stilettoCrit: 1.6 } },
-        { id: "umbra", name: "Umbra", text: "Shadow Blade: damage of the hit after a dodge x3 again, +8% dodge, attack x1.5 and health x1.5", bonus: { dodge: 0.08 }, multiply: { counter: 3, attack: 1.5, health: 1.5 } },
+        { id: "umbra", name: "Umbra", text: "Shadow Blade: damage of the hit after a dodge x3 again, +8% dodge, attack x1.8 and health x3", bonus: { dodge: 0.08 }, multiply: { counter: 3, attack: 1.8, health: 3 } },
         { id: "untouchable", name: "Untouchable", text: "health x2 and +10% dodge", bonus: { dodge: 0.1 }, multiply: { health: 2 } }
       ]
     }

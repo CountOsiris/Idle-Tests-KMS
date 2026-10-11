@@ -70,7 +70,7 @@ classes.barbarian = {
   skills: [
     { id: "might", name: "Power", text: "+3% attack", bonus: { attackPercent: 0.03 }, cost: 1 },
     { id: "toughness", name: "Toughness", text: "+3% health", bonus: { healthPercent: 0.03 }, cost: 1 },
-    { id: "rage", name: "Rage", text: "Rage: +5% damage while below half health, and +1% lifesteal", bonus: { rage: 0.05, lifesteal: 0.01 }, cost: 1 },
+    { id: "rage", name: "Rage", text: "Rage: +8% damage while below half health, and +1% lifesteal", bonus: { rage: 0.08, lifesteal: 0.01 }, cost: 1 },
     { id: "axeMastery", name: "Axe Mastery", text: "Axe: +1 bleed stack and bleeding deals +8% damage", bonus: { bleedStacks: 1, dotPower: 0.08 }, cost: 1 },
     { id: "swordMastery", name: "Sword Mastery", text: "Sword: +1% critical and parry chance, and +2% critical damage", bonus: { critChance: 0.01, parryChance: 0.01, critPower: 0.02 }, cost: 1 },
     { id: "clubMastery", name: "Club Mastery", text: "Club: hits deal +2% damage and +1.5% stun chance", bonus: { clubPower: 0.02, stunChance: 0.015 }, cost: 1 }
@@ -150,7 +150,7 @@ classes.barbarian = {
         { id: "titan", name: "Titan", text: "health x2 and +10 armor", bonus: { armor: 10 }, multiply: { health: 2 } },
         { id: "reaver", name: "Reaver", text: "Axe: bleeding damage x2.5 again, attack x2 and health x1.5", multiply: { bleed: 2.5, attack: 2, health: 1.5 } },
         { id: "swordSaint", name: "Sword Saint", text: "Sword: critical hit damage x1.5 again", multiply: { swordCrit: 1.5 } },
-        { id: "worldbreaker", name: "Worldbreaker", text: "Club: damage of every hit x1.6 again", multiply: { club: 1.6 } }
+        { id: "worldbreaker", name: "Worldbreaker", text: "Club: damage of every hit x1.6 again, and health x2", multiply: { club: 1.6, health: 2 } }
       ]
     }
   ],

@@ -70,9 +70,9 @@ classes.warden = {
   // Spiked Mastery). It still grows through boons, relics and milestone perks.
   // (A skill with the id "grudge" was here until October 2026. Don't reuse that id.)
   skills: [
-    { id: "spearThrust", name: "Power", text: "+3% attack", bonus: { attackPercent: 0.03 }, cost: 1 },
+    { id: "spearThrust", name: "Power", text: "+3% attack and +1% shield damage (reflected or thrown)", bonus: { attackPercent: 0.03, shieldPower: 0.01 }, cost: 1 },
     { id: "vigor", name: "Toughness", text: "+3% health", bonus: { healthPercent: 0.03 }, cost: 1 },
-    { id: "plating", name: "Plating", text: "+2 armor", bonus: { armor: 2 }, cost: 1 },
+    { id: "plating", name: "Plating", text: "+2 armor, +3% armor, and your armor can block 0.3% more of every hit", bonus: { armor: 2, armorPercent: 0.03, armorLimit: 0.003 }, cost: 1 },
     { id: "thornmail", name: "Spiked Mastery", text: "Spiked Shield: reflects +5% more of the enemy's attack", bonus: { reflect: 0.05 }, cost: 1 },
     { id: "phalanx", name: "Tower Mastery", text: "Tower Shield: +1% block chance and +2.5% spear damage", bonus: { blockChance: 0.01, spearPower: 0.025 }, cost: 1 },
     { id: "discus", name: "Bladed Mastery", text: "Bladed Shield: each throw hits for +0.3 times your armor", bonus: { throwPower: 0.3 }, cost: 1 }
@@ -114,7 +114,7 @@ classes.warden = {
       perks: [
         { id: "bastion", name: "Bastion", text: "health x1.5 and +6 armor", bonus: { armor: 6 }, multiply: { health: 1.5 } },
         { id: "retribution", name: "Retribution", text: "+25% attack and +25% shield damage (reflected or thrown)", bonus: { attackPercent: 0.25, shieldPower: 0.25 } },
-        { id: "thornwall", name: "Thornwall", text: "Spiked Shield: reflected damage x2.5, and health x1.3", multiply: { reflect: 2.5, health: 1.3 } },
+        { id: "thornwall", name: "Thornwall", text: "Spiked Shield: reflected damage x1.25, and health x1.2", multiply: { reflect: 1.25, health: 1.2 } },
         { id: "phalanxCaptain", name: "Phalanx Captain", text: "Tower Shield: spear damage x1.6", multiply: { spear: 1.6 } },
         { id: "razorDisc", name: "Razor Disc", text: "Bladed Shield: thrown shield damage x2", multiply: { throw: 2 } },
         { id: "bloodDebt", name: "Blood Debt", text: "Vengeance x4: four times as much of each hit you take is paid back", multiply: { vengeance: 4 } }
@@ -150,9 +150,9 @@ classes.warden = {
       perks: [
         { id: "unyielding", name: "Unyielding", text: "health x2 and +12 armor", bonus: { armor: 12 }, multiply: { health: 2 } },
         { id: "vengeance", name: "Wrath", text: "+50% attack and +50% shield damage (reflected or thrown)", bonus: { attackPercent: 0.5, shieldPower: 0.5 } },
-        { id: "crownOfThorns", name: "Crown of Thorns", text: "Spiked Shield: reflected damage x2.5 again, and health x1.5", multiply: { reflect: 2.5, health: 1.5 } },
-        { id: "lastLine", name: "Last Line", text: "Tower Shield: spear damage x1.6 again", multiply: { spear: 1.6 } },
-        { id: "stormOfSteel", name: "Storm of Steel", text: "Bladed Shield: thrown shield damage x2 again", multiply: { throw: 2 } },
+        { id: "crownOfThorns", name: "Crown of Thorns", text: "Spiked Shield: reflected damage x1.25 again, and health x1.3", multiply: { reflect: 1.25, health: 1.3 } },
+        { id: "lastLine", name: "Last Line", text: "Tower Shield: spear damage x2.5 again", multiply: { spear: 2.5 } },
+        { id: "stormOfSteel", name: "Storm of Steel", text: "Bladed Shield: thrown shield damage x2 again, attack x1.6 and health x1.6", multiply: { throw: 2, attack: 1.6, health: 1.6 } },
         { id: "reckoning", name: "Reckoning", text: "Vengeance x4 again", multiply: { vengeance: 4 } }
       ]
     }
@@ -161,7 +161,7 @@ classes.warden = {
   // Extra choices at every BREAKTHROUGH (floor 150 and beyond), beside the ones every
   // class has. One for each build: it multiplies that build's own damage again.
   breakthroughs: [
-    { id: "sharperSpikes", name: "Sharper Spikes", text: "Spiked Shield: reflected damage x1.5", multiply: { reflect: 1.5 } },
+    { id: "sharperSpikes", name: "Sharper Spikes", text: "Spiked Shield: reflected damage x1.2", multiply: { reflect: 1.2 } },
     { id: "longerSpear", name: "Longer Spear", text: "Tower Shield: spear damage x1.4", multiply: { spear: 1.4 } },
     { id: "heavierDisc", name: "Heavier Disc", text: "Bladed Shield: thrown shield damage x1.5", multiply: { throw: 1.5 } },
     { id: "oldGrudges", name: "Old Grudges", text: "Vengeance x1.5", multiply: { vengeance: 1.5 } }
