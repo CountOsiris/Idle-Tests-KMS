@@ -262,3 +262,15 @@ anything. Most milestones came out level. The traps it found:
 - **Health for the Ranger** (Hardy, Trial of Endurance, Forest Guardian): 40 to 50
   floors behind, because an archer is seldom hit. Not solved: it is the class, not
   the perks.
+
+## 300 hours (11 October 2026)
+
+Every build played for 300 hours, once: deepest floors 319 to 428. Nothing runs away.
+The builds that use health as well as damage (Spiked 428, Tower 405, Shield 391, Club
+388) pull ahead of the glass cannons (the tomes, Shortbow, Ice: 319 to 325) as fame
+piles up, because Might and Vitality both feed them.
+
+Tried and dropped: a faster deep attack growth (1.02 for 1.016) left the spread as wide
+(295 to 378) and sent the Spiked Shield to 445, since its reflection grows with the
+monster's attack; and taking fame's Might out of reflection with a fixed x6 to make up
+for it put floor 35 at 1.7 hours. The slow drift of the Spiked Shield stays open.
