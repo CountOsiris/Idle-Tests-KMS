@@ -458,6 +458,12 @@ const breakthroughPerks = [
 //   - After ascending, and on entering another tower, runs start on floor 1 again.
 const cruiseTurns = 2;
 
+// A run never starts on the floor the last one ended on, however fast it got there: it
+// starts at least this many floors below it. The floor that killed you is not one you
+// cleared, and starting on it looked like coming back to life on the spot (and often
+// meant falling again at once). Two floors down, the run arrives with some kills behind it.
+const floorsBackAfterFalling = 2;
+
 // ----- Stuck at a wall -----
 // A class that has fallen this many times in a row without reaching a new best floor is
 // "stuck". The game then points it at another class's tower: the one its damage does

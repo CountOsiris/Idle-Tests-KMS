@@ -300,8 +300,9 @@ function die() {
     cruiseFloor = 1;
   }
 
-  // A run never starts above the floor the last one ended on, whatever the sweep says
-  floor = Math.max(1, Math.min(startFloor(), fellOn));
+  // A run never starts on the floor the last one ended on, or above it, whatever the
+  // sweep says (see floorsBackAfterFalling in data.js)
+  floor = Math.max(1, Math.min(startFloor(), fellOn - floorsBackAfterFalling));
   runStartFloor = floor;
   cruiseFloor = floor;
   cruising = true;

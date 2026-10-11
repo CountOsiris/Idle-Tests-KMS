@@ -13,6 +13,13 @@
 
 const gameUpdates = [
   {
+    version: "20261011t",
+    title: "Falling sends you back a little",
+    changes: [
+      "A new run now starts at least 2 floors below the floor you fell on. A fast hero used to start again on the very floor that killed it, which looked like coming back to life on the spot."
+    ]
+  },
+  {
     version: "20261011s",
     title: "The Second Climber, and your heroes above the fight",
     changes: [

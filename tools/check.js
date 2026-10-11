@@ -91,14 +91,15 @@ try {
   showClassButtons();
   check("locked classes (" + lockedClasses.length + ") stay locked until opened" + (lockProblems.length === 0 ? "" : ": " + lockProblems.join("; ")), lockedClasses.length === 1 && lockProblems.length === 0);
 
-  // A probe on every death for the rest of the check: no run may start above the floor
-  // the last one ended on (players reported that it sometimes did)
+  // A probe on every death for the rest of the check: every run must start at least
+  // floorsBackAfterFalling floors below the one the last run ended on (players reported
+  // runs that started higher, and later that falling looked like coming back on the spot)
   let higherStarts = [];
   let realDie = die;
   die = function () {
     let fellOn = floor;
     realDie();
-    if (floor > fellOn) {
+    if (floor > Math.max(1, fellOn - floorsBackAfterFalling)) {
       higherStarts.push(playerClass + " fell on " + fellOn + " and started on " + floor);
     }
   };
@@ -1287,7 +1288,7 @@ try {
   runStartFloor = 1;
   floor = 12;
   realDie();
-  check("a run never starts above the floor the last one ended on (fell on 12 with a sweep of 40 remembered: started on " + floor + "; " + (deaths - 0) + " deaths watched, " + higherStarts.length + " started higher)", floor <= 12 && higherStarts.length === 0);
+  check("a run starts at least " + floorsBackAfterFalling + " floors below where the last one fell (fell on 12 with a sweep of 40 remembered: started on " + floor + "; " + (deaths - 0) + " deaths watched, " + higherStarts.length + " started too high)", floor === 12 - floorsBackAfterFalling && higherStarts.length === 0);
 
   townLevels.tactician = 1;
   let otherBoon = currentClass().upgrades.find(function (u) { return u.build !== undefined && !fitsBuild(u); });
