@@ -115,7 +115,7 @@ classes.barbarian = {
       perks: [
         { id: "juggernaut", name: "Juggernaut", text: "health x1.5 and armor x1.4", multiply: { health: 1.5, armor: 1.4 } },
         { id: "berserker", name: "Ravager", text: "attack x1.5, health x1.2 and +10% lifesteal", bonus: { lifesteal: 0.1 }, multiply: { attack: 1.5, health: 1.2 } },
-        { id: "flayer", name: "Flayer", text: "Axe: bleeding damage x1.4, attack x1.5 and health x1.3", multiply: { bleed: 1.4, attack: 1.5, health: 1.3 } },
+        { id: "flayer", name: "Flayer", text: "Axe: bleeding damage x1.4", multiply: { bleed: 1.4 } },
         { id: "swordmaster", name: "Swordmaster", text: "Sword: critical hit damage x1.8", multiply: { swordCrit: 1.8 } },
         { id: "bonebreaker", name: "Bonebreaker", text: "Club: damage of every hit x1.9", multiply: { club: 1.9 } },
         { id: "frenzy", name: "Frenzy", text: "Rage x3: three times its bonus damage. And attack x1.3 and health x1.3", multiply: { rage: 3, attack: 1.3, health: 1.3 } }
@@ -139,9 +139,9 @@ classes.barbarian = {
       perks: [
         { id: "warlord", name: "Warlord", text: "attack x1.3, all your damage +75% against bosses, and your abilities are ready a fifth sooner", bonus: { bossSlayer: 0.75, quickHands: 0.2 }, multiply: { attack: 1.3 } },
         { id: "unbreakable", name: "Unbreakable", text: "health x1.6, and once a run a blow that would kill you leaves you alive on half your health", bonus: { secondWind: 1 }, multiply: { health: 1.6 } },
-        { id: "bloodletter", name: "Bloodletter", text: "Axe: attack x1.4, +4 bleed stacks and bleeding deals +50% damage", bonus: { bleedStacks: 4, dotPower: 0.5 }, multiply: { attack: 1.4 } },
-        { id: "blademaster", name: "Blademaster", text: "Sword: attack x1.4, +10% critical and parry chance, +60% critical damage", bonus: { critChance: 0.1, parryChance: 0.1, critPower: 0.6 }, multiply: { attack: 1.4 } },
-        { id: "earthshaker", name: "Earthshaker", text: "Club: attack x1.4, +10% stun chance and hits deal +40% damage", bonus: { stunChance: 0.1, clubPower: 0.4 }, multiply: { attack: 1.4 } },
+        { id: "bloodletter", name: "Bloodletter", text: "Axe: attack x1.3, +4 bleed stacks and bleeding deals +50% damage", bonus: { bleedStacks: 4, dotPower: 0.5 }, multiply: { attack: 1.3 } },
+        { id: "blademaster", name: "Blademaster", text: "Sword: attack x1.3, +10% critical and parry chance, +60% critical damage", bonus: { critChance: 0.1, parryChance: 0.1, critPower: 0.6 }, multiply: { attack: 1.3 } },
+        { id: "earthshaker", name: "Earthshaker", text: "Club: attack x1.3, +10% stun chance and hits deal +40% damage", bonus: { stunChance: 0.1, clubPower: 0.4 }, multiply: { attack: 1.3 } },
         { id: "bloodrage", name: "Unchained", text: "attack x1.4, and Rage: +100% damage while below half health", bonus: { rage: 1 }, multiply: { attack: 1.4 } },
         { id: "scarredHide", name: "Scarred Hide", text: "You take 25% less damage", multiply: { damageTaken: 0.75 } }
       ]
@@ -151,9 +151,9 @@ classes.barbarian = {
       perks: [
         { id: "bloodGod", name: "Blood God", text: "+15% lifesteal, Rage x3 again, attack x1.3 and health x1.6", bonus: { lifesteal: 0.15 }, multiply: { rage: 3, attack: 1.3, health: 1.6 } },
         { id: "titan", name: "Titan", text: "health x2.2, armor x1.5 and attack x1.3", multiply: { health: 2.2, armor: 1.5, attack: 1.3 } },
-        { id: "reaver", name: "Reaver", text: "Axe: bleeding damage x1.4 again, attack x1.5 and health x1.5", multiply: { bleed: 1.4, attack: 1.5, health: 1.5 } },
+        { id: "reaver", name: "Reaver", text: "Axe: bleeding damage x2 again", multiply: { bleed: 2 } },
         { id: "swordSaint", name: "Sword Saint", text: "Sword: critical hit damage x1.5 again", multiply: { swordCrit: 1.5 } },
-        { id: "worldbreaker", name: "Worldbreaker", text: "Club: damage of every hit x2 again, and health x2", multiply: { club: 2, health: 2 } }
+        { id: "worldbreaker", name: "Worldbreaker", text: "Club: damage of every hit x2.6 again", multiply: { club: 2.6 } }
       ]
     }
   ],

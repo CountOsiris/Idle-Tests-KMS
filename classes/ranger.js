@@ -135,9 +135,9 @@ classes.ranger = {
       perks: [
         { id: "deadeye", name: "Deadeye", text: "attack x1.3, all your damage +75% against bosses, and your abilities are ready a fifth sooner", bonus: { bossSlayer: 0.75, quickHands: 0.2 }, multiply: { attack: 1.3 } },
         { id: "wildHeart", name: "Wild Heart", text: "health x1.6, and once a run a blow that would kill you leaves you alive on half your health", bonus: { secondWind: 1 }, multiply: { health: 1.6 } },
-        { id: "eagleOfTheWood", name: "Eagle of the Wood", text: "Longbow: +30% attack, +10% critical shot chance and critical shots deal +100% damage", bonus: { attackPercent: 0.3, aimChance: 0.1, aimPower: 1 } },
-        { id: "hailOfArrows", name: "Hail of Arrows", text: "Shortbow: +30% attack and +60% chance of an extra arrow", bonus: { attackPercent: 0.3, quickShot: 0.6 } },
-        { id: "ironbreaker", name: "Ironbreaker", text: "Crossbow: +30% attack, bolts deal +45% damage and gain +150% penetration", bonus: { attackPercent: 0.3, boltPower: 0.45, boltPierce: 1.5 } },
+        { id: "eagleOfTheWood", name: "Eagle of the Wood", text: "Longbow: attack x1.3, +10% critical shot chance and critical shots deal +100% damage", bonus: { aimChance: 0.1, aimPower: 1 }, multiply: { attack: 1.3 } },
+        { id: "hailOfArrows", name: "Hail of Arrows", text: "Shortbow: attack x1.3 and +60% chance of an extra arrow", bonus: { quickShot: 0.6 }, multiply: { attack: 1.3 } },
+        { id: "ironbreaker", name: "Ironbreaker", text: "Crossbow: attack x1.3, bolts deal +45% damage and gain +150% penetration", bonus: { boltPower: 0.45, boltPierce: 1.5 }, multiply: { attack: 1.3 } },
         { id: "outOfReach", name: "Out of Reach", text: "You take 25% less damage, and have a 10% chance to avoid any attack", bonus: { sidestep: 0.1 }, multiply: { damageTaken: 0.75 } }
       ]
     },

@@ -113,7 +113,7 @@ classes.beasttamer = {
       perks: [
         { id: "beastlord", name: "Beastlord", text: "attack x1.2, and every kill makes all your damage 0.5% stronger for the rest of the run (up to +100%)", bonus: { killStreak: 0.005 }, multiply: { attack: 1.2 } },
         { id: "oldGrowth", name: "Old Growth", text: "health x1.5 and armor x1.4", multiply: { health: 1.5, armor: 1.4 } },
-        { id: "direPack", name: "Dire Pack", text: "Wolf Pack: bite damage x1.6", multiply: { wolf: 1.6 } },
+        { id: "direPack", name: "Dire Pack", text: "Wolf Pack: bite damage x1.35", multiply: { wolf: 1.35 } },
         { id: "caveBear", name: "Cave Bear", text: "Bear: maul damage x1.8", multiply: { bear: 1.8 } },
         { id: "stormHawk", name: "Storm Hawk", text: "Hawk: critical dive damage x1.8", multiply: { hawkCrit: 1.8 } },
         { id: "oneSoul", name: "One Soul", text: "Bond x3: three times the companion damage for your missing health", multiply: { bond: 3 } }
@@ -136,9 +136,9 @@ classes.beasttamer = {
       perks: [
         { id: "apex", name: "Apex", text: "attack x1.3, all your damage +75% against bosses, and your abilities are ready a fifth sooner", bonus: { bossSlayer: 0.75, quickHands: 0.2 }, multiply: { attack: 1.3 } },
         { id: "ironwoodHeart", name: "Ironwood Heart", text: "health x1.6, and once a run a blow that would kill you leaves you alive on half your health", bonus: { secondWind: 1 }, multiply: { health: 1.6 } },
-        { id: "wolfKing", name: "Wolf King", text: "Wolf Pack: +25% attack, one more wolf, and bites deal +10% of your attack more", bonus: { attackPercent: 0.25, packSize: 1, bitePower: 0.1 } },
-        { id: "ursine", name: "Ursine", text: "Bear: +25% attack, the maul deals +80% of your attack more, and +8% stun chance", bonus: { attackPercent: 0.25, maulPower: 0.8, stunChance: 0.08 } },
-        { id: "skyHunter", name: "Sky Hunter", text: "Hawk: +25% attack, +10% critical dive chance and +80% critical damage", bonus: { attackPercent: 0.25, critChance: 0.1, critPower: 0.8 } },
+        { id: "wolfKing", name: "Wolf King", text: "Wolf Pack: attack x1.3, one more wolf, and bites deal +10% of your attack more", bonus: { packSize: 1, bitePower: 0.1 }, multiply: { attack: 1.3 } },
+        { id: "ursine", name: "Ursine", text: "Bear: attack x1.3, the maul deals +80% of your attack more, and +8% stun chance", bonus: { maulPower: 0.8, stunChance: 0.08 }, multiply: { attack: 1.3 } },
+        { id: "skyHunter", name: "Sky Hunter", text: "Hawk: attack x1.3, +10% critical dive chance and +80% critical damage", bonus: { critChance: 0.1, critPower: 0.8 }, multiply: { attack: 1.3 } },
         { id: "kindred", name: "Kindred", text: "+25% attack, and Bond: +10% companion damage for every 10% of your health that is missing", bonus: { attackPercent: 0.25, bond: 0.1 } },
         { id: "wary", name: "Wary", text: "You take 25% less damage", multiply: { damageTaken: 0.75 } }
       ]
@@ -146,7 +146,7 @@ classes.beasttamer = {
     {
       floor: 100,
       perks: [
-        { id: "fenrir", name: "Fenrir's Brood", text: "Wolf Pack: bite damage x1.4 again", multiply: { wolf: 1.4 } },
+        { id: "fenrir", name: "Fenrir's Brood", text: "Wolf Pack: bite damage x1.15 again", multiply: { wolf: 1.15 } },
         { id: "ursaMajor", name: "Ursa Major", text: "Bear: maul damage x1.8 again", multiply: { bear: 1.8 } },
         { id: "roc", name: "Roc", text: "Hawk: critical dive damage x1.8 again", multiply: { hawkCrit: 1.8 } },
         { id: "oneHeart", name: "One Heart", text: "Bond x3 again", multiply: { bond: 3 } },
@@ -204,7 +204,7 @@ classes.beasttamer = {
 const tamerStaffHit = 0.2;    // the tamer's own staff hits for this share of your attack
 const wolfCount = 3;          // a pack starts with this many wolves
 const wolfBite = 0.25;        // each bites for this share of your attack
-const bearMaul = 1.25;        // a maul hits for this many times your attack
+const bearMaul = 1.1;         // a maul hits for this many times your attack
 const hawkDive = 0.92;        // a dive hits for this many times your attack...
 const hawkCrit = 2.5;         // ...and a critical dive multiplies that by this
 const alphaBonus = 1.3;       // the Alpha keystone's one wolf bites for the whole pack, times this

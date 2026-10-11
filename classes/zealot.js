@@ -58,7 +58,7 @@ classes.zealot = {
   skills: [
     { id: "zeal", name: "Power", text: "+3% attack", bonus: { attackPercent: 0.03 }, cost: 1 },
     { id: "faithful", name: "Toughness", text: "+3% health", bonus: { healthPercent: 0.03 }, cost: 1 },
-    { id: "radiance", name: "Mace Mastery", text: "Holy Mace: hits add +2.5% more of their damage as holy damage, and Judgement (every third hit) deals +5% more", bonus: { smite: 0.025, judgement: 0.05 }, cost: 1 },
+    { id: "radiance", name: "Mace Mastery", text: "Holy Mace: hits add +1.5% more of their damage as holy damage, and Judgement (every third hit) deals +3% more", bonus: { smite: 0.015, judgement: 0.03 }, cost: 1 },
     { id: "shieldMastery", name: "Shield Mastery", text: "Mace and Shield: +1.5% block chance, and the strike back after a block hits for +4% of your attack more", bonus: { blockChance: 0.015, counter: 0.04 }, cost: 1 },
     { id: "holyLight", name: "Tome Mastery", text: "Holy Tome: healing you do not need burns the enemy for +10% more", bonus: { sacredFlame: 0.1 }, cost: 1 },
     { id: "holyWar", name: "Crusade", text: "Crusade: +1.5% damage for every turn a fight lasts", bonus: { crusade: 0.015 }, cost: 1 }
@@ -100,7 +100,7 @@ classes.zealot = {
       perks: [
         { id: "avenger", name: "Hammer of Light", text: "Holy Mace: holy damage and Judgement damage x1.3, and +15% attack", bonus: { attackPercent: 0.15 }, multiply: { mace: 1.3 } },
         { id: "saint", name: "Saint", text: "health x1.6, attack x1.3, and Devotion: +2% of your health healed every turn", bonus: { devotion: 0.02 }, multiply: { health: 1.6, attack: 1.3 } },
-        { id: "bulwarkOfFaith", name: "Bulwark of Faith", text: "Mace and Shield: strike back damage x2, +10% block chance, attack x1.5 and health x1.3", bonus: { blockChance: 0.1 }, multiply: { shieldCounter: 2, attack: 1.5, health: 1.3 } },
+        { id: "bulwarkOfFaith", name: "Bulwark of Faith", text: "Mace and Shield: strike back damage x2, +10% block chance", bonus: { blockChance: 0.1 }, multiply: { shieldCounter: 2 } },
         { id: "hierophant", name: "Hierophant", text: "Holy Tome: the burn from healing you do not need x2.5. Devotion: +1% of your health healed every turn", bonus: { devotion: 0.01 }, multiply: { sacred: 2.5 } },
         { id: "zealous", name: "Zealous", text: "Crusade x3: three times the damage for every turn a fight lasts", multiply: { crusade: 3 } }
       ]
@@ -123,9 +123,9 @@ classes.zealot = {
       perks: [
         { id: "holyWrath", name: "Holy Wrath", text: "attack x1.3, all your damage +75% against bosses, and your abilities are ready a fifth sooner", bonus: { bossSlayer: 0.75, quickHands: 0.2 }, multiply: { attack: 1.3 } },
         { id: "divineHealth", name: "Divine Health", text: "health x1.6, and once a run a blow that would kill you leaves you alive on half your health", bonus: { secondWind: 1 }, multiply: { health: 1.6 } },
-        { id: "inquisitor", name: "Inquisitor", text: "Holy Mace: +25% attack, hits add +40% more of their damage as holy damage, and Judgement (every third hit) deals +80% more", bonus: { attackPercent: 0.25, smite: 0.4, judgement: 0.8 } },
-        { id: "shieldOfTheFaithful", name: "Shield of the Faithful", text: "Mace and Shield: +25% attack, +10% block chance, and the strike back after a block hits for +70% of your attack more", bonus: { attackPercent: 0.25, blockChance: 0.1, counter: 0.7 } },
-        { id: "lightbringer", name: "Lightbringer", text: "Holy Tome: +25% attack, and healing you do not need burns the enemy for +120% more", bonus: { attackPercent: 0.25, sacredFlame: 1.2 } },
+        { id: "inquisitor", name: "Inquisitor", text: "Holy Mace: attack x1.3, hits add +40% more of their damage as holy damage, and Judgement (every third hit) deals +80% more", bonus: { smite: 0.4, judgement: 0.8 }, multiply: { attack: 1.3 } },
+        { id: "shieldOfTheFaithful", name: "Shield of the Faithful", text: "Mace and Shield: attack x1.3, +10% block chance, and the strike back after a block hits for +70% of your attack more", bonus: { blockChance: 0.1, counter: 0.7 }, multiply: { attack: 1.3 } },
+        { id: "lightbringer", name: "Lightbringer", text: "Holy Tome: attack x1.3, and healing you do not need burns the enemy for +120% more", bonus: { sacredFlame: 1.2 }, multiply: { attack: 1.3 } },
         { id: "crusadeEternal", name: "Eternal Crusade", text: "+25% attack, and Crusade: +6% damage for every turn a fight lasts", bonus: { attackPercent: 0.25, crusade: 0.06 } },
         { id: "divineShield", name: "Divine Favor", text: "You take 25% less damage", multiply: { damageTaken: 0.75 } }
       ]
@@ -133,10 +133,10 @@ classes.zealot = {
     {
       floor: 100,
       perks: [
-        { id: "handOfGod", name: "Hand of God", text: "Holy Mace: holy damage and Judgement damage x1.25 again, and health x1.5", multiply: { mace: 1.25, health: 1.5 } },
+        { id: "handOfGod", name: "Hand of God", text: "Holy Mace: holy damage and Judgement damage x1.25 again", multiply: { mace: 1.25 } },
         { id: "martyr", name: "Martyr", text: "health x2.2, attack x1.5, and Devotion: +2% of your health healed every turn", bonus: { devotion: 0.02 }, multiply: { health: 2.2, attack: 1.5 } },
-        { id: "aegisOfHeaven", name: "Aegis of Heaven", text: "Mace and Shield: strike back damage x2 again, +10% block chance, attack x1.3 and health x1.3", bonus: { blockChance: 0.1 }, multiply: { shieldCounter: 2, attack: 1.3, health: 1.3 } },
-        { id: "voiceOfGod", name: "Voice of God", text: "Holy Tome: the burn from healing you do not need x2.5 again, and health x1.5. Devotion: +2% of your health healed every turn", bonus: { devotion: 0.02 }, multiply: { sacred: 2.5, health: 1.5 } },
+        { id: "aegisOfHeaven", name: "Aegis of Heaven", text: "Mace and Shield: strike back damage x2.6 again, +10% block chance", bonus: { blockChance: 0.1 }, multiply: { shieldCounter: 2.6 } },
+        { id: "voiceOfGod", name: "Voice of God", text: "Holy Tome: the burn from healing you do not need x3.5 again. Devotion: +2% of your health healed every turn", bonus: { devotion: 0.02 }, multiply: { sacred: 3.5 } },
         { id: "lastCrusade", name: "Last Crusade", text: "Crusade x3 again", multiply: { crusade: 3 } }
       ]
     }

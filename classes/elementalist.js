@@ -139,10 +139,10 @@ classes.elementalist = {
       perks: [
         { id: "elementalFury", name: "Elemental Fury", text: "attack x1.3, all your damage +75% against bosses, and your abilities are ready a fifth sooner", bonus: { bossSlayer: 0.75, quickHands: 0.2 }, multiply: { attack: 1.3 } },
         { id: "elementalShield", name: "Elemental Shield", text: "health x1.6, and once a run a blow that would kill you leaves you alive on half your health", bonus: { secondWind: 1 }, multiply: { health: 1.6 } },
-        { id: "firestorm", name: "Firestorm", text: "Fire: +25% attack, +4 burn stacks and burning deals +50% damage", bonus: { attackPercent: 0.25, burnStacks: 4, dotPower: 0.5 } },
-        { id: "absoluteZero", name: "Absolute Zero", text: "Ice: +25% attack, +10% critical chance and +80% critical damage", bonus: { attackPercent: 0.25, critChance: 0.1, critPower: 0.8 } },
-        { id: "chainLightning", name: "Chain Lightning", text: "Lightning: +25% attack, +60% chance of an extra bolt and bolts deal +8% damage", bonus: { attackPercent: 0.25, extraBolts: 0.6, boltPower: 0.08 } },
-        { id: "avalanche", name: "Avalanche", text: "Earth: +25% attack, boulders deal +50% damage and +8% stun chance", bonus: { attackPercent: 0.25, crush: 0.5, stunChance: 0.08 } },
+        { id: "firestorm", name: "Firestorm", text: "Fire: attack x1.3, +4 burn stacks and burning deals +50% damage", bonus: { burnStacks: 4, dotPower: 0.5 }, multiply: { attack: 1.3 } },
+        { id: "absoluteZero", name: "Absolute Zero", text: "Ice: attack x1.3, +10% critical chance and +80% critical damage", bonus: { critChance: 0.1, critPower: 0.8 }, multiply: { attack: 1.3 } },
+        { id: "chainLightning", name: "Chain Lightning", text: "Lightning: attack x1.3, +60% chance of an extra bolt and bolts deal +8% damage", bonus: { extraBolts: 0.6, boltPower: 0.08 }, multiply: { attack: 1.3 } },
+        { id: "avalanche", name: "Avalanche", text: "Earth: attack x1.3, boulders deal +50% damage and +8% stun chance", bonus: { crush: 0.5, stunChance: 0.08 }, multiply: { attack: 1.3 } },
         { id: "stoneSkinSpell", name: "Stoneskin", text: "You take 25% less damage", multiply: { damageTaken: 0.75 } }
       ]
     },
@@ -151,7 +151,7 @@ classes.elementalist = {
       perks: [
         { id: "masterOfElements", name: "Master of Elements", text: "attack x1.3, and a hit on a weakness deals 40% more", bonus: { exploit: 0.4 }, multiply: { attack: 1.3 } },
         { id: "avatarOfTides", name: "Avatar of Tides", text: "health x2, armor x1.5, and you heal 2% of your health every turn of a fight", bonus: { prayer: 0.02 }, multiply: { health: 2, armor: 1.5 } },
-        { id: "phoenixFlame", name: "Phoenix Flame", text: "Fire: burning damage x1.5 again, and health x1.5", multiply: { burn: 1.5, health: 1.5 } },
+        { id: "phoenixFlame", name: "Phoenix Flame", text: "Fire: burning damage x1.5 again", multiply: { burn: 1.5 } },
         { id: "iceAge", name: "Ice Age", text: "Ice: critical hit damage x1.9 again", multiply: { iceCrit: 1.9 } },
         { id: "thunderGod", name: "Thunder God", text: "Lightning: bolt damage x1.8 again", multiply: { bolt: 1.8 } },
         { id: "earthquake", name: "Earthquake", text: "Earth: boulder damage x2.6 again", multiply: { boulder: 2.6 } }

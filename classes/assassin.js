@@ -95,9 +95,9 @@ classes.assassin = {
       perks: [
         { id: "nightStalker", name: "Nightwalker", text: "attack x1.4 and +10% dodge", bonus: { dodge: 0.1 }, multiply: { attack: 1.4 } },
         { id: "deathMark", name: "Death Mark", text: "Ambush damage x2, and health x1.4", multiply: { ambush: 2, health: 1.4 } },
-        { id: "plaguebringer", name: "Plaguebringer", text: "Venom Dagger: poison damage x1.4, and attack x1.3", multiply: { poison: 1.4, attack: 1.3 } },
+        { id: "plaguebringer", name: "Plaguebringer", text: "Venom Dagger: poison damage x1.4", multiply: { poison: 1.4 } },
         { id: "throatCutter", name: "Throat Cutter", text: "Stiletto: critical hit damage x1.6", multiply: { stilettoCrit: 1.6 } },
-        { id: "shade", name: "Shade", text: "Shadow Blade: damage of the hit after a dodge x3, +8% dodge, attack x1.5 and health x1.3", bonus: { dodge: 0.08 }, multiply: { counter: 3, attack: 1.5, health: 1.3 } },
+        { id: "shade", name: "Shade", text: "Shadow Blade: damage of the hit after a dodge x3 and +8% dodge", bonus: { dodge: 0.08 }, multiply: { counter: 3 } },
         { id: "ironNerves", name: "Iron Nerves", text: "health x1.5 and +5% dodge", bonus: { dodge: 0.05 }, multiply: { health: 1.5 } }
       ]
     },
@@ -118,9 +118,9 @@ classes.assassin = {
       perks: [
         { id: "killer", name: "Killer", text: "attack x1.3, all your damage +75% against bosses, and your abilities are ready a fifth sooner", bonus: { bossSlayer: 0.75, quickHands: 0.2 }, multiply: { attack: 1.3 } },
         { id: "survivor", name: "Survivor", text: "health x1.6, and once a run a blow that would kill you leaves you alive on half your health", bonus: { secondWind: 1 }, multiply: { health: 1.6 } },
-        { id: "venomancer", name: "Venomancer", text: "Venom Dagger: +25% attack, +4 poison stacks and poison deals +50% damage", bonus: { attackPercent: 0.25, poisonStacks: 4, dotPower: 0.5 } },
-        { id: "heartseeker", name: "Heartseeker", text: "Stiletto: +25% attack, +10% critical chance and +70% critical damage", bonus: { attackPercent: 0.25, critChance: 0.1, critPower: 0.7 } },
-        { id: "nightblade", name: "Nightblade", text: "Shadow Blade: +25% attack, +8% dodge and +100% damage after a dodge", bonus: { attackPercent: 0.25, dodge: 0.08, counter: 1 } },
+        { id: "venomancer", name: "Venomancer", text: "Venom Dagger: attack x1.3, +4 poison stacks and poison deals +50% damage", bonus: { poisonStacks: 4, dotPower: 0.5 }, multiply: { attack: 1.3 } },
+        { id: "heartseeker", name: "Heartseeker", text: "Stiletto: attack x1.3, +10% critical chance and +70% critical damage", bonus: { critChance: 0.1, critPower: 0.7 }, multiply: { attack: 1.3 } },
+        { id: "nightblade", name: "Nightblade", text: "Shadow Blade: attack x1.3, +8% dodge and +100% damage after a dodge", bonus: { dodge: 0.08, counter: 1 }, multiply: { attack: 1.3 } },
         { id: "ghost", name: "Ghost", text: "+25% attack. Ambush: the first hit of a fight deals +80% more. Vanish: +5% chance each turn to hide and ambush again", bonus: { attackPercent: 0.25, ambush: 0.8, vanishChance: 0.05 } },
         { id: "slippery", name: "Slippery", text: "You take 25% less damage", multiply: { damageTaken: 0.75 } }
       ]
@@ -130,9 +130,9 @@ classes.assassin = {
       perks: [
         { id: "shadowMaster", name: "Master Assassin", text: "attack x1.6, health x1.4 and +10% dodge", bonus: { dodge: 0.1 }, multiply: { attack: 1.6, health: 1.4 } },
         { id: "grimReaper", name: "Grim Reaper", text: "Ambush damage x2 again, and health x1.6", multiply: { ambush: 2, health: 1.6 } },
-        { id: "blightlord", name: "Blightlord", text: "Venom Dagger: poison damage x1.4 again, attack x1.5 and health x1.8", multiply: { poison: 1.4, attack: 1.5, health: 1.8 } },
+        { id: "blightlord", name: "Blightlord", text: "Venom Dagger: poison damage x2 again", multiply: { poison: 2 } },
         { id: "kingslayer", name: "Kingslayer", text: "Stiletto: critical hit damage x1.6 again", multiply: { stilettoCrit: 1.6 } },
-        { id: "umbra", name: "Umbra", text: "Shadow Blade: damage of the hit after a dodge x3 again, +8% dodge, attack x1.8 and health x3", bonus: { dodge: 0.08 }, multiply: { counter: 3, attack: 1.8, health: 3 } },
+        { id: "umbra", name: "Umbra", text: "Shadow Blade: damage of the hit after a dodge x4 again and +8% dodge", bonus: { dodge: 0.08 }, multiply: { counter: 4 } },
         { id: "untouchable", name: "Untouchable", text: "health x2 and +10% dodge", bonus: { dodge: 0.1 }, multiply: { health: 2 } }
       ]
     }
@@ -200,6 +200,7 @@ function assassinDamageTypes() {
 // of October 2026: the Stiletto kept measuring a quarter faster than the Assassin's
 // other two blades.)
 const stilettoCritHit = 2.75;
+const shadowDodge = 0.2;        // a shadow blade adds this much to the chance to dodge
 
 // Is the next hit the first of the fight?
 let assassinAmbushReady = false;
@@ -274,7 +275,7 @@ function assassinAmbush() {
 
 function assassinDodgeChance() {
   if (weapon === "shadow") {
-    return Math.min(maxChance, totalBonus("dodge") + 0.1);
+    return Math.min(maxChance, totalBonus("dodge") + shadowDodge);
   }
   return cappedChance("dodge");
 }
@@ -283,7 +284,7 @@ function assassinDodgeChance() {
 function assassinDamageDivider() {
   let dodge = totalBonus("dodge");
   if (weapon === "shadow") {
-    dodge = dodge + 0.1;
+    dodge = dodge + shadowDodge;
   }
   let divider = 1 + Math.max(0, dodge - maxChance);
 
@@ -325,5 +326,5 @@ function assassinGearInfo() {
   if (weapon === "stiletto") {
     return "Stiletto: " + percent(Math.min(1, totalBonus("critChance"))) + " chance of a critical hit for x" + (stilettoCritHit + totalBonus("critPower") + overflow("critChance", 1)).toFixed(1) + " damage.";
   }
-  return "Shadow Blade: +10% dodge, and your next hit after a dodge deals +" + percent(totalBonus("counter") * multiplier("counter")) + " damage.";
+  return "Shadow Blade: +" + percent(shadowDodge) + " dodge, and your next hit after a dodge deals +" + percent(totalBonus("counter") * multiplier("counter")) + " damage.";
 }

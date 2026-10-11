@@ -13,6 +13,15 @@
 
 const gameUpdates = [
   {
+    version: "20261011v",
+    title: "Every weapon's perks take the same shape",
+    changes: [
+      "At floors 50 and 100 a weapon's perk multiplies that weapon's own damage, and nothing else. At floor 75 it gives attack x1.3 and adds to the weapon's own numbers. This is now the same for all 25 weapons and elements.",
+      "The odd extra \"attack x\" and \"health x\" on some of those perks are gone. Each weapon is balanced by its own multiplier instead.",
+      "The Shadow Blade dodges more (+20%), the Bear's maul is a little lighter, Lightning bolts hit harder, and the Holy Mace's mastery gives less."
+    ]
+  },
+  {
     version: "20261011u",
     title: "Fights that last",
     changes: [
