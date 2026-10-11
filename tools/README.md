@@ -111,3 +111,14 @@ tile on that project's list of tiles with an unclear licence, and writes `art/CR
 
 When an upload changes `saveVersion`, make a save with the version that is live
 before the upload and add it here, so every future update is checked against it.
+
+## The map
+
+```
+python tools/map.py
+```
+
+Writes `docs/MAP-WORDS.md`: every bonus word, who gives it, whether any of those can be
+bought forever, and where the game reads it. It prints the words that are given but read
+nowhere (they do nothing) and the ones read but never given. Run it after changing
+content. `docs/MAP.md` explains how to read it.
