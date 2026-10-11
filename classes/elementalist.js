@@ -56,7 +56,7 @@ classes.elementalist = {
   stances: {
     fire: { name: "Fire", text: "Each spell hits for 90% of your attack and adds two burn stacks. Every stack burns for 16% of your attack each turn." },
     ice: { name: "Ice", text: "Each spell has a chance of a critical hit for triple damage." },
-    lightning: { name: "Lightning", text: "Two bolts every turn, each for 65% of your attack. Skills add a chance of more bolts." },
+    lightning: { name: "Lightning", text: "Two bolts every turn, each for 74% of your attack. Skills add a chance of more bolts." },
     earth: { name: "Earth", text: "Every second turn, starting with the first, one boulder for 190% of your attack, with a chance to stun." }
   },
 
@@ -154,7 +154,7 @@ classes.elementalist = {
         { id: "phoenixFlame", name: "Phoenix Flame", text: "Fire: burning damage x1.5 again, and health x1.5", multiply: { burn: 1.5, health: 1.5 } },
         { id: "iceAge", name: "Ice Age", text: "Ice: critical hit damage x1.9 again", multiply: { iceCrit: 1.9 } },
         { id: "thunderGod", name: "Thunder God", text: "Lightning: bolt damage x1.8 again", multiply: { bolt: 1.8 } },
-        { id: "earthquake", name: "Earthquake", text: "Earth: boulder damage x2.1 again", multiply: { boulder: 2.1 } }
+        { id: "earthquake", name: "Earthquake", text: "Earth: boulder damage x2.6 again", multiply: { boulder: 2.6 } }
       ]
     }
   ],
@@ -217,7 +217,7 @@ const fireHit = 0.9;        // a fire spell hits for this share of your attack
 const fireBurn = 0.16;      // and each burn stack burns for this share every turn
 const iceCrit = 3;          // an ice critical multiplies the hit by this
 const lightningBolts = 2;   // lightning casts this many bolts a turn
-const lightningHit = 0.65;  // each for this share of your attack
+const lightningHit = 0.74;  // each for this share of your attack
 const earthHit = 1.9;       // a boulder hits for this many times your attack
 
 // Earth: has the boulder been gathered, ready to throw this turn?

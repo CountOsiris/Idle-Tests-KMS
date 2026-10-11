@@ -148,7 +148,7 @@ classes.ranger = {
         { id: "wardenOfTheWood", name: "Keeper of the Wood", text: "health x2, armor x1.5, and you heal 2% of your health every turn of a fight", bonus: { prayer: 0.02 }, multiply: { health: 2, armor: 1.5 } },
         { id: "oneShot", name: "One Shot", text: "Longbow: critical shot damage x1.6 again", multiply: { longbowCrit: 1.6 } },
         { id: "arrowStorm", name: "Arrow Storm", text: "Shortbow: arrow damage x2.8 again", multiply: { shortbow: 2.8 } },
-        { id: "siegeMaster", name: "Siege Master", text: "Crossbow: bolt damage x2 again", multiply: { crossbow: 2 } }
+        { id: "siegeMaster", name: "Siege Master", text: "Crossbow: bolt damage x2.6 again", multiply: { crossbow: 2.6 } }
       ]
     }
   ],

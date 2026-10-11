@@ -50,21 +50,32 @@ function towerGrowth(onFloor) {
   return growth;
 }
 
-// How many times stronger than floor 1 a monster's ATTACK is on a floor. The same as its
-// health up to attackEaseFloor, and slower past it (see data.js for why).
+// How far "longFights" (data.js) counts on a floor: 0 below its first floor, 1 from its last
+function longFightShare(onFloor) {
+  return Math.max(0, Math.min(1, (onFloor - longFights.fromFloor) / (longFights.fullFloor - longFights.fromFloor)));
+}
+
+// How many times stronger than floor 1 a monster's HEALTH is on a floor
+function healthGrowth(onFloor) {
+  return towerGrowth(onFloor) * (1 + (longFights.health - 1) * longFightShare(onFloor));
+}
+
+// How many times stronger than floor 1 a monster's ATTACK is on a floor. The curve is
+// the same as its health's up to attackEaseFloor, and slower past it (see data.js for why).
 function attackGrowth(onFloor) {
-  if (onFloor <= attackEaseFloor) {
-    return towerGrowth(onFloor);
+  let curve = towerGrowth(onFloor);
+  if (onFloor > attackEaseFloor) {
+    let formula = Math.pow((1 + monsterGrowth * (onFloor - 1)) / (1 + monsterGrowth * (attackEaseFloor - 1)), monsterCurve);
+    curve = towerGrowth(attackEaseFloor) * formula * Math.pow(deepAttackGrowth, onFloor - attackEaseFloor);
   }
-  let formula = Math.pow((1 + monsterGrowth * (onFloor - 1)) / (1 + monsterGrowth * (attackEaseFloor - 1)), monsterCurve);
-  return towerGrowth(attackEaseFloor) * formula * Math.pow(deepAttackGrowth, onFloor - attackEaseFloor);
+  return curve * (1 + (longFights.attack - 1) * longFightShare(onFloor));
 }
 
 // An ordinary monster of the floor being climbed: the health and attack of one whose
 // own numbers are all 1, in this tower (stronger away from home). For the page, which
 // uses it to say how the class stands against the floor.
 function ordinaryMonster() {
-  let ordinary = { hp: monsterHealth * towerGrowth(floor), attack: monsterDamage * attackGrowth(floor) };
+  let ordinary = { hp: monsterHealth * healthGrowth(floor), attack: monsterDamage * attackGrowth(floor) };
 
   if (isAway()) {
     ordinary.hp = ordinary.hp * (1 + awayTowerHealth);
@@ -95,7 +106,7 @@ function spawnMonster(isBoss) {
   monsterName = type.name;
   monsterKind = type.name;
   monsterText = type.text;
-  let growth = towerGrowth(floor);
+  let growth = healthGrowth(floor);
   monsterMaxHp = Math.round(monsterHealth * growth * type.hp);
   monsterAttack = Math.round(monsterDamage * attackGrowth(floor) * type.attack);
   monsterArmor = Math.min(maxArmorShare, armorPerPoint * type.armor);
@@ -464,7 +475,7 @@ function monsterAttacks() {
 
   // The Brace technique: part of every attack that lands is thrown back
   if (totalBonus("brace") > 0) {
-    magicHitMonster(monsterAttack * totalBonus("brace"), "piercing");
+    magicHitMonster(monsterAttack * thrownBackStrength * totalBonus("brace"), "piercing");
   }
 
   if (playerHp <= 0 && !survivesDeath()) {

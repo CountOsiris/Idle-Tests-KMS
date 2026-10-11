@@ -90,7 +90,25 @@ const towerWalls = [
 // tools/README.md ("the deep game") says how to measure it: the bot's "probe" option
 // prints a hero's health against a monster's attack floor by floor.
 const attackEaseFloor = 35;
-const deepAttackGrowth = 1.016;
+const deepAttackGrowth = 1.013;
+
+// HOW LONG A FIGHT LASTS. Measured in October 2026, past floor 35 an ordinary fight was
+// two turns and a hero died to the second hit: both sides nearly killed in one blow.
+// Nothing that takes time could matter (bleeding, Rage, Crusade, healing, blocking), and
+// every build came down to "how much do I deal in two turns". The targets agreed with
+// the owner (docs/design/14-combat-loop-research.md), at the deepest floor a class can
+// clear: 3 to 5 turns to kill an ordinary monster, 5 to 8 of its hits to fall, a boss
+// 10 to 15 turns.
+// So from fromFloor a monster has more health and a weaker attack than the curve above
+// gives, rising evenly to "health" times and "attack" times by fullFloor and staying
+// there. The first floors are as they were: a fight there was already a fight.
+// (An object, not plain numbers, so that the balance bot can try others: see "long=".)
+const longFights = { fromFloor: 10, fullFloor: 35, health: 3, attack: 0.15 };
+
+// A blow thrown back at a monster (the Spiked Shield, vengeance, the Brace technique)
+// is a share of the monster's attack. Monsters now hit softly for their size, so a
+// thrown-back blow counts this many times: without it those builds stopped killing.
+const thrownBackStrength = 4;
 
 // ARMOR AND WARD are a SHARE of every hit, not a fixed number, so they matter just as
 // much against a hit of 50,000 as against a hit of 50.

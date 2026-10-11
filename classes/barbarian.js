@@ -153,7 +153,7 @@ classes.barbarian = {
         { id: "titan", name: "Titan", text: "health x2.2, armor x1.5 and attack x1.3", multiply: { health: 2.2, armor: 1.5, attack: 1.3 } },
         { id: "reaver", name: "Reaver", text: "Axe: bleeding damage x1.4 again, attack x1.5 and health x1.5", multiply: { bleed: 1.4, attack: 1.5, health: 1.5 } },
         { id: "swordSaint", name: "Sword Saint", text: "Sword: critical hit damage x1.5 again", multiply: { swordCrit: 1.5 } },
-        { id: "worldbreaker", name: "Worldbreaker", text: "Club: damage of every hit x1.6 again, and health x2", multiply: { club: 1.6, health: 2 } }
+        { id: "worldbreaker", name: "Worldbreaker", text: "Club: damage of every hit x2 again, and health x2", multiply: { club: 2, health: 2 } }
       ]
     }
   ],
@@ -324,7 +324,7 @@ function barbarianDamageDivider() {
 
 // Damage per turn of one bleed stack
 function barbarianDotPerStack() {
-  return Math.max(1, Math.round(playerAttack * 0.16 * multiplier("bleed")));
+  return Math.max(1, Math.round(playerAttack * 0.13 * multiplier("bleed")));
 }
 
 // The class's special line in the "You" panel

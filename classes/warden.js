@@ -153,7 +153,7 @@ classes.warden = {
         { id: "vengeance", name: "Wrath", text: "+50% attack and +50% shield damage (reflected or thrown)", bonus: { attackPercent: 0.5, shieldPower: 0.5 } },
         { id: "crownOfThorns", name: "Crown of Thorns", text: "Spiked Shield: reflected damage x1.25 again, and health x1.1", multiply: { reflect: 1.25, health: 1.1 } },
         { id: "lastLine", name: "Last Line", text: "Tower Shield: spear damage x2.5 again", multiply: { spear: 2.5 } },
-        { id: "stormOfSteel", name: "Storm of Steel", text: "Bladed Shield: thrown shield damage x2 again, attack x1.6 and health x1.6", multiply: { throw: 2, attack: 1.6, health: 1.6 } },
+        { id: "stormOfSteel", name: "Storm of Steel", text: "Bladed Shield: thrown shield damage x2 again, attack x2 and health x1.6", multiply: { throw: 2, attack: 2, health: 1.6 } },
         { id: "reckoning", name: "Reckoning", text: "Vengeance x4 again", multiply: { vengeance: 4 } }
       ]
     }
@@ -219,7 +219,7 @@ const bladedThrow = 2;       // a thrown shield hits for this many times your ar
 // Spiked: the damage thrown back each time the enemy attacks.
 // A stronger shield throws back more, and it ignores the enemy's armor.
 function reflectDamage() {
-  let reflected = monsterAttack * totalBonus("reflect") + armorPower * multiplier("armor");
+  let reflected = monsterAttack * thrownBackStrength * totalBonus("reflect") + armorPower * multiplier("armor");
   return Math.round(reflected * (1 + totalBonus("shieldPower")) * multiplier("reflect"));
 }
 
@@ -293,9 +293,9 @@ function wardenWhenAttacked() {
   // Every hit that lands is remembered, and paid back with the next thrust
   // (or at once, with the Eye for an Eye keystone)
   if (totalBonus("instantVengeance") > 0) {
-    magicHitMonster(monsterAttack * wardenVengeance(), "piercing");
+    magicHitMonster(monsterAttack * thrownBackStrength * wardenVengeance(), "piercing");
   } else {
-    wardenOwed = wardenOwed + monsterAttack * wardenVengeance();
+    wardenOwed = wardenOwed + monsterAttack * thrownBackStrength * wardenVengeance();
   }
   return false;
 }

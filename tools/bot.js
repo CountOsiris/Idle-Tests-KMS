@@ -40,6 +40,9 @@
 //              milestone with that perk forced, and say how deep each got. A perk far
 //              behind the others of its milestone is a trap; one far ahead is the only
 //              real choice. One climb each, so only trust gaps of 20 floors or more.
+//  long=H:A    try another length of fight: monsters with H times the health and A times
+//              the attack from floor 35 on (see longFights in data.js)
+//  bossx=N     and bosses with N times an ordinary monster's health
 //  killers     also say what killed it most in its last two hours, and on which floor
 //  duo         a Barbarian for 6 hours, then a new Ranger and Warden on the same account
 // =====================================================================
@@ -87,6 +90,11 @@ let realMultiplier = multiplier;
 multiplier = function (stat) {
   return realMultiplier(stat) * (whatIf[stat] === undefined || bestFloor < WHAT_IF_AFTER ? 1 : whatIf[stat]);
 };
+
+if (location.hash.match(/long=([\d.]+):([\d.]+)/)) {
+  longFights.health = Number(location.hash.match(/long=([\d.]+):([\d.]+)/)[1]);
+  longFights.attack = Number(location.hash.match(/long=([\d.]+):([\d.]+)/)[2]);
+}
 
 // A run stops early once this floor has been reached (0: play all the hours)
 let stopAtFloor = 0;

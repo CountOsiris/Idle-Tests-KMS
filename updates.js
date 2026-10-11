@@ -13,6 +13,16 @@
 
 const gameUpdates = [
   {
+    version: "20261011u",
+    title: "Fights that last",
+    changes: [
+      "From floor 10, rising to floor 35, monsters have three times the health and hit far more softly. A fight at the edge of what you can climb is now about three turns, and you can take several hits, where it was two turns and a hero fell to the second hit.",
+      "Bleeding, Rage, Crusade, blocking and healing now have time to matter.",
+      "To match: healing each turn has a ceiling (the Zealot's Devotion, the Void Tome), Crusade counts 8 turns of a fight at most, and the Void Tome tears a share of the health an enemy has LEFT.",
+      "A blow thrown back by a Spiked Shield, vengeance or Brace counts four times, since monsters hit softly now. Several floor 50 and 100 perks were retuned to keep every weapon level."
+    ]
+  },
+  {
     version: "20261011t",
     title: "Falling sends you back a little",
     changes: [

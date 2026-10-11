@@ -61,7 +61,7 @@ classes.zealot = {
     { id: "radiance", name: "Mace Mastery", text: "Holy Mace: hits add +2.5% more of their damage as holy damage, and Judgement (every third hit) deals +5% more", bonus: { smite: 0.025, judgement: 0.05 }, cost: 1 },
     { id: "shieldMastery", name: "Shield Mastery", text: "Mace and Shield: +1.5% block chance, and the strike back after a block hits for +4% of your attack more", bonus: { blockChance: 0.015, counter: 0.04 }, cost: 1 },
     { id: "holyLight", name: "Tome Mastery", text: "Holy Tome: healing you do not need burns the enemy for +10% more", bonus: { sacredFlame: 0.1 }, cost: 1 },
-    { id: "holyWar", name: "Crusade", text: "Crusade: +2.5% damage for every turn a fight lasts", bonus: { crusade: 0.025 }, cost: 1 }
+    { id: "holyWar", name: "Crusade", text: "Crusade: +1.5% damage for every turn a fight lasts", bonus: { crusade: 0.015 }, cost: 1 }
   ],
 
   milestones: [
@@ -98,7 +98,7 @@ classes.zealot = {
     {
       floor: 50,
       perks: [
-        { id: "avenger", name: "Hammer of Light", text: "Holy Mace: holy damage and Judgement damage x2, and +15% attack", bonus: { attackPercent: 0.15 }, multiply: { mace: 2 } },
+        { id: "avenger", name: "Hammer of Light", text: "Holy Mace: holy damage and Judgement damage x1.3, and +15% attack", bonus: { attackPercent: 0.15 }, multiply: { mace: 1.3 } },
         { id: "saint", name: "Saint", text: "health x1.6, attack x1.3, and Devotion: +2% of your health healed every turn", bonus: { devotion: 0.02 }, multiply: { health: 1.6, attack: 1.3 } },
         { id: "bulwarkOfFaith", name: "Bulwark of Faith", text: "Mace and Shield: strike back damage x2, +10% block chance, attack x1.5 and health x1.3", bonus: { blockChance: 0.1 }, multiply: { shieldCounter: 2, attack: 1.5, health: 1.3 } },
         { id: "hierophant", name: "Hierophant", text: "Holy Tome: the burn from healing you do not need x2.5. Devotion: +1% of your health healed every turn", bonus: { devotion: 0.01 }, multiply: { sacred: 2.5 } },
@@ -133,10 +133,10 @@ classes.zealot = {
     {
       floor: 100,
       perks: [
-        { id: "handOfGod", name: "Hand of God", text: "Holy Mace: holy damage and Judgement damage x2 again, attack x1.3 and health x1.5", multiply: { mace: 2, attack: 1.3, health: 1.5 } },
+        { id: "handOfGod", name: "Hand of God", text: "Holy Mace: holy damage and Judgement damage x1.25 again, and health x1.5", multiply: { mace: 1.25, health: 1.5 } },
         { id: "martyr", name: "Martyr", text: "health x2.2, attack x1.5, and Devotion: +2% of your health healed every turn", bonus: { devotion: 0.02 }, multiply: { health: 2.2, attack: 1.5 } },
         { id: "aegisOfHeaven", name: "Aegis of Heaven", text: "Mace and Shield: strike back damage x2 again, +10% block chance, attack x1.3 and health x1.3", bonus: { blockChance: 0.1 }, multiply: { shieldCounter: 2, attack: 1.3, health: 1.3 } },
-        { id: "voiceOfGod", name: "Voice of God", text: "Holy Tome: the burn from healing you do not need x2.5 again. Devotion: +2% of your health healed every turn", bonus: { devotion: 0.02 }, multiply: { sacred: 2.5 } },
+        { id: "voiceOfGod", name: "Voice of God", text: "Holy Tome: the burn from healing you do not need x2.5 again, and health x1.5. Devotion: +2% of your health healed every turn", bonus: { devotion: 0.02 }, multiply: { sacred: 2.5, health: 1.5 } },
         { id: "lastCrusade", name: "Last Crusade", text: "Crusade x3 again", multiply: { crusade: 3 } }
       ]
     }
@@ -202,7 +202,8 @@ function zealotDamageTypes() {
 
 // The numbers behind the weapons. Change these to retune them.
 const tomeHit = 1.15;       // a holy tome spell hits for this many times your attack
-const judgementEvery = 3;   // with the holy mace, every hit of this number is a Judgement
+const judgementEvery = 3;
+const crusadeMostTurns = 8;  // Crusade counts this many turns of a fight at most   // with the holy mace, every hit of this number is a Judgement
 
 // Holy Mace: how many hits have landed in this fight
 let zealotHits = 0;
@@ -225,7 +226,7 @@ function zealotStartFight() {
 // How much the Zealot heals every turn, as a share of full health. The Holy Tome doubles it.
 // Devotion always adds to it, but less and less, so it creeps toward maxHealing and
 // never reaches it. Without that, enough devotion would make the Zealot impossible to kill.
-const maxHealing = 0.2;
+const maxHealing = 0.06;
 
 function zealotHealing() {
   let devotion = totalBonus("devotion");
@@ -245,7 +246,9 @@ function zealotHealing() {
 function zealotCrusade() {
   // (the first turn counts as one: it used to count as none, and with fights of two or
   // three turns the Crusade perks were 45 to 65 floors behind the weapon perks)
-  return 1 + (fightTurns + zealotCarry) * totalBonus("crusade") * multiplier("crusade");
+  // (and it stops growing after crusadeMostTurns: a fight is meant to last a handful of
+  // turns, and a bonus that grew for thirty made the Zealot win any fight by waiting)
+  return 1 + Math.min(crusadeMostTurns, fightTurns + zealotCarry) * totalBonus("crusade") * multiplier("crusade");
 }
 
 function zealotAttack() {

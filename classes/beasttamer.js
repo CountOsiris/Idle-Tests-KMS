@@ -113,7 +113,7 @@ classes.beasttamer = {
       perks: [
         { id: "beastlord", name: "Beastlord", text: "attack x1.2, and every kill makes all your damage 0.5% stronger for the rest of the run (up to +100%)", bonus: { killStreak: 0.005 }, multiply: { attack: 1.2 } },
         { id: "oldGrowth", name: "Old Growth", text: "health x1.5 and armor x1.4", multiply: { health: 1.5, armor: 1.4 } },
-        { id: "direPack", name: "Dire Pack", text: "Wolf Pack: bite damage x1.8", multiply: { wolf: 1.8 } },
+        { id: "direPack", name: "Dire Pack", text: "Wolf Pack: bite damage x1.6", multiply: { wolf: 1.6 } },
         { id: "caveBear", name: "Cave Bear", text: "Bear: maul damage x1.8", multiply: { bear: 1.8 } },
         { id: "stormHawk", name: "Storm Hawk", text: "Hawk: critical dive damage x1.8", multiply: { hawkCrit: 1.8 } },
         { id: "oneSoul", name: "One Soul", text: "Bond x3: three times the companion damage for your missing health", multiply: { bond: 3 } }
@@ -146,7 +146,7 @@ classes.beasttamer = {
     {
       floor: 100,
       perks: [
-        { id: "fenrir", name: "Fenrir's Brood", text: "Wolf Pack: bite damage x1.8 again", multiply: { wolf: 1.8 } },
+        { id: "fenrir", name: "Fenrir's Brood", text: "Wolf Pack: bite damage x1.4 again", multiply: { wolf: 1.4 } },
         { id: "ursaMajor", name: "Ursa Major", text: "Bear: maul damage x1.8 again", multiply: { bear: 1.8 } },
         { id: "roc", name: "Roc", text: "Hawk: critical dive damage x1.8 again", multiply: { hawkCrit: 1.8 } },
         { id: "oneHeart", name: "One Heart", text: "Bond x3 again", multiply: { bond: 3 } },

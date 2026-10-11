@@ -21,7 +21,7 @@
 //
 // The four ways to build a Warlock:
 //   Arcanist    (arcane tome) - critical hits, and ever bigger ones.
-//   Void Caller (void tome)   - tears away a share of the enemy's health. Best against the biggest enemies.
+//   Void Caller (void tome)   - tears away a share of the health the enemy has left. Best against the biggest enemies.
 //   Runemaster  (rune tome)   - spells that echo, again and again.
 //   Soul Reaper (any tome)    - plain power for any tome: the perks named for souls.
 //
@@ -52,7 +52,7 @@ classes.warlock = {
     { id: "arcanePower", name: "Arcane Power", text: "+6% attack", bonus: { attackPercent: 0.06 } },
     { id: "manaShield", name: "Mana Shield", text: "+5% health", bonus: { healthPercent: 0.05 } },
     { id: "focus", name: "Focus", text: "Arcane Tome: +5% critical chance", build: "arcane", bonus: { critChance: 0.05 } },
-    { id: "devour", name: "Devour", text: "Void Tome: +2 void power (every spell tears away more of the enemy's full health)", build: "void", bonus: { voidRend: 0.02 } },
+    { id: "devour", name: "Devour", text: "Void Tome: +2 void power (every spell tears away more of the health the enemy has left)", build: "void", bonus: { voidRend: 0.02 } },
     { id: "resonance", name: "Resonance", text: "Rune Tome: +5% chance to cast twice (the second cast is an echo)", build: "rune", bonus: { echoChance: 0.05 } },
     { id: "soulJar", name: "Soul Jar", text: "+4% attack and +4% health", bonus: { attackPercent: 0.04, healthPercent: 0.04 } }
   ],
@@ -103,7 +103,7 @@ classes.warlock = {
       perks: [
         { id: "cataclysm", name: "Cataclysm", text: "Arcane Tome: the extra damage of critical hits x1.7, and +10% critical chance", bonus: { critChance: 0.1 }, multiply: { arcaneCrit: 1.7 } },
         { id: "lichForm", name: "Lich Form", text: "health x1.5 and armor x1.4", multiply: { health: 1.5, armor: 1.4 } },
-        { id: "hungeringVoid", name: "Hungering Void", text: "Void Tome: spell damage x2.2, and every spell heals 0.5% more of your health", bonus: { voidHeal: 0.005 }, multiply: { void: 2.2 } },
+        { id: "hungeringVoid", name: "Hungering Void", text: "Void Tome: spell damage x1.5, and every spell heals 0.5% more of your health", bonus: { voidHeal: 0.005 }, multiply: { void: 1.5 } },
         { id: "runicStorm", name: "Runic Storm", text: "Rune Tome: echo damage x1.6, and +15% chance to cast twice", bonus: { echoChance: 0.15 }, multiply: { echo: 1.6 } },
         { id: "soulCollector", name: "Soul Collector", text: "attack x1.2, and every kill makes all your damage 0.5% stronger for the rest of the run (up to +100%)", bonus: { killStreak: 0.005 }, multiply: { attack: 1.2 } }
       ]
@@ -116,7 +116,7 @@ classes.warlock = {
       keystones: true,
       perks: [
         { id: "overchannel", name: "Overchannel", keystone: true, text: "Arcane Tome: every third spell of a fight is a certain critical hit. You take 20% more damage", bonus: { overchannel: 1 }, multiply: { damageTaken: 1.2 } },
-        { id: "eventHorizon", name: "Event Horizon", keystone: true, text: "Void Tome: the void tears away twice the share, but of the health the enemy has left, not of its full health", bonus: { eventHorizon: 1 } },
+        { id: "eventHorizon", name: "Event Horizon", keystone: true, text: "Void Tome: the void tears away twice the share of the health the enemy has left. Spell damage x0.8", bonus: { eventHorizon: 1 }, multiply: { void: 0.8 } },
         { id: "resonance", name: "Harmonics", keystone: true, text: "Rune Tome: every echo in a fight makes the echoes after it 10% stronger. The first cast of each turn deals 25% less", bonus: { resonance: 0.1 } },
         { id: "soulPact", name: "Soul Pact", keystone: true, text: "Souls: you keep a quarter of your souls when you fall. health x0.8", bonus: { soulPact: 0.25 }, multiply: { health: 0.8 } }
       ]
@@ -137,7 +137,7 @@ classes.warlock = {
       floor: 100,
       perks: [
         { id: "annihilation", name: "Annihilation", text: "Arcane Tome: the extra damage of critical hits x1.7 again, +10% critical chance, and attack x1.25", bonus: { critChance: 0.1 }, multiply: { arcaneCrit: 1.7, attack: 1.25 } },
-        { id: "voidLord", name: "Void Lord", text: "Void Tome: spell damage x2.2 again, and health x1.5", multiply: { void: 2.2, health: 1.5 } },
+        { id: "voidLord", name: "Void Lord", text: "Void Tome: spell damage x1.4 again, and health x1.5", multiply: { void: 1.4, health: 1.5 } },
         { id: "runeLord", name: "Rune Lord", text: "Rune Tome: echo damage x1.6 again, +20% chance to cast twice, and attack x1.25", bonus: { echoChance: 0.2 }, multiply: { echo: 1.6, attack: 1.25 } },
         { id: "deathsHarvest", name: "Death's Harvest", text: "attack x1.4, and every floor swept through at the start of a run adds 1% to all your damage (up to +100%)", bonus: { momentum: 0.01 }, multiply: { attack: 1.4 } },
         { id: "undying", name: "Undying", text: "health x2, armor x1.5, and you heal 2% of your health every turn of a fight", bonus: { prayer: 0.02 }, multiply: { health: 2, armor: 1.5 } }
@@ -161,7 +161,7 @@ classes.warlock = {
   abilities: [
     { id: "arcaneSurge", name: "Arcane Surge", text: "Arcane Tome: 3 turns of your damage in one spell", build: "arcane", cooldown: 6,
       use: function () { abilityTurns(3); } },
-    { id: "voidRift", name: "Void Rift", text: "Void Tome: 2 turns of your damage, and tears away 6% of the enemy's full health", build: "void", cooldown: 6,
+    { id: "voidRift", name: "Void Rift", text: "Void Tome: 2 turns of your damage, and tears away 6% of the health the enemy has left", build: "void", cooldown: 6,
       use: function () { abilityTurns(2); abilityPure(monsterMaxHp * 0.06, "arcane"); } },
     { id: "runeStorm", name: "Rune Storm", text: "Rune Tome: 3.5 turns of your damage in a storm of runes", build: "rune", cooldown: 7,
       use: function () { abilityTurns(3.5); } },
@@ -221,9 +221,13 @@ function warlockStartFight() {
   warlockEchoes = 0;
 }
 
-// The share of the enemy's full health one void spell tears away. Void power always
+// The share of the health the enemy has left one void spell tears away. Void power always
 // adds to it, but less and less, so it creeps toward maxVoidShare and never reaches it.
 const maxVoidShare = 0.25;
+
+// The most of your health one void spell can heal. Its skill has no top level, and a
+// fight now lasts several turns: without a ceiling the Void Caller could not be killed.
+const maxVoidHeal = 0.03;
 
 function voidShare() {
   let power = totalBonus("voidRend");
@@ -252,23 +256,27 @@ function warlockCast(power) {
   // Spells ignore armor, but not ward
   spellHitMonster(damage, "arcane");
 
-  // The void also tears away a share of the enemy's full health, and can feed you.
+  // The void also tears away a share of the health the enemy has left, and can feed you.
   // NOTHING makes this part bigger: not souls, not fame, not a boost from an ability.
   // It is taken straight off the enemy (less its ward), because a share of the enemy's
   // health that grows ends up killing everything in one hit, on any floor, forever.
   // (That happened: it used to go through the spell's damage, fame's Might multiplied
   // it, and a Void Tome reached floor 23,195 without falling. October 2026.)
-  // (Event Horizon, a keystone: twice the share, but of the health it has LEFT)
+  // It is a share of the health the enemy has LEFT, so it opens a fight hard and can
+  // never finish one: the spell's own damage must. (Until fights were made longer it was
+  // a share of FULL health, which kills anything in a fixed number of turns whatever the
+  // floor: with fights of several turns a Void Tome reached floor 520 in 100 hours.)
+  // (Event Horizon, a keystone: twice the share)
   if (weapon === "void") {
-    let torn = monsterMaxHp * voidShare();
+    let torn = Math.max(0, monsterHp) * voidShare();
     if (totalBonus("eventHorizon") > 0) {
-      torn = Math.max(0, monsterHp) * voidShare() * 2;
+      torn = torn * 2;
     }
     torn = Math.round(torn * (1 - wardNow()));
     monsterHp = monsterHp - torn;
     damageNotCounted = damageNotCounted + torn;
     noteDamage("arcane", torn);
-    healPlayer(playerMaxHp * totalBonus("voidHeal"));
+    healPlayer(playerMaxHp * Math.min(maxVoidHeal, totalBonus("voidHeal")));
   }
 }
 
@@ -311,7 +319,7 @@ function warlockGearInfo() {
     return "Arcane Tome: " + percent(Math.min(1, totalBonus("critChance"))) + " chance of a critical hit for +" + percent(totalBonus("critPower") + overflow("critChance", 1)) + " damage.";
   }
   if (weapon === "void") {
-    return "Void Tome: every spell also tears away " + percent(voidShare()) + " of the enemy's full health (" + Math.round(totalBonus("voidRend") * 100) + " void power; the share can never pass " + percent(maxVoidShare) + "), and heals " + percent(totalBonus("voidHeal")) + " of yours.";
+    return "Void Tome: every spell also tears away " + percent(voidShare()) + " of the health the enemy has left (" + Math.round(totalBonus("voidRend") * 100) + " void power; the share can never pass " + percent(maxVoidShare) + "), and heals " + percent(totalBonus("voidHeal")) + " of yours.";
   }
   return "Rune Tome: " + percent(totalBonus("echoChance")) + " chance to cast twice. The second cast (the echo) deals +" + percent(totalBonus("echoPower")) + " damage.";
 }
