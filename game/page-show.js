@@ -299,6 +299,16 @@ function showTown() {
   }
   document.getElementById("favourite-upgrade-note").textContent = favouriteNote;
 
+  // The one line on the Town tab: which boon is the favourite, and whether it is being given
+  let favourite = currentClass().upgrades.find(function (upgrade) { return upgrade.id === favouriteUpgrade; });
+  if (favourite === undefined) {
+    document.getElementById("favourite-upgrade-name").textContent = "none";
+    document.getElementById("favourite-upgrade-now").textContent = "Every boss gives a boon picked at random from the ones that suit your weapon. The Tactician can make it the same one every time.";
+  } else {
+    document.getElementById("favourite-upgrade-name").textContent = favourite.name;
+    document.getElementById("favourite-upgrade-now").textContent = fitsBuild(favourite) ? favourite.text + " per level. Bosses give it every time." : favouriteNote;
+  }
+
   showBlacksmith();
 
   document.getElementById("potions").textContent = potions + " / " + potionLimit();

@@ -13,6 +13,14 @@
 
 const gameUpdates = [
   {
+    version: "20261011c",
+    title: "Tidier windows",
+    changes: [
+      "The Updates window has an X at the top, and also closes with Escape or a click outside it.",
+      "The favourite boon is now one line in town with a Change button. The list opens in its own window."
+    ]
+  },
+  {
     version: "20261011b",
     title: "Plain attack perks worth picking",
     changes: [

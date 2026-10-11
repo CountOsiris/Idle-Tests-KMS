@@ -291,9 +291,19 @@ function buyTownUpgrade(item) {
   }
 }
 
+// Picking one from the Tactician's window also closes the window
 function chooseFavouriteUpgrade(id) {
   favouriteUpgrade = id;
+  closeFavouriteWindow();
   updateScreen();
+}
+
+function openFavouriteWindow() {
+  document.getElementById("favourite-window").hidden = false;
+}
+
+function closeFavouriteWindow() {
+  document.getElementById("favourite-window").hidden = true;
 }
 
 function potionLimit() {

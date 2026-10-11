@@ -11,7 +11,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&family=EB+Garamond:wght@400;500;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css?v=20261011b">
+  <link rel="stylesheet" href="style.css?v=20261011c">
 </head>
 <body data-tab="tower">
 
@@ -52,12 +52,24 @@
 
   <!-- The Updates window: the version being played and what changed in each one.
        The list is made by game/feel.js from updates.js. -->
-  <div id="updates" class="moment" hidden>
+  <div id="updates" class="moment" hidden onclick="if (event.target === this) { closeUpdates(); }">
     <div class="card highlight moment-card">
+      <!-- Stays at the top of the window however far it is scrolled -->
+      <button class="window-close" onclick="closeUpdates()" title="Close" aria-label="Close">&#10005;</button>
       <h2>Updates</h2>
       <p class="note">You are playing version <strong id="updates-version"></strong>.</p>
       <div id="updates-list"></div>
       <p><button class="main" onclick="closeUpdates()">Close</button></p>
+    </div>
+  </div>
+
+  <!-- The Tactician's list of boons, opened from the Town tab. The rows are made by the game (game/). -->
+  <div id="favourite-window" class="moment" hidden onclick="if (event.target === this) { closeFavouriteWindow(); }">
+    <div class="card highlight moment-card">
+      <button class="window-close" onclick="closeFavouriteWindow()" title="Close" aria-label="Close">&#10005;</button>
+      <h2>Favourite boon</h2>
+      <p id="favourite-upgrade-note" class="note"></p>
+      <div id="favourite-upgrade-rows"></div>
     </div>
   </div>
 
@@ -410,11 +422,13 @@
           </div>
 
           <!-- Only shown once the Tactician has been hired -->
-          <div id="favourite-upgrade" class="picker" hidden>
-            <p class="row-title">Favourite boon</p>
-            <p id="favourite-upgrade-note" class="note"></p>
-            <!-- One row for each boon of the class, saying what it does. Made by the game (game/). -->
-            <div id="favourite-upgrade-rows"></div>
+          <div id="favourite-upgrade" class="row" hidden>
+            <div class="row-text">
+              <p class="row-title">Favourite boon &middot; <span id="favourite-upgrade-name"></span></p>
+              <p id="favourite-upgrade-now" class="note"></p>
+            </div>
+            <!-- Opens the list in a window of its own (favourite-window, near the top of this page) -->
+            <button onclick="openFavouriteWindow()">Change</button>
           </div>
 
           <!-- The rest is made by the game (game/) from the townUpgrades list in data.js -->
@@ -619,34 +633,34 @@
          3. the file version.txt
        The ?v= makes browsers fetch the new files instead of old remembered ones, and
        version.txt is how a game left open finds out it is out of date (see game/start.js). -->
-  <script>const gameVersion = "20261011b";</script>
-  <script src="data.js?v=20261011b"></script>
-  <script src="updates.js?v=20261011b"></script>
-  <script src="towers.js?v=20261011b"></script>
-  <script src="classes/barbarian.js?v=20261011b"></script>
-  <script src="classes/warden.js?v=20261011b"></script>
-  <script src="classes/ranger.js?v=20261011b"></script>
-  <script src="classes/assassin.js?v=20261011b"></script>
-  <script src="classes/warlock.js?v=20261011b"></script>
-  <script src="classes/elementalist.js?v=20261011b"></script>
-  <script src="classes/zealot.js?v=20261011b"></script>
-  <script src="classes/beasttamer.js?v=20261011b"></script>
+  <script>const gameVersion = "20261011c";</script>
+  <script src="data.js?v=20261011c"></script>
+  <script src="updates.js?v=20261011c"></script>
+  <script src="towers.js?v=20261011c"></script>
+  <script src="classes/barbarian.js?v=20261011c"></script>
+  <script src="classes/warden.js?v=20261011c"></script>
+  <script src="classes/ranger.js?v=20261011c"></script>
+  <script src="classes/assassin.js?v=20261011c"></script>
+  <script src="classes/warlock.js?v=20261011c"></script>
+  <script src="classes/elementalist.js?v=20261011c"></script>
+  <script src="classes/zealot.js?v=20261011c"></script>
+  <script src="classes/beasttamer.js?v=20261011c"></script>
   <!-- The game's rules, in this order (start.js last) -->
-  <script src="game/state.js?v=20261011b"></script>
-  <script src="game/bonuses.js?v=20261011b"></script>
-  <script src="game/legend.js?v=20261011b"></script>
-  <script src="game/weekly.js?v=20261011b"></script>
-  <script src="game/equipment.js?v=20261011b"></script>
-  <script src="game/abilities.js?v=20261011b"></script>
-  <script src="game/bosses.js?v=20261011b"></script>
-  <script src="game/summary.js?v=20261011b"></script>
-  <script src="game/skills.js?v=20261011b"></script>
-  <script src="game/save.js?v=20261011b"></script>
-  <script src="game/page-build.js?v=20261011b"></script>
-  <script src="game/page-show.js?v=20261011b"></script>
-  <script src="game/fights.js?v=20261011b"></script>
-  <script src="game/feel.js?v=20261011b"></script>
-  <script src="game/start.js?v=20261011b"></script>
-  <script src="cloud.js?v=20261011b"></script>
+  <script src="game/state.js?v=20261011c"></script>
+  <script src="game/bonuses.js?v=20261011c"></script>
+  <script src="game/legend.js?v=20261011c"></script>
+  <script src="game/weekly.js?v=20261011c"></script>
+  <script src="game/equipment.js?v=20261011c"></script>
+  <script src="game/abilities.js?v=20261011c"></script>
+  <script src="game/bosses.js?v=20261011c"></script>
+  <script src="game/summary.js?v=20261011c"></script>
+  <script src="game/skills.js?v=20261011c"></script>
+  <script src="game/save.js?v=20261011c"></script>
+  <script src="game/page-build.js?v=20261011c"></script>
+  <script src="game/page-show.js?v=20261011c"></script>
+  <script src="game/fights.js?v=20261011c"></script>
+  <script src="game/feel.js?v=20261011c"></script>
+  <script src="game/start.js?v=20261011c"></script>
+  <script src="cloud.js?v=20261011c"></script>
 </body>
 </html>

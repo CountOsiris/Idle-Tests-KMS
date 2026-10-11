@@ -961,6 +961,17 @@ try {
     let topNote = document.getElementById("favourite-upgrade-note").textContent;
     check("the Tactician's list says what each boon does, and that " + otherBoon.name + " is not given with this weapon",
       rowNote.includes(otherBoon.text) && rowNote.includes("NOT GIVEN RIGHT NOW") && topNote.includes(otherBoon.name) && !document.getElementById("favourite-upgrade").hidden);
+
+    // On the Town tab it is one line with a Change button; the list is a window of its own
+    let lineNow = document.getElementById("favourite-upgrade-now").textContent;
+    let windowShut = document.getElementById("favourite-window").hidden;
+    document.querySelector("#favourite-upgrade button").click();
+    let windowOpen = !document.getElementById("favourite-window").hidden && document.getElementById("favourite-upgrade-rows").offsetHeight > 0;
+    let fitting = currentClass().upgrades.find(function (u) { return fitsBuild(u); });
+    document.getElementById("favourite-upgrade-" + fitting.id).click();
+    check("the favourite boon is one line in town (" + document.getElementById("favourite-upgrade-name").textContent + "), and its list opens in a window that closes when one is picked",
+      windowShut && windowOpen && document.getElementById("favourite-window").hidden && favouriteUpgrade === fitting.id && lineNow.includes(otherBoon.name)
+      && document.getElementById("favourite-upgrade-name").textContent === fitting.name && document.getElementById("favourite-upgrade").offsetHeight < 140);
     favouriteUpgrade = "";
   }
   delete townLevels.tactician;
@@ -1018,6 +1029,15 @@ try {
   settingsButton.click();
   if (document.getElementById("updates").hidden || settingsButton.classList.contains("chosen")) {
     updateProblems.push("the Settings button did not open the window");
+  }
+  let closeX = document.querySelector("#updates .window-close");
+  if (closeX === null || closeX.offsetHeight === 0 || closeX.getBoundingClientRect().top > 200) {
+    updateProblems.push("the Updates window has no X at its top");
+  } else {
+    closeX.click();
+    if (!document.getElementById("updates").hidden) {
+      updateProblems.push("the X did not close the Updates window");
+    }
   }
   closeUpdates();
   openUpdates();

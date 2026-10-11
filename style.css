@@ -871,6 +871,21 @@ body[data-tab="tower"] #tab-character {
   display: none;
 }
 
+/* The X in the corner of a window. It stays in sight when the window is scrolled. */
+.window-close {
+  position: sticky;
+  top: 0;
+  float: right;
+  z-index: 2;
+  width: 36px;
+  height: 36px;
+  margin: -4px -4px 0 12px;
+  padding: 0;
+  font-size: 16px;
+  line-height: 1;
+  background: var(--card);
+}
+
 /* The Updates button under the game's name, and the list in its window */
 .updates-link {
   position: relative;

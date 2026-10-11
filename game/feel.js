@@ -349,6 +349,14 @@ function closeUpdates() {
   document.getElementById("updates").hidden = true;
 }
 
+// Escape closes whichever window is open
+document.addEventListener("keydown", function (event) {
+  if (event.key === "Escape") {
+    closeUpdates();
+    closeFavouriteWindow();
+  }
+});
+
 // Big words that fade in across the whole fight and out again.
 // kind is "died" (blood red) or "won" (gold).
 function showBanner(text, kind) {
