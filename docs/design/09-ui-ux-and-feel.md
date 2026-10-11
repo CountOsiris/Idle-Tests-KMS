@@ -35,8 +35,11 @@ Back to the [Masterplan](../../Masterplan.md).
 ## Pictures (October 2026)
 
 Every monster and boss has pixel art: 72 tiles from Dungeon Crawl Stone Soup, which its
-artists released under CC0. They are 32 pixels tall and drawn at exactly five times
-that, kept sharp. `tools/monster-art.py` fetches them and holds the list of which tile
+artists released under CC0. The tiles are 32 pixels square, which showed as blocks
+beside the classes' large paintings, so each is enlarged to 192 pixels with its edges
+rounded off and its blocks flattened into even areas of colour. The set has no boar,
+so the Wild Boar is the hog tile recoloured brown and given tusks and a bristled back.
+`tools/monster-art.py` fetches them, does both and holds the list of which tile
 is which monster; `art/CREDITS.md` and a line on the Settings tab give the credit. The
 check loads every picture named in `towers.js` and the class files, so a wrong file
 name fails before an upload.

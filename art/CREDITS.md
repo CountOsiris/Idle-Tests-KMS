@@ -10,6 +10,10 @@ that project's [list of tiles with an unclear licence](https://github.com/crawl/
 
 CC0 asks for no credit. It is given here gladly.
 
+The tiles are 32 pixels square. Each has been enlarged to 192 pixels with its
+edges rounded off, and the Wild Boar is the hog tile recoloured and given tusks and
+bristles. Both are done by `tools/monster-art.py`.
+
 | File | Used for | Dungeon Crawl tile |
 |---|---|---|
 | `goblin.png` | Goblin | `mon/humanoids/goblin.png` |

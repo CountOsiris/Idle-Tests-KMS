@@ -13,6 +13,14 @@
 
 const gameUpdates = [
   {
+    version: "20261011f",
+    title: "Smoother monsters",
+    changes: [
+      "The monsters' pictures are enlarged with their edges rounded off, so they no longer show as blocks.",
+      "The Wild Boar is a boar now: brown, bristled and tusked."
+    ]
+  },
+  {
     version: "20261011e",
     title: "Bestiary",
     changes: [
