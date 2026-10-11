@@ -374,6 +374,14 @@ function showBlacksmith() {
     document.getElementById("named-note").textContent = wieldedTrophy().text + ". Only the named weapon you wield gives its power.";
   }
 
+  // A class with stances picks its element here (and on the Skills tab): it changes at once
+  if (currentClass().stances !== undefined) {
+    document.getElementById("weapon-picker").hidden = false;
+    showFavourite("weapon-buttons", "weapon-" + stance);
+    document.getElementById("weapon-picker-note").textContent = currentClass().stances[stance].text + " Damage: " + typeNames(currentClass().damageTypes()) + ". Picking another changes it at once.";
+    return;
+  }
+
   // A class with only one kind of gear has nothing to pick between
   document.getElementById("weapon-picker").hidden = Object.keys(currentClass().gearTypes).length < 2;
   showFavourite("weapon-buttons", "weapon-" + nextWeapon);

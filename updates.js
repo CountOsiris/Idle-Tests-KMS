@@ -13,6 +13,13 @@
 
 const gameUpdates = [
   {
+    version: "20261011i",
+    title: "The Elementalist's elements, where you look for them",
+    changes: [
+      "The Elementalist now picks its element on the Blacksmith tab too, under \"Fight with\", where every other class picks its weapon. It was only on the Skills tab."
+    ]
+  },
+  {
     version: "20261011h",
     title: "Shields, healing and health matter again",
     changes: [

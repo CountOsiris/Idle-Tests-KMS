@@ -998,6 +998,28 @@ try {
   floor = floorBeforeEase;
   startEncounter();
 
+  // 3i10. A class with stances picks its element on the Blacksmith tab, as others pick a weapon
+  let classBeforeElements = playerClass;
+  classSaves[playerClass] = packClass();
+  playerClass = "elementalist";
+  unpackClass(classSaves.elementalist);
+  buildClassScreen();
+  recalcStats();
+  showTab("town");
+  updateScreen();
+  let elementButtons = document.querySelectorAll("#weapon-buttons button").length;
+  document.getElementById("weapon-earth").click();
+  let pickedEarth = stance === "earth" && !document.getElementById("weapon-picker").hidden
+    && document.getElementById("weapon-picker-note").textContent.includes(classes.elementalist.stances.earth.text);
+  document.getElementById("weapon-fire").click();
+  check("the Elementalist picks its element on the Blacksmith tab: " + elementButtons + " buttons, and pressing Earth then Fire changes it at once", elementButtons === 4 && pickedEarth && stance === "fire");
+  classSaves.elementalist = packClass();
+  playerClass = classBeforeElements;
+  unpackClass(classSaves[playerClass]);
+  buildClassScreen();
+  recalcStats();
+  startEncounter();
+
   // 3j. Starting floors, and the Tactician's list
   cruiseFloor = 40;
   runStartFloor = 1;

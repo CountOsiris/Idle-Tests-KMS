@@ -167,10 +167,21 @@ function buildClassScreen() {
   // The blacksmith's weapon picker lists this class's own kinds of weapon
   let gearBox = document.getElementById("weapon-buttons");
   gearBox.innerHTML = "";
-  for (let type in currentClass().gearTypes) {
-    addFavouriteButton(gearBox, "weapon-" + type, currentClass().gearTypes[type], function () {
-      chooseWeapon(type);
-    });
+  if (currentClass().stances !== undefined) {
+    // A class that fights with stances (the Elementalist's elements) picks one of those
+    // here. It is the same choice as on the Skills tab: players looked for it here, where
+    // every other class picks its weapon, and took the class for broken.
+    for (let id in currentClass().stances) {
+      addFavouriteButton(gearBox, "weapon-" + id, currentClass().stances[id].name, function () {
+        chooseStance(id);
+      });
+    }
+  } else {
+    for (let type in currentClass().gearTypes) {
+      addFavouriteButton(gearBox, "weapon-" + type, currentClass().gearTypes[type], function () {
+        chooseWeapon(type);
+      });
+    }
   }
 
   // The boss weapon picker lists the same kinds (the elements, for a class with stances)
