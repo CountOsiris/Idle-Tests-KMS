@@ -13,6 +13,16 @@
 
 const gameUpdates = [
   {
+    version: "20261011j",
+    title: "Souls for everyone, and no more runaway Warlock",
+    changes: [
+      "Every class now grows stronger with every kill of a run: Bloodlust, Resolve, Focus, Notoriety, Attunement, Fervour, The Hunt. 100 kills give +20% damage, and each kill past that counts for less. It is lost when you fall.",
+      "The Warlock's souls are now exactly that, and nothing raises them. Before, a skill, a boon, five perks and a relic multiplied souls on top of critical hits and echoes, to over +1000%.",
+      "The Warlock's soul perks, Soul Mastery and Soul Jar keep their names and give plain attack and health instead.",
+      "In 100 hours of testing every build now reaches floors 268 to 314, with the Warlock in the middle."
+    ]
+  },
+  {
     version: "20261011i",
     title: "The Elementalist's elements, where you look for them",
     changes: [

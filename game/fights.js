@@ -283,7 +283,7 @@ function die() {
   // (relic slots, won in other towers, keep the first relics claimed this run)
   ownedRelics = ownedRelics.slice(0, totalBonus("relicSlots"));
   lastRunCounter = runCounter;
-  runCounter = 0;
+  runCounter = 0;   // (set again below, once the floor the run starts on is known)
   room = 1;
 
   // The next run starts in whichever tower was chosen, from its first floor
@@ -320,6 +320,9 @@ function die() {
   for (let i = 0; i < relicBossesPassed; i++) {
     gainRelic();
   }
+
+  // The floors swept through were won on an earlier run, and count as kills of this one
+  runCounter = (floor - 1) * runKillsPerFloorSwept;
 
   // Some classes set something up at the start of a run
   if (currentClass().startRun !== undefined) {
@@ -400,6 +403,8 @@ function victory() {
   }
 
   // Some classes gain something from every kill
+  // Every kill of a run is counted (see "What builds up over a run" in data.js)
+  runCounter = runCounter + 1;
   if (currentClass().whenKill !== undefined) {
     currentClass().whenKill();
   }

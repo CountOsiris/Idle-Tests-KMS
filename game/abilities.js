@@ -313,6 +313,33 @@ function abilityDamageBoost() {
   return runDamageBoost();
 }
 
+// ----- What builds up over a run (see data.js) -----
+// The kills of this run are counted in runCounter (the Warlock calls them souls).
+
+// How many kills the ones counted are worth: in full at first, then less and less
+function runKillsCounted() {
+  if (runCounter <= runKillsInFull) {
+    return runCounter;
+  }
+  return runKillsInFull * Math.log2(1 + runCounter / runKillsInFull);
+}
+
+// The share of extra damage they are giving
+function fervourBonus() {
+  if (currentClass().fervour === undefined) {
+    return 0;
+  }
+  return runKillsCounted() / 100 * runDamagePer100;
+}
+
+// A sentence about it for the page
+function fervourLine() {
+  if (currentClass().fervour === undefined) {
+    return "";
+  }
+  return " " + currentClass().fervour + ": " + big(runCounter) + " this run, making all your damage " + percent(fervourBonus()) + " stronger. Lost when you fall. Past " + runKillsInFull + ", each kill counts for less.";
+}
+
 // Damage that depends on how the run or the fight stands. From keystones (see
 // keystoneMilestones in data.js):
 //   killStreak  every kill this run adds this much damage
@@ -324,7 +351,7 @@ function abilityDamageBoost() {
 function runDamageBoost() {
   let streak = Math.min(keystoneRunLimit, totalBonus("killStreak") * runStats.kills);
   let momentum = Math.min(keystoneRunLimit, totalBonus("momentum") * (runStartFloor - 1));
-  let boost = 1 + streak + momentum;
+  let boost = 1 + streak + momentum + fervourBonus();
 
   if (encounterType === "boss") {
     boost = boost + totalBonus("bossSlayer");

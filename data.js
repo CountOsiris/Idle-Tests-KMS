@@ -371,6 +371,25 @@ const trialMilestones = [
 //   armorLimit   added to the most your armor can block         (0.2 means 60% becomes 80%)
 // TO ADD ONE: add a perk to a block, or a block on a floor nothing else uses.
 // (Never rename an id or move a block's floor: saves remember perks by both.)
+// ----- What builds up over a run -----
+// Every class grows stronger with every kill of a run, and loses it all when it falls:
+// the Barbarian's Bloodlust, the Ranger's Focus, the Warlock's Souls (each class file
+// names its own with "fervour"). It is why a long run is worth protecting, and what a
+// class pushes a wall with.
+//   - A kill is worth 1. A run that sweeps past floors starts with runKillsPerFloorSwept
+//     for each of them: they were won on an earlier run.
+//   - The first runKillsInFull count in full. After that every DOUBLING is worth that
+//     many again (100 count as 100, 300 as 200, 700 as 300, 1,500 as 400...), so a long
+//     run goes on growing, but the kills alone can never outrun the tower.
+//   - Every 100 counted make all the class's damage runDamagePer100 stronger (0.2 means
+//     +20%). It is the same for every class. The Warlock's souls once had numbers of
+//     their own that perks and a skill could raise: a player reached floor 143 with
+//     souls worth over +1000% while no other class had anything. Now souls are only the
+//     Warlock's name for this, and nothing in the game raises it.
+const runKillsPerFloorSwept = 3;
+const runKillsInFull = 100;
+const runDamagePer100 = 0.2;
+
 const keystoneRunLimit = 1;   // killStreak and momentum each stop at this (1 means +100%)
 
 const keystoneMilestones = [

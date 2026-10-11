@@ -43,6 +43,7 @@ classes.beasttamer = {
   name: "Beast Tamer",
   icon: "🐺",
   art: "art/beasttamer.png",
+  fervour: "The Hunt",
   text: "Fights beside an animal: a wolf pack that bites many times, a bear that guards you, or a hawk that dives for critical hits.",
   perLevel: { maxHp: 9, attack: 2 },
   base: { maxHp: 85, attack: 9, bond: 0.05, packTactics: 0.1, stunChance: 0.15, guard: 0.25, critChance: 0.3, harry: 0.15 },

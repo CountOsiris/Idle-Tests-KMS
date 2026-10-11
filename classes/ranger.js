@@ -43,6 +43,7 @@ classes.ranger = {
   name: "Ranger",
   icon: "🏹",
   art: "art/ranger.png",
+  fervour: "Focus",
   text: "An archer. Shoots before the enemy can reach you, with a heavy longbow, a quick shortbow, or a crossbow that punches through anything.",
   perLevel: { maxHp: 8, attack: 2 },
   base: { maxHp: 80, attack: 10, firstStrike: 1, aimChance: 0.25, quickShot: 0.2, boltPierce: 3 },

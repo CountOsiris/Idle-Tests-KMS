@@ -879,7 +879,7 @@ function updateScreen() {
   document.getElementById("attack").textContent = big(playerAttack);
   document.getElementById("total-armor").textContent = big(totalArmor());
   document.getElementById("armor-share").textContent = "blocks " + percent(armorShareBlocked()) + " here";
-  document.getElementById("class-stat").textContent = currentClass().statLine();
+  document.getElementById("class-stat").textContent = currentClass().statLine() + fervourLine();
 
   // The level panel: progress toward the next level, and what a level gives
   document.getElementById("level-big").textContent = level;

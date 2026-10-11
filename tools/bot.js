@@ -291,6 +291,7 @@ function run(className, weaponType, stanceId, hours, ascending, keepAccount) {
       if (reached[m] === undefined && bestFloor >= m) {
         reached[m] = i;
         if (PROBE && [10, 20, 35, 50, 75, 100, 150, 200].includes(m)) {
+          probes.push("F" + m + " run buff: x" + runBuffNow().toFixed(2) + " (" + big(runCounter) + " counted up this run)");
           let ordinary = ordinaryMonster();
           probes.push("F" + m + ": level " + level + ", might " + fameLevel("might") + ", vitality " + fameLevel("vitality") + ", craft " + fameLevel("scavenger")
             + ", ascensions " + ascensionsDone + ", boons " + upgradesHeld() + ", forge " + forgeLevel("weapon") + "/" + forgeLevel("armor")
@@ -348,6 +349,11 @@ function run(className, weaponType, stanceId, hours, ascending, keepAccount) {
     let ranked = Object.keys(killers).sort(function (a, b) { return killers[b] - killers[a]; }).slice(0, 4);
     out.push("    killers: " + ranked.map(function (k) { return killers[k] + "x " + k; }).join(" | "));
   }
+}
+
+// How many times stronger the kills of this run are making the class right now
+function runBuffNow() {
+  return 1 + fervourBonus();
 }
 
 // The seconds at which the last run first reached each floor it was asked about

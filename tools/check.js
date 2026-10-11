@@ -372,15 +372,15 @@ try {
   }
 
   onlyPerk(76, "bloodPrice");
-  let boostAtStart = runDamageBoost();
+  let boostAtStart = runDamageBoost() - fervourBonus();
   encounterType = "monster";
   monsterIsRare = false;
   playerHp = 1;
   monsterHp = 0;
   victory();
-  check("Blood Price: a kill heals nothing and adds " + percent(0.02) + " damage (boost x" + runDamageBoost() + ")", playerHp === 1 && boostAtStart === 1 && Math.abs(runDamageBoost() - 1.02) < 0.0001);
+  check("Blood Price: a kill heals nothing and adds " + percent(0.02) + " damage (boost x" + runDamageBoost() + ")", playerHp === 1 && boostAtStart === 1 && Math.abs(runDamageBoost() - fervourBonus() - 1.02) < 0.0001);
   runStats.kills = 500;
-  check("Blood Price stops at +" + percent(keystoneRunLimit), runDamageBoost() === 1 + keystoneRunLimit);
+  check("Blood Price stops at +" + percent(keystoneRunLimit), Math.abs(runDamageBoost() - fervourBonus() - 1 - keystoneRunLimit) < 0.0001);
 
   onlyPerk(76, "secondWind");
   let deathsThen = deaths;
@@ -1018,6 +1018,41 @@ try {
   unpackClass(classSaves[playerClass]);
   buildClassScreen();
   recalcStats();
+  startEncounter();
+
+  // 3i11. What builds up over a run: every class counts its kills the same way, the
+  // Warlock's souls included, and nothing a class owns makes them worth more
+  let countWas = runCounter;
+  let fervours = [];
+  let uneven = [];
+  let classBeforeFervour = playerClass;
+  classSaves[playerClass] = packClass();
+  for (let className in classes) {
+    playerClass = className;
+    unpackClass(classSaves[className]);
+    recalcStats();
+    runCounter = 700;
+    fervours.push(classes[className].fervour);
+    if (classes[className].fervour === undefined || Math.abs(fervourBonus() - 3 * runDamagePer100) > 0.0001) {
+      uneven.push(className);
+    }
+  }
+  playerClass = classBeforeFervour;
+  unpackClass(classSaves[playerClass]);
+  recalcStats();
+  runCounter = 0;
+  floor = 3;
+  room = 1;
+  encounterType = "monster";
+  spawnMonster(false);
+  monsterHp = 0;
+  victory();
+  let countedKill = runCounter === 1;
+  runCounter = 100;
+  let fullAt100 = Math.abs(fervourBonus() - runDamagePer100) < 0.0001;
+  check("the kills of a run: one kill counts 1, 100 give +" + percent(runDamagePer100) + " damage, 700 count as 300 for every class alike (" + fervours.join(", ") + ")",
+    countedKill && fullAt100 && uneven.length === 0);
+  runCounter = countWas;
   startEncounter();
 
   // 3j. Starting floors, and the Tactician's list

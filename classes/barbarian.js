@@ -45,6 +45,9 @@ classes.barbarian = {
   name: "Barbarian",
   icon: "⚔️",
   art: "art/barbarian.png",
+  // What this class calls the strength its kills build up over a run (see "What builds
+  // up over a run" in data.js). The Warlock has none: its souls are that.
+  fervour: "Bloodlust",
   text: "Two-handed weapons and lifesteal. Hits hard and heals from the damage dealt.",
   perLevel: { maxHp: 8, attack: 2 },
   base: { maxHp: 80, attack: 8, lifesteal: 0.1, bleedStacks: 4, critChance: 0.2, parryChance: 0.2, stunChance: 0.3 },

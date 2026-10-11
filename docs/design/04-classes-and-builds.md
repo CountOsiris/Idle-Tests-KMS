@@ -10,7 +10,7 @@ Back to the [Masterplan](../../Masterplan.md).
 | Warden | Spear and shield, defence | Spiked → reflect · Tower → block, strong spear · Bladed → shield thrown for armor x N | Vengeance (hits taken added to the next thrust); armor |
 | Ranger | Archer, range | Longbow → slow crits · Shortbow → many arrows · Crossbow → armor and resistance piercing | Range (enemy misses opening turns); Hunter's Mark |
 | Assassin | Stealth, poison | Venom Dagger → poison · Stiletto → crits · Shadow Blade → dodge and counter | Ambush, Vanish, dodge |
-| Warlock | Arcane glass cannon | Arcane Tome → crits · Void Tome → % of enemy health · Rune Tome → casts twice | Souls (more damage per kill this run, softened past 100) |
+| Warlock | Arcane glass cannon | Arcane Tome → crits · Void Tome → % of enemy health · Rune Tome → casts twice | Souls (the run buff every class has) |
 | Elementalist | Four elements | One pair of gloves; element picked any time: Fire → burn · Ice → crits · Lightning → bolts · Earth → boulders and stun | None (the element choice is the identity) |
 | Zealot | Holy crusader | Holy Mace → holy damage, Judgement · Mace and Shield → block and strike back · Holy Tome → overflow healing burns | Devotion (healing per turn), Crusade (damage grows per turn) |
 
@@ -184,3 +184,24 @@ a Tower Shield (9%).
 
 Faster to floor 100 than before is accepted: the strongest builds lost about a quarter
 of that time, and the weak ones caught up with them.
+
+## Souls, and what builds up over a run (11 October 2026, later)
+
+A player reached floor 143 with a Warlock whose souls were worth over +1000%, and
+reported that no other class was worth playing. Souls were the Warlock's own
+multiplier: a base, a skill with no top level, a boon, five perks and a relic all
+raised it, and it multiplied critical hits and echoes that already multiply each
+other. No other class had anything that grew over a run.
+
+**Built.** Every class counts the kills of a run and grows stronger with them
+(`runDamagePer100` in data.js: +20% for 100, each doubling after that worth the same
+again). Each class has its own name for it; the Warlock's is still Souls. Nothing in
+the game raises it, for any class. The Warlock's soul perks, skill, boon and relic
+keep their ids and give attack and health.
+
+Deepest floor in 100 hours: 268 to 314, the Warlock at 268 to 276. To floor 35: 3.3 to
+6.7 hours. To floor 50: 5.4 to 9.1, every build within 25% of its class.
+
+A first attempt kept souls as the Warlock's own, at about a third of their size (x2.6
+at floor 200 against x1.6 for the others). The owner asked for the mechanic to stop
+being a source of scaling at all, and that is simpler to keep balanced.

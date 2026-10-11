@@ -34,6 +34,7 @@ classes.elementalist = {
   name: "Elementalist",
   icon: "🧤",
   art: "art/elementalist.png",
+  fervour: "Attunement",
   text: "Commands fire, ice, lightning and earth. Pick an element to change how you fight. Every spell ignores armor.",
   perLevel: { maxHp: 7, attack: 2 },
   base: { maxHp: 75, attack: 10, burnStacks: 5, critChance: 0.22, stunChance: 0.2 },
