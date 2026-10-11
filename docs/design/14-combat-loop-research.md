@@ -203,3 +203,48 @@ floors mean anything here). Most milestones are level. Two clear gaps were fixed
 Wolf Pack's own floor 50 perk was 59 floors behind the general Beastlord beside it, and
 Opening Volley was 54 behind Longshot. Still apart and not yet fixed: Scarred Hide (46
 behind the Axe's floor 75 perk), and Fire's Inferno 52 ahead of its two neighbours.
+
+## 6. Corrected and finished (11 October 2026, version 20261011w)
+
+**The measurement in section 5 was wrong in two ways**, found when the owner asked for
+the weaknesses to be worked on before going live.
+
+- "Turns a kill" averaged a whole run, most of which is floors the class has outgrown.
+- "Hits to die" was read at the moment a floor was first reached, when a class is by
+  definition about to fall.
+
+The bot's `edge` option now counts every fight within 10 floors of a class's deepest, in
+the last third of the hours. By that measure version v had ordinary fights of **9 turns**
+at the edge (target 3 to 5) and **2.5 hits** to die (target 5 to 8). Softer monsters only
+moved the edge deeper: a class climbs until something stops it, and what stopped it was
+the 30-turn rule. So the fix was the thing that stops it:
+
+**The clock** (`fightClock` in data.js). An ordinary fight drags on after 6 turns and a
+boss after 14; from then the monster's attack grows 30% a turn. With that, monsters at
+x2 health and x0.08 attack (`longFights`), and bosses at four times an ordinary monster's
+health:
+
+| At the deepest floors a class can reach | Target | 100 hours | 300 hours |
+|---|---|---|---|
+| Ordinary fight, turns | 3 to 5 | 4 to 6, middle 6 | 6 to 7 |
+| Boss fight, turns | 10 to 15 | 9 to 14, middle 13 | 11 to 15 |
+| Ordinary hits to die | 5 to 8 | 4.1 to 10.3, middle 5.7 | middle 6.5 |
+
+(Low, middle and high are the quarter, middle and three-quarter builds of the 25.)
+Ordinary fights sit at the top of the target and one turn over it at 300 hours.
+
+**A bug the longer fights exposed.** Void Rift took 6% of an enemy's FULL health through
+the path that fame's Might multiplies. It carried a level 17 Void Tome to floor 395. It
+now tears a share of the health left and nothing multiplies it (`voidTear`).
+
+**Where every build stands**: deepest floor in 100 hours 286 to 342; in 300 hours 360 to
+449, nothing running away. Floor 35 in 2.6 to 6.3 hours and floor 50 in 4.5 to 8.6, every
+build within 25% of its class.
+
+**The other paths**, 60 hours against the weapon perks (one climb each, so about 20
+floors is noise): Rage +10, +8 and -36 with the Club; Crusade +21, -15, -29; Vengeance
++21, -24, +9; Ambush -33, +33, -18. Crusade and Vengeance were 50 to 76 ahead before
+their multipliers were cut from x3 and x4.
+
+**Still open**: Toughness to floor 50 has not been tested again since the clock; Scarred
+Hide and Inferno from section 5; the Club on the Rage path.

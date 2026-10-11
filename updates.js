@@ -20,7 +20,8 @@ const gameUpdates = [
       "At the deepest floors you can reach, an ordinary fight is about 5 or 6 turns, a boss about 13, and an ordinary monster needs about 6 hits to bring you down.",
       "Bosses have four times an ordinary monster's health, where they had 2.2 times.",
       "Fixed: the Void Tome's Void Rift took a share of an enemy's full health that fame multiplied. It now takes a share of the health left, and nothing multiplies it. The Void Tome's own spells are stronger to make up for it.",
-      "The Holy Mace, Stiletto and Spiked Shield are a little weaker and the Tower Shield stronger, to keep every weapon level."
+      "The Holy Mace, Stiletto and Spiked Shield are a little weaker and the Tower Shield stronger, to keep every weapon level.",
+      "Crusade's and Vengeance's big perks multiply by 2 and 2.5 (they were 3 and 4, and far ahead of the weapon perks once fights were longer). Ambush's multiply by 2.5."
     ]
   },
   {

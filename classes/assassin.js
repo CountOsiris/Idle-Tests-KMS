@@ -94,7 +94,7 @@ classes.assassin = {
       floor: 50,
       perks: [
         { id: "nightStalker", name: "Nightwalker", text: "attack x1.4 and +10% dodge", bonus: { dodge: 0.1 }, multiply: { attack: 1.4 } },
-        { id: "deathMark", name: "Death Mark", text: "Ambush damage x2, and health x1.4", multiply: { ambush: 2, health: 1.4 } },
+        { id: "deathMark", name: "Death Mark", text: "Ambush damage x2.5, and health x1.4", multiply: { ambush: 2.5, health: 1.4 } },
         { id: "plaguebringer", name: "Plaguebringer", text: "Venom Dagger: poison damage x1.4", multiply: { poison: 1.4 } },
         { id: "throatCutter", name: "Throat Cutter", text: "Stiletto: critical hit damage x1.6", multiply: { stilettoCrit: 1.6 } },
         { id: "shade", name: "Shade", text: "Shadow Blade: damage of the hit after a dodge x3 and +8% dodge", bonus: { dodge: 0.08 }, multiply: { counter: 3 } },
@@ -129,7 +129,7 @@ classes.assassin = {
       floor: 100,
       perks: [
         { id: "shadowMaster", name: "Master Assassin", text: "attack x1.6, health x1.4 and +10% dodge", bonus: { dodge: 0.1 }, multiply: { attack: 1.6, health: 1.4 } },
-        { id: "grimReaper", name: "Grim Reaper", text: "Ambush damage x2 again, and health x1.6", multiply: { ambush: 2, health: 1.6 } },
+        { id: "grimReaper", name: "Grim Reaper", text: "Ambush damage x2.5 again, and health x1.6", multiply: { ambush: 2.5, health: 1.6 } },
         { id: "blightlord", name: "Blightlord", text: "Venom Dagger: poison damage x2 again", multiply: { poison: 2 } },
         { id: "kingslayer", name: "Kingslayer", text: "Stiletto: critical hit damage x1.3 again", multiply: { stilettoCrit: 1.3 } },
         { id: "umbra", name: "Umbra", text: "Shadow Blade: damage of the hit after a dodge x4 again and +8% dodge", bonus: { dodge: 0.08 }, multiply: { counter: 4 } },

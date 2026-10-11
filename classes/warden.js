@@ -118,7 +118,7 @@ classes.warden = {
         { id: "thornwall", name: "Thornwall", text: "Spiked Shield: reflected damage x1.1", multiply: { reflect: 1.1 } },
         { id: "phalanxCaptain", name: "Phalanx Captain", text: "Tower Shield: spear damage x1.6", multiply: { spear: 1.6 } },
         { id: "razorDisc", name: "Razor Disc", text: "Bladed Shield: thrown shield damage x2", multiply: { throw: 2 } },
-        { id: "bloodDebt", name: "Blood Debt", text: "Vengeance x4: four times as much of each hit you take is paid back", multiply: { vengeance: 4 } }
+        { id: "bloodDebt", name: "Blood Debt", text: "Vengeance x2.5: two and a half times as much of each hit you take is paid back", multiply: { vengeance: 2.5 } }
       ]
     },
     // KEYSTONES: each changes a rule of one weapon, and costs something. This milestone is
@@ -154,7 +154,7 @@ classes.warden = {
         { id: "crownOfThorns", name: "Crown of Thorns", text: "Spiked Shield: reflected damage x1.1 again", multiply: { reflect: 1.1 } },
         { id: "lastLine", name: "Last Line", text: "Tower Shield: spear damage x2.8 again", multiply: { spear: 2.8 } },
         { id: "stormOfSteel", name: "Storm of Steel", text: "Bladed Shield: thrown shield damage x3 again", multiply: { throw: 3 } },
-        { id: "reckoning", name: "Reckoning", text: "Vengeance x4 again", multiply: { vengeance: 4 } }
+        { id: "reckoning", name: "Reckoning", text: "Vengeance x2.5 again", multiply: { vengeance: 2.5 } }
       ]
     }
   ],

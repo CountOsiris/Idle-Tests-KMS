@@ -102,7 +102,7 @@ classes.zealot = {
         { id: "saint", name: "Saint", text: "health x1.6, attack x1.3, and Devotion: +2% of your health healed every turn", bonus: { devotion: 0.02 }, multiply: { health: 1.6, attack: 1.3 } },
         { id: "bulwarkOfFaith", name: "Bulwark of Faith", text: "Mace and Shield: strike back damage x2, +10% block chance", bonus: { blockChance: 0.1 }, multiply: { shieldCounter: 2 } },
         { id: "hierophant", name: "Hierophant", text: "Holy Tome: the burn from healing you do not need x2.5. Devotion: +1% of your health healed every turn", bonus: { devotion: 0.01 }, multiply: { sacred: 2.5 } },
-        { id: "zealous", name: "Zealous", text: "Crusade x3: three times the damage for every turn a fight lasts", multiply: { crusade: 3 } }
+        { id: "zealous", name: "Zealous", text: "Crusade x2: twice the damage for every turn a fight lasts", multiply: { crusade: 2 } }
       ]
     },
     // KEYSTONES: each changes a rule of one weapon, and costs something. This milestone is
@@ -137,7 +137,7 @@ classes.zealot = {
         { id: "martyr", name: "Martyr", text: "health x2.2, attack x1.5, and Devotion: +2% of your health healed every turn", bonus: { devotion: 0.02 }, multiply: { health: 2.2, attack: 1.5 } },
         { id: "aegisOfHeaven", name: "Aegis of Heaven", text: "Mace and Shield: strike back damage x2.6 again, +10% block chance", bonus: { blockChance: 0.1 }, multiply: { shieldCounter: 2.6 } },
         { id: "voiceOfGod", name: "Voice of God", text: "Holy Tome: the burn from healing you do not need x3.5 again. Devotion: +2% of your health healed every turn", bonus: { devotion: 0.02 }, multiply: { sacred: 3.5 } },
-        { id: "lastCrusade", name: "Last Crusade", text: "Crusade x3 again", multiply: { crusade: 3 } }
+        { id: "lastCrusade", name: "Last Crusade", text: "Crusade x2 again", multiply: { crusade: 2 } }
       ]
     }
   ],
