@@ -1669,3 +1669,264 @@ textarea {
     padding: 9px 12px;
   }
 }
+
+/* =====================================================================
+   THE LAYOUT: the fight on top, one page under it, the tabs along the bottom
+   =====================================================================
+   One column on every screen, as phone idle games do it:
+     - the fight stays at the top of the screen in a short form (the two fighters and
+       their health), whatever tab is open;
+     - under it is the open tab's page, and only that;
+     - the tabs are a bar fixed to the bottom, an icon and a word each.
+   The Fight tab opens the whole fight: what the monster is, how you stand against the
+   floor, your goals, the boons of the run and the log.
+   (Until October 2026 a wide screen had two columns, the fight on the left and the tabs
+   on the right, and a phone had the tabs on top. Players found it cluttered. These rules
+   come last in the file so that they win over both of those.) */
+body {
+  padding: 10px 12px 86px;
+}
+
+.top {
+  max-width: 860px;
+  margin-bottom: 10px;
+  padding-bottom: 8px;
+}
+
+.layout {
+  grid-template-columns: minmax(0, 1fr);
+  max-width: 860px;
+  gap: 12px;
+}
+
+.side {
+  order: 0;
+}
+
+/* ----- The fight, kept on screen ----- */
+.play {
+  display: block;
+  position: sticky;
+  top: 0;
+  z-index: 6;
+  background: var(--background);
+  padding-bottom: 6px;
+}
+
+/* The short form: everything in the fight's box but the fighters is put away, and so
+   are the other boxes of the run */
+body:not([data-tab="tower"]) .play > .card:not(.fight-card):not(#away-report),
+body:not([data-tab="tower"]) .fight-card #tower-note,
+body:not([data-tab="tower"]) .fight-card #week-note,
+body:not([data-tab="tower"]) .fight-card #monster-text,
+body:not([data-tab="tower"]) .fight-card .weak-line,
+body:not([data-tab="tower"]) .fight-card #monster-numbers,
+body:not([data-tab="tower"]) .fight-card #boss-rules,
+body:not([data-tab="tower"]) .fight-card #pressure,
+body:not([data-tab="tower"]) .fight-card #goals,
+body:not([data-tab="tower"]) .fight-card .pips {
+  display: none;
+}
+
+body:not([data-tab="tower"]) .fight-card {
+  margin-bottom: 0;
+  padding: 10px 14px 8px;
+}
+
+body:not([data-tab="tower"]) .fight-card .stage {
+  --art-height: 92px;
+  min-height: 0;
+  padding-top: 6px;
+  padding-bottom: 6px;
+}
+
+body:not([data-tab="tower"]) .fight-card .icon:not(.has-art) {
+  font-size: 40px;
+  line-height: 50px;
+  height: 50px;
+}
+
+body:not([data-tab="tower"]) .fight-card .fighter-name {
+  min-height: 0;
+}
+
+body:not([data-tab="tower"]) .fight-card .tower-head {
+  margin-bottom: 4px;
+}
+
+/* On the Fight tab the whole fight scrolls with the page, and no other page shows */
+body[data-tab="tower"] .play {
+  position: static;
+}
+
+body[data-tab="tower"] #page-character {
+  display: none;
+}
+
+/* ----- The tabs, along the bottom ----- */
+.tabs {
+  position: fixed;
+  top: auto;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 8;
+  display: flex;
+  flex-wrap: nowrap;
+  justify-content: safe center;
+  gap: 0;
+  margin: 0;
+  padding: 0 6px;
+  overflow-x: auto;
+  background: #0d0b09;
+  border-top: 1px solid var(--gold-dark);
+  border-bottom: none;
+}
+
+.tabs button {
+  flex: 0 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  min-width: 70px;
+  margin: 0;
+  padding: 8px 6px 9px;
+  border-bottom: none;
+  border-top: 2px solid transparent;
+  font-size: 11px;
+  letter-spacing: 0.5px;
+}
+
+.tabs button::before {
+  content: attr(data-icon);
+  font-size: 20px;
+  line-height: 22px;
+  letter-spacing: 0;
+  filter: saturate(0.6);
+}
+
+.tabs button:hover,
+.tabs button.open {
+  border-bottom: none;
+}
+
+.tabs button.open {
+  border-top-color: var(--gold);
+  background: rgba(200, 160, 80, 0.07);
+}
+
+.tabs button.open::before {
+  filter: none;
+}
+
+.tabs button.alert::after {
+  top: 6px;
+  right: 14px;
+}
+
+.tab-tower {
+  display: flex;
+}
+
+body[data-tab="tower"] #tab-character {
+  color: var(--faded);
+}
+
+/* (the strip that stood in for the fight on a phone is not needed: the fight is there) */
+.mini-fight,
+body .mini-fight {
+  display: none;
+}
+
+/* The pop-up windows and banners sit above the bar */
+.toasts {
+  z-index: 3;
+}
+
+@media (max-width: 600px) {
+  .tabs {
+    justify-content: flex-start;
+  }
+
+  .tabs button {
+    min-width: 62px;
+  }
+
+  body:not([data-tab="tower"]) .fight-card .stage {
+    --art-height: 76px;
+  }
+}
+
+/* The short fight: no ground shadow (it sat over the name), and less air round the stage */
+body:not([data-tab="tower"]) .fight-card .shadow {
+  display: none;
+}
+
+body:not([data-tab="tower"]) .fight-card .fighter-name {
+  margin: 6px 0 2px;
+  font-size: 12px;
+}
+
+body:not([data-tab="tower"]) .fight-card .stage {
+  margin: 6px 0 6px;
+  padding: 10px 12px 6px;
+}
+
+body:not([data-tab="tower"]) .fight-card .floor-box strong {
+  font-size: 26px;
+  line-height: 28px;
+}
+
+/* A header of one line: the name, who you are, and the four numbers */
+h1 {
+  font-size: 20px;
+  letter-spacing: 4px;
+}
+
+.brand {
+  gap: 16px;
+}
+
+.tile {
+  padding: 0 12px;
+  min-width: 0;
+}
+
+.tile span {
+  font-size: 10px;
+  letter-spacing: 1px;
+}
+
+.tile strong {
+  font-size: 18px;
+}
+
+/* The short fight keeps one height: a long name stays on one line, and an emoji stands
+   in a box as tall as a picture */
+body:not([data-tab="tower"]) .fight-card .fighter-name {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+body:not([data-tab="tower"]) .fight-card .mover,
+body:not([data-tab="tower"]) .fight-card .ghost {
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  height: var(--art-height);
+}
+
+/* A boss's status keeps its line when there is nothing to say, so the fight does not grow
+   by a line whenever a boss raises a shield */
+.fight-card .boss-status {
+  display: block;
+  min-height: 18px;
+}
+
+/* In a rest room or at a chest there is no health bar to show, but its space is kept */
+#monster-stats[hidden] {
+  display: block;
+  visibility: hidden;
+}

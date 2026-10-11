@@ -104,3 +104,19 @@ per device ("What is kept, and what is lost" starts folded); the paragraph of
 explanation under each heading waits behind a "?", with a Settings switch to show them
 all; and the Towers tab shows one short row a tower with the next trophy, the full list
 behind "All trophies". A card in index.html needs nothing added for this to work.
+
+## The layout (11 October 2026)
+
+The owner: "still very cluttered... a lot of good layouts have all the tabs on the
+bottom and a fight in the middle on the top, like switching bars on mobile". **Built**
+(the last block of style.css, "The layout"): one column on every screen. The fight
+stays at the top in a short form, the open tab's page is under it, and the tabs are a
+bar fixed to the bottom with a picture and a word each. The Fight tab opens the whole
+fight, the boons and the log. The two-column desktop page and the phone's tabs-on-top
+page are both gone; one layout serves both.
+
+Pictures: [a tab](pictures/layout-hero-tab.png), [the Fight tab](pictures/layout-fight-tab.png),
+[a narrow window](pictures/layout-phone.png).
+
+The short fight keeps one height through every kind of room (checked), so nothing
+under it moves.

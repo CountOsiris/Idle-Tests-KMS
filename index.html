@@ -11,7 +11,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&family=EB+Garamond:wght@400;500;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css?v=20261011o">
+  <link rel="stylesheet" href="style.css?v=20261011p">
 </head>
 <body data-tab="tower">
 
@@ -103,7 +103,8 @@
 
   <main class="layout">
 
-    <!-- The tower and the fight. Always visible on a wide screen; a tab of its own on a narrow one. -->
+    <!-- The tower and the fight. The fight itself is always on screen, at the top, in a
+         short form; the Fight tab shows all of it, with the boons and the log. -->
     <section class="play">
       <div id="away-report" class="card highlight" hidden>
         <h2>Welcome back</h2>
@@ -111,7 +112,7 @@
         <button onclick="closeAwayReport()">Close</button>
       </div>
 
-      <div class="card">
+      <div class="card fight-card">
         <div class="tower-head">
           <div>
             <h2 id="tower-name">The Tower</h2>
@@ -222,16 +223,16 @@
     <!-- Everything else, one tab at a time -->
     <section class="side">
       <nav class="tabs">
-        <button id="tab-tower" class="tab-tower" onclick="showTab('tower')">Tower</button>
-        <button id="tab-character" onclick="showTab('character')">Character</button>
-        <button id="tab-inventory" onclick="showTab('inventory')">Inventory</button>
-        <button id="tab-skills" onclick="showTab('skills')">Skills</button>
-        <button id="tab-town" onclick="showTab('town')">Town</button>
-        <button id="tab-travel" onclick="showTab('travel')">Towers</button>
-        <button id="tab-milestones" onclick="showTab('milestones')">Milestones</button>
-        <button id="tab-ascension" onclick="showTab('ascension')">Ascension</button>
-        <button id="tab-legend" onclick="showTab('legend')">Legend</button>
-        <button id="tab-save" onclick="showTab('save')">Settings</button>
+        <button id="tab-tower" class="tab-tower" data-icon="⚔️" title="Tower" onclick="showTab('tower')">Fight</button>
+        <button id="tab-character" data-icon="🧍" title="Character" onclick="showTab('character')">Hero</button>
+        <button id="tab-inventory" data-icon="🎒" title="Inventory" onclick="showTab('inventory')">Items</button>
+        <button id="tab-skills" data-icon="✨" title="Skills" onclick="showTab('skills')">Skills</button>
+        <button id="tab-town" data-icon="🏘️" title="Town" onclick="showTab('town')">Town</button>
+        <button id="tab-travel" data-icon="🗼" title="Towers" onclick="showTab('travel')">Towers</button>
+        <button id="tab-milestones" data-icon="🏅" title="Milestones" onclick="showTab('milestones')">Perks</button>
+        <button id="tab-ascension" data-icon="⭐" title="Ascension" onclick="showTab('ascension')">Ascend</button>
+        <button id="tab-legend" data-icon="👑" title="Legend" onclick="showTab('legend')">Legend</button>
+        <button id="tab-save" data-icon="⚙️" title="Settings" onclick="showTab('save')">Settings</button>
 
         <!-- ON A PHONE the fight is a tab of its own, so it is out of sight while any other
              tab is open. This strip stays at the top instead: the floor and both health
@@ -658,35 +659,35 @@
          3. the file version.txt
        The ?v= makes browsers fetch the new files instead of old remembered ones, and
        version.txt is how a game left open finds out it is out of date (see game/start.js). -->
-  <script>const gameVersion = "20261011o";</script>
-  <script src="data.js?v=20261011o"></script>
-  <script src="updates.js?v=20261011o"></script>
-  <script src="towers.js?v=20261011o"></script>
-  <script src="classes/barbarian.js?v=20261011o"></script>
-  <script src="classes/warden.js?v=20261011o"></script>
-  <script src="classes/ranger.js?v=20261011o"></script>
-  <script src="classes/assassin.js?v=20261011o"></script>
-  <script src="classes/warlock.js?v=20261011o"></script>
-  <script src="classes/elementalist.js?v=20261011o"></script>
-  <script src="classes/zealot.js?v=20261011o"></script>
-  <script src="classes/beasttamer.js?v=20261011o"></script>
+  <script>const gameVersion = "20261011p";</script>
+  <script src="data.js?v=20261011p"></script>
+  <script src="updates.js?v=20261011p"></script>
+  <script src="towers.js?v=20261011p"></script>
+  <script src="classes/barbarian.js?v=20261011p"></script>
+  <script src="classes/warden.js?v=20261011p"></script>
+  <script src="classes/ranger.js?v=20261011p"></script>
+  <script src="classes/assassin.js?v=20261011p"></script>
+  <script src="classes/warlock.js?v=20261011p"></script>
+  <script src="classes/elementalist.js?v=20261011p"></script>
+  <script src="classes/zealot.js?v=20261011p"></script>
+  <script src="classes/beasttamer.js?v=20261011p"></script>
   <!-- The game's rules, in this order (start.js last) -->
-  <script src="game/state.js?v=20261011o"></script>
-  <script src="game/bonuses.js?v=20261011o"></script>
-  <script src="game/legend.js?v=20261011o"></script>
-  <script src="game/weekly.js?v=20261011o"></script>
-  <script src="game/equipment.js?v=20261011o"></script>
-  <script src="game/abilities.js?v=20261011o"></script>
-  <script src="game/bosses.js?v=20261011o"></script>
-  <script src="game/summary.js?v=20261011o"></script>
-  <script src="game/skills.js?v=20261011o"></script>
-  <script src="game/save.js?v=20261011o"></script>
-  <script src="game/page-build.js?v=20261011o"></script>
-  <script src="game/page-show.js?v=20261011o"></script>
-  <script src="game/fights.js?v=20261011o"></script>
-  <script src="game/tidy.js?v=20261011o"></script>
-  <script src="game/feel.js?v=20261011o"></script>
-  <script src="game/start.js?v=20261011o"></script>
-  <script src="cloud.js?v=20261011o"></script>
+  <script src="game/state.js?v=20261011p"></script>
+  <script src="game/bonuses.js?v=20261011p"></script>
+  <script src="game/legend.js?v=20261011p"></script>
+  <script src="game/weekly.js?v=20261011p"></script>
+  <script src="game/equipment.js?v=20261011p"></script>
+  <script src="game/abilities.js?v=20261011p"></script>
+  <script src="game/bosses.js?v=20261011p"></script>
+  <script src="game/summary.js?v=20261011p"></script>
+  <script src="game/skills.js?v=20261011p"></script>
+  <script src="game/save.js?v=20261011p"></script>
+  <script src="game/page-build.js?v=20261011p"></script>
+  <script src="game/page-show.js?v=20261011p"></script>
+  <script src="game/fights.js?v=20261011p"></script>
+  <script src="game/tidy.js?v=20261011p"></script>
+  <script src="game/feel.js?v=20261011p"></script>
+  <script src="game/start.js?v=20261011p"></script>
+  <script src="cloud.js?v=20261011p"></script>
 </body>
 </html>

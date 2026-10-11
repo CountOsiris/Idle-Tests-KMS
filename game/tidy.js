@@ -33,8 +33,8 @@ function tidyCards() {
 
   for (let card of document.querySelectorAll(".card")) {
     let heading = card.querySelector("h2");
-    // (not the windows that open over the page, and not the fight itself)
-    if (heading === null || card.closest(".window") !== null || card.querySelector("#stage") !== null) {
+    // (only the boxes of the page: not the windows that open over it, and not the fight)
+    if (heading === null || card.closest(".layout") === null || card.querySelector("#stage") !== null) {
       continue;
     }
     let key = cardKey(card);

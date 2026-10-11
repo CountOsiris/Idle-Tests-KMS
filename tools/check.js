@@ -1106,10 +1106,6 @@ try {
   // the page does not move under the pointer
   showTab("skills");
   let fightCard = document.getElementById("stage").closest(".card");
-  if (fightCard.offsetHeight === 0) {
-    // (a narrow window: the fight is a tab of its own there)
-    showTab("tower");
-  }
   let fightHeights = {};
   let roomKinds = {};
   let boonsWere = upgrades;
@@ -1121,7 +1117,7 @@ try {
     roomKinds[encounterType] = true;
   }
   check("the fight box kept one height (" + Object.keys(fightHeights).join(", ") + " pixels) through 400 turns of " + Object.keys(roomKinds).join(", ") + " rooms, and the page does not adjust its own scroll",
-    Object.keys(fightHeights).length === 1 && fightCard.offsetHeight > 300 && Object.keys(roomKinds).length >= 3 && getComputedStyle(document.documentElement).overflowAnchor === "none");
+    Object.keys(fightHeights).length === 1 && fightCard.offsetHeight > 150 && Object.keys(roomKinds).length >= 3 && getComputedStyle(document.documentElement).overflowAnchor === "none");
 
   // 3i15. Phoenix Feather saves the hero once a run and says so; every build has one
   // legendary relic, which only a fought relic boss can give, and which is lost on a fall
@@ -1177,6 +1173,45 @@ try {
   recalcStats();
   playerHp = playerMaxHp;
   closeMoment();
+
+  // 3i16. The layout: the fight is on screen on every tab, above the page; the tabs are a
+  // bar along the bottom; and the Fight tab shows the whole fight with the boons and the log
+  let layoutProblems = [];
+  let bar = document.querySelector(".tabs");
+  for (let name of tabNames) {
+    if (!tabIsOpen(name)) {
+      continue;
+    }
+    showTab(name);
+    updateScreen();
+    let fight = document.querySelector(".fight-card").getBoundingClientRect();
+    if (fight.height < 100) {
+      layoutProblems.push("no fight on the " + name + " tab");
+    }
+    let page = document.getElementById("page-" + name);
+    if (page !== null && (page.offsetHeight === 0 || page.getBoundingClientRect().top < fight.bottom - 1)) {
+      layoutProblems.push("the " + name + " page is not under the fight");
+    }
+    let button = document.getElementById("tab-" + name);
+    if (button.offsetHeight === 0 || !button.dataset.icon) {
+      layoutProblems.push("the " + name + " tab has no button with a picture");
+    }
+  }
+  if (getComputedStyle(bar).position !== "fixed" || Math.abs(bar.getBoundingClientRect().bottom - window.innerHeight) > 1) {
+    layoutProblems.push("the tabs are not a bar along the bottom");
+  }
+  showTab("skills");
+  let shortFight = document.querySelector(".fight-card").offsetHeight;
+  let logHidden = document.getElementById("log").offsetHeight === 0 && document.getElementById("goals").offsetHeight === 0;
+  showTab("tower");
+  updateScreen();
+  let wholeFight = document.querySelector(".fight-card").offsetHeight;
+  let logShown = document.getElementById("log").offsetHeight > 0 && document.getElementById("pressure").offsetHeight > 0;
+  if (!(logHidden && logShown && wholeFight > shortFight + 100)) {
+    layoutProblems.push("the Fight tab does not open the whole fight (" + shortFight + " pixels short, " + wholeFight + " whole)");
+  }
+  check("layout: the fight is on top of every tab's page, the tabs are a bar along the bottom, and the Fight tab opens the whole fight" + (layoutProblems.length === 0 ? "" : ": " + layoutProblems.join("; ")), layoutProblems.length === 0);
+  showTab("character");
 
   // 3j. Starting floors, and the Tactician's list
   cruiseFloor = 40;

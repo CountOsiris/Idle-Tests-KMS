@@ -13,6 +13,16 @@
 
 const gameUpdates = [
   {
+    version: "20261011p",
+    title: "A new layout: the fight on top, the tabs along the bottom",
+    changes: [
+      "The fight now stays at the top of the screen on every tab, in a short form: the two fighters and their health.",
+      "The tabs are a bar along the bottom, a picture and a word each, the same on a computer and a phone.",
+      "The Fight tab opens the whole fight: what the monster is, how you stand against the floor, your goals, the boons of the run and the log.",
+      "The header is one line."
+    ]
+  },
+  {
     version: "20261011o",
     title: "Legendary relics, and a Phoenix Feather you can see",
     changes: [

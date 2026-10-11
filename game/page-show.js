@@ -5,8 +5,9 @@
 // ----- Showing things on the page -----
 // The page has tabs: Character, Skills, Town and so on. Only one is open at a time.
 // style.css shows the page whose name matches body's data-tab.
-// On a wide screen the tower is always visible beside the tabs; on a narrow
-// one it is a tab of its own.
+// THE LAYOUT (style.css, "The layout"): the fight is always at the top of the screen in
+// a short form, the open tab's page is under it, and the tabs are a bar along the
+// bottom, as on a phone. "tower" is the Fight tab: the whole fight, the boons and the log.
 const tabNames = ["tower", "character", "inventory", "skills", "town", "travel", "milestones", "ascension", "legend", "save"];
 
 function showTab(name) {
