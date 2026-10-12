@@ -23,12 +23,17 @@
 //              Without this the bot plays with no modifier of the week.
 //  t=name      climb this class's tower instead of its own (a challenge), or t=next for
 //              the tower of the class after it on the list
+//  home=N      with t=: play the class's own tower for N hours first, and only then go
+//              to the other tower for the rest of the hours (as a player would). The
+//              line then ends with the deepest floor reached there.
 //  skillcheck  for every build, play with all its skills and then with each one left
 //              out, and say how much slower the climb to floor 35 is without it (to=N
 //              for another floor: one of the floors the bot reports on). A skill
 //              whose absence changes nothing is not worth its points. (runs=N: the
 //              number of climbs each figure is the average of; 8 unless given.
 //              sk=a+b: only test these skill ids. With "ascend" the climbs ascend.)
+//  skip=a+b    never buy the skills with these ids, for the whole run. To see whether a
+//              skill makes a class climb DEEPER (skillcheck only says faster).
 //  mul=a:2+b:3 a what-if: multiply these stats (the ones "multiplier" knows: attack,
 //              health, armor, damageTaken, or a build's own word) for the whole run. To
 //              find what a weak build is short of, before changing its perks.
@@ -36,18 +41,23 @@
 //              of that floor would)
 //  probe       also say what the class was made of when it first reached floors 100 and
 //              150: level, fame levels, attack and health against an ordinary monster's
-//  perkcheck   for the first weapon of every class, play once for each perk of each
-//              milestone with that perk forced, and say how deep each got. A perk far
-//              behind the others of its milestone is a trap; one far ahead is the only
-//              real choice. One climb each, so only trust gaps of 20 floors or more.
+//  perkcheck   for the first weapon of every class (with "every": each weapon), play once
+//              for each perk of each milestone with that perk forced, and say how deep
+//              each got. A perk far behind the others of its milestone is a trap; one far
+//              ahead is the only real choice. One climb each, so only trust gaps of 20
+//              floors or more. (pruns=N: the average of N climbs. pf=50+75: only the
+//              milestones of these floors.)
 //  long=H:A    try another length of fight: monsters with H times the health and A times
 //              the attack from floor 35 on (see longFights in data.js)
 //  drag=T:B:G  try another clock: an ordinary fight drags on after T turns, a boss after
 //              B, and the monster's attack then grows G times a turn (see fightClock)
 //  edge        also say how the fights near the class's deepest floor went, in the last
 //              third of the hours: turns to win an ordinary fight and a boss, the share of
-//              health an ordinary monster's attack took, and how fights were lost. This
-//              is the measure of how long a fight lasts (docs/design/14).
+//              health an ordinary monster's attack took before the fight began to drag on
+//              (the AVERAGE hit, and the tenth smallest and largest), and how fights were
+//              lost. The average and not the middle hit: a Warden or an Elementalist takes
+//              half its hits behind a guard, and the middle one then says 40 hits to die.
+//              This is the measure of how long a fight lasts (docs/design/14).
 //  killers     also say what killed it most in its last two hours, and on which floor
 //  duo         a Barbarian for 6 hours, then a new Ranger and Warden on the same account
 // =====================================================================
@@ -73,6 +83,7 @@ const PERK = decodeURIComponent((location.hash.match(/perk=([^,]+)/) || [0, ""])
 const FAV = (location.hash.match(/fav=(\w+)/) || [0, ""])[1];
 const KEYSTONES = location.hash.includes("keystones");
 const TOWER = (location.hash.match(/t=(\w+)/) || [0, ""])[1];
+const HOME_HOURS = Number((location.hash.match(/home=([\d.]+)/) || [0, 0])[1]);
 const STALL = Number((location.hash.match(/stall=(\d+)/) || [0, 600])[1]);
 let ASCEND = location.hash.includes("ascend");
 const PROBE = location.hash.includes("probe");
@@ -80,8 +91,8 @@ const PROBE = location.hash.includes("probe");
 // A perk the bot must take at its milestone (the perkcheck mode sets this)
 let forcedPerk = null;
 
-// Skills left unbought (the skillcheck mode sets this)
-let SKIP_SKILLS = [];
+// Skills left unbought (the skillcheck mode sets this, or "skip=a+b" for a whole run)
+let SKIP_SKILLS = ((location.hash.match(/skip=([\w+]+)/) || [0, ""])[1]).split("+").filter(function (x) { return x !== ""; });
 
 // What-if multipliers (mul=attack:2+health:3)
 let whatIf = {};
@@ -126,6 +137,12 @@ function hoursText(seconds) {
   return (seconds / 3600).toFixed(1) + "h";
 }
 
+// The tower "t=" asks for
+function awayTowerFor(className) {
+  let names = Object.keys(towers);
+  return TOWER === "next" ? names[(names.indexOf(className) + 1) % names.length] : TOWER;
+}
+
 // A brand new class. Unless sharing the account, fame starts from nothing too.
 function freshStart(className, weaponType, keepAccount) {
   playerClass = className;
@@ -139,9 +156,8 @@ function freshStart(className, weaponType, keepAccount) {
   buildClassScreen();
   weapon = weaponType;
   nextWeapon = weaponType;
-  if (TOWER !== "") {
-    let names = Object.keys(towers);
-    tower = TOWER === "next" ? names[(names.indexOf(className) + 1) % names.length] : TOWER;
+  if (TOWER !== "" && HOME_HOURS === 0) {
+    tower = awayTowerFor(className);
     nextTower = tower;
   }
   floor = 1;
@@ -308,6 +324,9 @@ function run(className, weaponType, stanceId, hours, ascending, keepAccount) {
   for (let i = 1; i <= hours * 3600; i++) {
     now = i;
     edgeOn = EDGE && i > hours * 3600 * 2 / 3;
+    if (TOWER !== "" && HOME_HOURS > 0 && i === HOME_HOURS * 3600) {
+      nextTower = awayTowerFor(className);
+    }
     step();
     if (NOUP) {
       upgrades = {};
@@ -363,7 +382,7 @@ function run(className, weaponType, stanceId, hours, ascending, keepAccount) {
     line = line + ", ascensions " + ascensionsDone;
   }
   if (TOWER !== "") {
-    line = line + ", trophies " + trophies.length;
+    line = line + ", trophies " + trophies.length + ", deepest there " + (towerBest[awayTowerFor(className)] || 0);
   }
   out.push(line);
   if (ascending) {
@@ -381,9 +400,12 @@ function run(className, weaponType, stanceId, hours, ascending, keepAccount) {
     probes.push("deepest run (to floor " + deepestRun.floor + "): damage " + parts.join(", ") + "; healed " + big(healed) + ", taken " + big(taken) + ", " + deepestRun.kills + " kills in " + deepestRun.seconds + " turns");
   }
   if (EDGE) {
-    let hit = median(edgeFights.hitShare);
+    let hit = 0;
+    for (let share of edgeFights.hitShare) {
+      hit = hit + share / edgeFights.hitShare.length;
+    }
     out.push("    edge: ordinary fight " + median(edgeFights.monster) + " turns (" + edgeFights.monster.length + " won), boss " + median(edgeFights.boss) + " turns (" + edgeFights.boss.length
-      + " won), an ordinary hit takes " + (hit * 100).toFixed(1) + "% of health = " + (hit > 0 ? (1 / hit).toFixed(1) : "-") + " hits to die, lost fights lasted " + median(edgeFights.lostTurns) + " turns (" + edgeFights.lostTurns.length + " lost)");
+      + " won), an ordinary hit takes on average " + (hit * 100).toFixed(1) + "% of health = " + (hit > 0 ? (1 / hit).toFixed(1) : "-") + " hits to die (a tenth of the hits take under " + (quantile(edgeFights.hitShare, 0.1) * 100).toFixed(1) + "%, a tenth over " + (quantile(edgeFights.hitShare, 0.9) * 100).toFixed(1) + "%, " + edgeFights.hitShare.length + " hits), lost fights lasted " + median(edgeFights.lostTurns) + " turns (" + edgeFights.lostTurns.length + " lost)");
   }
   for (let probe of probes) {
     out.push("    " + probe);
@@ -414,6 +436,14 @@ function median(list) {
   return sorted[Math.floor(sorted.length / 2)];
 }
 
+function quantile(list, share) {
+  if (list.length === 0) {
+    return 0;
+  }
+  let sorted = list.slice().sort(function (a, b) { return a - b; });
+  return sorted[Math.min(sorted.length - 1, Math.floor(sorted.length * share))];
+}
+
 if (EDGE) {
   let realVictory = victory;
   victory = function () {
@@ -431,7 +461,7 @@ if (EDGE) {
   };
   let realNoteTaken = noteTaken;
   noteTaken = function (amount) {
-    if (edgeOn && floor >= bestFloor - 10 && encounterType === "monster" && !monsterIsRare && playerMaxHp > 0) {
+    if (edgeOn && floor >= bestFloor - 10 && encounterType === "monster" && !monsterIsRare && playerMaxHp > 0 && fightTurns < fightClock.turns) {
       edgeFights.hitShare.push(amount / playerMaxHp);
     }
     realNoteTaken(amount);
@@ -463,35 +493,51 @@ function perkCheck() {
       continue;
     }
     let c = classes[className];
-    let weaponType = Object.keys(c.gearTypes)[0];
-    let stanceId = c.stances !== undefined ? Object.keys(c.stances)[0] : undefined;
-    freshStart(className, weaponType, false);
-    if (stanceId !== undefined) {
-      stance = stanceId;
+    let builds = c.stances !== undefined ? Object.keys(c.stances) : Object.keys(c.gearTypes);
+    if (!EVERY) {
+      builds = [builds[0]];
     }
-    let milestones = allMilestones().filter(function (m) { return m.keystones !== true && m.floor <= 100; });
-    out.push(className + "/" + (stanceId || weaponType) + ", deepest floor in " + HOURS + " hours with each perk forced:");
-    for (let milestone of milestones) {
-      let parts = [];
-      for (let perk of milestone.perks) {
-        if (otherBuildNote(perk.text) !== "") {
+
+    for (let build of builds) {
+      let weaponType = c.stances !== undefined ? Object.keys(c.gearTypes)[0] : build;
+      let stanceId = c.stances !== undefined ? build : undefined;
+      freshStart(className, weaponType, false);
+      if (stanceId !== undefined) {
+        stance = stanceId;
+      }
+      let milestones = allMilestones().filter(function (m) { return m.keystones !== true && m.floor <= 100; });
+      out.push(className + "/" + build + ", deepest floor in " + HOURS + " hours with each perk forced (average of " + PERK_RUNS + "):");
+      for (let milestone of milestones) {
+        if (PERK_FLOORS.length > 0 && !PERK_FLOORS.includes(milestone.floor)) {
           continue;
         }
-        forcedPerk = { floor: milestone.floor, id: perk.id };
-        let kept = out.length;
-        run(className, weaponType, stanceId, HOURS, true, false);
-        while (out.length > kept) {
-          out.pop();
+        let parts = [];
+        for (let perk of milestone.perks) {
+          if (otherBuildNote(perk.text) !== "") {
+            continue;
+          }
+          let total = 0;
+          for (let i = 0; i < PERK_RUNS; i++) {
+            forcedPerk = { floor: milestone.floor, id: perk.id };
+            let kept = out.length;
+            run(className, weaponType, stanceId, HOURS, true, false);
+            while (out.length > kept) {
+              out.pop();
+            }
+            total = total + bestFloor;
+          }
+          parts.push(perk.name + " " + Math.round(total / PERK_RUNS));
         }
-        parts.push(perk.name + " " + bestFloor);
+        forcedPerk = null;
+        out.push("  floor " + milestone.floor + ": " + parts.join(" | "));
       }
-      forcedPerk = null;
-      out.push("  floor " + milestone.floor + ": " + parts.join(" | "));
     }
   }
 }
 
 // The luck of one climb moves it by 20% or more, so each figure is the average of this many
+const PERK_RUNS = Number((location.hash.match(/pruns=(\d+)/) || [0, 1])[1]);
+const PERK_FLOORS = ((location.hash.match(/pf=([\d+]+)/) || [0, ""])[1]).split("+").filter(function (x) { return x !== ""; }).map(Number);
 const SKILL_FLOOR = Number((location.hash.match(/to=(\d+)/) || [0, 35])[1]);
 const SKILL_ONLY = ((location.hash.match(/sk=([\w+]+)/) || [0, ""])[1]).split("+").filter(function (x) { return x !== ""; });
 const SKILL_RUNS = Number((location.hash.match(/runs=(\d+)/) || [0, 8])[1]);

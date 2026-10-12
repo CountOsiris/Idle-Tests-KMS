@@ -34,8 +34,8 @@ something that is not multiplied again by another endless word.
 | `armorLimit` | + perk (1), + relic (2), + skill (1), + trophy (1) | skill | added: game/bonuses.js:462 |
 | `armorPercent` | + skill (1) | skill | added: game/bonuses.js:467 |
 | `arrowPower` | + skill (1) | skill | added: classes/ranger.js:306, classes/ranger.js:343 |
-| `attack` | + base (8), x breakthrough (2), x perk (68), x trophy (8) | no | added: game/skills.js:314; multiplied: game/skills.js:317, classes/warden.js:232; recalcStats (game/skills.js): flat attack |
-| `attackPercent` | + boon (8), + perk (9), + relic (1), + skill (10) | boon, skill | added: game/skills.js:317 |
+| `attack` | + base (8), x breakthrough (2), x perk (101), x trophy (8) | no | added: game/skills.js:314; multiplied: game/skills.js:317, classes/warden.js:232; recalcStats (game/skills.js): flat attack |
+| `attackPercent` | + boon (8), + perk (9), + relic (1), + skill (18) | boon, skill | added: game/skills.js:317 |
 | `awayHours` | + town (1) | no | added: game/page-show.js:859, game/start.js:16 |
 | `bear` | x breakthrough (1), x perk (3), x relic (1) | no | multiplied: classes/beasttamer.js:256 |
 | `bitePower` | + boon (1), + perk (1), + skill (1) | boon, skill | added: classes/beasttamer.js:242, classes/beasttamer.js:309, classes/beasttamer.js:311 |
@@ -95,7 +95,7 @@ something that is not multiplied again by another endless word.
 | `headStart` | + relic (2), + trophy (1) | no | added: game/fights.js:541 |
 | `healOnKill` | nothing | no | added: game/fights.js:396 |
 | `health` | x breakthrough (2), x fame (1), x perk (57), x relic (25), x trophy (10) | fame | multiplied: game/skills.js:316 |
-| `healthPercent` | + boon (4), + perk (1), + skill (9) | boon, skill | added: game/skills.js:316 |
+| `healthPercent` | + boon (4), + perk (1), + skill (8) | boon, skill | added: game/skills.js:316 |
 | `heavyShot` | + skill (1) | skill | added: classes/ranger.js:281, classes/ranger.js:339 |
 | `hunted` | + tower rule (1) | no | added: game/fights.js:524, game/fights.js:525 |
 | `huntersMark` | + skill (1) | skill | added: classes/ranger.js:271, classes/ranger.js:334 |
@@ -131,7 +131,7 @@ something that is not multiplied again by another endless word.
 | `potionPower` | + town (1) | town | added: game/fights.js:486 |
 | `potionSlots` | + town (1) | town | added: game/equipment.js:310 |
 | `prayer` | + perk (5), + relic (2), + trophy (1), + week (1) | no | added: game/fights.js:535, game/fights.js:537 |
-| `quickHands` | + perk (9), + relic (3), + tower rule (1), + trophy (1), + week (1) | no | added: game/abilities.js:217 |
+| `quickHands` | + perk (9), + relic (3), + skill (1), + tower rule (1), + trophy (1), + week (1) | skill | added: game/abilities.js:217 |
 | `quickShot` | + base (1), + boon (1), + perk (2), + relic (1), + skill (1) | boon, skill | added: classes/ranger.js:300, classes/ranger.js:301, classes/ranger.js:344 |
 | `rage` | + boon (1), + perk (2), + relic (1), + skill (1), x breakthrough (1), x perk (2) | boon, skill | added: classes/barbarian.js:258, classes/barbarian.js:332, classes/barbarian.js:332; multiplied: classes/barbarian.js:258, classes/barbarian.js:332, classes/barbarian.js:332 |
 | `rareMore` | + week (1) | no | added: game/fights.js:146 |

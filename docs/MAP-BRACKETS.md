@@ -12,13 +12,13 @@ Nothing.
 |---|---|---|---|---|
 | Venom Dagger | dotPower, finisher, poisonStacks | poison | x1.4 poison / x1.3 attack / x2 poison | x1.3 poison |
 | Stiletto | bossSlayer, critChance, critPower | stilettoCrit | x1.6 stilettoCrit / x1.3 attack / x1.3 stilettoCrit | x1.5 stilettoCrit |
-| Shadow Blade | counter, dodge, headStart | counter | x3 counter / x1.3 attack / x4 counter | x1.5 counter |
+| Shadow Blade | counter, dodge, headStart | counter | x4.5 counter / x1.3 attack / x4 counter | x1.5 counter |
 
 ## barbarian
 
 | Build | Its own words (added) | Its own multipliers | Multiplier perks on its path, floors 50 / 75 / 100 | Breakthroughs |
 |---|---|---|---|---|
-| Axe | bleedStacks, dotPower, finisher | bleed | x1.4 bleed / x1.3 attack / x2 bleed | x1.3 bleed |
+| Axe | bleedStacks, dotPower, finisher | bleed | x1.4 bleed / x1.3 attack / x2.5 bleed | x1.3 bleed |
 | Sword | critChance, critPower, parryChance, sidestep | swordCrit | x1.8 swordCrit / x1.3 attack / x1.5 swordCrit | x1.5 swordCrit |
 | Club | clubPower, opener, stunChance | club | x1.9 club / x1.3 attack / x2.6 club | x1.4 club |
 
@@ -27,7 +27,7 @@ Nothing.
 | Build | Its own words (added) | Its own multipliers | Multiplier perks on its path, floors 50 / 75 / 100 | Breakthroughs |
 |---|---|---|---|---|
 | Wolf Pack | bitePower, finisher, packSize, packTactics | wolf | x1.5 wolf / x1.3 attack / x1.15 wolf | x1.4 wolf |
-| Bear | brace, guard, maulPower, stunChance | bear | x1.8 bear / x1.3 attack / x1.8 bear | x1.4 bear |
+| Bear | brace, guard, maulPower, stunChance | bear | x1.8 bear / x1.3 attack / x2.4 bear | x1.4 bear |
 | Hawk | critChance, critPower, opener | hawkCrit | x1.8 hawkCrit / x1.3 attack / x1.8 hawkCrit | x1.5 hawkCrit |
 
 ## elementalist
@@ -60,7 +60,7 @@ Nothing.
 | Build | Its own words (added) | Its own multipliers | Multiplier perks on its path, floors 50 / 75 / 100 | Breakthroughs |
 |---|---|---|---|---|
 | Arcane Tome | critChance, critPower, exploit | arcaneCrit | x1.7 arcaneCrit / x1.3 attack / x1.7 arcaneCrit | x1.5 arcaneCrit |
-| Void Tome | leech, voidHeal, voidRend | void | x2.4 void / x1.3 attack / x2.4 void | x1.4 void |
+| Void Tome | leech, voidHeal, voidRend | void | x3.3 void / x1.3 attack / x2.4 void | x1.4 void |
 | Rune Tome | echoChance, echoPower, quickHands | echo | x1.6 echo / x1.3 attack / x1.6 echo | x1.5 echo |
 
 ## zealot

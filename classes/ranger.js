@@ -71,7 +71,7 @@ classes.ranger = {
   // One skill for each bow
   skills: [
     { id: "marksmanship", name: "Power", text: "+3% attack", bonus: { attackPercent: 0.03 }, cost: 1 },
-    { id: "endurance", name: "Toughness", text: "+3% health", bonus: { healthPercent: 0.03 }, cost: 1 },
+    { id: "endurance", name: "Toughness", text: "+3% health and +1.5% attack", bonus: { healthPercent: 0.03, attackPercent: 0.015 }, cost: 1 },
     { id: "huntersMark", name: "Hunter's Mark", text: "Hunter's Mark: +2% attack, and +12% damage against bosses and rare monsters", bonus: { attackPercent: 0.02, huntersMark: 0.12 }, cost: 1 },
     { id: "longbowMastery", name: "Longbow Mastery", text: "Longbow: arrows deal +4% damage and critical shots deal +3% more", bonus: { heavyShot: 0.04, aimPower: 0.03 }, cost: 1 },
     { id: "shortbowMastery", name: "Shortbow Mastery", text: "Shortbow: +3% chance of an extra arrow, arrows deal +1% damage, and +2% armor piercing", bonus: { quickShot: 0.03, arrowPower: 0.01, bodkin: 0.02 }, cost: 1 },
@@ -112,7 +112,7 @@ classes.ranger = {
       floor: 50,
       perks: [
         { id: "hawksVolley", name: "Opening Volley", text: "attack x1.4, and Range: the enemy misses 1 more turn at the start of a fight", bonus: { firstStrike: 1 }, multiply: { attack: 1.4 } },
-        { id: "forestGuardian", name: "Forest Guardian", text: "health x1.5, armor x1.4, and all your damage +30% against an enemy below half health", bonus: { finisher: 0.3 }, multiply: { health: 1.5, armor: 1.4 } },
+        { id: "forestGuardian", name: "Forest Guardian", text: "health x1.5, armor x1.4, attack x1.2, and all your damage +30% against an enemy below half health", bonus: { finisher: 0.3 }, multiply: { health: 1.5, armor: 1.4, attack: 1.2 } },
         { id: "longshot", name: "Longshot", text: "Longbow: critical shot damage x1.6, and +10% critical shot chance", bonus: { aimChance: 0.1 }, multiply: { longbowCrit: 1.6 } },
         { id: "volleyer", name: "Volleyer", text: "Shortbow: arrow damage x1.6", multiply: { shortbow: 1.6 } },
         { id: "siegeArcher", name: "Siege Archer", text: "Crossbow: bolt damage x1.6", multiply: { crossbow: 1.6 } }
@@ -134,7 +134,7 @@ classes.ranger = {
       floor: 75,
       perks: [
         { id: "deadeye", name: "Deadeye", text: "attack x1.3, all your damage +75% against bosses, and your abilities are ready a fifth sooner", bonus: { bossSlayer: 0.75, quickHands: 0.2 }, multiply: { attack: 1.3 } },
-        { id: "wildHeart", name: "Wild Heart", text: "health x1.6, and once a run a blow that would kill you leaves you alive on half your health", bonus: { secondWind: 1 }, multiply: { health: 1.6 } },
+        { id: "wildHeart", name: "Wild Heart", text: "health x1.6, attack x1.2, and once a run a blow that would kill you leaves you alive on half your health", bonus: { secondWind: 1 }, multiply: { health: 1.6, attack: 1.2 } },
         { id: "eagleOfTheWood", name: "Eagle of the Wood", text: "Longbow: attack x1.3, +10% critical shot chance and critical shots deal +100% damage", bonus: { aimChance: 0.1, aimPower: 1 }, multiply: { attack: 1.3 } },
         { id: "hailOfArrows", name: "Hail of Arrows", text: "Shortbow: attack x1.3 and +60% chance of an extra arrow", bonus: { quickShot: 0.6 }, multiply: { attack: 1.3 } },
         { id: "ironbreaker", name: "Ironbreaker", text: "Crossbow: attack x1.3, bolts deal +45% damage and gain +150% penetration", bonus: { boltPower: 0.45, boltPierce: 1.5 }, multiply: { attack: 1.3 } },
@@ -145,7 +145,7 @@ classes.ranger = {
       floor: 100,
       perks: [
         { id: "stormOfArrows", name: "First Blood", text: "+60% attack, and Range: the enemy misses 1 more turn at the start of a fight", bonus: { attackPercent: 0.6, firstStrike: 1 } },
-        { id: "wardenOfTheWood", name: "Keeper of the Wood", text: "health x2, armor x1.5, and you heal 2% of your health every turn of a fight", bonus: { prayer: 0.02 }, multiply: { health: 2, armor: 1.5 } },
+        { id: "wardenOfTheWood", name: "Keeper of the Wood", text: "health x2, armor x1.5, attack x1.4, and you heal 2% of your health every turn of a fight", bonus: { prayer: 0.02 }, multiply: { health: 2, armor: 1.5, attack: 1.4 } },
         { id: "oneShot", name: "One Shot", text: "Longbow: critical shot damage x1.6 again", multiply: { longbowCrit: 1.6 } },
         { id: "arrowStorm", name: "Arrow Storm", text: "Shortbow: arrow damage x2.8 again", multiply: { shortbow: 2.8 } },
         { id: "siegeMaster", name: "Siege Master", text: "Crossbow: bolt damage x2.6 again", multiply: { crossbow: 2.6 } }

@@ -60,11 +60,11 @@ classes.warlock = {
   // One skill for each build, so there is never a question of where a build's points go
   skills: [
     { id: "intellect", name: "Power", text: "+3% attack", bonus: { attackPercent: 0.03 }, cost: 1 },
-    { id: "warding", name: "Toughness", text: "+3% health", bonus: { healthPercent: 0.03 }, cost: 1 },
+    { id: "warding", name: "Toughness", text: "+3% health and +1.5% attack", bonus: { healthPercent: 0.03, attackPercent: 0.015 }, cost: 1 },
     { id: "arcaneMastery", name: "Arcane Mastery", text: "Arcane Tome: +1% critical chance and +2.5% critical damage", bonus: { critChance: 0.01, critPower: 0.025 }, cost: 1 },
     { id: "voidMastery", name: "Void Mastery", text: "Void Tome: +0.6 void power, and every spell heals 0.1% more of your health", bonus: { voidRend: 0.006, voidHeal: 0.001 }, cost: 1 },
     { id: "runeMastery", name: "Rune Mastery", text: "Rune Tome: +1% chance to cast twice, and the second cast (the echo) deals +2.5% damage", bonus: { echoChance: 0.01, echoPower: 0.025 }, cost: 1 },
-    { id: "harvester", name: "Soul Mastery", text: "+2% attack and +1.5% health", bonus: { attackPercent: 0.02, healthPercent: 0.015 }, cost: 1 }
+    { id: "harvester", name: "Soul Mastery", text: "+2% attack, and your abilities are ready 0.5% sooner", bonus: { attackPercent: 0.02, quickHands: 0.005 }, cost: 1 }
   ],
 
   milestones: [
@@ -102,8 +102,8 @@ classes.warlock = {
       floor: 50,
       perks: [
         { id: "cataclysm", name: "Cataclysm", text: "Arcane Tome: the extra damage of critical hits x1.7, and +10% critical chance", bonus: { critChance: 0.1 }, multiply: { arcaneCrit: 1.7 } },
-        { id: "lichForm", name: "Lich Form", text: "health x1.5 and armor x1.4", multiply: { health: 1.5, armor: 1.4 } },
-        { id: "hungeringVoid", name: "Hungering Void", text: "Void Tome: spell damage x2.4, and every spell heals 0.5% more of your health", bonus: { voidHeal: 0.005 }, multiply: { void: 2.4 } },
+        { id: "lichForm", name: "Lich Form", text: "health x1.5, armor x1.4 and attack x1.2", multiply: { health: 1.5, armor: 1.4, attack: 1.2 } },
+        { id: "hungeringVoid", name: "Hungering Void", text: "Void Tome: spell damage x3.3, and every spell heals 0.5% more of your health", bonus: { voidHeal: 0.005 }, multiply: { void: 3.3 } },
         { id: "runicStorm", name: "Runic Storm", text: "Rune Tome: echo damage x1.6, and +15% chance to cast twice", bonus: { echoChance: 0.15 }, multiply: { echo: 1.6 } },
         { id: "soulCollector", name: "Soul Collector", text: "attack x1.2, and every kill makes all your damage 0.5% stronger for the rest of the run (up to +100%)", bonus: { killStreak: 0.005 }, multiply: { attack: 1.2 } }
       ]
@@ -125,12 +125,12 @@ classes.warlock = {
       floor: 75,
       perks: [
         { id: "arcaneMight", name: "Arcane Supremacy", text: "attack x1.3, all your damage +75% against bosses, and your abilities are ready a fifth sooner", bonus: { bossSlayer: 0.75, quickHands: 0.2 }, multiply: { attack: 1.3 } },
-        { id: "arcaneBarrier", name: "Arcane Barrier", text: "health x1.6, and once a run a blow that would kill you leaves you alive on half your health", bonus: { secondWind: 1 }, multiply: { health: 1.6 } },
+        { id: "arcaneBarrier", name: "Arcane Barrier", text: "health x1.6, attack x1.2, and once a run a blow that would kill you leaves you alive on half your health", bonus: { secondWind: 1 }, multiply: { health: 1.6, attack: 1.2 } },
         { id: "spellblade", name: "Spellblade", text: "Arcane Tome: attack x1.3, +10% critical chance and +80% critical damage", bonus: { critChance: 0.1, critPower: 0.8 }, multiply: { attack: 1.3 } },
         { id: "abyss", name: "Abyss", text: "Void Tome: attack x1.3 and +8 void power", bonus: { voidRend: 0.08 }, multiply: { attack: 1.3 } },
         { id: "glyphmaster", name: "Glyphmaster", text: "Rune Tome: attack x1.3, +20% chance to cast twice and echoes deal +50% damage", bonus: { echoChance: 0.2, echoPower: 0.5 }, multiply: { attack: 1.3 } },
         { id: "soulEater", name: "Soul Eater", text: "attack x1.3, and you heal for 4% of the damage your turns deal", bonus: { leech: 0.04 }, multiply: { attack: 1.3 } },
-        { id: "phaseShift", name: "Phase Shift", text: "You take 25% less damage", multiply: { damageTaken: 0.75 } }
+        { id: "phaseShift", name: "Phase Shift", text: "You take 25% less damage, and attack x1.2", multiply: { damageTaken: 0.75, attack: 1.2 } }
       ]
     },
     {
@@ -140,7 +140,7 @@ classes.warlock = {
         { id: "voidLord", name: "Void Lord", text: "Void Tome: spell damage x2.4 again", multiply: { void: 2.4 } },
         { id: "runeLord", name: "Rune Lord", text: "Rune Tome: echo damage x1.6 again and +20% chance to cast twice", bonus: { echoChance: 0.2 }, multiply: { echo: 1.6 } },
         { id: "deathsHarvest", name: "Death's Harvest", text: "attack x1.4, and every floor swept through at the start of a run adds 1% to all your damage (up to +100%)", bonus: { momentum: 0.01 }, multiply: { attack: 1.4 } },
-        { id: "undying", name: "Undying", text: "health x2, armor x1.5, and you heal 2% of your health every turn of a fight", bonus: { prayer: 0.02 }, multiply: { health: 2, armor: 1.5 } }
+        { id: "undying", name: "Undying", text: "health x2, armor x1.5, attack x1.4, and you heal 2% of your health every turn of a fight", bonus: { prayer: 0.02 }, multiply: { health: 2, armor: 1.5, attack: 1.4 } }
       ]
     }
   ],

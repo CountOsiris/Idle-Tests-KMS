@@ -3,6 +3,10 @@
 Testing tools. The game never loads anything in this folder.
 They need Microsoft Edge (installed on Windows) and Git Bash.
 
+Every run opens its own hidden Edge. `tools/run.sh` lets only 3 be open at once and
+makes the rest wait their turn, because many at once crashed the PC. To change the
+limit for one command: `LLOEGRYS_MAX_EDGE=2 bash tools/run.sh ...`
+
 ## The balance bot
 
 Plays classes for simulated hours in a hidden browser, as fast as the computer
@@ -50,6 +54,34 @@ unbought. A skill that makes the climb FASTER when skipped is a trap.
 
 ```
 bash tools/run.sh sim "h=20,ascend,skillcheck,to=50,runs=10,c=ranger"
+```
+
+`skillcheck` only says faster or slower. To see whether a skill makes a class climb
+DEEPER, play 100 hours with it never bought (`skip=` takes skill ids) beside a normal run:
+
+```
+bash tools/run.sh sim "h=100,every,ascend,skip=toughness,c=barbarian"
+```
+
+`perkcheck` does the same for milestone perks: one climb with each perk forced. With
+`every` it tests each weapon, `pf=50+75+100` keeps it to those floors, `pruns=3` averages
+three climbs. One climb is only good to about 25 floors, so average a kind of perk over
+many builds before believing a gap.
+
+```
+bash tools/run.sh sim "h=30,every,perkcheck,pf=50+75+100,c=warden"
+```
+
+`edge` says how fights go at the deepest floors a class can reach: turns to win an
+ordinary fight and a boss, and how many ordinary hits bring the hero down (from the
+AVERAGE hit: a class with a guard takes half its hits behind it, and the middle hit lies).
+
+For another class's tower, `t=ranger,home=15` plays 15 hours at home first and only then
+goes there, as a player would. A class sent there from its first minute gets nowhere,
+and that says nothing about the tower.
+
+```
+bash tools/run.sh sim "h=30,every,ascend,home=15,t=ranger"
 ```
 
 A build whose "best" is several times the others', or that has no killers at all, has

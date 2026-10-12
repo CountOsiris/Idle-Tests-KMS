@@ -72,7 +72,7 @@ classes.warden = {
   // (A skill with the id "grudge" was here until October 2026. Don't reuse that id.)
   skills: [
     { id: "spearThrust", name: "Power", text: "+3% attack and +1% shield damage (reflected or thrown)", bonus: { attackPercent: 0.03, shieldPower: 0.01 }, cost: 1 },
-    { id: "vigor", name: "Toughness", text: "+3% health", bonus: { healthPercent: 0.03 }, cost: 1 },
+    { id: "vigor", name: "Toughness", text: "+3% health and +1.5% attack", bonus: { healthPercent: 0.03, attackPercent: 0.015 }, cost: 1 },
     { id: "plating", name: "Plating", text: "+2 armor, +3% armor, and your armor can block 0.3% more of every hit", bonus: { armor: 2, armorPercent: 0.03, armorLimit: 0.003 }, cost: 1 },
     { id: "thornmail", name: "Spiked Mastery", text: "Spiked Shield: reflects +5% more of the enemy's attack", bonus: { reflect: 0.05 }, cost: 1 },
     { id: "phalanx", name: "Tower Mastery", text: "Tower Shield: +1% block chance and +2.5% spear damage", bonus: { blockChance: 0.01, spearPower: 0.025 }, cost: 1 },
@@ -113,7 +113,7 @@ classes.warden = {
     {
       floor: 50,
       perks: [
-        { id: "bastion", name: "Bastion", text: "health x1.5 and armor x1.4", multiply: { health: 1.5, armor: 1.4 } },
+        { id: "bastion", name: "Bastion", text: "health x1.5, armor x1.4 and attack x1.2", multiply: { health: 1.5, armor: 1.4, attack: 1.2 } },
         { id: "retribution", name: "Retribution", text: "+25% attack and +25% shield damage (reflected or thrown)", bonus: { attackPercent: 0.25, shieldPower: 0.25 } },
         { id: "thornwall", name: "Thornwall", text: "Spiked Shield: reflected damage x1.1", multiply: { reflect: 1.1 } },
         { id: "phalanxCaptain", name: "Phalanx Captain", text: "Tower Shield: spear damage x1.6", multiply: { spear: 1.6 } },
@@ -137,19 +137,19 @@ classes.warden = {
     {
       floor: 75,
       perks: [
-        { id: "fortress", name: "Fortress", text: "health x1.6, and once a run a blow that would kill you leaves you alive on half your health", bonus: { secondWind: 1 }, multiply: { health: 1.6 } },
+        { id: "fortress", name: "Fortress", text: "health x1.6, attack x1.2, and once a run a blow that would kill you leaves you alive on half your health", bonus: { secondWind: 1 }, multiply: { health: 1.6, attack: 1.2 } },
         { id: "mirrorWall", name: "Mirror Wall", text: "+40% attack and +40% shield damage (reflected or thrown)", bonus: { attackPercent: 0.4, shieldPower: 0.4 } },
         { id: "ironBramble", name: "Iron Bramble", text: "Spiked Shield: attack x1.3, reflects +60% more of the enemy's attack, and +50% shield damage", bonus: { reflect: 0.6, shieldPower: 0.5 }, multiply: { attack: 1.3 } },
         { id: "spearWall", name: "Spear Wall", text: "Tower Shield: attack x1.3, +10% block chance and +50% spear damage", bonus: { blockChance: 0.1, spearPower: 0.5 }, multiply: { attack: 1.3 } },
         { id: "whirlingEdge", name: "Whirling Edge", text: "Bladed Shield: attack x1.3, +40% shield damage, and each throw hits for +2.5 times your armor", bonus: { shieldPower: 0.4, throwPower: 2.5 }, multiply: { attack: 1.3 } },
         { id: "unforgiving", name: "Unforgiving", text: "Vengeance: +50% of each hit you take is added to your next spear thrust (+50% more against bosses and rare monsters)", bonus: { vengeance: 0.5, spite: 0.5 } },
-        { id: "immovable", name: "Immovable", text: "You take 25% less damage", multiply: { damageTaken: 0.75 } }
+        { id: "immovable", name: "Immovable", text: "You take 25% less damage, and attack x1.2", multiply: { damageTaken: 0.75, attack: 1.2 } }
       ]
     },
     {
       floor: 100,
       perks: [
-        { id: "unyielding", name: "Unyielding", text: "health x2, armor x1.5, and you heal 2% of your health every turn of a fight", bonus: { prayer: 0.02 }, multiply: { health: 2, armor: 1.5 } },
+        { id: "unyielding", name: "Unyielding", text: "health x2, armor x1.5, attack x1.4, and you heal 2% of your health every turn of a fight", bonus: { prayer: 0.02 }, multiply: { health: 2, armor: 1.5, attack: 1.4 } },
         { id: "vengeance", name: "Wrath", text: "+50% attack and +50% shield damage (reflected or thrown)", bonus: { attackPercent: 0.5, shieldPower: 0.5 } },
         { id: "crownOfThorns", name: "Crown of Thorns", text: "Spiked Shield: reflected damage x1.1 again", multiply: { reflect: 1.1 } },
         { id: "lastLine", name: "Last Line", text: "Tower Shield: spear damage x2.8 again", multiply: { spear: 2.8 } },

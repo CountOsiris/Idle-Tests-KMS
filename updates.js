@@ -13,6 +13,19 @@
 
 const gameUpdates = [
   {
+    version: "20261012a",
+    title: "Staying alive is a real choice",
+    changes: [
+      "Every skill, perk and weapon was tested again. One thing was wrong everywhere: a choice that only gave health was a trap, because a climb stops at the clock and only damage beats a clock.",
+      "Toughness now gives +3% health and +1.5% attack. Buying it no longer costs you floors.",
+      "Trial of Endurance keeps its health and armor and gains attack. Trial of Balance is mostly attack with some health and armor. The three trials now climb about as deep as each other.",
+      "The health perks at floors 50, 75 and 100 of every class also multiply attack (x1.2, x1.2 and x1.4).",
+      "A fight that drags on gets dangerous faster: the monster hits 50% harder every turn (it was 30%), and a boss gives you 16 turns before that (it was 14). Fights at your deepest floors are about 5 turns, not 6 to 9.",
+      "Stronger: the Axe (Reaver), the Bear (Ursa Major), the Void Tome (Hungering Void) and the Shadow Blade (Shade). The Wolf Pack's mastery adds less to pack tactics: it was running ahead of every other weapon.",
+      "The Warlock's Soul Mastery gives +2% attack and makes abilities ready 0.5% sooner, in place of attack and health."
+    ]
+  },
+  {
     version: "20261011w",
     title: "The clock: what stops a climb",
     changes: [

@@ -72,7 +72,7 @@ classes.barbarian = {
   // One skill for each build, so there is never a question of where a build's points go
   skills: [
     { id: "might", name: "Power", text: "+3% attack", bonus: { attackPercent: 0.03 }, cost: 1 },
-    { id: "toughness", name: "Toughness", text: "+3% health", bonus: { healthPercent: 0.03 }, cost: 1 },
+    { id: "toughness", name: "Toughness", text: "+3% health and +1.5% attack", bonus: { healthPercent: 0.03, attackPercent: 0.015 }, cost: 1 },
     { id: "rage", name: "Rage", text: "Rage: +8% damage while below half health, and +1% lifesteal", bonus: { rage: 0.08, lifesteal: 0.01 }, cost: 1 },
     { id: "axeMastery", name: "Axe Mastery", text: "Axe: bleeding deals +8% damage", bonus: { dotPower: 0.08 }, cost: 1 },
     { id: "swordMastery", name: "Sword Mastery", text: "Sword: +1% critical and parry chance, and +2% critical damage", bonus: { critChance: 0.01, parryChance: 0.01, critPower: 0.02 }, cost: 1 },
@@ -113,7 +113,7 @@ classes.barbarian = {
     {
       floor: 50,
       perks: [
-        { id: "juggernaut", name: "Juggernaut", text: "health x1.5 and armor x1.4", multiply: { health: 1.5, armor: 1.4 } },
+        { id: "juggernaut", name: "Juggernaut", text: "health x1.5, armor x1.4 and attack x1.2", multiply: { health: 1.5, armor: 1.4, attack: 1.2 } },
         { id: "berserker", name: "Ravager", text: "attack x1.5, health x1.2 and +10% lifesteal", bonus: { lifesteal: 0.1 }, multiply: { attack: 1.5, health: 1.2 } },
         { id: "flayer", name: "Flayer", text: "Axe: bleeding damage x1.4", multiply: { bleed: 1.4 } },
         { id: "swordmaster", name: "Swordmaster", text: "Sword: critical hit damage x1.8", multiply: { swordCrit: 1.8 } },
@@ -138,12 +138,12 @@ classes.barbarian = {
       floor: 75,
       perks: [
         { id: "warlord", name: "Warlord", text: "attack x1.3, all your damage +75% against bosses, and your abilities are ready a fifth sooner", bonus: { bossSlayer: 0.75, quickHands: 0.2 }, multiply: { attack: 1.3 } },
-        { id: "unbreakable", name: "Unbreakable", text: "health x1.6, and once a run a blow that would kill you leaves you alive on half your health", bonus: { secondWind: 1 }, multiply: { health: 1.6 } },
+        { id: "unbreakable", name: "Unbreakable", text: "health x1.6, attack x1.2, and once a run a blow that would kill you leaves you alive on half your health", bonus: { secondWind: 1 }, multiply: { health: 1.6, attack: 1.2 } },
         { id: "bloodletter", name: "Bloodletter", text: "Axe: attack x1.3, +4 bleed stacks and bleeding deals +50% damage", bonus: { bleedStacks: 4, dotPower: 0.5 }, multiply: { attack: 1.3 } },
         { id: "blademaster", name: "Blademaster", text: "Sword: attack x1.3, +10% critical and parry chance, +60% critical damage", bonus: { critChance: 0.1, parryChance: 0.1, critPower: 0.6 }, multiply: { attack: 1.3 } },
         { id: "earthshaker", name: "Earthshaker", text: "Club: attack x1.3, +10% stun chance and hits deal +40% damage", bonus: { stunChance: 0.1, clubPower: 0.4 }, multiply: { attack: 1.3 } },
         { id: "bloodrage", name: "Unchained", text: "attack x1.4, and Rage: +100% damage while below half health", bonus: { rage: 1 }, multiply: { attack: 1.4 } },
-        { id: "scarredHide", name: "Scarred Hide", text: "You take 25% less damage", multiply: { damageTaken: 0.75 } }
+        { id: "scarredHide", name: "Scarred Hide", text: "You take 25% less damage, and attack x1.2", multiply: { damageTaken: 0.75, attack: 1.2 } }
       ]
     },
     {
@@ -151,7 +151,7 @@ classes.barbarian = {
       perks: [
         { id: "bloodGod", name: "Blood God", text: "+15% lifesteal, Rage x3 again, attack x1.3 and health x1.6", bonus: { lifesteal: 0.15 }, multiply: { rage: 3, attack: 1.3, health: 1.6 } },
         { id: "titan", name: "Titan", text: "health x2.2, armor x1.5 and attack x1.3", multiply: { health: 2.2, armor: 1.5, attack: 1.3 } },
-        { id: "reaver", name: "Reaver", text: "Axe: bleeding damage x2 again", multiply: { bleed: 2 } },
+        { id: "reaver", name: "Reaver", text: "Axe: bleeding damage x2.5 again", multiply: { bleed: 2.5 } },
         { id: "swordSaint", name: "Sword Saint", text: "Sword: critical hit damage x1.5 again", multiply: { swordCrit: 1.5 } },
         { id: "worldbreaker", name: "Worldbreaker", text: "Club: damage of every hit x2.6 again", multiply: { club: 2.6 } }
       ]

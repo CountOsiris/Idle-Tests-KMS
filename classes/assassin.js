@@ -52,7 +52,7 @@ classes.assassin = {
   // One skill for each build, so there is never a question of where a build's points go
   skills: [
     { id: "lethality", name: "Power", text: "+3% attack", bonus: { attackPercent: 0.03 }, cost: 1 },
-    { id: "conditioning", name: "Toughness", text: "+3% health", bonus: { healthPercent: 0.03 }, cost: 1 },
+    { id: "conditioning", name: "Toughness", text: "+3% health and +1.5% attack", bonus: { healthPercent: 0.03, attackPercent: 0.015 }, cost: 1 },
     { id: "ambushTraining", name: "Ambush Training", text: "Ambush: the first hit of a fight deals +8% more. Vanish: +0.5% chance each turn to hide and ambush again", bonus: { ambush: 0.08, vanishChance: 0.005 }, cost: 1 },
     { id: "venomMastery", name: "Venom Mastery", text: "Venom Dagger: poison deals +8% damage", bonus: { dotPower: 0.08 }, cost: 1 },
     { id: "stilettoMastery", name: "Stiletto Mastery", text: "Stiletto: +1% critical chance and +2.5% critical damage", bonus: { critChance: 0.01, critPower: 0.025 }, cost: 1 },
@@ -97,8 +97,8 @@ classes.assassin = {
         { id: "deathMark", name: "Death Mark", text: "Ambush damage x2.5, and health x1.4", multiply: { ambush: 2.5, health: 1.4 } },
         { id: "plaguebringer", name: "Plaguebringer", text: "Venom Dagger: poison damage x1.4", multiply: { poison: 1.4 } },
         { id: "throatCutter", name: "Throat Cutter", text: "Stiletto: critical hit damage x1.6", multiply: { stilettoCrit: 1.6 } },
-        { id: "shade", name: "Shade", text: "Shadow Blade: damage of the hit after a dodge x3 and +8% dodge", bonus: { dodge: 0.08 }, multiply: { counter: 3 } },
-        { id: "ironNerves", name: "Iron Nerves", text: "health x1.5 and +5% dodge", bonus: { dodge: 0.05 }, multiply: { health: 1.5 } }
+        { id: "shade", name: "Shade", text: "Shadow Blade: damage of the hit after a dodge x4.5 and +8% dodge", bonus: { dodge: 0.08 }, multiply: { counter: 4.5 } },
+        { id: "ironNerves", name: "Iron Nerves", text: "health x1.5, attack x1.2 and +5% dodge", bonus: { dodge: 0.05 }, multiply: { health: 1.5, attack: 1.2 } }
       ]
     },
     // KEYSTONES: each changes a rule of one weapon, and costs something. This milestone is
@@ -117,12 +117,12 @@ classes.assassin = {
       floor: 75,
       perks: [
         { id: "killer", name: "Killer", text: "attack x1.3, all your damage +75% against bosses, and your abilities are ready a fifth sooner", bonus: { bossSlayer: 0.75, quickHands: 0.2 }, multiply: { attack: 1.3 } },
-        { id: "survivor", name: "Survivor", text: "health x1.6, and once a run a blow that would kill you leaves you alive on half your health", bonus: { secondWind: 1 }, multiply: { health: 1.6 } },
+        { id: "survivor", name: "Survivor", text: "health x1.6, attack x1.2, and once a run a blow that would kill you leaves you alive on half your health", bonus: { secondWind: 1 }, multiply: { health: 1.6, attack: 1.2 } },
         { id: "venomancer", name: "Venomancer", text: "Venom Dagger: attack x1.3, +4 poison stacks and poison deals +50% damage", bonus: { poisonStacks: 4, dotPower: 0.5 }, multiply: { attack: 1.3 } },
         { id: "heartseeker", name: "Heartseeker", text: "Stiletto: attack x1.3, +10% critical chance and +70% critical damage", bonus: { critChance: 0.1, critPower: 0.7 }, multiply: { attack: 1.3 } },
         { id: "nightblade", name: "Nightblade", text: "Shadow Blade: attack x1.3, +8% dodge and +100% damage after a dodge", bonus: { dodge: 0.08, counter: 1 }, multiply: { attack: 1.3 } },
         { id: "ghost", name: "Ghost", text: "+25% attack. Ambush: the first hit of a fight deals +80% more. Vanish: +5% chance each turn to hide and ambush again", bonus: { attackPercent: 0.25, ambush: 0.8, vanishChance: 0.05 } },
-        { id: "slippery", name: "Slippery", text: "You take 25% less damage", multiply: { damageTaken: 0.75 } }
+        { id: "slippery", name: "Slippery", text: "You take 25% less damage, and attack x1.2", multiply: { damageTaken: 0.75, attack: 1.2 } }
       ]
     },
     {
@@ -133,7 +133,7 @@ classes.assassin = {
         { id: "blightlord", name: "Blightlord", text: "Venom Dagger: poison damage x2 again", multiply: { poison: 2 } },
         { id: "kingslayer", name: "Kingslayer", text: "Stiletto: critical hit damage x1.3 again", multiply: { stilettoCrit: 1.3 } },
         { id: "umbra", name: "Umbra", text: "Shadow Blade: damage of the hit after a dodge x4 again and +8% dodge", bonus: { dodge: 0.08 }, multiply: { counter: 4 } },
-        { id: "untouchable", name: "Untouchable", text: "health x2 and +10% dodge", bonus: { dodge: 0.1 }, multiply: { health: 2 } }
+        { id: "untouchable", name: "Untouchable", text: "health x2, attack x1.4 and +10% dodge", bonus: { dodge: 0.1 }, multiply: { health: 2, attack: 1.4 } }
       ]
     }
   ],

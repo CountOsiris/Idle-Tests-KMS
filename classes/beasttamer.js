@@ -70,9 +70,9 @@ classes.beasttamer = {
   // Power, Toughness, one skill for each companion, and Bond for all of them
   skills: [
     { id: "command", name: "Power", text: "+3% attack", bonus: { attackPercent: 0.03 }, cost: 1 },
-    { id: "hardiness", name: "Toughness", text: "+3% health", bonus: { healthPercent: 0.03 }, cost: 1 },
+    { id: "hardiness", name: "Toughness", text: "+3% health and +1.5% attack", bonus: { healthPercent: 0.03, attackPercent: 0.015 }, cost: 1 },
     { id: "bond", name: "Bond", text: "Bond: +3.5% companion damage for every 10% of your health that is missing", bonus: { bond: 0.035 }, cost: 1 },
-    { id: "wolfMastery", name: "Wolf Mastery", text: "Wolf Pack: bites deal +1.5% of your attack more, and each bite in a turn lands +1% harder than the one before", bonus: { bitePower: 0.015, packTactics: 0.01 }, cost: 1 },
+    { id: "wolfMastery", name: "Wolf Mastery", text: "Wolf Pack: bites deal +1.5% of your attack more, and each bite in a turn lands +0.5% harder than the one before", bonus: { bitePower: 0.015, packTactics: 0.005 }, cost: 1 },
     { id: "bearMastery", name: "Bear Mastery", text: "Bear: the maul deals +6% of your attack more and +1% stun chance", bonus: { maulPower: 0.06, stunChance: 0.01 }, cost: 1 },
     { id: "hawkMastery", name: "Hawk Mastery", text: "Hawk: +1.5% critical dive chance and +5% critical damage", bonus: { critChance: 0.015, critPower: 0.05 }, cost: 1 }
   ],
@@ -112,7 +112,7 @@ classes.beasttamer = {
       floor: 50,
       perks: [
         { id: "beastlord", name: "Beastlord", text: "attack x1.1, and every kill makes all your damage 0.5% stronger for the rest of the run (up to +100%)", bonus: { killStreak: 0.005 }, multiply: { attack: 1.1 } },
-        { id: "oldGrowth", name: "Old Growth", text: "health x1.5 and armor x1.4", multiply: { health: 1.5, armor: 1.4 } },
+        { id: "oldGrowth", name: "Old Growth", text: "health x1.5, armor x1.4 and attack x1.2", multiply: { health: 1.5, armor: 1.4, attack: 1.2 } },
         { id: "direPack", name: "Dire Pack", text: "Wolf Pack: bite damage x1.5", multiply: { wolf: 1.5 } },
         { id: "caveBear", name: "Cave Bear", text: "Bear: maul damage x1.8", multiply: { bear: 1.8 } },
         { id: "stormHawk", name: "Storm Hawk", text: "Hawk: critical dive damage x1.8", multiply: { hawkCrit: 1.8 } },
@@ -135,22 +135,22 @@ classes.beasttamer = {
       floor: 75,
       perks: [
         { id: "apex", name: "Apex", text: "attack x1.3, all your damage +75% against bosses, and your abilities are ready a fifth sooner", bonus: { bossSlayer: 0.75, quickHands: 0.2 }, multiply: { attack: 1.3 } },
-        { id: "ironwoodHeart", name: "Ironwood Heart", text: "health x1.6, and once a run a blow that would kill you leaves you alive on half your health", bonus: { secondWind: 1 }, multiply: { health: 1.6 } },
+        { id: "ironwoodHeart", name: "Ironwood Heart", text: "health x1.6, attack x1.2, and once a run a blow that would kill you leaves you alive on half your health", bonus: { secondWind: 1 }, multiply: { health: 1.6, attack: 1.2 } },
         { id: "wolfKing", name: "Wolf King", text: "Wolf Pack: attack x1.3, one more wolf, and bites deal +10% of your attack more", bonus: { packSize: 1, bitePower: 0.1 }, multiply: { attack: 1.3 } },
         { id: "ursine", name: "Ursine", text: "Bear: attack x1.3, the maul deals +80% of your attack more, and +8% stun chance", bonus: { maulPower: 0.8, stunChance: 0.08 }, multiply: { attack: 1.3 } },
         { id: "skyHunter", name: "Sky Hunter", text: "Hawk: attack x1.3, +10% critical dive chance and +80% critical damage", bonus: { critChance: 0.1, critPower: 0.8 }, multiply: { attack: 1.3 } },
         { id: "kindred", name: "Kindred", text: "+25% attack, and Bond: +10% companion damage for every 10% of your health that is missing", bonus: { attackPercent: 0.25, bond: 0.1 } },
-        { id: "wary", name: "Wary", text: "You take 25% less damage", multiply: { damageTaken: 0.75 } }
+        { id: "wary", name: "Wary", text: "You take 25% less damage, and attack x1.2", multiply: { damageTaken: 0.75, attack: 1.2 } }
       ]
     },
     {
       floor: 100,
       perks: [
         { id: "fenrir", name: "Fenrir's Brood", text: "Wolf Pack: bite damage x1.15 again", multiply: { wolf: 1.15 } },
-        { id: "ursaMajor", name: "Ursa Major", text: "Bear: maul damage x1.8 again", multiply: { bear: 1.8 } },
+        { id: "ursaMajor", name: "Ursa Major", text: "Bear: maul damage x2.4 again", multiply: { bear: 2.4 } },
         { id: "roc", name: "Roc", text: "Hawk: critical dive damage x1.8 again", multiply: { hawkCrit: 1.8 } },
         { id: "oneHeart", name: "One Heart", text: "Bond x3 again", multiply: { bond: 3 } },
-        { id: "ancientOne", name: "Ancient One", text: "health x2, armor x1.5, and you heal 2% of your health every turn of a fight", bonus: { prayer: 0.02 }, multiply: { health: 2, armor: 1.5 } }
+        { id: "ancientOne", name: "Ancient One", text: "health x2, armor x1.5, attack x1.4, and you heal 2% of your health every turn of a fight", bonus: { prayer: 0.02 }, multiply: { health: 2, armor: 1.5, attack: 1.4 } }
       ]
     }
   ],

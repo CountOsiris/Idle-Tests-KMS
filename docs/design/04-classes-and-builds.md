@@ -22,7 +22,7 @@ its tower, the Wild Reaches, can be challenged by every class from the start.
 
 ## Rules every class follows (user decisions)
 
-- Skills: **Power** (+3% attack), **Toughness** (+3% health), **one mastery per
+- Skills: **Power** (+3% attack), **Toughness** (+3% health and +1.5% attack), **one mastery per
   weapon**, and **at most one class skill** that helps every weapon. Nothing that
   duplicates a weapon skill.
 - Skills gain a rank every 10 levels: whole skill +50%, next levels cost 1 more point.

@@ -248,3 +248,142 @@ their multipliers were cut from x3 and x4.
 
 **Still open**: Toughness to floor 50 has not been tested again since the clock; Scarred
 Hide and Inferno from section 5; the Club on the Rage path.
+
+## 7. The whole game tested again, and the loop as it stands (12 October 2026, version 20261012a)
+
+Asked for: "test all weapons, all builds, all skills, all perks and milestones, to make
+sure the speed and strength is not only balanced but falls in line with the research.
+All need to be viable, even if some builds are better in the class tower and others in
+other towers. Hash out the gameplay loop, then look at longevity."
+
+The record of every attempt, kept or thrown away, is `.audit/balance.tsv` (not in git).
+
+### What the measuring got wrong first
+
+Two alarms in the first baseline were faults in the measure, not in the game.
+
+- **"Elementalists and Wardens take 40 hits to die."** `edge` reported the middle hit. Half
+  of those classes' hits land behind a guard, so the middle hit was a guarded one. It now
+  reports the average: 9 to 20 hits for them, 4 to 9 for everyone else.
+- **"The Tower Shield, Rune Tome and Void Tome are useless in other towers"** (floor 20 to
+  50 in 30 hours). The bot sent a new class there from its first minute. With 15 hours at
+  home first (`home=15`), every one of the 25 builds wins all six trophies in every other
+  tower within the next 15 hours. The lowest is floor 100 (the Sword in Storm Peak).
+
+And one run is not a measurement: the same build's deepest floor in 100 hours moves by 13
+floors between runs, once by 55. Builds are compared on four runs or more below.
+
+### One cause behind every trap found
+
+**A climb stops at the clock, and only damage beats a clock.** More health buys one or two
+more turns of a fight that is already dragging on. Measured over 125 forced climbs, health
+is worth about 0.4 of the same attack. So every choice that ONLY kept a hero alive was a
+trap, and they all were:
+
+| The trap | How far behind | Now | After |
+|---|---|---|---|
+| Toughness (+3% health) | 100 hours with it never bought was 7 floors DEEPER; 17 of 25 builds | +3% health and +1.5% attack | level (0.7 floors the other way) |
+| Trial of Endurance | 24 floors behind Trial of Power | keeps its health and armor, gains attack (x1.22 at floor 15 up to x1.5 at 90); Balance is attack x1.3 with health and armor x1.2 | 10 behind |
+| The health perk at floor 50, 75 and 100 of every class | 21, 30 and 37 floors behind the weapon's own perk (theme perks: 4 to 15) | attack x1.2 at floors 50 and 75, x1.4 at 100, beside what they gave | 9, 16 and 11 behind |
+
+Doubling Toughness to +6% health was tried first and thrown away: it closed the gap to
+floor 35, did nothing to floor 100, and pushed hits to die past the target.
+
+This is the Trimps answer from section 1 (trade attack for health as a choice) and not
+the Clicker Heroes one (no health at all): the sturdy choice costs some attack, it does
+not cost the climb.
+
+The Warlock's Soul Mastery gave attack and health, the same two words as the new
+Toughness. It now gives +2% attack and abilities ready 0.5% sooner (that word has a
+ceiling of 60% where it is read). The Warlock's depth did not move.
+
+### The clock, tightened
+
+At 30% a turn a hero with health to spare outlasted the clock by two or three turns, so
+ordinary fights at the edge were 6 to 9 turns. Six what-ifs later: **50% a turn, and 16
+turns for a boss** (ordinary fights still drag on after 6).
+
+| At the deepest floors a class can reach, 100 hours | Target | Before | Now |
+|---|---|---|---|
+| Ordinary fight, turns (middle build) | 3 to 5 | 6 | 5 |
+| Builds inside 3 to 5 | | 8 of 25 | 14 to 16 of 25 |
+| Boss fight, turns (middle build) | 10 to 15 | 12 | 10 to 11 |
+| Ordinary hits to die (middle build) | 5 to 8 | 6.3 | 6.5 |
+
+At 300 hours the middle ordinary fight is 6 turns again and 9 builds are inside the
+target. Not solved.
+
+### Every build
+
+| | Before | Now |
+|---|---|---|
+| Hours to floor 35 and 50, builds more than 25% off their class | 0 (six runs pooled) | 0 |
+| Deepest floor in 100 hours, runs pooled | 280 to 346 | 296 to 356 |
+| Deepest floor in 300 hours | 360 to 449 | 376 to 452 |
+| Away towers: builds with all six trophies of a tower in 15 hours there | all | all |
+
+Lifted by their own multiplier, as section 5 set out: the Axe (Reaver x2 to x2.5), the Bear
+(Ursa Major x1.8 to x2.4), the Void Tome (Hungering Void x2.4 to x3.3), the Shadow Blade
+(Shade x3 to x4.5). The first three rose 15 to 25 floors to the middle of the field. The
+Wolf Pack was the one build running ahead: its mastery fed bite power AND pack tactics,
+two of its own words that multiply. Tactics now grow half as fast, and it sits with Fire
+and the Longbow.
+
+**The other towers do sort the builds.** A build's best tower away is often not the best
+for its class: the Club reaches 226 in the Haunted Abbey and 140 in the Undercity; Mace and
+Shield 211 in the Orc Stronghold and 146 in the Wildwood; Lightning 248 in the Iron Crypt.
+The Undercity, Storm Peak and the Wildwood are the hard ones (about 170 on average), Raider's
+Pass the easy one (194).
+
+### Still open
+
+- **The Shadow Blade** is the shallowest build (296; the field's middle is 319). A bigger
+  number does not help it: its hit after a dodge already kills, and what it waits for is
+  the dodge, which stops at 60%. Raising Umbra from x4 to x5.5 gave nothing and was thrown
+  away. It needs a change to how it fights, not to what it multiplies.
+- **The Longbow** reached 397 in one run of four (342, 333 and 348 in the others) and
+  kills bosses in 3 to 5 turns. Watch it; one run is not enough to cut it.
+- **Bosses fall fast to the glass builds** (Longbow, Crossbow, Shortbow, Axe, Club: 3 to 9
+  turns against a target of 10 to 15) and slowly to the Tower Shield (18).
+- **Single perks** that one climb put 30 floors or more behind, not yet confirmed by a
+  second: Kindred, Apex, Reckoning, First Blood, Soul Collector, Retribution, Soul Eater.
+- **Power and Toughness** are both a little under the masteries (to floor 100 a climb is 3%
+  and 7% faster without them). Inside the noise of the check, and they are the plain
+  choices on purpose.
+
+### The loop, as measured
+
+| Loop | How long | What moves |
+|---|---|---|
+| A fight at the edge | 5 turns; a boss 10 to 13 | the weapon's own mechanic has time to show; a hero falls to the clock, not to one blow |
+| A run | minutes | boons, kills of the run; ends where a fight cannot be won inside the clock |
+| An ascension | about every 45 minutes (130 in 100 hours) | fame |
+| A milestone | floors 5 to 100: the first 8 to 15 hours | one perk, and each of the three kinds (weapon, theme, staying alive) is now a real pick |
+| A tower away | 15 hours for all six trophies | permanent unlocks; which tower suits depends on the build |
+| A breakthrough | floors 150, 225, 337, then 506 | a multiplier |
+
+### Longevity: where it runs dry
+
+Played 300 hours on one class, every build:
+
+- Floors 5 to 100 hold twelve milestones (seven of the class, five trials) and are gone in 8 to 15 hours.
+- Floor 150 comes at 10 to 27 hours, 200 at 16 to 44, 300 at 58 to 108.
+- From hour 100 to hour 300 a class gains about 90 floors: one new floor every two hours.
+- The third breakthrough (floor 337) is passed between hours 100 and 300 (every build is
+  past 376 by then). The fourth is at 506, and no build reaches it in 300 hours (the
+  deepest is 452). **So once floor 337 is behind it, a class has no reward ahead on its
+  own tower that it can reach.** That is the gap.
+- Legend marks buy 137 marks' worth in all (everything on the list, every level). Floor
+  100 pays 10 and floor 400 pays 20, so the list is bought out in seven to fourteen legends.
+- What does not run dry: seven other towers for each class (about 15 hours each, 42
+  trophies), eight classes, and fame.
+
+So one class has 100 to 150 hours of rewards on its own tower and about 100 more in the
+other seven. Three ways to fill the gap past floor 337, none built, the owner's choice:
+
+1. **Breakthroughs closer together deep down**: every 50 floors past 337 (387, 437, 487...)
+   in place of x1.5. A 300 hour class would meet two more. Cheapest: one rule and a list
+   of rewards.
+2. **Something for legend marks with no last level**, so becoming a legend deep (20 marks
+   at floor 400) always buys something.
+3. **Subclasses** ([13](13-subclasses.md)), already planned as the long grind per class.

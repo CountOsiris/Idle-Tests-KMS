@@ -137,7 +137,7 @@ health on floor F  =  38 x (1 + 0.22 x (F - 1))^2  x 1.05 a floor from 20 to 50
                       x 1.03 a floor past 50  x the walls (35, 50, 75, 100)
 attack on floor F  =  the same up to floor 35; past it only the first term and 1.013 a floor
 and from floor 10, rising to floor 35: health x2 and attack x0.08 (longFights in data.js).
-A fight drags on after 6 turns (14 for a boss): attack then grows 30% a turn (fightClock).
+A fight drags on after 6 turns (16 for a boss): attack then grows 50% a turn (fightClock).
 ```
 
 A boss has 2.2 times the health and 1.3 times the attack. Deep in the tower health grows
@@ -155,6 +155,8 @@ about 4% a floor, so 20% more damage is worth about 5 floors.
 | Damage that does not depend on the hero (Void Tome's share of health, reflection on the monster's own growth) | It is taken straight from the monster's numbers, so the tower's growth feeds it | It must have a ceiling where it is read, and must not be multiplied by fame. Play 300 hours when adding one |
 | A mechanic that needs a long fight (bleed one stack a hit, Rage below half health, Crusade from the second turn) | Fights last two or three turns. Anything that takes five turns to matter never matters | `probe` in the bot prints turns a kill and what the damage was made of |
 | A stat that does nothing (health past floor 40, Toughness) | Monster attack grew as fast as monster health | `probe` prints the hero's health against a monster's hit, floor by floor; `skillcheck` shows a skill that speeds the climb when skipped |
+| A choice that only keeps you alive (Toughness, Trial of Endurance, the health perks at floors 50, 75 and 100) | A climb stops at the clock, and only damage beats a clock. Health buys about 0.4 of what the same attack buys, so every health-only choice was a trap: 10 to 37 floors behind its neighbours, and Toughness cost 7 floors when bought | It carries a share of attack as well (12 October 2026). When adding a defence choice, give it attack too, and run `perkcheck` or the bot's `skip=` to see it is level |
+| Measuring a class with a guard by its middle hit, or a tower by a class sent there from its first minute | Half a Warden's hits land behind a guard, so the middle one said 40 hits to die. A fresh class in an away tower gets nowhere, which says nothing about the tower | `edge` reports the average hit; `home=15` plays at home first |
 | Flat numbers (+3 armor at floor 75) | A flat number is worth nothing against one that grows 4% a floor | Give a percentage or a multiplier. Flat numbers only on the first ten floors |
 | A buff that works but cannot be seen (Phoenix Feather) | It wrote one line with another name in it | Say the thing's own name in the log, and mark it used on the page |
 
@@ -183,11 +185,17 @@ about 4% a floor, so 20% more damage is worth about 5 floors.
 
 7. **Then** bump the version (`bash tools/version.sh`), add the Updates entry, commit.
 
-**Where the game stands** (11 October 2026, version 20261011w, the numbers to compare
-against): floor 35 in 2.6 to 6.3 hours, floor 50 in 4.5 to 8.6, floor 100 in 7 to 16; deepest
-floor in 100 hours 286 to 342 across the 25 builds, in 300 hours 360 to 449. At the deepest
-floors a class can reach (the bot's `edge`): an ordinary fight about 6 turns, a boss about
-13, about 6 ordinary hits to die.
+**Where the game stands** (12 October 2026, version 20261012a, the numbers to compare
+against): floor 35 in 2.0 to 5.7 hours, floor 50 in 3.4 to 8.7, floor 100 in 7 to 16; deepest
+floor in 100 hours 294 to 343 across the 25 builds in one run (296 to 356 when every run
+is pooled), in 300 hours 376 to 452. At the deepest floors a class can reach (the bot's
+`edge`): an ordinary fight about 5 turns, a boss about 11, about 6 ordinary hits to die
+(more for a class with a guard). Every build wins all six trophies in every other tower
+within 15 hours there, after 15 at home.
+
+**One run is not a measurement.** The same build's deepest floor in 100 hours moves by 13
+floors from one run to the next, and once by 55. Pool at least four runs before calling a
+build weak or strong, and average a kind of perk over many builds.
 
 **Measure the edge, not the average.** A class climbs until something stops it, so a
 change that makes monsters softer mostly moves the edge deeper. To change how a fight at

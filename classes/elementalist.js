@@ -72,7 +72,7 @@ classes.elementalist = {
   // One skill per element, so there is never a question of where an element's points go
   skills: [
     { id: "attunement", name: "Power", text: "+3% attack", bonus: { attackPercent: 0.03 }, cost: 1 },
-    { id: "resilience", name: "Toughness", text: "+3% health", bonus: { healthPercent: 0.03 }, cost: 1 },
+    { id: "resilience", name: "Toughness", text: "+3% health and +1.5% attack", bonus: { healthPercent: 0.03, attackPercent: 0.015 }, cost: 1 },
     { id: "fireMastery", name: "Fire Mastery", text: "Fire: burning deals +8% damage", bonus: { dotPower: 0.08 }, cost: 1 },
     { id: "iceMastery", name: "Ice Mastery", text: "Ice: +1.5% critical chance and +5% critical damage", bonus: { critChance: 0.015, critPower: 0.05 }, cost: 1 },
     { id: "lightningMastery", name: "Lightning Mastery", text: "Lightning: +3% chance of an extra bolt and bolts deal +1% damage", bonus: { extraBolts: 0.03, boltPower: 0.01 }, cost: 1 },
@@ -114,7 +114,7 @@ classes.elementalist = {
       floor: 50,
       perks: [
         { id: "avatarOfStorms", name: "Avatar of Storms", text: "attack x1.2, and your abilities are ready a quarter sooner", bonus: { quickHands: 0.25 }, multiply: { attack: 1.2 } },
-        { id: "avatarOfStone", name: "Avatar of Stone", text: "health x1.5 and armor x1.4", multiply: { health: 1.5, armor: 1.4 } },
+        { id: "avatarOfStone", name: "Avatar of Stone", text: "health x1.5, armor x1.4 and attack x1.2", multiply: { health: 1.5, armor: 1.4, attack: 1.2 } },
         { id: "inferno", name: "Inferno", text: "Fire: burning damage x1.5", multiply: { burn: 1.5 } },
         { id: "glacier", name: "Glacier", text: "Ice: critical hit damage x1.6", multiply: { iceCrit: 1.6 } },
         { id: "tempest", name: "Tempest", text: "Lightning: bolt damage x1.8", multiply: { bolt: 1.8 } },
@@ -138,19 +138,19 @@ classes.elementalist = {
       floor: 75,
       perks: [
         { id: "elementalFury", name: "Elemental Fury", text: "attack x1.3, all your damage +75% against bosses, and your abilities are ready a fifth sooner", bonus: { bossSlayer: 0.75, quickHands: 0.2 }, multiply: { attack: 1.3 } },
-        { id: "elementalShield", name: "Elemental Shield", text: "health x1.6, and once a run a blow that would kill you leaves you alive on half your health", bonus: { secondWind: 1 }, multiply: { health: 1.6 } },
+        { id: "elementalShield", name: "Elemental Shield", text: "health x1.6, attack x1.2, and once a run a blow that would kill you leaves you alive on half your health", bonus: { secondWind: 1 }, multiply: { health: 1.6, attack: 1.2 } },
         { id: "firestorm", name: "Firestorm", text: "Fire: attack x1.3, +4 burn stacks and burning deals +50% damage", bonus: { burnStacks: 4, dotPower: 0.5 }, multiply: { attack: 1.3 } },
         { id: "absoluteZero", name: "Absolute Zero", text: "Ice: attack x1.3, +10% critical chance and +80% critical damage", bonus: { critChance: 0.1, critPower: 0.8 }, multiply: { attack: 1.3 } },
         { id: "chainLightning", name: "Chain Lightning", text: "Lightning: attack x1.3, +60% chance of an extra bolt and bolts deal +8% damage", bonus: { extraBolts: 0.6, boltPower: 0.08 }, multiply: { attack: 1.3 } },
         { id: "avalanche", name: "Avalanche", text: "Earth: attack x1.3, boulders deal +50% damage and +8% stun chance", bonus: { crush: 0.5, stunChance: 0.08 }, multiply: { attack: 1.3 } },
-        { id: "stoneSkinSpell", name: "Stoneskin", text: "You take 25% less damage", multiply: { damageTaken: 0.75 } }
+        { id: "stoneSkinSpell", name: "Stoneskin", text: "You take 25% less damage, and attack x1.2", multiply: { damageTaken: 0.75, attack: 1.2 } }
       ]
     },
     {
       floor: 100,
       perks: [
         { id: "masterOfElements", name: "Master of Elements", text: "attack x1.3, and a hit on a weakness deals 40% more", bonus: { exploit: 0.4 }, multiply: { attack: 1.3 } },
-        { id: "avatarOfTides", name: "Avatar of Tides", text: "health x2, armor x1.5, and you heal 2% of your health every turn of a fight", bonus: { prayer: 0.02 }, multiply: { health: 2, armor: 1.5 } },
+        { id: "avatarOfTides", name: "Avatar of Tides", text: "health x2, armor x1.5, attack x1.4, and you heal 2% of your health every turn of a fight", bonus: { prayer: 0.02 }, multiply: { health: 2, armor: 1.5, attack: 1.4 } },
         { id: "phoenixFlame", name: "Phoenix Flame", text: "Fire: burning damage x1.5 again", multiply: { burn: 1.5 } },
         { id: "iceAge", name: "Ice Age", text: "Ice: critical hit damage x1.9 again", multiply: { iceCrit: 1.9 } },
         { id: "thunderGod", name: "Thunder God", text: "Lightning: bolt damage x1.8 again", multiply: { bolt: 1.8 } },

@@ -11,8 +11,8 @@ Back to the [Masterplan](../../Masterplan.md).
   ward share, cut by penetration).
 - **Monster traits:** poison (part of the attack ignores your armor), regeneration,
   enrage (grows each turn), flying (weapon swings miss 25%), lunge (strikes first),
-  ward (blocks spells). After 30 turns every fight "drags on" and the monster
-  hits 10% harder each turn.
+  ward (blocks spells). After 6 turns (16 for a boss) a fight "drags on" and the monster
+  hits 50% harder each turn (`fightClock` in data.js; see [14](14-combat-loop-research.md)).
 - **Your sustain:** 20% heal per kill, lifesteal, devotion, rest rooms, potions
   (drunk at 30% health).
 - **Bosses:** a monster with x2.2 health and x1.3 attack. No mechanics of their own.

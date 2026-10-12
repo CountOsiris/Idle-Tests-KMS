@@ -337,40 +337,40 @@ const trialMilestones = [
     floor: 15,
     perks: [
       { id: "trialPower", name: "Trial of Power", text: "attack x1.4", multiply: { attack: 1.4 } },
-      { id: "trialEndurance", name: "Trial of Endurance", text: "health and armor x1.4", multiply: { health: 1.4, armor: 1.4 } },
-      { id: "trialBalance", name: "Trial of Balance", text: "attack, health and armor x1.2", multiply: { attack: 1.2, health: 1.2, armor: 1.2 } }
+      { id: "trialEndurance", name: "Trial of Endurance", text: "health and armor x1.4, and attack x1.22", multiply: { health: 1.4, armor: 1.4, attack: 1.22 } },
+      { id: "trialBalance", name: "Trial of Balance", text: "attack x1.3, health and armor x1.2", multiply: { attack: 1.3, health: 1.2, armor: 1.2 } }
     ]
   },
   {
     floor: 25,
     perks: [
       { id: "trialPower", name: "Trial of Power", text: "attack x1.5", multiply: { attack: 1.5 } },
-      { id: "trialEndurance", name: "Trial of Endurance", text: "health and armor x1.5", multiply: { health: 1.5, armor: 1.5 } },
-      { id: "trialBalance", name: "Trial of Balance", text: "attack, health and armor x1.25", multiply: { attack: 1.25, health: 1.25, armor: 1.25 } }
+      { id: "trialEndurance", name: "Trial of Endurance", text: "health and armor x1.5, and attack x1.28", multiply: { health: 1.5, armor: 1.5, attack: 1.28 } },
+      { id: "trialBalance", name: "Trial of Balance", text: "attack x1.38, health and armor x1.25", multiply: { attack: 1.38, health: 1.25, armor: 1.25 } }
     ]
   },
   {
     floor: 40,
     perks: [
       { id: "trialPower", name: "Trial of Power", text: "attack x1.6", multiply: { attack: 1.6 } },
-      { id: "trialEndurance", name: "Trial of Endurance", text: "health and armor x1.6", multiply: { health: 1.6, armor: 1.6 } },
-      { id: "trialBalance", name: "Trial of Balance", text: "attack, health and armor x1.3", multiply: { attack: 1.3, health: 1.3, armor: 1.3 } }
+      { id: "trialEndurance", name: "Trial of Endurance", text: "health and armor x1.6, and attack x1.33", multiply: { health: 1.6, armor: 1.6, attack: 1.33 } },
+      { id: "trialBalance", name: "Trial of Balance", text: "attack x1.45, health and armor x1.3", multiply: { attack: 1.45, health: 1.3, armor: 1.3 } }
     ]
   },
   {
     floor: 60,
     perks: [
       { id: "trialPower", name: "Trial of Power", text: "attack x1.8", multiply: { attack: 1.8 } },
-      { id: "trialEndurance", name: "Trial of Endurance", text: "health and armor x1.8", multiply: { health: 1.8, armor: 1.8 } },
-      { id: "trialBalance", name: "Trial of Balance", text: "attack, health and armor x1.35", multiply: { attack: 1.35, health: 1.35, armor: 1.35 } }
+      { id: "trialEndurance", name: "Trial of Endurance", text: "health and armor x1.8, and attack x1.42", multiply: { health: 1.8, armor: 1.8, attack: 1.42 } },
+      { id: "trialBalance", name: "Trial of Balance", text: "attack x1.6, health and armor x1.35", multiply: { attack: 1.6, health: 1.35, armor: 1.35 } }
     ]
   },
   {
     floor: 90,
     perks: [
       { id: "trialPower", name: "Trial of Power", text: "attack x2", multiply: { attack: 2 } },
-      { id: "trialEndurance", name: "Trial of Endurance", text: "health and armor x2", multiply: { health: 2, armor: 2 } },
-      { id: "trialBalance", name: "Trial of Balance", text: "attack, health and armor x1.4", multiply: { attack: 1.4, health: 1.4, armor: 1.4 } }
+      { id: "trialEndurance", name: "Trial of Endurance", text: "health and armor x2, and attack x1.5", multiply: { health: 2, armor: 2, attack: 1.5 } },
+      { id: "trialBalance", name: "Trial of Balance", text: "attack x1.75, health and armor x1.4", multiply: { attack: 1.75, health: 1.4, armor: 1.4 } }
     ]
   }
 ];
@@ -595,8 +595,11 @@ const rareChance = 0.1;
 // fight by waiting: it reaches the floor where it cannot kill inside the clock. (Until
 // October 2026 the clock was 30 turns for everything, and fights at the edge of a climb
 // lasted 9 to 15 turns each.)
+// Growth was 1.3 until 12 October 2026. At 1.3 a hero with health to spare outlasted the
+// clock by two or three turns, so fights at the edge were 6 to 9 turns; at 1.5 they are
+// 3 to 5 for most builds, and the deepest floors are where they were.
 // (An object so that the balance bot can try other numbers: see "drag=".)
-const fightClock = { turns: 6, bossTurns: 14, growth: 1.3 };
+const fightClock = { turns: 6, bossTurns: 16, growth: 1.5 };
 
 // In another class's tower, monsters have this much more health and attack,
 // and dying there pays this much more experience (0.5 means +50%)
