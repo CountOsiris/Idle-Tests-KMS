@@ -1798,6 +1798,13 @@ body[data-tab="tower"] #page-character {
   letter-spacing: 0.5px;
 }
 
+/* A tab the account has not reached yet takes no room (checkTabUnlocks in game/feel.js
+   hides it). It needs saying: "display: flex" above would show it all the same, and
+   from the day the bar was made until the tips were, a new player saw every tab. */
+.tabs button[hidden] {
+  display: none;
+}
+
 .tabs button::before {
   content: attr(data-icon);
   font-size: 20px;

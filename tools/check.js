@@ -1528,6 +1528,19 @@ try {
   check("tips: " + tips.length + " in the list, each with its own id, a title, at most 2 sentences and 30 words, and one for each of the " + tabUnlocks.length + " tabs that open"
     + (tipProblems.length === 0 ? "" : ": " + tipProblems.join("; ")), tipProblems.length === 0);
 
+  // A tab that has not opened yet is not on the bar at all, and one that has is.
+  // (For a while style.css showed every tab from the first minute.)
+  // (the buttons are hidden by hand here, as checkTabUnlocks does it: on these saves
+  // every tab has been earned, and it would open them all again)
+  for (let name of tabNames) {
+    document.getElementById("tab-" + name).hidden = name !== "tower" && name !== "skills";
+  }
+  let closedTabs = tabNames.filter(function (name) { return document.getElementById("tab-" + name).hidden && document.getElementById("tab-" + name).offsetWidth > 0; });
+  let barShowsOpen = document.getElementById("tab-skills").offsetWidth > 0 && document.getElementById("tab-tower").offsetWidth > 0;
+  checkTabUnlocks();
+  check("tabs: one that has not opened is not on the bar, and one that has is" + (closedTabs.length === 0 ? "" : "; ON THE BAR UNOPENED: " + closedTabs.join(", ")),
+    closedTabs.length === 0 && barShowsOpen);
+
   // Then how they behave. Everything they touch is put back afterwards.
   saveGame();
   let tipsBefore = { seen: seenTips, on: tipsOn, best: bestFloor, tabs: unlockedTabs, moments: moments, tab: document.body.dataset.tab, save: localStorage.getItem(saveName) };
