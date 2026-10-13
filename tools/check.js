@@ -877,6 +877,68 @@ try {
     switchClass(playing);
   }
 
+  // 3i2b. The Holy Tome's burn does not grow with health without limit. The tome burns
+  // the enemy with healing that was not needed, and healing is a share of health, so a
+  // Zealot who bought nothing but health had a damage multiplier no other build has,
+  // fed by Toughness and fame's Vitality, which have no top level (13 October 2026: floor
+  // 483 in 100 hours, where every other build stops near 340). The hero here already has
+  // a hundred times its attack in health, as that build did. A hundred times MORE health
+  // must not come near a hundred times the damage.
+  if (classes.zealot !== undefined) {
+    let playing = playerClass;
+    switchClass("zealot");
+    let tomeWas = weapon;
+    let fameWas = fameLevels;
+    let keystoneWas = chosenPerks[51];
+    weapon = "tome";
+    fameLevels = {};
+    recalcStats();
+    encounterType = "monster";
+    spawnMonster(false);
+    monsterWard = 0;
+    resetAbilitiesForRun();
+    recentDamage = 0;
+    fightTurns = 1;
+    playerAttack = 1000;
+    let light = abilityById("holyLight");
+
+    // The damage one act deals to a monster with plenty of health, by a hero with this
+    // much health, starting the act on "share" of it
+    let tomeDamage = function (health, share, act) {
+      playerMaxHp = health;
+      playerHp = Math.max(1, Math.round(health * share));
+      monsterMaxHp = 1e15;
+      monsterHp = 1e15;
+      act();
+      return 1e15 - monsterHp;
+    };
+    let useLight = function () { abilityInUse = light; light.use(); abilityInUse = null; };
+    let timesMore = function (share, act) {
+      return tomeDamage(playerAttack * 10000, share, act) / tomeDamage(playerAttack * 100, share, act);
+    };
+
+    let turnGrew = timesMore(1, zealotAttack);
+    let lightGrew = timesMore(1, useLight);
+    // (Martyr's Flame burns with the healing that WAS needed too, so it is tried hurt)
+    chosenPerks[51] = "martyrsFlame";
+    let martyrGrew = timesMore(0.01, zealotAttack);
+    if (keystoneWas === undefined) {
+      delete chosenPerks[51];
+    } else {
+      chosenPerks[51] = keystoneWas;
+    }
+    check("Holy Tome: 100 times the health does not make its burn 100 times stronger (the damage of a turn grows x" + turnGrew.toFixed(1) + ", of Holy Light x" + lightGrew.toFixed(1) + ", of a turn with Martyr's Flame x" + martyrGrew.toFixed(1) + "; each must stay under x10)",
+      turnGrew < 10 && lightGrew < 10 && martyrGrew < 10);
+
+    weapon = tomeWas;
+    fameLevels = fameWas;
+    recentDamage = 0;
+    recalcStats();
+    playerHp = playerMaxHp;
+    startEncounter();
+    switchClass(playing);
+  }
+
   // 3i3. Nothing piles up without limit: relic copies, cooldown cuts, armor
   ownedRelics = [];
   for (let i = 0; i < 400; i++) {
