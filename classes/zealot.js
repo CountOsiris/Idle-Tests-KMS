@@ -161,7 +161,7 @@ classes.zealot = {
     { id: "shieldSlam", name: "Shield Slam", text: "Mace and Shield: 2.5 turns of your damage in one bash, and the enemy is stunned", build: "shield", cooldown: 7,
       use: function () { abilityTurns(2.5); abilityStun(); } },
     { id: "holyLight", name: "Holy Light", text: "Holy Tome: heal 25% of your health and 2 turns of your damage; the healing you do not need burns the enemy too", build: "tome", cooldown: 6,
-      use: function () { abilityTurns(2); let spare = abilityHeal(0.25); if (spare > 0) { abilityPure(spare * (1 + totalBonus("sacredFlame")) * multiplier("sacred"), "holy"); } } },
+      use: function () { abilityTurns(2); let spare = abilityHeal(0.25); if (spare > 0) { abilityPure(tomeBurn(spare) * (1 + totalBonus("sacredFlame")) * multiplier("sacred"), "holy"); } } },
     { id: "righteousFury", name: "Righteous Fury", text: "All your damage +100% for 5 turns", cooldown: 15,
       use: function () { abilityBoost(1, 5); } },
     { id: "wrathOfGod", name: "Wrath of God", text: "Boss killer: 10 turns of your damage in one holy blow", cooldown: 30, bossKiller: true,
@@ -202,6 +202,7 @@ function zealotDamageTypes() {
 
 // The numbers behind the weapons. Change these to retune them.
 const tomeHit = 1.15;       // a holy tome spell hits for this many times your attack
+const tomeBurnMost = 6; // healing that burns counts for this many times your attack at most (see tomeBurn)
 const judgementEvery = 3;
 const crusadeMostTurns = 8;  // Crusade counts this many turns of a fight at most   // with the holy mace, every hit of this number is a Judgement
 
@@ -251,6 +252,28 @@ function zealotCrusade() {
   return 1 + Math.min(crusadeMostTurns, fightTurns + zealotCarry) * totalBonus("crusade") * multiplier("crusade");
 }
 
+// Holy Tome: how much of some healing burns the enemy. All of it, up to tomeBurnMost
+// times your attack. The normal turn and Holy Light both ask here, so the rule is in
+// one place.
+// (Why there is a ceiling: healing is a share of your HEALTH, and health grows with
+// Toughness and fame's Vitality, which have no top level. Without it health was a whole
+// extra multiplier of damage that only this weapon had, and the same health made the
+// hero impossible to hurt: a Zealot who bought nothing but health reached floor 483 in
+// 100 hours, where every other build stops near 340 (13 October 2026). That is the rule
+// in docs/MAP.md section 3.)
+// (Why 6: an ordinary tome build was measured from its first floor to its deepest, and
+// its healing that burns was never more than 0.64 times its attack in a turn and 4.02
+// times with Holy Light. The health build's was 9 to 22 in a turn and 55 to 113 with
+// Holy Light. So 6 never touches the first. To measure again: the bot's "tomeburn".)
+// (NOT ENOUGH YET: with 6 the health build still reaches floor 425 to 440, with 2 it
+// reaches 380 to 395, and even with 1 it reaches 335 to 364. An ordinary build's burn is
+// only about 0.2 times its attack in a turn, so any ceiling it never touches still
+// leaves the health build many times that burn. The ceiling stops the growth without
+// limit; it does not bring that build level with the others.)
+function tomeBurn(healing) {
+  return Math.min(healing, playerAttack * tomeBurnMost);
+}
+
 function zealotAttack() {
   // The turn begins with a prayer. Healing that is not needed is wasted,
   // unless a holy tome is held: then it burns the enemy instead.
@@ -270,6 +293,8 @@ function zealotAttack() {
       spell = spell * 0.8;
     }
     spellHitMonster(spell, "holy");
+    // (the ceiling comes first, and only then do the tome's own bonuses multiply it)
+    burning = tomeBurn(burning);
     if (burning > 0) {
       spellHitMonster(burning * (1 + totalBonus("sacredFlame")) * multiplier("sacred") * zealotCrusade(), "holy");
     }
