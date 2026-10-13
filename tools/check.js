@@ -1515,6 +1515,51 @@ try {
   ascensionBest = bestWere[1];
   startEncounter();
 
+  // 3k2. An ability put in a slot during a run starts on its full cooldown. (It was ready
+  // at once, and cooldowns ran on while an ability sat out of its slot, so one slot could
+  // fire every ability the class has, one after another.)
+  let slotsWere = abilitySlots;
+  let bestForSlots = bestFloor;
+  bestFloor = Math.max(bestFloor, abilitySlotFloors[0]);
+  let abilityA = classAbilities().find(function (ability) { return fitsBuild(ability); });
+  let abilityB = classAbilities().find(function (ability) { return ability !== abilityA; });
+  abilitySlots = [abilityA.id];
+  resetAbilitiesForRun();
+  encounterType = "monster";
+  spawnMonster(false);
+  monsterMaxHp = 1e15;
+  monsterHp = 1e15;
+  abilityPressed[abilityA.id] = true;
+  useAbilities();
+  let firedA = !abilityReady(abilityA);
+
+  unequipAbility(abilityA.id);
+  equipAbility(abilityB.id);
+  let waitsFor = abilityCooldowns[abilityB.id] || 0;
+  let fullWait = Math.max(1, Math.ceil(abilityB.cooldown * (1 - Math.min(mostCooldownCut, totalBonus("quickHands")))));
+  showTab("skills");
+  updateScreen();
+  let slotWords = document.getElementById("abilities").textContent;
+  for (let i = 0; i < waitsFor - 1; i++) {
+    tickAbilityTimers();
+  }
+  let stillWaiting = !abilityReady(abilityB);
+  tickAbilityTimers();
+  let readyAfterIt = abilityReady(abilityB);
+
+  // The start of a run still readies everything
+  abilitySlots = [abilityA.id];
+  equipAbility(abilityB.id);
+  realDie();
+  let readyOnANewRun = abilityReady(abilityA) && abilityReady(abilityB);
+
+  check("abilities: " + abilityA.name + " is used and taken out, and " + abilityB.name + " put in its slot waits " + waitsFor + " turns (its cooldown: " + fullWait + "), is ready after them, and the Skills tab says so; a new run readies everything",
+    firedA && waitsFor === fullWait && stillWaiting && readyAfterIt && slotWords.includes("ready in " + fullWait + " turn") && readyOnANewRun);
+  abilitySlots = slotsWere;
+  bestFloor = bestForSlots;
+  resetAbilitiesForRun();
+  startEncounter();
+
   // 4b. No milestone perk is simply a worse copy of another on the same milestone: every
   // number it gives, the other gives as well, as big or bigger. Such a perk is never the
   // right pick, for a weapon the other one works with. (Soul Eater once gave attack x1.5
