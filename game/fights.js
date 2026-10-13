@@ -84,15 +84,29 @@ function ordinaryMonster() {
   return ordinary;
 }
 
-// What falling right now would pay in experience
-function deathPayout() {
-  // Experience is for the floors this run actually climbed: the ones swept through at
-  // the start were climbed by an earlier run, which was paid for them already
-  let payout = (floor - runStartFloor + 1) * experiencePerFloor * (1 + totalBonus("experience")) * multiplier("experience");
+// EXPERIENCE IS EARNED FLOOR BY FLOOR, the way gold is earned kill by kill. Each floor a
+// run finishes adds its experience to runExperience, at the bonuses held at that moment
+// (see nextRoom), and a fall pays the total.
+// Until 13 October 2026 the whole run was worked out on the fall, from the perks held at
+// that instant: (floors climbed) x (the bonuses of the moment). So a class could climb
+// with damage perks and swap to experience perks just before falling. A run in which
+// nothing is swapped pays exactly what it did.
+
+// What one floor of the tower being climbed is worth right now
+function floorExperience() {
+  let earned = experiencePerFloor * (1 + totalBonus("experience")) * multiplier("experience");
   if (isAway()) {
-    payout = payout * (1 + awayTowerExperience);
+    earned = earned * (1 + awayTowerExperience);
   }
-  return Math.round(payout);
+  return earned;
+}
+
+// What falling right now would pay in experience: the floors finished, and the one
+// being fought. The page shows this number and die() pays it.
+// (Only the floors this run actually climbed count: the ones swept through at the start
+// were climbed by an earlier run, which was paid for them already.)
+function deathPayout() {
+  return Math.round(runExperience + floorExperience());
 }
 
 function spawnMonster(isBoss) {
@@ -219,6 +233,8 @@ function nextRoom() {
   room = room + 1;
 
   if (room > roomsPerFloor) {
+    // The floor just finished is paid for at the bonuses held now (see deathPayout)
+    runExperience = runExperience + floorExperience();
     room = 1;
     floor = floor + 1;
     say("You climb to floor " + floor + ".");
@@ -301,6 +317,7 @@ function die() {
   }).slice(0, totalBonus("relicSlots"));
   lastRunCounter = runCounter;
   runCounter = 0;   // (set again below, once the floor the run starts on is known)
+  runExperience = 0;
   room = 1;
 
   // The next run starts in whichever tower was chosen, from its first floor

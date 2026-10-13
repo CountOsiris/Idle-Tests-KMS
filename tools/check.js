@@ -1475,6 +1475,12 @@ try {
   let homePaid = fallPaidBefore();
   let homeFloors = floor - runStartFloor + 1;
 
+  // A save made before experience was counted floor by floor pays its run as it used to
+  let oldStyleSave = packClass();
+  delete oldStyleSave.runExperience;
+  unpackClass(oldStyleSave);
+  let oldSavePays = deathPayout();
+
   // An experience perk worth x1.5, held for the last turn only
   let realMultiplier = multiplier;
   multiplier = function (stat) {
@@ -1495,8 +1501,8 @@ try {
   let awayPaid = fallPaidBefore();
   let wasAway = isAway();
 
-  check("experience: a run of " + homeFloors + " floors with nothing changed pays what it always did, at home (" + homePays + ", was " + homePaid + "; the fall paid " + fallPaid + ") and away (" + awayPays + ", was " + awayPaid + ")",
-    homeFloors === 10 && homePays === homePaid && fallPaid === homePays && nextRunPays && wasAway && awayPays === awayPaid && awayPays > homePays);
+  check("experience: a run of " + homeFloors + " floors with nothing changed pays what it always did, at home (" + homePays + ", was " + homePaid + "; the fall paid " + fallPaid + "; a save from before this pays " + oldSavePays + ") and away (" + awayPays + ", was " + awayPaid + ")",
+    homeFloors === 10 && homePays === homePaid && fallPaid === homePays && oldSavePays === homePaid && nextRunPays && wasAway && awayPays === awayPaid && awayPays > homePays);
   check("experience: a x1.5 experience perk held only for the last turn of a ten floor run pays " + swappedPays + ", under 1.1 times the " + homePays + " of the run without it",
     swappedPays < homePays * 1.1 && swappedPays > homePays);
 

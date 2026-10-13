@@ -34,6 +34,10 @@ let savedBuild = {};        // a remembered skill layout, for example { might: 1
 let autoBuild = false;      // true = new skill points are spent following the saved build
 let runCounter = 0;         // a number a class may count up during a run (the Warlock's souls). Back to 0 on death.
 
+// The experience the floors FINISHED in this run have earned. A fall pays it, plus the
+// floor being fought (see deathPayout in game/fights.js). Back to 0 on death.
+let runExperience = 0;
+
 // The kind of weapon picked at the blacksmith. It is taken up at the start of the
 // next run, so "weapon" (what is being used now) only changes after a fall.
 let nextWeapon = "";

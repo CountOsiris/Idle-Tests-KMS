@@ -231,6 +231,7 @@ function freshClass(className) {
     lastAscensionSeconds: 0,
     trophies: [],
     runCounter: 0,
+    runExperience: 0,
     savedBuild: {},
     autoBuild: false,
     abilitySlots: [],
@@ -283,6 +284,7 @@ function packClass() {
     lastAscensionSeconds: lastAscensionSeconds,
     trophies: trophies,
     runCounter: runCounter,
+    runExperience: runExperience,
     savedBuild: savedBuild,
     autoBuild: autoBuild,
     abilitySlots: abilitySlots,
@@ -460,6 +462,15 @@ function unpackClass(saved) {
   // A class that has never been played starts on full health
   if (playerHp === undefined) {
     playerHp = playerMaxHp;
+  }
+
+  // The experience the floors of this run have earned (see deathPayout in game/fights.js).
+  // A save made before that was counted floor by floor: its run in progress is paid as
+  // it used to be, every floor at the bonuses held now. (Worked out last, once the
+  // tower, the perks and the relics above are in place.)
+  runExperience = data.runExperience;
+  if (saved === undefined || typeof saved.runExperience !== "number") {
+    runExperience = (floor - runStartFloor) * floorExperience();
   }
 }
 

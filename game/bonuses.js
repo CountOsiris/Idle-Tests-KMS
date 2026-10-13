@@ -366,6 +366,7 @@ function startClassOver() {
   upgrades = {};
   ownedRelics = [];
   runCounter = 0;
+  runExperience = 0;
   floor = 1;
   room = 1;
   runStartFloor = 1;
