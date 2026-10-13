@@ -13,6 +13,19 @@
 
 const gameUpdates = [
   {
+    version: "20261013a",
+    title: "Tips, and a Guide to read them again",
+    changes: [
+      "The game now explains itself as you go. The first time you reach a part of it, a short tip shows in the corner: a title and two sentences. The fight carries on behind it.",
+      "\"Got it\" closes a tip. \"Show me\" closes it and opens the tab it is about, which has a gold outline while the tip is up.",
+      "Every tip you have seen is kept in the Guide. Its button is beside Updates, under the game's name, and there is another on the Settings tab.",
+      "If you have played before, you are not shown a tip for everything you already reached. They are all in the Guide, and one tip tells you so.",
+      "Settings has a Tips switch. Switched off, no tip shows, and what you reach goes straight to the Guide.",
+      "A new tab now opens with a tip, in place of big words across the fight or a pop-up. Floor 10 opens two pop-ups, where it opened three.",
+      "Fixed: tabs you had not reached yet were on the bar all the same, and did nothing when pressed. A tab now appears when it opens."
+    ]
+  },
+  {
     version: "20261012a",
     title: "Staying alive is a real choice",
     changes: [

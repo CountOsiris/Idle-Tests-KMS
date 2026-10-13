@@ -128,3 +128,50 @@ page has the whole height.
 The bottom bar was wrong for a computer (the owner: tabs belong on the side or the top
 there; the bottom suits a phone because that is where it is held). From 1000 pixels
 wide the same bar is across the top, sticky. Picture: [wide](pictures/layout-wide.png).
+
+## Tips (13 October 2026)
+
+The owner: "Players dont understand game, other idle games have tutorials... explains
+new features as they unlock. Don't make it overbearing but also make sure it's quick
+and snappy."
+
+What other games and the research say: teach just in time, one idea at a time, where
+the thing is on screen (a 2012 Memorial University thesis found novices did better with
+that than with teaching up front, and AdVenture Capitalist's developers say not to teach
+everything at once). Trimps pairs each unlock with one short message. Antimatter
+Dimensions keeps a "How to play" that lists only what the player has reached. Melvor
+Idle has a task tutorial at the start and its reviews still say players feel lost.
+
+**Built** (`game/tips.js`): 28 tips, each a title and at most two sentences, in one
+list. A tip shows the first time its part of the game is reached, on a small card above
+the tab bar (the bottom right corner from 1000 pixels wide). It never stops the fight,
+is not a window, and waits to be pressed: "Got it", or "Show me" to open the tab it is
+about, which has a gold outline meanwhile. Every tip seen is kept in the Guide, a window
+opened beside Updates and from Settings, grouped by tab. Settings can switch tips off.
+
+Why it is shaped this way:
+
+- One saved list for the whole account (`seenTips`) and no queue. The tip to show is
+  the first in the list that is true and not seen. Becoming a legend puts the best
+  floor back to 1, so anything keyed on "floor 10 was just reached" would come round
+  again; a saved list cannot.
+- A save from before tips is not shown twenty of them. What it has reached is marked
+  seen without a word, and it gets one tip, which points at the Guide.
+- There is one way to explain a part of the game. A tab used to open with a banner or a
+  pop-up of its own. `tabUnlocks` now only says when a tab opens and its tip says what
+  it is for, so floor 10 opens two pop-ups where it opened three. An announcement says
+  what just happened; a tip says what a thing is; the goals under the fight say what to
+  do now; the "?" on a box explains that box in full.
+- A number in a tip is built from its constant in data.js, and the check reads the
+  list: no id twice, at most two sentences and 30 words, a tip for every tab that opens.
+
+Found on the way: the bottom bar's `display: flex` had been showing every tab button
+from the first minute, opened or not. A new player now sees Fight, Hero and Settings.
+
+Pictures: [a new player](pictures/tips-new-player-400.png), [wide](pictures/tips-new-player-wide.png),
+[a tip that points at a tab](pictures/tips-hero-tab-400.png), [the same, wide](pictures/tips-hero-tab-wide.png),
+[the end of a page, clear of the card](pictures/tips-page-end-400.png), [the Guide](pictures/tips-guide-400.png).
+
+Not done: no highlight boxes round parts of the page, no steps to follow, no rewards
+for reading. Trials and breakthroughs have no tip; each arrives as a pop-up that
+explains itself.

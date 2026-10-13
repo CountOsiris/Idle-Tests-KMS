@@ -33,6 +33,7 @@ Two files go with this one:
 | `game/bosses.js` | Boss mechanics: shield, summons, enrage, reflect, armor up. |
 | `game/equipment.js` | The blacksmith, potions, boons held, the sweep (`startFloor`), named weapons. |
 | `game/legend.js`, `weekly.js`, `companion.js`, `summary.js`, `tidy.js` | Legend marks; the week's modifier; the Second Climber; the run summary and bestiary; folding cards. |
+| `game/tips.js` | The tips list, `checkTips` (called only from `updateScreen`), the tip card and the Guide window. A tip says what a part of the game is, once for the account (`seenTips`, saved). `announce` in `game/feel.js` says what just happened. |
 | `game/save.js`, `cloud.js` | Saving. `packClass` is everything a class owns. |
 | `game/page-build.js`, `page-show.js`, `feel.js`, `start.js` | The page: built once, redrawn every turn, animated, and the clock. |
 | `tools/` | The balance bot, the pre-upload check, the map. Never loaded by the game. |
