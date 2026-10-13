@@ -160,7 +160,7 @@ classes.zealot = {
       use: function () { abilityTurns(3.5); } },
     { id: "shieldSlam", name: "Shield Slam", text: "Mace and Shield: 2.5 turns of your damage in one bash, and the enemy is stunned", build: "shield", cooldown: 7,
       use: function () { abilityTurns(2.5); abilityStun(); } },
-    { id: "holyLight", name: "Holy Light", text: "Holy Tome: heal 25% of your health and 2 turns of your damage; the healing you do not need burns the enemy too", build: "tome", cooldown: 6,
+    { id: "holyLight", name: "Holy Light", text: "Holy Tome: heal 25% of your health and 2 turns of your damage; the healing you do not need burns the enemy too, for at most your attack before its bonuses", build: "tome", cooldown: 6,
       use: function () { abilityTurns(2); let spare = abilityHeal(0.25); if (spare > 0) { abilityPure(tomeBurn(spare) * (1 + totalBonus("sacredFlame")) * multiplier("sacred"), "holy"); } } },
     { id: "righteousFury", name: "Righteous Fury", text: "All your damage +100% for 5 turns", cooldown: 15,
       use: function () { abilityBoost(1, 5); } },
@@ -202,7 +202,7 @@ function zealotDamageTypes() {
 
 // The numbers behind the weapons. Change these to retune them.
 const tomeHit = 1.15;       // a holy tome spell hits for this many times your attack
-const tomeBurnMost = 6; // healing that burns counts for this many times your attack at most (see tomeBurn)
+const tomeBurnMost = 1;     // healing that burns counts for this many times your attack at most (see tomeBurn)
 const judgementEvery = 3;
 const crusadeMostTurns = 8;  // Crusade counts this many turns of a fight at most   // with the holy mace, every hit of this number is a Judgement
 
@@ -254,22 +254,24 @@ function zealotCrusade() {
 
 // Holy Tome: how much of some healing burns the enemy. All of it, up to tomeBurnMost
 // times your attack. The normal turn and Holy Light both ask here, so the rule is in
-// one place.
+// one place. (The Holy Tome's line in zealotGearInfo and Holy Light's text say "at most
+// your attack": change them too if tomeBurnMost changes.)
 // (Why there is a ceiling: healing is a share of your HEALTH, and health grows with
 // Toughness and fame's Vitality, which have no top level. Without it health was a whole
 // extra multiplier of damage that only this weapon had, and the same health made the
 // hero impossible to hurt: a Zealot who bought nothing but health reached floor 483 in
 // 100 hours, where every other build stops near 340 (13 October 2026). That is the rule
 // in docs/MAP.md section 3.)
-// (Why 6: an ordinary tome build was measured from its first floor to its deepest, and
-// its healing that burns was never more than 0.64 times its attack in a turn and 4.02
-// times with Holy Light. The health build's was 9 to 22 in a turn and 55 to 113 with
-// Holy Light. So 6 never touches the first. To measure again: the bot's "tomeburn".)
-// (NOT ENOUGH YET: with 6 the health build still reaches floor 425 to 440, with 2 it
-// reaches 380 to 395, and even with 1 it reaches 335 to 364. An ordinary build's burn is
-// only about 0.2 times its attack in a turn, so any ceiling it never touches still
-// leaves the health build many times that burn. The ceiling stops the growth without
-// limit; it does not bring that build level with the others.)
+// (Why 1, "at most your attack": it is the only ceiling measured that brings the build
+// that buys nothing but health level with an ordinary tome build. Deepest floor in 100
+// hours, health build against ordinary build: no ceiling 470 to 478 against 310 to 340;
+// a ceiling of 6, 425 to 440; of 2, 380 to 395 against 320 to 325; of 1, 335 to 364
+// against 310 to 365, four runs each.)
+// (What it costs an ordinary build: nothing in a normal turn, where its healing that
+// burns was never more than 0.64 times its attack. Holy Light's was 3.27 to 4.02 times
+// on the first 20 floors after ascending and about 1 past floor 150, so the ceiling
+// does clip it there, and the four runs show no weaker climb. To measure again: the
+// bot's "tomeburn".)
 function tomeBurn(healing) {
   return Math.min(healing, playerAttack * tomeBurnMost);
 }
@@ -358,5 +360,5 @@ function zealotGearInfo() {
     return "Mace and Shield: " + percent(cappedChance("blockChance")) + " chance to block an attack and strike back for " + percent(totalBonus("counter")) + " of your attack."
       + overflowNote(overflow("blockChance", maxChance), "damage resistance");
   }
-  return "Holy Tome: your spells hit " + percent(tomeHit - 1) + " harder and ignore armor, your healing is doubled, and healing you do not need burns the enemy instead (+" + percent(totalBonus("sacredFlame")) + ").";
+  return "Holy Tome: your spells hit " + percent(tomeHit - 1) + " harder and ignore armor, your healing is doubled, and healing you do not need burns the enemy, for at most your attack before its bonuses (+" + percent(totalBonus("sacredFlame")) + ").";
 }
