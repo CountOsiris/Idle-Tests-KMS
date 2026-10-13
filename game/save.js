@@ -483,6 +483,7 @@ function saveGame() {
     bestiary: bestiary,
     companionClass: companionClass,
     unlockedTabs: unlockedTabs,
+    seenTips: seenTips,
     lastTick: lastTick
   };
 
@@ -519,6 +520,15 @@ function loadGame() {
         unlockedTabs = data.unlockedTabs;
       }
 
+      // Tips (game/tips.js): a save from before they existed has reached things already.
+      // checkTips marks those seen without a word, the first time the page is shown.
+      // (No save at all leaves tipsAreNew false: a new player is shown every tip.)
+      if (Array.isArray(data.seenTips)) {
+        seenTips = data.seenTips;
+      } else {
+        tipsAreNew = true;
+      }
+
       // When the game was last running, so we know how long you were away
       lastTick = data.lastTick;
 
@@ -537,6 +547,8 @@ function loadGame() {
       legendMarks = 0;
       legendLevels = {};
       bestiary = {};
+      seenTips = [];
+      tipsAreNew = false;
       playerClass = "barbarian";
       lastTick = Date.now();
     }

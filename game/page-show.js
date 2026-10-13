@@ -28,12 +28,17 @@ function showTab(name) {
   // The tab is remembered, so that reloading the page does not throw you back to the first one
   openTab = name;
   saveSettings();
+
+  // (a tip's "Show me" button and the outline on its tab depend on the tab on screen)
+  showTip();
 }
 
 // NOTHING IN THE GAME CHANGES THE TAB BY ITSELF. Only the player does, by pressing a
 // tab button. Whatever happens in the tower (a death, a boss, an upgrade, a
 // level) shows as a dot on a tab or a pop-up in the fight, and never moves the player
 // off the page they are reading. Keep it that way: do not call showTab from game code.
+// (A tip's "Show me" button does call it, in closeTip in game/tips.js. That is the
+// player's own press on a button that says where it goes.)
 
 // Puts a small dot on a tab when something there needs the player's attention
 function markTab(name, needsAttention) {
@@ -809,8 +814,9 @@ function showRelics() {
 }
 
 function updateScreen() {
-  checkTabUnlocks(false);
+  checkTabUnlocks();
   showMoment();
+  checkTips();
   showClassButtons();
   showUpgrades();
   showSkills();

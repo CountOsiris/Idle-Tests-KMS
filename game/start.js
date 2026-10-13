@@ -171,7 +171,7 @@ buildLegendList();
 buildResetTable();
 buildTowerList();
 buildClassScreen();
-checkTabUnlocks(true);
+checkTabUnlocks();
 showTab("tower");
 loadSettings();
 showSaveProblem();

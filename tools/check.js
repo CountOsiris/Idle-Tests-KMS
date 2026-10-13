@@ -31,6 +31,18 @@ try {
   }
   check("fame is a number (" + big(fame) + ")", typeof fame === "number" && !isNaN(fame));
 
+  // 1-tips. A save from before tips existed (every save in tools/saves/ is one) must not be
+  // buried in them: what it has reached is marked seen without a word, and the one tip
+  // on the page is the one that says where the Guide is. (The game has shown the page
+  // once by now, which is the one checkTips this needs.)
+  if (before !== undefined && !Array.isArray(before.seenTips)) {
+    let stillWaiting = tips.filter(function (tip) { return tip.id !== "guide" && tip.when() && !seenTips.includes(tip.id); });
+    check("tips: an old save is shown one tip, the Guide's (showing: " + (shownTip === null ? "none" : shownTip.id) + "), and the " + seenTips.length + " it has reached are seen already"
+      + (stillWaiting.length === 0 ? "" : "; STILL WAITING: " + stillWaiting.map(function (tip) { return tip.id; }).join(", ")),
+      shownTip !== null && shownTip.id === "guide" && !seenTips.includes("guide") && seenTips.includes("start") && stillWaiting.length === 0
+      && !document.getElementById("tip").hidden && document.getElementById("tip-title").textContent === shownTip.title && !tipsAreNew);
+  }
+
   // 1a. The week's modifier: each one is well formed, they take turns, and they apply.
   // The rest of the check then runs with none, so that its numbers do not depend on the date.
   let weekProblems = [];
@@ -1475,6 +1487,194 @@ try {
   }
   closeUpdates();
   check("the Updates window: " + (updateProblems.length === 0 ? "no problems" : updateProblems.join("; ")), updateProblems.length === 0);
+
+  // 5b. Tips (game/tips.js). First the list itself.
+  let tipProblems = [];
+  let tipIds = {};
+  for (let tip of tips) {
+    if (!tip.id || tipIds[tip.id] !== undefined) {
+      tipProblems.push("the id \"" + tip.id + "\" is missing or used twice");
+    }
+    tipIds[tip.id] = true;
+    if (!tip.title || !tip.text || typeof tip.when !== "function" || !tabNames.includes(tip.tab)) {
+      tipProblems.push(tip.id + " has no title, no text, no \"when\" or a tab that does not exist");
+      continue;
+    }
+    let sentences = tip.text.split(/[.!?]+(?:\s|$)/).filter(function (part) { return part.trim() !== ""; }).length;
+    let words = tip.text.trim().split(/\s+/).length;
+    if (sentences > 2 || words > 30) {
+      tipProblems.push(tip.id + " is too long (" + sentences + " sentences, " + words + " words)");
+    }
+  }
+  if (tips[tips.length - 1].id !== "guide") {
+    tipProblems.push("\"guide\" is not the last tip");
+  }
+
+  // A tab that opens as you go no longer announces itself: its tip is its explanation
+  let tipTabsWere = unlockedTabs;
+  for (let unlock of tabUnlocks) {
+    unlockedTabs = [];
+    let trueBefore = tips.filter(function (tip) { return tip.tab === unlock.tab && tip.when(); });
+    unlockedTabs = [unlock.tab];
+    let turnsTrue = tips.some(function (tip) { return tip.tab === unlock.tab && tip.when() && !trueBefore.includes(tip); });
+    if (!turnsTrue) {
+      tipProblems.push("the " + unlock.tab + " tab has no tip that shows when it opens");
+    }
+    if (unlock.title !== undefined || unlock.text !== undefined) {
+      tipProblems.push("the " + unlock.tab + " tab still has an announcement of its own");
+    }
+  }
+  unlockedTabs = tipTabsWere;
+  check("tips: " + tips.length + " in the list, each with its own id, a title, at most 2 sentences and 30 words, and one for each of the " + tabUnlocks.length + " tabs that open"
+    + (tipProblems.length === 0 ? "" : ": " + tipProblems.join("; ")), tipProblems.length === 0);
+
+  // Then how they behave. Everything they touch is put back afterwards.
+  saveGame();
+  let tipsBefore = { seen: seenTips, on: tipsOn, best: bestFloor, tabs: unlockedTabs, moments: moments, tab: document.body.dataset.tab, save: localStorage.getItem(saveName) };
+  let tipBox = document.getElementById("tip");
+  let allTipIds = tips.map(function (tip) { return tip.id; });
+  let tipPicture = function () {
+    return JSON.stringify(seenTips) + "|" + (shownTip === null ? "none" : shownTip.id) + "|" + tipBox.outerHTML + "|" + document.body.className
+      + "|" + document.querySelector(".tabs").innerHTML + "|" + moments.length + "|" + logLines.length;
+  };
+  // (as if every tip but these had been seen, and no big moment were waiting)
+  let waitFor = function (ids) {
+    seenTips = allTipIds.filter(function (id) { return !ids.includes(id); });
+    shownTip = null;
+    tipRestUntil = 0;
+    checkTips();
+  };
+  moments = [];
+  document.getElementById("moment").hidden = true;
+  tipsOn = true;
+  unlockedTabs = tabNames;
+  showTab("tower");
+
+  // A new player: no save in the browser at all
+  localStorage.removeItem(saveName);
+  seenTips = [];
+  shownTip = null;
+  tipRestUntil = 0;
+  oldSaveFilled = false;
+  loadGame();
+  checkTips();
+  let newPlayer = !tipsAreNew && shownTip !== null && shownTip.id === "start" && seenTips.length === 0 && !tipBox.hidden
+    && document.getElementById("tip-title").textContent === tips[0].title && document.getElementById("tip-text").textContent === tips[0].text
+    && document.getElementById("tip-go").hidden && document.body.classList.contains("tip-showing");
+  check("tips: a new player is shown the first tip (\"" + tips[0].title + "\"), with nothing marked seen", newPlayer);
+
+  let pictureBefore = tipPicture();
+  checkTips();
+  let sameWithTip = tipPicture() === pictureBefore;
+  waitFor([]);
+  pictureBefore = tipPicture();
+  checkTips();
+  check("tips: checking twice in a row changes nothing the second time, with a tip showing and with none", sameWithTip && shownTip === null && tipBox.hidden && tipPicture() === pictureBefore);
+
+  // Closing is for good: becoming a legend puts the best floor back to 1, and a tip that
+  // was keyed on reaching a floor would come round again
+  bestFloor = Math.max(bestFloor, 10);
+  waitFor(["bars", "guide"]);
+  let barsShown = shownTip !== null && shownTip.id === "bars";
+  closeTip(false);
+  let restsAfter = shownTip === null && tipBox.hidden && !document.body.classList.contains("tip-showing");
+  closeTip(false);
+  let seenOnce = seenTips.filter(function (id) { return id === "bars"; }).length === 1;
+  let keptInSave = JSON.parse(localStorage.getItem(saveName)).seenTips.includes("bars");
+  bestFloor = 1;
+  tipRestUntil = 0;
+  checkTips();
+  let nextIsGuide = shownTip !== null && shownTip.id === "guide";
+  bestFloor = Math.max(bestFloor, 10);
+  checkTips();
+  check("tips: closing one marks it seen once and saves it, the next waits " + tipRest + " seconds, and the closed one never shows again, even with the best floor back at 1",
+    barsShown && restsAfter && seenOnce && keptInSave && nextIsGuide && shownTip.id === "guide");
+
+  // "Show me" is only there when there is somewhere to go, and it is the player's press
+  waitFor(["skills"]);
+  let pointsAtSkills = shownTip !== null && shownTip.id === "skills" && !document.getElementById("tip-go").hidden && document.getElementById("tab-skills").classList.contains("fresh");
+  showTab("skills");
+  let nowhereToGo = document.getElementById("tip-go").hidden && !document.getElementById("tab-skills").classList.contains("fresh") && !tipBox.hidden;
+  showTab("tower");
+  document.getElementById("tip-go").click();
+  let wentThere = document.body.dataset.tab === "skills" && seenTips.includes("skills") && tipBox.hidden && document.querySelector(".tabs .fresh") === null;
+  showTab("tower");
+  waitFor(["skills"]);
+  document.getElementById("tip-close").click();
+  let stayedPut = document.body.dataset.tab === "tower" && seenTips.includes("skills") && tipBox.hidden;
+  check("tips: \"Show me\" opens the tab the tip is about and is hidden on that tab; \"Got it\" leaves the player where they are", pointsAtSkills && nowhereToGo && wentThere && stayedPut);
+
+  // A tip waits behind a big moment and behind time away, and stays out of the queue
+  waitFor(["bars"]);
+  moments.push({ title: "A moment", text: "For the check." });
+  updateScreen();
+  let hiddenByMoment = tipBox.hidden && !document.getElementById("moment").hidden && moments.length === 1 && shownTip !== null;
+  closeMoment();
+  updateScreen();
+  let backAfterMoment = !tipBox.hidden && moments.length === 0;
+  catchingUp = true;
+  showTip();
+  let hiddenWhileAway = tipBox.hidden;
+  catchingUp = false;
+  waitFor(["bars"]);
+  shownTip = null;
+  backgroundClimb = true;
+  checkTips();
+  let quietInBackground = shownTip === null;
+  backgroundClimb = false;
+  check("tips: a tip is hidden while a big moment is open or time away is played, never joins the moments, and nothing is looked for during the Second Climber's turns",
+    hiddenByMoment && backAfterMoment && hiddenWhileAway && quietInBackground);
+
+  // Switched off in Settings: nothing shows, and what is reached goes to the Guide
+  tipsOn = false;
+  seenTips = [];
+  shownTip = null;
+  checkTips();
+  let offIsQuiet = shownTip === null && tipBox.hidden && seenTips.includes("start") && document.getElementById("tips-box") !== null;
+  tipsOn = true;
+
+  // The Guide lists what has been seen, under its tab, and nothing that has not
+  seenTips = ["skills", "start", "fall"];
+  document.getElementById("guide-btn").click();
+  let guideList = document.getElementById("guide-list");
+  let guideWords = guideList.textContent;
+  let guideOpens = !document.getElementById("guide").hidden && guideList.querySelectorAll(".guide-tab").length === 3 && guideList.querySelectorAll(".row-title").length === 3
+    && guideList.querySelector(".guide-tab").textContent === document.getElementById("tab-tower").textContent
+    && guideWords.includes(tips[0].text) && !guideWords.includes("Keystones") && document.getElementById("guide-count").textContent.includes("3 of " + tips.length)
+    && document.getElementById("guide-btn").offsetHeight > 0;
+  document.querySelector("#guide .window-close").click();
+  check("tips: switched off, nothing shows and what is reached is marked seen; the Guide lists the seen tips under their tabs and no others, and its X closes it",
+    offIsQuiet && guideOpens && document.getElementById("guide").hidden);
+
+  // The seen list is part of the save, and a save without one is an old save
+  seenTips = ["start", "fall"];
+  saveGame();
+  seenTips = [];
+  loadGame();
+  let cameBack = JSON.stringify(seenTips) === "[\"start\",\"fall\"]" && !tipsAreNew;
+  let oldSave = JSON.parse(localStorage.getItem(saveName));
+  oldSave.seenTips = "start";
+  localStorage.setItem(saveName, JSON.stringify(oldSave));
+  seenTips = [];
+  shownTip = null;
+  tipRestUntil = 0;
+  loadGame();
+  let countsAsOld = tipsAreNew;
+  checkTips();
+  check("tips: the seen list survives a save and a load, and a save without a list is filled in quietly and shown the Guide's tip",
+    cameBack && countsAsOld && !tipsAreNew && shownTip !== null && shownTip.id === "guide" && seenTips.includes("start") && !seenTips.includes("guide"));
+
+  seenTips = tipsBefore.seen;
+  shownTip = null;
+  tipRestUntil = 0;
+  tipsOn = tipsBefore.on;
+  bestFloor = tipsBefore.best;
+  unlockedTabs = tipsBefore.tabs;
+  moments = tipsBefore.moments;
+  localStorage.setItem(saveName, tipsBefore.save);
+  loadGame();
+  showTab(tipsBefore.tab);
+  updateScreen();
 
   // 6. Saving gives the current version
   saveGame();

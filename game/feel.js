@@ -68,7 +68,8 @@ function toast(text, kind) {
 //   "toast"  - a small note in the corner of the fight: levels, floors, boons
 //   "banner" - big words across the fight: a new blacksmith tier, a skill rank, a wall
 //   "moment" - a card in the middle of the page that waits for the player: a milestone
-//              perk to pick, a new part of the game opening. Only the rare, big ones.
+//              perk to pick, a new ability slot to fill. Only the rare, big ones.
+// (What a part of the game IS, as opposed to what just happened, is a tip: game/tips.js.)
 // Every announcement also goes in the log. While time away is being played through,
 // toasts and banners are skipped (nobody is watching), and moments wait in a queue.
 // The player can turn moments into banners in Settings.
@@ -176,26 +177,24 @@ function announceMilestone(milestone) {
 
 // ----- Tabs that open as you go -----
 // A new player sees only the Tower, Character and Settings tabs. The others appear as
-// the game reaches them, each with an announcement, so every part of the game arrives
-// as something new. It is counted for the whole account: a tab that any class has
-// opened stays open for every class. Which tabs are open is saved (unlockedTabs).
+// the game reaches them, so every part of the game arrives as something new. It is
+// counted for the whole account: a tab that any class has opened stays open for every
+// class. Which tabs are open is saved (unlockedTabs).
+// This list only says WHEN a tab opens. What the tab is for is said by its tip (the
+// tips list in game/tips.js), so that a part of the game is explained in one place.
+// (Until October 2026 each tab came with a banner or a pop-up of its own, and floor 10
+// opened three pop-ups at once.)
 //
-// TO ADD A TAB: give it a line here. "earned" says when it opens.
+// TO ADD A TAB: give it a line here. "earned" says when it opens. Then give it a tip in
+// game/tips.js whose "when" is tabIs("its name"): the pre-upload check asks for one.
 const tabUnlocks = [
-  { tab: "skills", size: "banner", title: "Skills open", text: "Every level gives a skill point to spend on the Skills tab.",
-    earned: function () { return accountMost("level") >= 2; } },
-  { tab: "town", size: "banner", title: "The town opens", text: "The blacksmith and the merchants take gold you have banked (Town tab).",
-    earned: function () { return accountMost("bank") > 0 || accountMost("forge") > 0; } },
-  { tab: "milestones", size: "banner", title: "Milestones open", text: "Reaching new floors unlocks perks that are yours for good (Milestones tab).",
-    earned: function () { return accountMost("bestFloor") >= 5; } },
-  { tab: "inventory", size: "banner", title: "Inventory opens", text: "Your equipment is on the Inventory tab, and so are relics: rare finds that change how a run plays.",
-    earned: function () { return accountMost("bestFloor") >= 6; } },
-  { tab: "ascension", size: "moment", title: "Ascension", text: "Reach floor " + ascendFirstFloor + " to ascend: this class starts again from level 1 and earns fame, which makes every one of your classes stronger for good. See the Ascension tab.",
-    earned: function () { return accountMost("bestFloor") >= 10 || totalAscensions() > 0; } },
-  { tab: "travel", size: "moment", title: "Other towers", text: "Your classes can now challenge each other's towers. Each has stronger monsters and a rule of its own against challengers, and six trophies to win: bonuses that are yours for good. See the Towers tab.",
-    earned: function () { return accountMost("bestFloor") >= 20 || totalAscensions() > 0; } },
-  { tab: "legend", size: "moment", title: "Legend", text: "A class that reaches floor " + legendFloor + " can become a legend: it climbs the whole tower again, and earns legend marks that open new things for every class. See the Legend tab.",
-    earned: function () { return accountMost("bestFloor") >= legendFloor || accountMost("legends") > 0 || legendMarks > 0 || Object.keys(legendLevels).length > 0; } }
+  { tab: "skills", earned: function () { return accountMost("level") >= 2; } },
+  { tab: "town", earned: function () { return accountMost("bank") > 0 || accountMost("forge") > 0; } },
+  { tab: "milestones", earned: function () { return accountMost("bestFloor") >= 5; } },
+  { tab: "inventory", earned: function () { return accountMost("bestFloor") >= 6; } },
+  { tab: "ascension", earned: function () { return accountMost("bestFloor") >= 10 || totalAscensions() > 0; } },
+  { tab: "travel", earned: function () { return accountMost("bestFloor") >= 20 || totalAscensions() > 0; } },
+  { tab: "legend", earned: function () { return accountMost("bestFloor") >= legendFloor || accountMost("legends") > 0 || legendMarks > 0 || Object.keys(legendLevels).length > 0; } }
 ];
 
 // Tabs that are always open
@@ -229,14 +228,10 @@ function tabIsOpen(name) {
   return openFromTheStart.includes(name) || unlockedTabs.includes(name);
 }
 
-// "quietly" is for opening the game: tabs already earned open without a fuss
-function checkTabUnlocks(quietly) {
+function checkTabUnlocks() {
   for (let unlock of tabUnlocks) {
     if (!unlockedTabs.includes(unlock.tab) && unlock.earned()) {
       unlockedTabs.push(unlock.tab);
-      if (!quietly) {
-        announce(unlock.size, unlock.title, unlock.text);
-      }
     }
   }
 
@@ -271,6 +266,7 @@ function loadSettings() {
       }
       watchFast = settings.watchFast === true;
       helpAlways = settings.helpAlways === true;
+      tipsOn = settings.tipsOn !== false;
       if (Array.isArray(settings.foldedCards)) {
         foldedCards = settings.foldedCards;
       }
@@ -288,7 +284,7 @@ function loadSettings() {
 function saveSettings() {
   // Not before they have been read, or the first showTab would overwrite them
   if (settingsLoaded) {
-    localStorage.setItem(settingsName, JSON.stringify({ animationsOn: animationsOn, momentsOn: momentsOn, openTab: openTab, seenVersion: seenVersion, watchFast: watchFast, helpAlways: helpAlways, foldedCards: foldedCards }));
+    localStorage.setItem(settingsName, JSON.stringify({ animationsOn: animationsOn, momentsOn: momentsOn, openTab: openTab, seenVersion: seenVersion, watchFast: watchFast, helpAlways: helpAlways, tipsOn: tipsOn, foldedCards: foldedCards }));
   }
 }
 
@@ -316,6 +312,7 @@ function showSettings() {
   document.getElementById("moments-box").checked = momentsOn;
   document.getElementById("fast-box").checked = watchFast;
   document.getElementById("help-box").checked = helpAlways;
+  document.getElementById("tips-box").checked = tipsOn;
 
   // style.css switches every animation off when the body has "no-motion"
   document.body.classList.toggle("no-motion", !animationsOn);
@@ -364,6 +361,7 @@ function closeUpdates() {
 document.addEventListener("keydown", function (event) {
   if (event.key === "Escape") {
     closeUpdates();
+    closeGuide();
     closeFavouriteWindow();
   }
 });

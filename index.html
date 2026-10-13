@@ -22,6 +22,8 @@
         <h1>Tower Idle</h1>
         <!-- Opens the Updates window: what changed in each version (updates.js) -->
         <button id="updates-btn" class="quiet updates-link" onclick="openUpdates()">Updates</button>
+        <!-- Opens the Guide window: every tip seen so far (game/tips.js) -->
+        <button id="guide-btn" class="quiet updates-link" onclick="openGuide()">Guide</button>
       </div>
       <div class="who">
         <span id="header-icon" class="who-icon"></span>
@@ -60,6 +62,31 @@
       <p class="note">You are playing version <strong id="updates-version"></strong>.</p>
       <div id="updates-list"></div>
       <p><button class="main" onclick="closeUpdates()">Close</button></p>
+    </div>
+  </div>
+
+  <!-- The Guide window: every tip the account has seen, to read again.
+       The list is made by game/tips.js from its tips list. -->
+  <div id="guide" class="moment" hidden onclick="if (event.target === this) { closeGuide(); }">
+    <div class="card highlight moment-card">
+      <button class="window-close" onclick="closeGuide()" title="Close" aria-label="Close">&#10005;</button>
+      <h2>Guide</h2>
+      <p id="guide-count" class="note"></p>
+      <div id="guide-list"></div>
+      <p><button class="main" onclick="closeGuide()">Close</button></p>
+    </div>
+  </div>
+
+  <!-- A tip: what a part of the game is, the first time it is reached (game/tips.js).
+       It is outside the page on purpose: it stays in its corner whatever tab is open,
+       and it is not a window, so the fight and every button stay in reach. -->
+  <div id="tip" class="card highlight tip" hidden>
+    <p class="row-title"><span class="tip-label">Tip</span> <span id="tip-title"></span></p>
+    <p id="tip-text" class="note"></p>
+    <div class="tip-buttons">
+      <button id="tip-close" class="main" onclick="closeTip(false)">Got it</button>
+      <!-- Only shown when the tip is about a tab that is open and is not the one on screen -->
+      <button id="tip-go" class="quiet" onclick="closeTip(true)">Show me</button>
     </div>
   </div>
 
@@ -566,6 +593,14 @@
             </div>
             <button id="updates-btn-settings" onclick="openUpdates()">Updates</button>
           </div>
+          <!-- Opens the Guide window: every tip seen so far (game/tips.js) -->
+          <div class="row">
+            <div class="row-text">
+              <p class="row-title">Guide</p>
+              <p class="note">Every tip you have seen, to read again.</p>
+            </div>
+            <button onclick="openGuide()">Guide</button>
+          </div>
           <div class="row">
             <div class="row-text">
               <p class="row-title">Time away</p>
@@ -586,6 +621,13 @@
             </span>
           </label>
           <label class="setting">
+            <input type="checkbox" id="tips-box" onchange="setTips(this.checked)">
+            <span>
+              <span class="row-title">Tips</span>
+              <span class="note">A short tip in the corner the first time you reach a part of the game. Switch off and they go straight to the Guide.</span>
+            </span>
+          </label>
+          <label class="setting">
             <input type="checkbox" id="help-box" onchange="setHelpAlways(this.checked)">
             <span>
               <span class="row-title">Always show explanations</span>
@@ -603,7 +645,7 @@
             <input type="checkbox" id="moments-box" onchange="setMoments(this.checked)">
             <span>
               <span class="row-title">Big moments</span>
-              <span class="note">A card in the middle of the page for milestones and new parts of the game, where you can pick a perk straight away. Switch off to see them as big words across the fight instead.</span>
+              <span class="note">A card in the middle of the page for milestones and new ability slots, where you can pick straight away. Switch off to see them as big words across the fight instead.</span>
             </span>
           </label>
         </div>
@@ -694,6 +736,7 @@
   <script src="game/fights.js?v=20261012a"></script>
   <script src="game/tidy.js?v=20261012a"></script>
   <script src="game/feel.js?v=20261012a"></script>
+  <script src="game/tips.js?v=20261012a"></script>
   <script src="game/start.js?v=20261012a"></script>
   <script src="cloud.js?v=20261012a"></script>
 </body>
