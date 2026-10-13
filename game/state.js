@@ -61,6 +61,10 @@ let townLevels = {};
 let favouriteUpgrade = "";
 let potions = 0;
 
+// How many potions this run has drunk. A run can drink no more than the belt holds
+// (see potionRoom in game/equipment.js). Back to 0 on death.
+let potionsDrunk = 0;
+
 // true = the belt is filled from the bank every time the class falls (the tick box in town)
 let keepPotions = false;
 

@@ -363,6 +363,7 @@ function startClassOver() {
   gold = 0;
   bank = 0;
   potions = 0;
+  potionsDrunk = 0;
   upgrades = {};
   ownedRelics = [];
   runCounter = 0;

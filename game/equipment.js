@@ -315,8 +315,18 @@ function potionCost() {
   return potionPrice * (1 + Math.floor(ascensionBest / potionPriceFloors));
 }
 
+// A RUN CAN DRINK NO MORE POTIONS THAN THE BELT HOLDS. Until 13 October 2026 potions
+// could be bought from the bank while a fight went on, so the size of the belt was no
+// limit: a class with gold drank its way through any boss. Now every potion drunk in a
+// run takes up its place on the belt until the fall.
+// How many more potions the belt can take right now. Everything that puts a potion on
+// the belt asks this.
+function potionRoom() {
+  return Math.max(0, potionLimit() - potionsDrunk - potions);
+}
+
 function buyPotion() {
-  if (potions < potionLimit() && bank >= potionCost()) {
+  if (potionRoom() > 0 && bank >= potionCost()) {
     bank = bank - potionCost();
     potions = potions + 1;
     updateScreen();
@@ -332,7 +342,7 @@ function setKeepPotions(on) {
 // Gives back how many were bought.
 function restockPotions() {
   let bought = 0;
-  while (keepPotions && potions < potionLimit() && bank >= potionCost()) {
+  while (keepPotions && potionRoom() > 0 && bank >= potionCost()) {
     bank = bank - potionCost();
     potions = potions + 1;
     bought = bought + 1;

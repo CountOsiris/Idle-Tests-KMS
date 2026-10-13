@@ -217,6 +217,7 @@ function freshClass(className) {
     townLevels: {},
     favouriteUpgrade: "",
     potions: 0,
+    potionsDrunk: 0,
     tower: className,
     nextTower: className,
     towerBest: {},
@@ -270,6 +271,7 @@ function packClass() {
     townLevels: townLevels,
     favouriteUpgrade: favouriteUpgrade,
     potions: potions,
+    potionsDrunk: potionsDrunk,
     tower: tower,
     nextTower: nextTower,
     towerBest: towerBest,
@@ -325,6 +327,8 @@ function unpackClass(saved) {
   townLevels = data.townLevels;
   favouriteUpgrade = data.favouriteUpgrade;
   potions = data.potions;
+  // (a save from before potions drunk were counted starts the count at 0)
+  potionsDrunk = typeof data.potionsDrunk === "number" ? data.potionsDrunk : 0;
   keepPotions = data.keepPotions === true;
 
   // In case a favourite was renamed or removed since the save was made

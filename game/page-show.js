@@ -325,7 +325,15 @@ function showTown() {
 
   document.getElementById("potions").textContent = potions + " / " + potionLimit();
   document.getElementById("potion-btn").textContent = big(potionCost()) + " gold";
-  document.getElementById("potion-btn").disabled = potions >= potionLimit() || bank < potionCost();
+  document.getElementById("potion-btn").disabled = potionRoom() === 0 || bank < potionCost();
+
+  // What this run has drunk takes up room on the belt until the fall (see potionRoom)
+  let beltNote = "";
+  if (potionsDrunk > 0) {
+    let beltTakes = potionLimit() - potionsDrunk;
+    beltNote = " " + potionsDrunk + " drunk this run: the belt takes " + (beltTakes > 0 ? "only " + beltTakes : "no more") + " until you fall, and can be filled again after that.";
+  }
+  document.getElementById("potion-run-note").textContent = beltNote;
   document.getElementById("keep-potions-box").checked = keepPotions;
   document.getElementById("potion-price-note").textContent = "The price rises by " + potionPrice + " gold for every " + potionPriceFloors + " floors of your best since ascending (" + ascensionBest + ").";
 }

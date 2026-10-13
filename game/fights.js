@@ -305,6 +305,8 @@ function die() {
   levelUpWhilePossible();
   bank = bank + gold;
   gold = 0;
+  // (the run is over, so the potions it drank no longer take up room on the belt)
+  potionsDrunk = 0;
   let restocked = restockPotions();
   if (restocked > 0) {
     say("You restock " + restocked + " healing " + (restocked === 1 ? "potion" : "potions") + " for " + big(restocked * potionCost()) + " gold.");
@@ -349,8 +351,8 @@ function die() {
     gainBossUpgrade();
   }
 
-  // The Quartermaster (a legend unlock) fills the belt for free
-  potions = Math.max(potions, totalBonus("freePotions"));
+  // The Quartermaster (a legend unlock) fills the belt for free, as far as it has room
+  potions = Math.max(potions, Math.min(totalBonus("freePotions"), potions + potionRoom()));
   let relicBossesPassed = Math.floor((floor - 1) / relicBossEvery);
   for (let i = 0; i < relicBossesPassed; i++) {
     gainRelic();
@@ -499,6 +501,7 @@ function monsterAttacks() {
     die();
   } else if (potions > 0 && playerHp <= playerMaxHp * 0.3 && totalBonus("noPotions") === 0) {
     potions = potions - 1;
+    potionsDrunk = potionsDrunk + 1;
     healSource = "Potions";
     healPlayer(playerMaxHp * (potionHealing + totalBonus("potionPower")));
     healSource = "";
