@@ -13,6 +13,16 @@
 
 const gameUpdates = [
   {
+    version: "20261013b",
+    title: "The Holy Tome: health is no longer damage",
+    changes: [
+      "Fixed: a Zealot built only for health with the Holy Tome climbed far deeper than anything else, to floor 470 and past it in 100 hours where every other build stops near 340. The tome burns the enemy with healing you do not need, healing is a share of your health, so its health was also its damage.",
+      "The rule now: healing you do not need burns the enemy, for at most your attack before its bonuses. Litany, Priest, Hierophant and the tome's other bonuses multiply it after that, as before. Holy Light follows the same rule.",
+      "An ordinary Holy Tome build climbs as it did: floor 320 and 340 in 100 hours, where it reached 310 to 340. In a normal turn its burning healing was never more than two thirds of its attack, so the rule does not touch it. Holy Light's burn is held back on the first floors after ascending, and the climb was no slower for it.",
+      "The Holy Mace and the Mace and Shield are unchanged."
+    ]
+  },
+  {
     version: "20261013a",
     title: "Tips, and a Guide to read them again",
     changes: [
