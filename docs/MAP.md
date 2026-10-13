@@ -161,6 +161,7 @@ about 4% a floor, so 20% more damage is worth about 5 floors.
 | Measuring a class with a guard by its middle hit, or a tower by a class sent there from its first minute | Half a Warden's hits land behind a guard, so the middle one said 40 hits to die. A fresh class in an away tower gets nowhere, which says nothing about the tower | `edge` reports the average hit; `home=15` plays at home first |
 | Flat numbers (+3 armor at floor 75) | A flat number is worth nothing against one that grows 4% a floor | Give a percentage or a multiplier. Flat numbers only on the first ten floors |
 | A buff that works but cannot be seen (Phoenix Feather) | It wrote one line with another name in it | Say the thing's own name in the log, and mark it used on the page |
+| Something checked at one moment that can be changed for free just before it. Four of them, closed on 13 October 2026: experience was worked out on the fall from the perks held at that instant; a newly slotted ability was ready at once; potions could be bought while a fight went on, so the belt was no limit; and a reload or a class switch started the room again, with the monster healed and every ability ready | Each rule looked at what the class held NOW, and what it held could be swapped, bought or reloaded at no cost a moment earlier | Earn it as it happens, or make the change cost what it would have earned: experience is added floor by floor (`runExperience`, `deathPayout`), a slotted ability starts on its cooldown (`equipAbility`), potions drunk keep their place on the belt (`potionRoom`), and the fight is saved with the class (`packFight`). `tools/check.js` section 3k tries each one. When a rule reads something the player can change freely, ask what stops them changing it just before the rule looks |
 
 ---
 
@@ -214,4 +215,12 @@ Friends play the live game, so an old save must always load.
   something, keep its id and change what it gives.
 - A class's save is `packClass` in game/save.js. A new variable a class owns goes there
   and in `freshClass`. A new account-wide variable goes in `saveGame` and `loadGame`.
+- The fight in progress is part of a class's save: `fight` in `packClass`, made by
+  `packFight` from the list `fightParts` in game/save.js. A new variable that a fight
+  remembers from one turn to the next (in the game or in a class file) gets one line in
+  that list. A save with no fight in it starts its room afresh, as every save did before
+  13 October 2026. So does a saved fight whose monster is no longer in the tower.
+- Added on 13 October 2026, each with a value for saves that lack it: `runExperience`
+  (the run in progress is paid by the old formula), `potionsDrunk` (0), `fight` (none:
+  the room is started).
 - `tools/saves/` holds three old saves. The check loads each.

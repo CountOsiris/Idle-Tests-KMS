@@ -13,6 +13,16 @@
 
 const gameUpdates = [
   {
+    version: "20261013c",
+    title: "Four loopholes closed",
+    changes: [
+      "A fight is now saved with its class. Reloading the page, or playing another class and coming back, finds the same room, the same monster on the same health, the same turn of the fight and the same cooldowns, so that walking out of a fight that is going badly is no longer worth doing.",
+      "Experience is now earned floor by floor, at the experience bonuses you hold when you finish each floor, and a fall pays out the total. A run in which you change nothing pays exactly what it did, so that changing perks just before a fall is no longer worth doing.",
+      "An ability put in a slot now waits out its full cooldown before its first use, so that trading abilities in and out of one slot is no longer worth doing. A new run still readies them all, and the Skills tab says how many turns a waiting ability has left.",
+      "A run can now drink no more potions than the belt holds: each one drunk keeps its place on the belt until you fall, so that buying potions in the middle of a boss fight is no longer a way past the belt's size. The town says how many the belt still takes."
+    ]
+  },
+  {
     version: "20261013b",
     title: "The Holy Tome: health is no longer damage",
     changes: [

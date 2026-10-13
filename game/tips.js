@@ -57,7 +57,7 @@ const tips = [
     when: function () { return accountMost("bestFloor") >= 3; } },
 
   { id: "potions", tab: "town", title: "Healing potions",
-    text: "Bought in town and drunk by themselves at low health. Tick \"Keep the belt full\" to buy them again after every fall.",
+    text: "Drunk by themselves at low health, no more in a run than the belt holds. Tick \"Keep the belt full\" to buy them again after every fall.",
     when: function () { return tabIsOpen("town") && accountMost("bestFloor") >= 4; } },
 
   // ----- Floors 5 and 6 -----
