@@ -148,9 +148,21 @@ function setAbilityMode(id, mode) {
   updateScreen();
 }
 
+// How many turns an ability waits after it is used
+// (the Quick Hands keystone shortens every cooldown: "quickHands")
+function fullCooldown(ability) {
+  return Math.max(1, Math.ceil(ability.cooldown * (1 - Math.min(mostCooldownCut, totalBonus("quickHands")))));
+}
+
+// AN ABILITY PUT IN A SLOT STARTS ON ITS FULL COOLDOWN. Until 13 October 2026 it was
+// ready at once, and cooldowns ran on while an ability sat out of its slot. So one slot
+// could fire every ability the class has, one after another, by swapping them.
+// The start of a run still readies everything (resetAbilitiesForRun).
 function equipAbility(id) {
   if (!abilitySlots.includes(id) && abilitySlots.length < openAbilitySlots() && abilityById(id) !== null) {
     abilitySlots.push(id);
+    abilityCooldowns[id] = fullCooldown(abilityById(id));
+    abilityPressed[id] = false;
     updateScreen();
   }
 }
@@ -213,8 +225,7 @@ function useAbilities() {
     if (abilityRank(id) > rankBefore) {
       announce("banner", ability.name + ": rank " + abilityRank(id), "Everything it does is now x" + big(1 + abilityRankPower * abilityRank(id)) + ".");
     }
-    // (the Quick Hands keystone shortens every cooldown: "quickHands")
-    abilityCooldowns[id] = Math.max(1, Math.ceil(ability.cooldown * (1 - Math.min(mostCooldownCut, totalBonus("quickHands")))));
+    abilityCooldowns[id] = fullCooldown(ability);
     abilityPressed[id] = false;
     lastAbilityUsed = ability;
     say("You use " + ability.name + "!");
@@ -378,6 +389,23 @@ function abilityGuardFactor() {
 // The abilities card on the Skills tab: rebuilt only when something on it changes
 let abilitiesShown = "";
 
+// The words after each ability's title that say how long it still waits, by ability id.
+// They change every turn, so they are written without rebuilding the card.
+let abilityWaitWords = {};
+
+function showAbilityWaits() {
+  for (let id in abilityWaitWords) {
+    let turns = abilityCooldowns[id] || 0;
+    let words = "";
+    if (abilitySlots.includes(id) && turns > 0) {
+      words = " · ready in " + turns + (turns === 1 ? " turn" : " turns");
+    }
+    if (abilityWaitWords[id].textContent !== words) {
+      abilityWaitWords[id].textContent = words;
+    }
+  }
+}
+
 function showAbilities() {
   // Shown from the start, even before the first slot opens, so the player can see
   // what is coming and when
@@ -405,12 +433,14 @@ function showAbilities() {
   let ranks = classAbilities().map(function (ability) { return abilityRank(ability.id); }).join("");
   let key = playerClass + weapon + stance + JSON.stringify(abilitySlots) + JSON.stringify(abilityModes) + openAbilitySlots() + classAbilities().length + ranks;
   if (key === abilitiesShown) {
+    showAbilityWaits();
     return;
   }
   abilitiesShown = key;
 
   let box = document.getElementById("abilities");
   box.innerHTML = "";
+  abilityWaitWords = {};
 
   for (let ability of classAbilities()) {
     let equipped = abilitySlots.includes(ability.id);
@@ -424,6 +454,8 @@ function showAbilities() {
     title.className = "row-title";
     let rank = abilityRank(ability.id);
     title.textContent = ability.name + " · every " + ability.cooldown + " turns" + (rank > 0 ? " · rank " + rank + " (x" + big(1 + abilityRankPower * rank) + ")" : "") + (equipped ? " · in a slot" : "");
+    abilityWaitWords[ability.id] = document.createElement("span");
+    title.appendChild(abilityWaitWords[ability.id]);
     let note = document.createElement("p");
     note.className = "note";
     note.textContent = ability.text + ". Rank " + (rank + 1) + " after " + usesForNextRank(ability.id) + " uses: everything it does +" + percent(abilityRankPower) + "." + otherBuildNote(ability.text);
@@ -464,6 +496,7 @@ function showAbilities() {
     row.appendChild(button);
     box.appendChild(row);
   }
+  showAbilityWaits();
 }
 
 // The ability buttons under the fight: one per slot, with how long until it is ready
