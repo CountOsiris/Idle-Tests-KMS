@@ -1560,6 +1560,52 @@ try {
   resetAbilitiesForRun();
   startEncounter();
 
+  // 3k3. A run can drink no more potions than the belt holds. (They could be bought from
+  // the bank while a fight went on, so the size of the belt was no limit on a boss fight.)
+  let bankWas = bank;
+  let keepWas = keepPotions;
+  keepPotions = false;
+  nextTower = playerClass;
+  realDie();
+  startBossMechanics({}, false);
+  let dodgesWere = currentClass().whenAttacked;
+  currentClass().whenAttacked = function () { return false; };
+  let belt = potionLimit();
+  let potionsAllowed = totalBonus("noPotions") === 0;
+  bank = potionCost() * 1000;
+  let drunkInRun = 0;
+  for (let i = 0; i < belt * 20; i++) {
+    // Buy all the town will sell, then take a small hit at low health
+    for (let j = 0; j < belt; j++) {
+      buyPotion();
+    }
+    monsterAttack = 1;
+    monsterEnrageStep = 0;
+    monsterPoison = 0;
+    guardTurns = 0;
+    playerHp = Math.max(2, Math.round(playerMaxHp * 0.2));
+    let heldBefore = potions;
+    monsterAttacks();
+    drunkInRun = drunkInRun + heldBefore - potions;
+  }
+  currentClass().whenAttacked = dodgesWere;
+  showTab("town");
+  updateScreen();
+  let beltWords = document.getElementById("page-town").textContent;
+  let buttonShut = document.getElementById("potion-btn").disabled;
+
+  // After a fall the belt can be filled again, by hand or by the tick box
+  keepPotions = true;
+  realDie();
+  let refilled = potions;
+  keepPotions = keepWas;
+
+  check("potions: with a belt of " + belt + " and a full bank, a run drinks " + drunkInRun + " and the town then says so; a fall fills the belt again (" + refilled + ")",
+    potionsAllowed && drunkInRun === belt && buttonShut && beltWords.includes(belt + " drunk this run") && refilled === belt);
+  bank = bankWas;
+  potions = 0;
+  startEncounter();
+
   // 4b. No milestone perk is simply a worse copy of another on the same milestone: every
   // number it gives, the other gives as well, as big or bigger. Such a perk is never the
   // right pick, for a weapon the other one works with. (Soul Eater once gave attack x1.5
