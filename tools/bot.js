@@ -9,6 +9,7 @@
 //  h=N         hours to play (default 10)
 //  c=name      only this class (default: every class, first weapon)
 //  every       every weapon (or element) of each class, not just the first
+//  w=name      with "every": only this weapon (not for a class with stances)
 //  ascend      ascend when allowed and no new floor for "stall" seconds
 //  stall=N     seconds without a new floor before ascending (default 600)
 //  noup        no boons (to measure what boons are worth)
@@ -78,6 +79,7 @@ if (location.hash.match(/week=(\d+)/)) {
 const HOURS = Number((location.hash.match(/h=([\d.]+)/) || [0, 10])[1]);
 const ONLY_CLASS = (location.hash.match(/c=(\w+)/) || [0, ""])[1];
 const EVERY = location.hash.includes("every");
+const ONLY_WEAPON = (location.hash.match(/w=(\w+)/) || [0, ""])[1];
 const NOUP = location.hash.includes("noup");
 const NOFORGE = location.hash.includes("noforge");
 const NOABILITIES = location.hash.includes("noabilities");
@@ -656,6 +658,9 @@ try {
         }
       } else {
         for (let type of types) {
+          if (ONLY_WEAPON !== "" && ONLY_WEAPON !== type) {
+            continue;
+          }
           run(className, type, undefined, HOURS, ASCEND, false);
         }
       }
