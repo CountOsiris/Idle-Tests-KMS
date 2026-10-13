@@ -1440,6 +1440,75 @@ try {
   otherTabOpen = false;
   document.getElementById("other-tab").hidden = true;
 
+  // 3k. Things that were checked at ONE MOMENT and could be changed for free just before
+  // it (see that row in docs/MAP.md section 4).
+
+  // 3k1. Experience is earned floor by floor, at the multipliers held when each floor is
+  // finished. It was worked out on the fall from the perks held at that instant, so a
+  // class could climb with damage perks and hold experience perks only to fall with.
+  // A run with nothing changed must pay exactly what it paid before, which was this:
+  let fallPaidBefore = function () {
+    let payout = (floor - runStartFloor + 1) * experiencePerFloor * (1 + totalBonus("experience")) * multiplier("experience");
+    if (isAway()) {
+      payout = payout * (1 + awayTowerExperience);
+    }
+    return Math.round(payout);
+  };
+  // Starts a run on floor 1 of a tower and climbs to floor 10, room by room
+  let climbTenFloors = function (towerName) {
+    nextTower = towerName;
+    cruiseFloor = 1;
+    runStartFloor = 1;
+    floor = 1;
+    realDie();
+    for (let i = 0; i < 9 * roomsPerFloor; i++) {
+      nextRoom();
+    }
+  };
+  let towerWas = tower;
+  let bestWere = [bestFloor, ascensionBest];
+  bestFloor = Math.max(bestFloor, 20);
+  ascensionBest = Math.max(ascensionBest, 20);
+
+  climbTenFloors(playerClass);
+  let homePays = deathPayout();
+  let homePaid = fallPaidBefore();
+  let homeFloors = floor - runStartFloor + 1;
+
+  // An experience perk worth x1.5, held for the last turn only
+  let realMultiplier = multiplier;
+  multiplier = function (stat) {
+    return realMultiplier(stat) * (stat === "experience" ? 1.5 : 1);
+  };
+  let swappedPays = deathPayout();
+  multiplier = realMultiplier;
+
+  // The fall really pays that number, and the next run starts counting again
+  let earnedBeforeFall = experienceEarned;
+  realDie();
+  let fallPaid = experienceEarned - earnedBeforeFall;
+  let nextRunPays = deathPayout() === fallPaidBefore();
+
+  let awayName = Object.keys(towers).find(function (name) { return name !== playerClass; });
+  climbTenFloors(awayName);
+  let awayPays = deathPayout();
+  let awayPaid = fallPaidBefore();
+  let wasAway = isAway();
+
+  check("experience: a run of " + homeFloors + " floors with nothing changed pays what it always did, at home (" + homePays + ", was " + homePaid + "; the fall paid " + fallPaid + ") and away (" + awayPays + ", was " + awayPaid + ")",
+    homeFloors === 10 && homePays === homePaid && fallPaid === homePays && nextRunPays && wasAway && awayPays === awayPaid && awayPays > homePays);
+  check("experience: a x1.5 experience perk held only for the last turn of a ten floor run pays " + swappedPays + ", under 1.1 times the " + homePays + " of the run without it",
+    swappedPays < homePays * 1.1 && swappedPays > homePays);
+
+  nextTower = towerWas;
+  cruiseFloor = 1;
+  runStartFloor = 1;
+  floor = 1;
+  realDie();
+  bestFloor = bestWere[0];
+  ascensionBest = bestWere[1];
+  startEncounter();
+
   // 4b. No milestone perk is simply a worse copy of another on the same milestone: every
   // number it gives, the other gives as well, as big or bigger. Such a perk is never the
   // right pick, for a weapon the other one works with. (Soul Eater once gave attack x1.5
