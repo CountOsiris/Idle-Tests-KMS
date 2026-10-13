@@ -175,7 +175,7 @@ checkTabUnlocks();
 showTab("tower");
 loadSettings();
 showSaveProblem();
-startEncounter();
+resumeOrStartEncounter();
 tellAboutSkillReset();
 if (fameWasRefunded) {
   say("Ascension has changed: fame and its upgrades are now shared by all your classes. All your fame has been given back to spend again (Ascension).");

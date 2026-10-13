@@ -61,7 +61,9 @@ function abilityPower() {
   return 1 + abilityRankPower * abilityRank(abilityInUse.id);
 }
 
-// ----- What one run remembers (not saved) -----
+// ----- What one run remembers -----
+// (Saved with the fight, all but lastAbilityUsed: see "The fight in progress" in
+// game/save.js. They were not saved once, and reloading the page readied every ability.)
 let abilityCooldowns = {};   // turns left before an ability is ready again
 let abilityPressed = {};     // abilities the player pressed, to be used at the next turn
 let lastAbilityUsed = null;  // for the animation

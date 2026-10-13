@@ -228,6 +228,15 @@ function startEncounter() {
   }
 }
 
+// Runs when the game opens and when another class is taken up. A class saved in the
+// middle of a fight goes on with it, exactly as it stood (see "The fight in progress" in
+// game/save.js). One with no fight in its save starts its room.
+function resumeOrStartEncounter() {
+  if (!fightRestored) {
+    startEncounter();
+  }
+}
+
 function nextRoom() {
   let newBest = false;
   room = room + 1;

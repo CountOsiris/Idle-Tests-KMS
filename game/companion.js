@@ -55,11 +55,10 @@ function playCompanionIfDue() {
 function playCompanion(turns) {
   let mine = playerClass;
 
-  // What belongs to the fight and the visit of the class being played, and is not part
-  // of a class's save
+  // What belongs to the visit of the class being played, and is not part of a class's
+  // save. (Its fight IS part of its save, cooldowns and all: unpackClass puts back the
+  // room it has just won, and nextRoom then starts the next one.)
   let kept = {
-    abilityCooldowns: abilityCooldowns, abilityPressed: abilityPressed, boostTurns: boostTurns, boostAmount: boostAmount,
-    guardTurns: guardTurns, guardShare: guardShare, recentDamage: recentDamage,
     deaths: deaths, experienceEarned: experienceEarned, catchingUp: catchingUp, skillsWereReset: skillsWereReset
   };
 
@@ -68,6 +67,10 @@ function playCompanion(turns) {
   unpackClass(classSaves[playerClass]);
   backgroundClimb = true;
   catchingUp = true;
+
+  // The second climber starts a new room, with everything ready, each time it takes its
+  // turns, as it always has: the fight its save holds is the one its last turns ended
+  // in, and it is only gone on with when the player takes that class up (switchClass).
   resetAbilitiesForRun();
   startEncounter();
   for (let i = 0; i < turns; i++) {
@@ -78,13 +81,6 @@ function playCompanion(turns) {
   playerClass = mine;
   unpackClass(classSaves[mine]);
   backgroundClimb = false;
-  abilityCooldowns = kept.abilityCooldowns;
-  abilityPressed = kept.abilityPressed;
-  boostTurns = kept.boostTurns;
-  boostAmount = kept.boostAmount;
-  guardTurns = kept.guardTurns;
-  guardShare = kept.guardShare;
-  recentDamage = kept.recentDamage;
   deaths = kept.deaths;
   experienceEarned = kept.experienceEarned;
   catchingUp = kept.catchingUp;

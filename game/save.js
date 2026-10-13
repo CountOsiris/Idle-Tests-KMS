@@ -244,7 +244,8 @@ function freshClass(className) {
     abilityUses: {},
     namedWeapon: "",
     bossWeapon: "",
-    keepPotions: false
+    keepPotions: false,
+    fight: null
   };
 }
 
@@ -298,7 +299,9 @@ function packClass() {
     abilityUses: abilityUses,
     namedWeapon: namedWeapon,
     bossWeapon: bossWeapon,
-    keepPotions: keepPotions
+    keepPotions: keepPotions,
+    // (the fight in progress: see "The fight in progress" below)
+    fight: packFight()
   };
 }
 
@@ -476,6 +479,165 @@ function unpackClass(saved) {
   if (saved === undefined || typeof saved.runExperience !== "number") {
     runExperience = (floor - runStartFloor) * floorExperience();
   }
+
+  // The fight the class was in, if its save holds one (see "The fight in progress" below)
+  unpackFight(data.fight);
+
+  // (a boss weapon drawn again just now can carry more health than the weapon the class
+  // climbs with, and the health saved was counted with the boss weapon in hand)
+  if (fightRestored && typeof data.playerHp === "number") {
+    playerHp = Math.min(playerMaxHp, data.playerHp);
+  }
+}
+
+// ----- The fight in progress -----
+// THE FIGHT IS PART OF A CLASS'S SAVE. Until 13 October 2026 it was not: opening the game,
+// or playing another class and coming back, started the room again. The room was rolled
+// afresh (one roll in four is not a fight at all), the monster was back on full health,
+// the fight's clock and the attack it had grown began again, a boss's shield and rage
+// were forgotten, the stacks were gone and every ability was ready. So a fight going
+// badly could be thrown away by reloading the page, as often as it took.
+//
+// This list is everything a fight in progress is made of. packFight and unpackFight
+// below go through it, and they are the only two places that do.
+//
+// TO ADD ONE: a new variable that a fight remembers from one turn to the next (in the
+// game's files or in a class file) gets ONE line here: the name it is saved under, how
+// to read it, and how to put it back. A save that does not have it yet leaves the
+// variable as it is. Never rename a line that players' saves already hold.
+//
+// Left out on purpose:
+//   lastFightStacks, lastFightTurns   written by spawnMonster before anything reads them
+//   swappedFrom                       the boss weapon is drawn again by unpackFight
+//   lastBossEvent, lastAbilityUsed, roomCount, the hits missed, resisted and boosted
+//                                     only tell the animations what the last turn did
+//   abilityInUse, abilityPhase, damageNotCounted, notedThisPhase, healSource
+//                                     only mean something in the middle of a turn
+const fightParts = [
+  // The room: "monster", "boss", "rest" or "chest"
+  { name: "encounterType", get: function () { return encounterType; }, set: function (value) { encounterType = value; } },
+
+  // The monster, and its numbers as they stand
+  { name: "monsterName", get: function () { return monsterName; }, set: function (value) { monsterName = value; } },
+  { name: "monsterKind", get: function () { return monsterKind; }, set: function (value) { monsterKind = value; } },
+  { name: "monsterText", get: function () { return monsterText; }, set: function (value) { monsterText = value; } },
+  { name: "monsterIcon", get: function () { return monsterIcon; }, set: function (value) { monsterIcon = value; } },
+  { name: "monsterArt", get: function () { return monsterArt; }, set: function (value) { monsterArt = value; } },
+  { name: "monsterMaxHp", get: function () { return monsterMaxHp; }, set: function (value) { monsterMaxHp = value; } },
+  { name: "monsterHp", get: function () { return monsterHp; }, set: function (value) { monsterHp = value; } },
+  { name: "monsterAttack", get: function () { return monsterAttack; }, set: function (value) { monsterAttack = value; } },
+  { name: "monsterArmor", get: function () { return monsterArmor; }, set: function (value) { monsterArmor = value; } },
+  { name: "monsterWard", get: function () { return monsterWard; }, set: function (value) { monsterWard = value; } },
+  { name: "monsterGold", get: function () { return monsterGold; }, set: function (value) { monsterGold = value; } },
+  { name: "monsterPoison", get: function () { return monsterPoison; }, set: function (value) { monsterPoison = value; } },
+  { name: "monsterRegen", get: function () { return monsterRegen; }, set: function (value) { monsterRegen = value; } },
+  { name: "monsterEnrageStep", get: function () { return monsterEnrageStep; }, set: function (value) { monsterEnrageStep = value; } },
+  { name: "monsterIsRare", get: function () { return monsterIsRare; }, set: function (value) { monsterIsRare = value; } },
+  { name: "monsterStunned", get: function () { return monsterStunned; }, set: function (value) { monsterStunned = value; } },
+  { name: "monsterWeak", get: function () { return monsterWeak; }, set: function (value) { monsterWeak = value; } },
+  { name: "monsterResist", get: function () { return monsterResist; }, set: function (value) { monsterResist = value; } },
+  { name: "monsterFlying", get: function () { return monsterFlying; }, set: function (value) { monsterFlying = value; } },
+  { name: "monsterLunges", get: function () { return monsterLunges; }, set: function (value) { monsterLunges = value; } },
+
+  // The fight's clock, the stacks on the monster, and the last hit the hero took
+  { name: "fightTurns", get: function () { return fightTurns; }, set: function (value) { fightTurns = value; } },
+  { name: "dotStacks", get: function () { return dotStacks; }, set: function (value) { dotStacks = value; } },
+  { name: "lastHitTaken", get: function () { return lastHitTaken; }, set: function (value) { lastHitTaken = value; } },
+
+  // A boss's mechanics (game/bosses.js)
+  { name: "bossRules", get: function () { return bossRules; }, set: function (value) { bossRules = value; } },
+  { name: "bossBaseAttack", get: function () { return bossBaseAttack; }, set: function (value) { bossBaseAttack = value; } },
+  { name: "shieldUsed", get: function () { return shieldUsed; }, set: function (value) { shieldUsed = value; } },
+  { name: "shieldFrom", get: function () { return shieldFrom; }, set: function (value) { shieldFrom = value; } },
+  { name: "minionsCalled", get: function () { return minionsCalled; }, set: function (value) { minionsCalled = value; } },
+  { name: "minionHp", get: function () { return minionHp; }, set: function (value) { minionHp = value; } },
+  { name: "minionMaxHp", get: function () { return minionMaxHp; }, set: function (value) { minionMaxHp = value; } },
+  { name: "bossEnraged", get: function () { return bossEnraged; }, set: function (value) { bossEnraged = value; } },
+
+  // Abilities: cooldowns, buttons pressed, a boost and a guard that are running, and
+  // "your damage per turn" (game/abilities.js)
+  { name: "abilityCooldowns", get: function () { return abilityCooldowns; }, set: function (value) { abilityCooldowns = value; } },
+  { name: "abilityPressed", get: function () { return abilityPressed; }, set: function (value) { abilityPressed = value; } },
+  { name: "boostTurns", get: function () { return boostTurns; }, set: function (value) { boostTurns = value; } },
+  { name: "boostAmount", get: function () { return boostAmount; }, set: function (value) { boostAmount = value; } },
+  { name: "guardTurns", get: function () { return guardTurns; }, set: function (value) { guardTurns = value; } },
+  { name: "guardShare", get: function () { return guardShare; }, set: function (value) { guardShare = value; } },
+  { name: "recentDamage", get: function () { return recentDamage; }, set: function (value) { recentDamage = value; } },
+
+  // What each class's own file remembers about a fight (classes/)
+  { name: "assassinAmbushReady", get: function () { return assassinAmbushReady; }, set: function (value) { assassinAmbushReady = value; } },
+  { name: "assassinCounterReady", get: function () { return assassinCounterReady; }, set: function (value) { assassinCounterReady = value; } },
+  { name: "barbarianStunnedLast", get: function () { return barbarianStunnedLast; }, set: function (value) { barbarianStunnedLast = value; } },
+  { name: "elementalistCharged", get: function () { return elementalistCharged; }, set: function (value) { elementalistCharged = value; } },
+  { name: "rangerFreeTurns", get: function () { return rangerFreeTurns; }, set: function (value) { rangerFreeTurns = value; } },
+  { name: "rangerDrawn", get: function () { return rangerDrawn; }, set: function (value) { rangerDrawn = value; } },
+  { name: "rangerArrows", get: function () { return rangerArrows; }, set: function (value) { rangerArrows = value; } },
+  { name: "rangerCarry", get: function () { return rangerCarry; }, set: function (value) { rangerCarry = value; } },
+  { name: "wardenOwed", get: function () { return wardenOwed; }, set: function (value) { wardenOwed = value; } },
+  { name: "warlockSpells", get: function () { return warlockSpells; }, set: function (value) { warlockSpells = value; } },
+  { name: "warlockEchoes", get: function () { return warlockEchoes; }, set: function (value) { warlockEchoes = value; } },
+  { name: "zealotHits", get: function () { return zealotHits; }, set: function (value) { zealotHits = value; } },
+  { name: "zealotCarry", get: function () { return zealotCarry; }, set: function (value) { zealotCarry = value; } }
+];
+
+// Did the class just unpacked come with a fight to go on with? Whoever unpacks a class
+// to play it asks this before starting a room (see resumeOrStartEncounter in game/fights.js).
+let fightRestored = false;
+
+// Bundles up the fight in progress (packClass puts it in the class's save)
+function packFight() {
+  let fight = {};
+  for (let part of fightParts) {
+    fight[part.name] = part.get();
+  }
+  return fight;
+}
+
+// Can a saved fight be gone on with? Not when there is none: every save made before
+// fights were saved, and a class that has never been played. And not when its monster
+// is no longer in the tower being climbed, or one of its numbers did not come through:
+// the room is then started again, which is what always happened before.
+function fightCanGoOn(data) {
+  if (data === undefined || data === null || typeof data !== "object") {
+    return false;
+  }
+  if (data.encounterType === "rest" || data.encounterType === "chest") {
+    return true;
+  }
+  if (data.encounterType !== "monster" && data.encounterType !== "boss") {
+    return false;
+  }
+  if (typeof data.monsterHp !== "number" || typeof data.monsterMaxHp !== "number" || typeof data.monsterAttack !== "number" || typeof data.fightTurns !== "number") {
+    return false;
+  }
+
+  let known = data.encounterType === "boss" ? towers[tower].bosses : towers[tower].monsters;
+  for (let type of known) {
+    if (type.name === data.monsterKind) {
+      return true;
+    }
+  }
+  return false;
+}
+
+// Puts a saved fight back (unpackClass calls it last, once the class itself is in place)
+function unpackFight(data) {
+  fightRestored = false;
+  if (!fightCanGoOn(data)) {
+    return;
+  }
+
+  for (let part of fightParts) {
+    if (data[part.name] !== undefined) {
+      part.set(data[part.name]);
+    }
+  }
+  fightRestored = true;
+
+  // A boss still standing is fought with the boss weapon (unpackClass put it away)
+  if (encounterType === "boss" && monsterHp > 0) {
+    drawBossWeapon();
+  }
 }
 
 function saveGame() {
@@ -615,7 +777,7 @@ function switchClass(className) {
   logLines = [];
   say("You are now playing the " + currentClass().name + ".");
   tellAboutSkillReset();
-  startEncounter();
+  resumeOrStartEncounter();
   updateScreen();
   saveGame();
 }

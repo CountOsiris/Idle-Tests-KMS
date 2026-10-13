@@ -12,7 +12,9 @@
 // (bossTakes), and this file puts some back, or passes it to a minion, or hurts
 // you for it. So every class, weapon and ability meets them the same way.
 
-// ----- What one boss fight remembers (not saved: a reloaded page starts the fight again) -----
+// ----- What one boss fight remembers -----
+// (Saved with the fight: see "The fight in progress" in game/save.js. A new variable
+// here that lasts from one turn to the next needs a line in the list there.)
 let bossRules = [];        // the ids of the mechanics this boss has, for example ["shield"]
 let bossBaseAttack = 0;    // its attack when the fight began (the reflect aura is measured in these)
 let shieldUsed = false;    // has its shield phase begun? (it happens once a fight)

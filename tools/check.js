@@ -39,6 +39,14 @@ try {
       roomCount >= 1 && (fighting || encounterType === "rest" || encounterType === "chest"));
   }
 
+  // A save with a fight in it opens in that fight: no room has been started, and the one
+  // turn the game has played by now was a turn of it (unless that turn ended the fight)
+  if (before !== undefined && before.classSaves[playerClass] !== undefined && fightCanGoOn(before.classSaves[playerClass].fight)) {
+    let savedFight = before.classSaves[playerClass].fight;
+    check("a save with a fight in it opens in that fight (" + savedFight.monsterName + " on turn " + savedFight.fightTurns + "; now " + monsterName + " on turn " + fightTurns + ", " + roomCount + " rooms started)",
+      (roomCount === 0 && monsterName === savedFight.monsterName && fightTurns === savedFight.fightTurns + 1) || roomCount > 0 && deaths + runStats.kills > 0);
+  }
+
   // 1-tips. A save from before tips existed (every save in tools/saves/ is one) must not be
   // buried in them: what it has reached is marked seen without a word, and the one tip
   // on the page is the one that says where the Guide is. (The game has shown the page
@@ -1693,7 +1701,7 @@ try {
   zealotHits = 0;
   zealotCarry = 0;
   loadGame();
-  startEncounter();
+  resumeOrStartEncounter();
   let afterLoad = fightNow();
 
   // ...and the fight goes on from there
@@ -1715,7 +1723,7 @@ try {
   let roomsBefore = roomCount;
   encounterType = "none";
   unpackClass(noFightSave);
-  startEncounter();
+  resumeOrStartEncounter();
   check("a class saved with no fight in it starts a room (" + encounterType + ")", roomCount === roomsBefore + 1 && ["monster", "boss", "rest", "chest"].includes(encounterType));
 
   abilitySlots = slotsBeforeFight;

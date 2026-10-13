@@ -122,7 +122,9 @@ let fameLevels = {};
 // in towers.js, for example { "Goblin": 412, "Orc Warlord": 9 } (see data.js)
 let bestiary = {};
 
-// ----- Numbers the game works out as it goes (not saved) -----
+// ----- Numbers the game works out as it goes -----
+// (The room and the monster are saved with the class as "the fight in progress": see
+// that heading in game/save.js. The rest is not saved.)
 let playerClass = "barbarian";
 let playerMaxHp = 0;
 let playerAttack = 0;
