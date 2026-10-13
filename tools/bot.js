@@ -59,6 +59,9 @@
 //              half its hits behind a guard, and the middle one then says 40 hits to die.
 //              This is the measure of how long a fight lasts (docs/design/14).
 //  killers     also say what killed it most in its last two hours, and on which floor
+//  tomeburn    for the Zealot's Holy Tome: how many times the hero's attack the healing
+//              that burns the enemy was at most, by ten floors, before its ceiling
+//              (tomeBurnMost in classes/zealot.js). To set that ceiling by measurement.
 //  duo         a Barbarian for 6 hours, then a new Ranger and Warden on the same account
 // =====================================================================
 
@@ -321,6 +324,7 @@ function run(className, weaponType, stanceId, hours, ascending, keepAccount) {
   let deepestRun = null;
 
   edgeFights = { monster: [], boss: [], lostTurns: [], hitShare: [] };
+  burnSeen = {};
   for (let i = 1; i <= hours * 3600; i++) {
     now = i;
     edgeOn = EDGE && i > hours * 3600 * 2 / 3;
@@ -410,6 +414,18 @@ function run(className, weaponType, stanceId, hours, ascending, keepAccount) {
   for (let probe of probes) {
     out.push("    " + probe);
   }
+  if (TOMEBURN && Object.keys(burnSeen).length > 0) {
+    let most = { turn: 0, healed: 0, light: 0 };
+    let parts = [];
+    for (let band in burnSeen) {
+      for (let kind in most) {
+        most[kind] = Math.max(most[kind], burnSeen[band][kind]);
+      }
+      parts.push("F" + band + " " + burnSeen[band].turn.toFixed(2) + "/" + burnSeen[band].healed.toFixed(2) + "/" + burnSeen[band].light.toFixed(2));
+    }
+    out.push("    tome burn, times the attack at most (a turn's wasted healing / all of a turn's healing / Holy Light's spare): whole run " + most.turn.toFixed(2) + "/" + most.healed.toFixed(2) + "/" + most.light.toFixed(2));
+    out.push("    by ten floors: " + parts.join("  "));
+  }
   if (location.hash.includes("killers")) {
     let ranked = Object.keys(killers).sort(function (a, b) { return killers[b] - killers[a]; }).slice(0, 4);
     out.push("    killers: " + ranked.map(function (k) { return killers[k] + "x " + k; }).join(" | "));
@@ -465,6 +481,43 @@ if (EDGE) {
       edgeFights.hitShare.push(amount / playerMaxHp);
     }
     realNoteTaken(amount);
+  };
+}
+
+// ----- "tomeburn": the Holy Tome's wasted healing against the hero's attack -----
+// The tome burns the enemy with healing that was not needed, and healing is a share of
+// health, so this is how many times the hero's attack that burn is BEFORE the ceiling
+// (tomeBurnMost in classes/zealot.js) and before anything multiplies it. The ceiling
+// must sit above what an ordinary tome build shows here and below what a build that
+// only buys health shows.
+const TOMEBURN = location.hash.includes("tomeburn");
+let burnSeen = {};       // for each ten floors: the most seen of each kind
+let burnFrom = "";       // "turn" inside a normal turn, "light" inside Holy Light
+
+function noteBurn(kind, ratio) {
+  let band = Math.floor((floor - 1) / 10) * 10 + 1;
+  if (burnSeen[band] === undefined) {
+    burnSeen[band] = { turn: 0, healed: 0, light: 0 };
+  }
+  burnSeen[band][kind] = Math.max(burnSeen[band][kind], ratio);
+}
+
+if (TOMEBURN && classes.zealot !== undefined) {
+  let realTurn = classes.zealot.attack;
+  classes.zealot.attack = function () { burnFrom = "turn"; realTurn(); burnFrom = ""; };
+  let light = classes.zealot.abilities.find(function (a) { return a.id === "holyLight"; });
+  let realLight = light.use;
+  light.use = function () { burnFrom = "light"; realLight(); burnFrom = ""; };
+  let realHeal = healPlayer;
+  healPlayer = function (amount) {
+    if (burnFrom !== "" && weapon === "tome" && playerAttack > 0) {
+      noteBurn(burnFrom, Math.max(0, playerHp + amount - playerMaxHp) / playerAttack);
+      // (all of a turn's healing: the most the Martyr's Flame keystone could burn)
+      if (burnFrom === "turn") {
+        noteBurn("healed", amount / playerAttack);
+      }
+    }
+    realHeal(amount);
   };
 }
 
