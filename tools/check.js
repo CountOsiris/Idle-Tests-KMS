@@ -31,6 +31,14 @@ try {
   }
   check("fame is a number (" + big(fame) + ")", typeof fame === "number" && !isNaN(fame));
 
+  // A save made before the fight was saved (every save in tools/saves/ is one) has no
+  // fight in it: the game has started a room for it, as it always did
+  if (before !== undefined && before.classSaves[playerClass] !== undefined && before.classSaves[playerClass].fight === undefined) {
+    let fighting = (encounterType === "monster" || encounterType === "boss") && monsterName !== "" && monsterMaxHp > 0;
+    check("an old save with no fight in it loads and starts one (room " + roomCount + ": " + (fighting ? monsterName : encounterType) + ")",
+      roomCount >= 1 && (fighting || encounterType === "rest" || encounterType === "chest"));
+  }
+
   // 1-tips. A save from before tips existed (every save in tools/saves/ is one) must not be
   // buried in them: what it has reached is marked seen without a word, and the one tip
   // on the page is the one that says where the Guide is. (The game has shown the page
@@ -1604,6 +1612,120 @@ try {
     potionsAllowed && drunkInRun === belt && buttonShut && beltWords.includes(belt + " drunk this run") && refilled === belt);
   bank = bankWas;
   potions = 0;
+  startEncounter();
+
+  // 3k4. The fight is part of the class's save. (A reload, or a switch to another class
+  // and back, started the room again: the room was rolled afresh, the monster was back
+  // on full health, the fight's clock and the boss's shield and rage began again, the
+  // stacks were gone and every ability was ready.)
+  let fightOther = Object.keys(classes).find(function (name) { return name !== playerClass && classIsOpen(name); });
+  let fightClass = playerClass;
+  let slotsBeforeFight = abilitySlots;
+  let bestBeforeFight = bestFloor;
+  bestFloor = Math.max(bestFloor, abilitySlotFloors[0]);
+  let waiting = classAbilities()[0];
+  abilitySlots = [waiting.id];
+
+  // A boss fight well under way: the boss hurt, shielded and enraged, the clock past its
+  // start, an ability on its cooldown, a boost running, stacks on the boss, the hero hurt
+  floor = 10;
+  room = roomsPerFloor;
+  encounterType = "boss";
+  spawnMonster(true);
+  monsterHp = Math.round(monsterMaxHp * 0.6);
+  monsterAttack = monsterAttack * 3;
+  fightTurns = fightClock.bossTurns + 3;
+  dotStacks = 3;
+  bossRules = ["shield", "enrage"];
+  shieldUsed = true;
+  shieldFrom = fightTurns - 2;
+  bossEnraged = true;
+  abilityCooldowns[waiting.id] = 4;
+  boostTurns = 2;
+  boostAmount = 0.5;
+  playerHp = Math.max(1, Math.round(playerMaxHp * 0.7));
+  // (a class file's own fight variables: the Zealot's hits and the turns it carries)
+  zealotHits = 2;
+  zealotCarry = 1.5;
+  let fightNow = function () {
+    return JSON.stringify([encounterType, monsterName, monsterHp, monsterMaxHp, monsterAttack, fightTurns, abilityCooldowns[waiting.id], playerHp, dotStacks,
+      bossRules, shieldUsed, shieldFrom, bossEnraged, boostTurns, boostAmount, zealotHits, zealotCarry]);
+  };
+  let fightWas = fightNow();
+
+  // (a) another class and back
+  switchClass(fightOther);
+  switchClass(fightClass);
+  let afterSwitch = fightNow();
+  check("the fight is saved: after playing the " + classes[fightOther].name + " and coming back, the room, the monster's name, health and attack, the clock, the cooldown, the hero's health, the stacks and the boss's shield and rage are " + (afterSwitch === fightWas ? "exactly as they were " + fightWas : afterSwitch + ", WERE " + fightWas),
+    afterSwitch === fightWas);
+
+  // (b) saved, loaded, and started as the game starts (game/start.js)
+  abilitySlots = [waiting.id];
+  floor = 10;
+  room = roomsPerFloor;
+  encounterType = "boss";
+  spawnMonster(true);
+  monsterHp = Math.round(monsterMaxHp * 0.6);
+  monsterAttack = monsterAttack * 3;
+  fightTurns = fightClock.bossTurns + 3;
+  dotStacks = 3;
+  bossRules = ["shield", "enrage"];
+  shieldUsed = true;
+  shieldFrom = fightTurns - 2;
+  bossEnraged = true;
+  resetAbilitiesForRun();
+  abilityCooldowns[waiting.id] = 4;
+  boostTurns = 2;
+  boostAmount = 0.5;
+  playerHp = Math.max(1, Math.round(playerMaxHp * 0.7));
+  zealotHits = 2;
+  zealotCarry = 1.5;
+  fightWas = fightNow();
+  saveGame();
+  encounterType = "rest";
+  monsterHp = 1;
+  fightTurns = 0;
+  dotStacks = 0;
+  bossRules = [];
+  shieldUsed = false;
+  bossEnraged = false;
+  zealotHits = 0;
+  zealotCarry = 0;
+  loadGame();
+  startEncounter();
+  let afterLoad = fightNow();
+
+  // ...and the fight goes on from there
+  let fightBroke = "";
+  try {
+    for (let i = 0; i < 5; i++) {
+      step();
+    }
+    updateScreen();
+  } catch (error) {
+    fightBroke = error.message;
+  }
+  check("the fight is saved: after saving, loading and starting as the game starts, it is " + (afterLoad === fightWas ? "exactly as it was " + fightWas : afterLoad + ", WAS " + fightWas) + ", and it goes on" + (fightBroke === "" ? "" : ": " + fightBroke),
+    afterLoad === fightWas && fightBroke === "" && !isNaN(monsterHp) && !isNaN(playerHp));
+
+  // A save with no fight in it (every save made before this) starts a room as it always did
+  let noFightSave = packClass();
+  delete noFightSave.fight;
+  let roomsBefore = roomCount;
+  encounterType = "none";
+  unpackClass(noFightSave);
+  startEncounter();
+  check("a class saved with no fight in it starts a room (" + encounterType + ")", roomCount === roomsBefore + 1 && ["monster", "boss", "rest", "chest"].includes(encounterType));
+
+  abilitySlots = slotsBeforeFight;
+  bestFloor = bestBeforeFight;
+  floor = 1;
+  room = 1;
+  runStartFloor = 1;
+  cruiseFloor = 1;
+  dotStacks = 0;
+  resetAbilitiesForRun();
   startEncounter();
 
   // 4b. No milestone perk is simply a worse copy of another on the same milestone: every
