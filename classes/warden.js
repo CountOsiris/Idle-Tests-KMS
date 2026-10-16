@@ -137,7 +137,7 @@ classes.warden = {
     {
       floor: 75,
       perks: [
-        { id: "fortress", name: "Fortress", text: "health x1.6, attack x1.2, and once a run a blow that would kill you leaves you alive on half your health", bonus: { secondWind: 1 }, multiply: { health: 1.6, attack: 1.2 } },
+        { id: "fortress", name: "Fortress", text: "health x1.6, attack x1.2, and once a run survive a killing blow on half health", bonus: { secondWind: 1 }, multiply: { health: 1.6, attack: 1.2 } },
         { id: "mirrorWall", name: "Mirror Wall", text: "+40% attack and +40% shield damage (reflected or thrown)", bonus: { attackPercent: 0.4, shieldPower: 0.4 } },
         { id: "ironBramble", name: "Iron Bramble", text: "Spiked Shield: attack x1.3, reflects +60% more of the enemy's attack, and +50% shield damage", bonus: { reflect: 0.6, shieldPower: 0.5 }, multiply: { attack: 1.3 } },
         { id: "spearWall", name: "Spear Wall", text: "Tower Shield: attack x1.3, +10% block chance and +50% spear damage", bonus: { blockChance: 0.1, spearPower: 0.5 }, multiply: { attack: 1.3 } },

@@ -194,7 +194,7 @@ function showUpgrades() {
 
     let note = document.createElement("p");
     note.className = "note";
-    note.textContent = upgrade.text + " per level";
+    writeWithTag(note, upgrade.text, " per level");
     text.appendChild(note);
 
     row.appendChild(text);
@@ -218,35 +218,44 @@ function scaledSkillText(text, times) {
   });
 }
 
-// The weapon or element the class is using right now, by name ("Club", "Fire")
-function usingName() {
-  if (currentClass().stances !== undefined) {
-    return currentClass().stances[stance].name;
+// A TEXT FOR ONE WEAPON. A description that begins with the name of one of the class's
+// weapons or elements ("Rune Tome: +10% chance to cast twice") only works with that one.
+// The page shows that name as a small tag in front of the words (kindTag), and dims the
+// whole thing while the class is using another (the class "other-kind" in style.css).
+// Nothing more is written about it: the tag and the dimming say it.
+// So TO ADD ONE: begin its text with the weapon's or element's name and a colon, as the
+// others do. That is also how the balance bot knows which build a perk is for.
+function textParts(text) {
+  let kinds = buildKinds();
+  for (let id in kinds) {
+    if (text.startsWith(kinds[id] + ": ")) {
+      return { kind: id, name: kinds[id], words: text.slice(kinds[id].length + 2) };
+    }
   }
-  return currentClass().gearTypes[weapon];
+  return { kind: "", name: "", words: text };
 }
 
-// A description that begins with the name of a weapon ("Axe: ...") or of an element
-// ("Fire: ...") only works with that one. If the class is using another right now,
-// this gives a few words to say so, so nobody spends points and wonders why nothing changed.
-function otherBuildNote(text) {
-  let using = currentClass().gearTypes[weapon];
-  let names = Object.values(currentClass().gearTypes);
+// Is this text for a weapon or element the class is not using right now?
+function forOtherKind(text) {
+  let kind = textParts(text).kind;
+  return kind !== "" && kind !== kindInHand();
+}
 
-  if (currentClass().stances !== undefined) {
-    using = currentClass().stances[stance].name;
-    names = [];
-    for (let id in currentClass().stances) {
-      names.push(currentClass().stances[id].name);
-    }
-  }
+// The small tag with a weapon's or element's name
+function kindTag(name) {
+  let tag = document.createElement("span");
+  tag.className = "kind-tag";
+  tag.textContent = name;
+  return tag;
+}
 
-  for (let name of names) {
-    if (name !== using && text.startsWith(name + ":")) {
-      return " (Does nothing right now: you are using the " + using + ".)";
-    }
+// Fills an element with a text's tag and words, and anything after the words
+function writeWithTag(element, text, after) {
+  let parts = textParts(text);
+  element.replaceChildren(parts.words + (after || ""));
+  if (parts.name !== "") {
+    element.prepend(kindTag(parts.name));
   }
-  return "";
 }
 
 function showSkills() {
@@ -308,12 +317,17 @@ function showSkills() {
 
     // The short line: all it gives now (or what one level gives, before the first).
     // Behind the "?": one level's worth, and the next rank. (Skills have no top level.)
-    let strength = skillLevel(skill.id) * skillRankBoost(skill.id);
-    let short = strength > 0 ? scaledSkillText(skill.text, strength) : skill.text + " a level";
-    if (otherBuildNote(skill.text) !== "") {
-      short = short + " (not with the " + usingName() + ")";
+    // (no weapon tag: a skill's name says which weapon it is for. Dimmed while unused.
+    // Nor the name of a class's own mechanic when the skill is named after it: "Rage: ...")
+    let words = textParts(skill.text).words;
+    let mechanic = words.indexOf(": ");
+    if (mechanic > 0 && skill.name.includes(words.slice(0, mechanic))) {
+      words = words.slice(mechanic + 2);
     }
-    fillRow("skill-" + skill.id, title, short, price, skillPointsLeft() < cost, "Each level: " + skill.text + "." + rankNote);
+    let strength = skillLevel(skill.id) * skillRankBoost(skill.id);
+    let short = strength > 0 ? scaledSkillText(words, strength) : words + " a level";
+    fillRow("skill-" + skill.id, title, short, price, skillPointsLeft() < cost, "Each level: " + words + "." + rankNote);
+    document.getElementById("skill-" + skill.id).closest(".row").classList.toggle("other-kind", forOtherKind(skill.text));
   }
 }
 
@@ -342,6 +356,7 @@ function showMilestones() {
     for (let perk of milestone.perks) {
       let button = document.getElementById("perk-" + milestone.floor + "-" + perk.id);
       button.disabled = !unlocked;
+      button.classList.toggle("other-kind", forOtherKind(perk.text));
       button.classList.toggle("chosen", chosenPerks[milestone.floor] === perk.id);
     }
   }
@@ -395,15 +410,14 @@ function showTown() {
   let favouriteNote = "Bosses give your favourite every time. Each level of a boon also gives +" + percent(bossUpgradePower) + " attack and health.";
   for (let upgrade of currentClass().upgrades) {
     let chosen = favouriteUpgrade === upgrade.id;
-    let note = upgrade.text + " per level.";
-    if (!fitsBuild(upgrade)) {
-      note = note + " NOT GIVEN RIGHT NOW: it only works with the " + buildKinds()[upgrade.build] + ", and you are using the " + buildKinds()[kindInHand()] + ".";
-      if (chosen) {
-        favouriteNote = "Your favourite, " + upgrade.name + ", only works with the " + buildKinds()[upgrade.build] + ". While you use the " + buildKinds()[kindInHand()] + ", bosses give a random boon instead.";
-      }
+    let parts = textParts(upgrade.text);
+    // (a boon for another weapon is dimmed; one thing is worth saying: what happens meanwhile)
+    if (!fitsBuild(upgrade) && chosen) {
+      favouriteNote = "While you use the " + buildKinds()[kindInHand()] + ", bosses give a random boon in place of " + upgrade.name + ".";
     }
-    fillRow("favourite-upgrade-" + upgrade.id, upgrade.name, note, chosen ? "Chosen" : "Choose", chosen);
+    fillRow("favourite-upgrade-" + upgrade.id, upgrade.name, parts.words + " per level", chosen ? "Chosen" : "Choose", chosen, "", parts.name);
     document.getElementById("favourite-upgrade-" + upgrade.id).className = chosen ? "chosen" : "";
+    document.getElementById("favourite-upgrade-" + upgrade.id).closest(".row").classList.toggle("other-kind", !fitsBuild(upgrade));
   }
   document.getElementById("favourite-upgrade-note").textContent = favouriteNote;
 
@@ -414,7 +428,7 @@ function showTown() {
     document.getElementById("favourite-upgrade-now").textContent = "Every boss gives a boon picked at random from the ones that suit your weapon. The Tactician can make it the same one every time.";
   } else {
     document.getElementById("favourite-upgrade-name").textContent = favourite.name;
-    document.getElementById("favourite-upgrade-now").textContent = fitsBuild(favourite) ? favourite.text + " per level. Bosses give it every time." : favouriteNote;
+    document.getElementById("favourite-upgrade-now").textContent = fitsBuild(favourite) ? textParts(favourite.text).words + " per level, from every boss." : favouriteNote;
   }
 
   showBlacksmith();
@@ -501,7 +515,7 @@ function showBlacksmith() {
   // being used, so this borrows it by pretending for a moment to use the picked one.
   let using = weapon;
   weapon = nextWeapon;
-  let effect = currentClass().gearInfo() + " Damage: " + typeNames(currentClass().damageTypes()) + ".";
+  let effect = textParts(currentClass().gearInfo()).words + " Damage: " + typeNames(currentClass().damageTypes()) + ".";
   weapon = using;
 
   let types = currentClass().gearTypes;
@@ -931,13 +945,15 @@ function showRelics() {
 
     let effect = document.createElement("p");
     effect.className = "item-stats";
-    effect.textContent = relic.text;
+    let after = "";
     if (relic.id === "phoenixFeather" && (runStats.secondWinds || 0) >= totalBonus("secondWind")) {
-      effect.textContent = relic.text + " (used up for this run)";
+      after = " (used up for this run)";
     }
     if (held > 1) {
-      effect.textContent = relic.text + " (each)";
+      after = " (each)";
     }
+    writeWithTag(effect, relic.text, after);
+    card.classList.toggle("other-kind", forOtherKind(relic.text));
     text.appendChild(effect);
 
     card.appendChild(text);
@@ -1228,7 +1244,7 @@ function gearCard(slot) {
   if (slot === specialSlot()) {
     let effect = document.createElement("p");
     effect.className = "note";
-    effect.textContent = currentClass().gearInfo() + " Damage: " + typeNames(currentClass().damageTypes()) + ".";
+    effect.textContent = textParts(currentClass().gearInfo()).words + " Damage: " + typeNames(currentClass().damageTypes()) + ".";
     text.appendChild(effect);
   }
 

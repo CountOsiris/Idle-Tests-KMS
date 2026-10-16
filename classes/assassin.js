@@ -117,7 +117,7 @@ classes.assassin = {
       floor: 75,
       perks: [
         { id: "killer", name: "Killer", text: "attack x1.3, all your damage +75% against bosses, and your abilities are ready a fifth sooner", bonus: { bossSlayer: 0.75, quickHands: 0.2 }, multiply: { attack: 1.3 } },
-        { id: "survivor", name: "Survivor", text: "health x1.6, attack x1.2, and once a run a blow that would kill you leaves you alive on half your health", bonus: { secondWind: 1 }, multiply: { health: 1.6, attack: 1.2 } },
+        { id: "survivor", name: "Survivor", text: "health x1.6, attack x1.2, and once a run survive a killing blow on half health", bonus: { secondWind: 1 }, multiply: { health: 1.6, attack: 1.2 } },
         { id: "venomancer", name: "Venomancer", text: "Venom Dagger: attack x1.3, +4 poison stacks and poison deals +50% damage", bonus: { poisonStacks: 4, dotPower: 0.5 }, multiply: { attack: 1.3 } },
         { id: "heartseeker", name: "Heartseeker", text: "Stiletto: attack x1.3, +10% critical chance and +70% critical damage", bonus: { critChance: 0.1, critPower: 0.7 }, multiply: { attack: 1.3 } },
         { id: "nightblade", name: "Nightblade", text: "Shadow Blade: attack x1.3, +8% dodge and +100% damage after a dodge", bonus: { dodge: 0.08, counter: 1 }, multiply: { attack: 1.3 } },

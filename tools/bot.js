@@ -186,7 +186,7 @@ function manage() {
   while (guard++ < 100000) {
     let pick = null;
     for (let skill of c.skills) {
-      if (otherBuildNote(skill.text) !== "") {
+      if (forOtherKind(skill.text)) {
         continue;
       }
       if (ONLY_SKILLS.length > 0 && !ONLY_SKILLS.includes(skill.id)) {
@@ -226,8 +226,8 @@ function manage() {
     }
     if (bestFloor >= milestone.floor && chosenPerks[milestone.floor] === undefined) {
       let perk = milestone.perks[milestone.perks.length > 2 ? 0 : 1];
-      if (otherBuildNote(perk.text) !== "") {
-        perk = milestone.perks.find(function (p) { return otherBuildNote(p.text) === ""; });
+      if (forOtherKind(perk.text)) {
+        perk = milestone.perks.find(function (p) { return !forOtherKind(p.text); });
       }
       for (let p of milestone.perks) {
         if (p.text.startsWith(buildName + ":")) {
@@ -568,7 +568,7 @@ function perkCheck() {
         }
         let parts = [];
         for (let perk of milestone.perks) {
-          if (otherBuildNote(perk.text) !== "") {
+          if (forOtherKind(perk.text)) {
             continue;
           }
           let total = 0;
@@ -618,7 +618,7 @@ function skillCheck() {
       if (stanceId !== undefined) {
         stance = stanceId;
       }
-      let mine = c.skills.filter(function (skill) { return otherBuildNote(skill.text) === ""; });
+      let mine = c.skills.filter(function (skill) { return !forOtherKind(skill.text); });
 
       for (let skill of mine) {
         if (SKILL_ONLY.length > 0 && !SKILL_ONLY.includes(skill.id)) {

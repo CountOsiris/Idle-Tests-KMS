@@ -36,7 +36,7 @@ something that is not multiplied again by another endless word.
 | `arrowPower` | + skill (1) | skill | added: classes/ranger.js:306, classes/ranger.js:343 |
 | `attack` | + base (8), x breakthrough (2), x perk (101), x trophy (8) | no | added: game/skills.js:314; multiplied: game/skills.js:317, classes/warden.js:232; recalcStats (game/skills.js): flat attack |
 | `attackPercent` | + boon (8), + perk (9), + relic (1), + skill (18) | boon, skill | added: game/skills.js:317 |
-| `awayHours` | + town (1) | no | added: game/page-show.js:873, game/start.js:16 |
+| `awayHours` | + town (1) | no | added: game/page-show.js:1008, game/start.js:16 |
 | `bear` | x breakthrough (1), x perk (3), x relic (1) | no | multiplied: classes/beasttamer.js:256 |
 | `bitePower` | + boon (1), + perk (1), + skill (1) | boon, skill | added: classes/beasttamer.js:242, classes/beasttamer.js:309, classes/beasttamer.js:311 |
 | `bleed` | x breakthrough (1), x perk (2), x relic (1) | no | multiplied: classes/barbarian.js:327 |
@@ -67,7 +67,7 @@ something that is not multiplied again by another endless word.
 | `crusadeCarry` | + perk (1) | no | added: classes/zealot.js:221 |
 | `crush` | + perk (1), + skill (1) | skill | added: classes/elementalist.js:292, classes/elementalist.js:300, classes/elementalist.js:330 |
 | `damage` | x fame (1), x perk (3) | fame | multiplied: game/state.js:317, game/state.js:326, game/state.js:335 and 1 more; every hit (hitMonster, spellHitMonster, magicHitMonster in game/state.js) |
-| `damageTaken` | x breakthrough (1), x perk (10), x week (2) | no | multiplied: game/bosses.js:158, game/fights.js:500, game/page-show.js:737 |
+| `damageTaken` | x breakthrough (1), x perk (10), x week (2) | no | multiplied: game/bosses.js:158, game/fights.js:500, game/page-show.js:870 |
 | `devotion` | + base (1), + boon (1), + perk (6), + relic (1) | boon | added: classes/zealot.js:233 |
 | `dodge` | + base (1), + boon (1), + perk (9), + relic (1), + skill (1) | boon, skill | added: classes/assassin.js:278, classes/assassin.js:285; added, capped: classes/assassin.js:280 |
 | `dotPower` | + perk (3), + skill (3) | skill | added: game/state.js:366, classes/elementalist.js:322 |
@@ -82,7 +82,7 @@ something that is not multiplied again by another endless word.
 | `extraBolts` | + boon (1), + perk (2), + relic (1), + skill (1) | boon, skill | added: classes/elementalist.js:273, classes/elementalist.js:274, classes/elementalist.js:328 |
 | `extraBoons` | + legend (1) | no | added: game/fights.js:359, game/fights.js:445 |
 | `fame` | x breakthrough (1), x week (1) | no | multiplied: game/bonuses.js:228, game/fights.js:263 |
-| `favouriteUpgrade` | + town (1) | no | added: game/equipment.js:411, game/page-show.js:295 |
+| `favouriteUpgrade` | + town (1) | no | added: game/equipment.js:411, game/page-show.js:401 |
 | `finisher` | + perk (1), + relic (7), + trophy (2) | no | added: game/abilities.js:376 |
 | `firstStrike` | + base (1), + perk (4) | no | added: classes/ranger.js:243, classes/ranger.js:332; overflow: classes/ranger.js:265, classes/ranger.js:333 |
 | `flyOn` | + perk (1) | no | added: classes/ranger.js:316 |
@@ -136,15 +136,15 @@ something that is not multiplied again by another endless word.
 | `rage` | + boon (1), + perk (2), + relic (1), + skill (1), x breakthrough (1), x perk (2) | boon, skill | added: classes/barbarian.js:258, classes/barbarian.js:332, classes/barbarian.js:332; multiplied: classes/barbarian.js:258, classes/barbarian.js:332, classes/barbarian.js:332 |
 | `rareMore` | + week (1) | no | added: game/fights.js:160 |
 | `reflect` | + base (1), + boon (1), + perk (2), + relic (1), + skill (1), x breakthrough (1), x perk (2), x relic (1) | boon, skill | added: classes/warden.js:222, classes/warden.js:323, classes/warden.js:334; multiplied: classes/warden.js:223 |
-| `relicSlots` | + legend (1), + trophy (8) | no | added: game/fights.js:328, game/page-show.js:749, game/page-show.js:758 |
+| `relicSlots` | + legend (1), + trophy (8) | no | added: game/fights.js:328, game/page-show.js:882, game/page-show.js:891 |
 | `resonance` | + perk (1) | no | added: classes/warlock.js:296, classes/warlock.js:309 |
 | `retribution` | + perk (1) | no | added: classes/zealot.js:340, classes/zealot.js:341 |
 | `riposte` | + perk (1) | no | added: classes/barbarian.js:309 |
 | `sacred` | x breakthrough (1), x perk (2), x relic (1) | no | multiplied: classes/zealot.js:164, classes/zealot.js:301 |
 | `sacredFlame` | + boon (1), + perk (2), + relic (1), + skill (1) | boon, skill | added: classes/zealot.js:164, classes/zealot.js:301, classes/zealot.js:363 |
 | `secondClimber` | + legend (1) | no | added: game/companion.js:30 |
-| `secondWeapon` | + legend (1) | no | added: game/equipment.js:202, game/page-show.js:366 |
-| `secondWind` | + perk (9), + relic (2), + trophy (1) | no | added: game/fights.js:388, game/fights.js:394, game/page-show.js:811 |
+| `secondWeapon` | + legend (1) | no | added: game/equipment.js:202, game/page-show.js:471 |
+| `secondWind` | + perk (9), + relic (2), + trophy (1) | no | added: game/fights.js:388, game/fights.js:394, game/page-show.js:944 |
 | `shadowDance` | + perk (1) | no | added: classes/assassin.js:305 |
 | `shatter` | + perk (1) | no | added: classes/barbarian.js:269 |
 | `shieldCounter` | x breakthrough (1), x perk (2), x relic (1) | no | multiplied: classes/zealot.js:335, classes/zealot.js:341 |

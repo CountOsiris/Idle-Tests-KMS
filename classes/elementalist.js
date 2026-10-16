@@ -138,7 +138,7 @@ classes.elementalist = {
       floor: 75,
       perks: [
         { id: "elementalFury", name: "Elemental Fury", text: "attack x1.3, all your damage +75% against bosses, and your abilities are ready a fifth sooner", bonus: { bossSlayer: 0.75, quickHands: 0.2 }, multiply: { attack: 1.3 } },
-        { id: "elementalShield", name: "Elemental Shield", text: "health x1.6, attack x1.2, and once a run a blow that would kill you leaves you alive on half your health", bonus: { secondWind: 1 }, multiply: { health: 1.6, attack: 1.2 } },
+        { id: "elementalShield", name: "Elemental Shield", text: "health x1.6, attack x1.2, and once a run survive a killing blow on half health", bonus: { secondWind: 1 }, multiply: { health: 1.6, attack: 1.2 } },
         { id: "firestorm", name: "Firestorm", text: "Fire: attack x1.3, +4 burn stacks and burning deals +50% damage", bonus: { burnStacks: 4, dotPower: 0.5 }, multiply: { attack: 1.3 } },
         { id: "absoluteZero", name: "Absolute Zero", text: "Ice: attack x1.3, +10% critical chance and +80% critical damage", bonus: { critChance: 0.1, critPower: 0.8 }, multiply: { attack: 1.3 } },
         { id: "chainLightning", name: "Chain Lightning", text: "Lightning: attack x1.3, +60% chance of an extra bolt and bolts deal +8% damage", bonus: { extraBolts: 0.6, boltPower: 0.08 }, multiply: { attack: 1.3 } },

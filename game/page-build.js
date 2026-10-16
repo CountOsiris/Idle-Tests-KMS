@@ -39,9 +39,9 @@ function addRow(box, name, whenClicked) {
 
 // Writes into the three parts of a row made by addRow. "more" is optional: the
 // explanation kept behind the row's "?" (see fillNote)
-function fillRow(name, title, note, buttonText, buttonOff, more) {
+function fillRow(name, title, note, buttonText, buttonOff, more, tag) {
   document.getElementById(name + "-title").textContent = title;
-  fillNote(document.getElementById(name + "-note"), note, more || "");
+  fillNote(document.getElementById(name + "-note"), note, more || "", tag || "");
   document.getElementById(name).textContent = buttonText;
   document.getElementById(name).disabled = buttonOff;
 }
@@ -50,14 +50,18 @@ function fillRow(name, title, note, buttonText, buttonOff, more) {
 // The short line is always shown: what you get, in numbers ("+18% attack", "x1.2
 // damage"). The "?" at its end shows the rest: the rule, the rank, the story. "Always
 // show explanations" in Settings shows every one (body.help-always, style.css).
+// "tag" is the name of the weapon or element it is for, if any (see textParts).
 // (Rewritten only when the words change, so a "?" being pressed stays where it is.)
-function fillNote(element, short, more) {
-  let key = short + "|" + more;
+function fillNote(element, short, more, tag) {
+  let key = tag + "|" + short + "|" + more;
   if (element.dataset.words === key) {
     return;
   }
   element.dataset.words = key;
   element.replaceChildren(short);
+  if (tag) {
+    element.prepend(kindTag(tag));
+  }
   if (more === "") {
     return;
   }
@@ -322,8 +326,13 @@ function buildMilestones() {
     for (let perk of milestone.perks) {
       let button = document.createElement("button");
       button.id = "perk-" + milestone.floor + "-" + perk.id;
-      // A keystone is marked with a star (and a colour of its own: see style.css)
-      button.textContent = (perk.keystone === true ? "★ " : "") + perk.name + " (" + perk.text + ")";
+      // A keystone is marked with a star (and a colour of its own: see style.css), and a
+      // perk for one weapon carries its tag (see textParts in game/page-show.js)
+      let parts = textParts(perk.text);
+      button.textContent = (perk.keystone === true ? "★ " : "") + perk.name + " (" + parts.words + ")";
+      if (parts.name !== "") {
+        button.prepend(kindTag(parts.name));
+      }
       button.classList.toggle("keystone", perk.keystone === true);
       button.onclick = function () {
         choosePerk(milestone.floor, perk.id);

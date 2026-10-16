@@ -2782,3 +2782,30 @@ body.help-always .row-more {
 body.help-always .row-help {
   display: none;
 }
+
+/* ----- For one weapon (textParts in game/page-show.js) -----
+   A perk, relic, boon or ability for one weapon or element carries its name as a small
+   tag, and is dimmed while the class uses another: no sentence needs to say so. */
+.kind-tag {
+  display: inline-block;
+  margin-right: 6px;
+  padding: 0 5px;
+  border: 1px solid var(--gold-dark);
+  border-radius: 2px;
+  font-family: var(--title-font);
+  font-size: 9.5px;
+  letter-spacing: 0.8px;
+  line-height: 15px;
+  text-transform: uppercase;
+  color: var(--gold);
+  vertical-align: 1px;
+  white-space: nowrap;
+}
+
+.other-kind {
+  opacity: 0.42;
+}
+
+.other-kind:hover {
+  opacity: 0.75;
+}

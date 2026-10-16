@@ -159,8 +159,8 @@ function announceMilestone(milestone) {
   let choices = [];
   for (let perk of milestone.perks) {
     choices.push({
-      title: (perk.keystone === true ? "★ Keystone: " : "") + perk.name,
-      note: perk.text,
+      title: (perk.keystone === true ? "★ Keystone: " : "") + perk.name + (textParts(perk.text).name === "" ? "" : " · " + textParts(perk.text).name),
+      note: textParts(perk.text).words,
       whenPicked: function () {
         choosePerk(milestone.floor, perk.id);
       }

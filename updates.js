@@ -21,7 +21,9 @@ const gameUpdates = [
       "On a phone the bar along the bottom holds six groups that all fit: Fight, Hero, Town, Grow, Friends and Settings. The tabs of a group are buttons at the top of its page, and a group remembers the one you used last.",
       "On a phone the header takes two short lines, and the heroes to pick from show on the Fight tab only, so pages start much higher up the screen.",
       "Every hero now has a tile with its picture, its floor and its level. On a computer they stand in a column of big squares on the left, beside the fight, using the space that was empty. On a very wide screen they go two to a row, so all of them show at once.",
-      "Much less to read. A skill now says what all its levels give you right now (\"Power: +18% attack\"), a fame upgrade its multiplier (\"x1.2 damage\"), and a tower your best floor and the next trophy. The rules, ranks and stories are behind a small \"?\" at the end of each line. \"Always show explanations\" in Settings opens them all."
+      "Much less to read. A skill now says what all its levels give you right now (\"Power: +18% attack\"), a fame upgrade its multiplier (\"x1.2 damage\"), and a tower your best floor and the next trophy. The rules, ranks and stories are behind a small \"?\" at the end of each line. \"Always show explanations\" in Settings opens them all.",
+      "No more saying the obvious. A perk, relic, boon or ability for one weapon or element carries its name as a small tag, and is dimmed while you use another, in place of sentences like \"does nothing right now: you are using the Club\". A skill named after its weapon no longer repeats it.",
+      "Rules that were said the long way in many places are said once, short: \"survive a killing blow on half health\", \"+0.5% damage for every kill this run\"."
     ]
   },
   {

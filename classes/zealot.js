@@ -59,7 +59,7 @@ classes.zealot = {
     { id: "zeal", name: "Power", text: "+3% attack", bonus: { attackPercent: 0.03 }, cost: 1 },
     { id: "faithful", name: "Toughness", text: "+3% health and +1.5% attack", bonus: { healthPercent: 0.03, attackPercent: 0.015 }, cost: 1 },
     { id: "radiance", name: "Mace Mastery", text: "Holy Mace: hits add +1% more of their damage as holy damage, and Judgement (every third hit) deals +2% more", bonus: { smite: 0.01, judgement: 0.02 }, cost: 1 },
-    { id: "shieldMastery", name: "Shield Mastery", text: "Mace and Shield: +1.5% block chance, and the strike back after a block hits for +4% of your attack more", bonus: { blockChance: 0.015, counter: 0.04 }, cost: 1 },
+    { id: "shieldMastery", name: "Shield Mastery", text: "Mace and Shield: +1.5% block chance, and strike back after a block +4% of your attack", bonus: { blockChance: 0.015, counter: 0.04 }, cost: 1 },
     { id: "holyLight", name: "Tome Mastery", text: "Holy Tome: healing you do not need burns the enemy for +10% more", bonus: { sacredFlame: 0.1 }, cost: 1 },
     { id: "holyWar", name: "Crusade", text: "Crusade: +1.5% damage for every turn a fight lasts", bonus: { crusade: 0.015 }, cost: 1 }
   ],
@@ -83,7 +83,7 @@ classes.zealot = {
       floor: 20,
       perks: [
         { id: "crusader", name: "Justicar", text: "Holy Mace: hits add +20% more of their damage as holy damage, and Judgement (every third hit) deals +50% more", bonus: { smite: 0.2, judgement: 0.5 } },
-        { id: "templar", name: "Templar", text: "Mace and Shield: +10% block chance, and the strike back after a block hits for +30% of your attack more", bonus: { blockChance: 0.1, counter: 0.3 } },
+        { id: "templar", name: "Templar", text: "Mace and Shield: +10% block chance, and strike back after a block +30% of your attack", bonus: { blockChance: 0.1, counter: 0.3 } },
         { id: "priest", name: "Priest", text: "Holy Tome: healing you do not need burns the enemy for +50% more. Devotion: +1% of your health healed every turn", bonus: { devotion: 0.01, sacredFlame: 0.5 } },
         { id: "holyWarrior", name: "Crusader", text: "Crusade: +5% damage for every turn a fight lasts", bonus: { crusade: 0.05 } }
       ]
@@ -122,9 +122,9 @@ classes.zealot = {
       floor: 75,
       perks: [
         { id: "holyWrath", name: "Holy Wrath", text: "attack x1.3, all your damage +75% against bosses, and your abilities are ready a fifth sooner", bonus: { bossSlayer: 0.75, quickHands: 0.2 }, multiply: { attack: 1.3 } },
-        { id: "divineHealth", name: "Divine Health", text: "health x1.6, attack x1.2, and once a run a blow that would kill you leaves you alive on half your health", bonus: { secondWind: 1 }, multiply: { health: 1.6, attack: 1.2 } },
+        { id: "divineHealth", name: "Divine Health", text: "health x1.6, attack x1.2, and once a run survive a killing blow on half health", bonus: { secondWind: 1 }, multiply: { health: 1.6, attack: 1.2 } },
         { id: "inquisitor", name: "Inquisitor", text: "Holy Mace: attack x1.3, hits add +20% more of their damage as holy damage, and Judgement (every third hit) deals +40% more", bonus: { smite: 0.2, judgement: 0.4 }, multiply: { attack: 1.3 } },
-        { id: "shieldOfTheFaithful", name: "Shield of the Faithful", text: "Mace and Shield: attack x1.3, +10% block chance, and the strike back after a block hits for +70% of your attack more", bonus: { blockChance: 0.1, counter: 0.7 }, multiply: { attack: 1.3 } },
+        { id: "shieldOfTheFaithful", name: "Shield of the Faithful", text: "Mace and Shield: attack x1.3, +10% block chance, and strike back after a block +70% of your attack", bonus: { blockChance: 0.1, counter: 0.7 }, multiply: { attack: 1.3 } },
         { id: "lightbringer", name: "Lightbringer", text: "Holy Tome: attack x1.3, and healing you do not need burns the enemy for +120% more", bonus: { sacredFlame: 1.2 }, multiply: { attack: 1.3 } },
         { id: "crusadeEternal", name: "Eternal Crusade", text: "+25% attack, and Crusade: +6% damage for every turn a fight lasts", bonus: { attackPercent: 0.25, crusade: 0.06 } },
         { id: "divineShield", name: "Divine Favor", text: "You take 25% less damage, and attack x1.2", multiply: { damageTaken: 0.75, attack: 1.2 } }
@@ -172,8 +172,8 @@ classes.zealot = {
     { id: "holyChalice", name: "Holy Chalice", text: "Devotion: +1% of your health healed every turn, and you heal 1% more of your health every turn of a fight", bonus: { devotion: 0.01, prayer: 0.01 } },
     { id: "sunSigil", name: "Sun Sigil", text: "Holy Mace: hits add +15% more of their damage as holy damage, and all your damage +25% against bosses", build: "mace", bonus: { smite: 0.15, bossSlayer: 0.25 } },
     { id: "saintsBuckler", name: "Saint's Buckler", text: "Mace and Shield: +6% block chance, and 15% of every attack against you is thrown back at the enemy", build: "shield", bonus: { blockChance: 0.06, brace: 0.15 } },
-    { id: "psalter", name: "Psalter", text: "Holy Tome: healing you do not need burns the enemy for +25% more, and once this run a blow that would kill you leaves you alive on half your health", build: "tome", bonus: { sacredFlame: 0.25, secondWind: 1 } },
-    { id: "warBanner", name: "War Banner", text: "Crusade: +3% damage for every turn a fight lasts, and every kill makes all your damage 0.5% stronger for the rest of the run", bonus: { crusade: 0.03, killStreak: 0.005 } },
+    { id: "psalter", name: "Psalter", text: "Holy Tome: healing you do not need burns the enemy for +25% more, and once this run survive a killing blow on half health", build: "tome", bonus: { sacredFlame: 0.25, secondWind: 1 } },
+    { id: "warBanner", name: "War Banner", text: "Crusade: +3% damage for every turn a fight lasts, and +0.5% damage for every kill this run", bonus: { crusade: 0.03, killStreak: 0.005 } },
     { id: "saintsKnuckle", name: "Saint's Knuckle", legendary: true, text: "Holy Mace: holy damage and Judgement damage x2.5, and health x1.5", build: "mace", bonus: {}, multiply: { mace: 2.5, health: 1.5 } },
     { id: "wallOfPsalms", name: "Wall of Psalms", legendary: true, text: "Mace and Shield: strike back damage x3, and health x1.5", build: "shield", bonus: {}, multiply: { shieldCounter: 3, health: 1.5 } },
     { id: "firstGospel", name: "The First Gospel", legendary: true, text: "Holy Tome: the burn from healing you do not need x3, and health x1.5", build: "tome", bonus: {}, multiply: { sacred: 3, health: 1.5 } }

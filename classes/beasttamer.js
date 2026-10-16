@@ -111,7 +111,7 @@ classes.beasttamer = {
     {
       floor: 50,
       perks: [
-        { id: "beastlord", name: "Beastlord", text: "attack x1.1, and every kill makes all your damage 0.5% stronger for the rest of the run (up to +100%)", bonus: { killStreak: 0.005 }, multiply: { attack: 1.1 } },
+        { id: "beastlord", name: "Beastlord", text: "attack x1.1, and +0.5% damage for every kill this run (up to +100%)", bonus: { killStreak: 0.005 }, multiply: { attack: 1.1 } },
         { id: "oldGrowth", name: "Old Growth", text: "health x1.5, armor x1.4 and attack x1.2", multiply: { health: 1.5, armor: 1.4, attack: 1.2 } },
         { id: "direPack", name: "Dire Pack", text: "Wolf Pack: bite damage x1.5", multiply: { wolf: 1.5 } },
         { id: "caveBear", name: "Cave Bear", text: "Bear: maul damage x1.8", multiply: { bear: 1.8 } },
@@ -135,7 +135,7 @@ classes.beasttamer = {
       floor: 75,
       perks: [
         { id: "apex", name: "Apex", text: "attack x1.3, all your damage +75% against bosses, and your abilities are ready a fifth sooner", bonus: { bossSlayer: 0.75, quickHands: 0.2 }, multiply: { attack: 1.3 } },
-        { id: "ironwoodHeart", name: "Ironwood Heart", text: "health x1.6, attack x1.2, and once a run a blow that would kill you leaves you alive on half your health", bonus: { secondWind: 1 }, multiply: { health: 1.6, attack: 1.2 } },
+        { id: "ironwoodHeart", name: "Ironwood Heart", text: "health x1.6, attack x1.2, and once a run survive a killing blow on half health", bonus: { secondWind: 1 }, multiply: { health: 1.6, attack: 1.2 } },
         { id: "wolfKing", name: "Wolf King", text: "Wolf Pack: attack x1.3, one more wolf, and bites deal +10% of your attack more", bonus: { packSize: 1, bitePower: 0.1 }, multiply: { attack: 1.3 } },
         { id: "ursine", name: "Ursine", text: "Bear: attack x1.3, the maul deals +80% of your attack more, and +8% stun chance", bonus: { maulPower: 0.8, stunChance: 0.08 }, multiply: { attack: 1.3 } },
         { id: "skyHunter", name: "Sky Hunter", text: "Hawk: attack x1.3, +10% critical dive chance and +80% critical damage", bonus: { critChance: 0.1, critPower: 0.8 }, multiply: { attack: 1.3 } },

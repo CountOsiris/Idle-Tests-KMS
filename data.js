@@ -432,15 +432,15 @@ const keystoneMilestones = [
     keystones: true,
     perks: [
       { id: "glassCannon", name: "Glass Cannon", keystone: true, text: "All your damage x2. health x0.5", multiply: { damage: 2, health: 0.5 } },
-      { id: "bloodPrice", name: "Blood Price", keystone: true, text: "Every kill makes all your damage 2% stronger for the rest of the run, up to +100%. You no longer heal after a kill", bonus: { killStreak: 0.02, noKillHeal: 1 } },
-      { id: "secondWind", name: "Second Wind", keystone: true, text: "Once a run, a blow that would kill you leaves you alive on half your health. health x0.9", bonus: { secondWind: 1 }, multiply: { health: 0.9 } }
+      { id: "bloodPrice", name: "Blood Price", keystone: true, text: "+2% damage for every kill this run, up to +100%. You no longer heal after a kill", bonus: { killStreak: 0.02, noKillHeal: 1 } },
+      { id: "secondWind", name: "Second Wind", keystone: true, text: "Once a run, survive a killing blow on half health. health x0.9", bonus: { secondWind: 1 }, multiply: { health: 0.9 } }
     ]
   },
   {
     floor: 101,
     keystones: true,
     perks: [
-      { id: "momentum", name: "Momentum", keystone: true, text: "Every floor swept through at the start of a run makes all your damage 1% stronger for that run, up to +100%. experience x0.8", bonus: { momentum: 0.01 }, multiply: { experience: 0.8 } },
+      { id: "momentum", name: "Momentum", keystone: true, text: "+1% damage for every floor swept at the start of a run, up to +100%. experience x0.8", bonus: { momentum: 0.01 }, multiply: { experience: 0.8 } },
       { id: "quickHands", name: "Quick Hands", keystone: true, text: "Ability cooldowns are halved. All your damage x0.8", bonus: { quickHands: 0.5 }, multiply: { damage: 0.8 } },
       { id: "ironSkin", name: "Iron Skin", keystone: true, text: "Your armor can block up to 80% of a hit instead of 60%. All your damage x0.8", bonus: { armorLimit: 0.2 }, multiply: { damage: 0.8 } }
     ]
@@ -792,7 +792,7 @@ const mostArmorShare = 0.85;
 // (Troll Heart, Edge of Ruin, Dragonscale, Golden Idol and Tome of the Fallen were plain
 // numbers, the same as boons. They are gone; relics are lost at death, so nobody lost one.)
 const relics = [
-  { id: "phoenixFeather", name: "Phoenix Feather", icon: "🪶", text: "Once this run, a blow that would kill you leaves you alive on half your health", bonus: { secondWind: 1 } },
+  { id: "phoenixFeather", name: "Phoenix Feather", icon: "🪶", text: "Once this run, survive a killing blow on half health", bonus: { secondWind: 1 } },
   { id: "thornedCarapace", name: "Thorned Carapace", icon: "🦔", text: "A fifth of every attack against you is thrown back at the enemy, ignoring its armor", bonus: { brace: 0.2 } },
   { id: "bloodstone", name: "Bloodstone", icon: "🩸", text: "You heal for 3% of the damage your turns deal", bonus: { leech: 0.03 } },
   { id: "huntersTrophy", name: "Hunter's Trophy", icon: "🦌", text: "All your damage +30% against bosses", bonus: { bossSlayer: 0.3 } },
@@ -802,5 +802,5 @@ const relics = [
   { id: "prism", name: "Prism", icon: "🔮", text: "A hit on a weakness deals 20% more", bonus: { exploit: 0.2 } },
   { id: "rosary", name: "Worn Rosary", icon: "📿", text: "You heal 1% of your health every turn of a fight", bonus: { prayer: 0.01 } },
   { id: "smokeVial", name: "Smoke Vial", icon: "🌫️", text: "A 5% chance to avoid any attack", bonus: { sidestep: 0.05 } },
-  { id: "skullTotem", name: "Skull Totem", icon: "💀", text: "Every kill makes all your damage 0.5% stronger for the rest of the run (up to +100%)", bonus: { killStreak: 0.005 } }
+  { id: "skullTotem", name: "Skull Totem", icon: "💀", text: "+0.5% damage for every kill this run (up to +100%)", bonus: { killStreak: 0.005 } }
 ];

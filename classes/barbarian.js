@@ -138,7 +138,7 @@ classes.barbarian = {
       floor: 75,
       perks: [
         { id: "warlord", name: "Warlord", text: "attack x1.3, all your damage +75% against bosses, and your abilities are ready a fifth sooner", bonus: { bossSlayer: 0.75, quickHands: 0.2 }, multiply: { attack: 1.3 } },
-        { id: "unbreakable", name: "Unbreakable", text: "health x1.6, attack x1.2, and once a run a blow that would kill you leaves you alive on half your health", bonus: { secondWind: 1 }, multiply: { health: 1.6, attack: 1.2 } },
+        { id: "unbreakable", name: "Unbreakable", text: "health x1.6, attack x1.2, and once a run survive a killing blow on half health", bonus: { secondWind: 1 }, multiply: { health: 1.6, attack: 1.2 } },
         { id: "bloodletter", name: "Bloodletter", text: "Axe: attack x1.3, +4 bleed stacks and bleeding deals +50% damage", bonus: { bleedStacks: 4, dotPower: 0.5 }, multiply: { attack: 1.3 } },
         { id: "blademaster", name: "Blademaster", text: "Sword: attack x1.3, +10% critical and parry chance, +60% critical damage", bonus: { critChance: 0.1, parryChance: 0.1, critPower: 0.6 }, multiply: { attack: 1.3 } },
         { id: "earthshaker", name: "Earthshaker", text: "Club: attack x1.3, +10% stun chance and hits deal +40% damage", bonus: { stunChance: 0.1, clubPower: 0.4 }, multiply: { attack: 1.3 } },
@@ -189,7 +189,7 @@ classes.barbarian = {
     { id: "serratedEdge", name: "Serrated Edge", text: "Axe: +1 bleed stack, and all your damage +20% against an enemy below half health", build: "axe", bonus: { bleedStacks: 1, finisher: 0.2 } },
     { id: "duelistsGlove", name: "Duelist's Glove", text: "Sword: +5% critical and parry chance, and a 4% chance to avoid any attack", build: "sword", bonus: { critChance: 0.05, parryChance: 0.05, sidestep: 0.04 } },
     { id: "giantsKnuckle", name: "Giant's Knuckle", text: "Club: +10% stun chance, and all your damage +40% on the first turn of every fight", build: "club", bonus: { stunChance: 0.1, opener: 0.4 } },
-    { id: "berserkersTorc", name: "Berserker's Torc", text: "Rage: +25% damage while below half health, and every kill makes all your damage 0.5% stronger for the rest of the run", bonus: { rage: 0.25, killStreak: 0.005 } },
+    { id: "berserkersTorc", name: "Berserker's Torc", text: "Rage: +25% damage while below half health, and +0.5% damage for every kill this run", bonus: { rage: 0.25, killStreak: 0.005 } },
     // LEGENDARY RELICS: one for each weapon, very rare, and worth a run to remember
     // (see "Legendary relics" in data.js). "multiply" works as it does on a perk.
     { id: "gorefather", name: "Gorefather", legendary: true, text: "Axe: bleeding damage x3, and health x1.5", build: "axe", bonus: {}, multiply: { bleed: 3, health: 1.5 } },

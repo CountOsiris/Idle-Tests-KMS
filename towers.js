@@ -250,11 +250,11 @@ const towers = {
     trophies: [
       { floor: 10, id: "cryptLore", name: "Crypt Lore", text: "+20% experience", bonus: { experience: 0.2 } },
       { floor: 20, id: "lichsGrimoire", name: "Lich's Grimoire", text: "+20% experience", bonus: { experience: 0.2 } },
-      { floor: 30, id: "entombedCrown", name: "Entombed Crown", text: "+30% experience, and the technique Soul Siphon: every kill makes all your damage 0.5% stronger for the rest of the run (up to +100%)", bonus: { experience: 0.3, killStreak: 0.005 } },
+      { floor: 30, id: "entombedCrown", name: "Entombed Crown", text: "+30% experience, and the technique Soul Siphon: +0.5% damage for every kill this run (up to +100%)", bonus: { experience: 0.3, killStreak: 0.005 } },
       { floor: 50, id: "boneCodex", name: "Bone Codex", text: "teaches the ability Drain Life: 2 turns of your damage, and you heal 15% of your health",
         ability: { id: "towerDrainLife", name: "Drain Life", text: "2 turns of your damage, and you heal 15% of your health", cooldown: 9, use: function () { abilityTurns(2); abilityHeal(0.15); } } },
       { floor: 75, id: "colossusCore", name: "Colossus Core", text: "a relic slot: you keep 1 more relic when you fall", bonus: { relicSlots: 1 } },
-      { floor: 100, id: "crownOfTheEntombed", name: "Crown of the Entombed", text: "the named weapon Gravecall. Phylactery: once a run, a blow that would kill you leaves you alive on half your health", weapon: "Gravecall", bonus: { secondWind: 1 } }
+      { floor: 100, id: "crownOfTheEntombed", name: "Crown of the Entombed", text: "the named weapon Gravecall. Phylactery: once a run, survive a killing blow on half health", weapon: "Gravecall", bonus: { secondWind: 1 } }
     ]
   },
 

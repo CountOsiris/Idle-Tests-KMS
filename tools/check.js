@@ -1368,6 +1368,17 @@ try {
   setHelpAlways(true);
   let restAlways = rest !== null && rest.offsetHeight > 0 && skillNote.querySelector(".row-help").offsetHeight === 0;
   setHelpAlways(helpWas);
+
+  // A skill for another weapon is dimmed, and nothing on the tab says so in words:
+  // its weapon's name is not in its line, nor any "does nothing right now" sentence
+  let otherSkill = currentClass().skills.find(function (skill) { return forOtherKind(skill.text); });
+  if (otherSkill !== undefined) {
+    let otherRow = document.getElementById("skill-" + otherSkill.id).closest(".row");
+    let pageWords = document.getElementById("page-skills").textContent;
+    check("rows: " + otherSkill.name + " (for another weapon) is dimmed, without its weapon's name in its line or a sentence saying it does nothing",
+      otherRow.classList.contains("other-kind") && !otherRow.querySelector(".note").firstChild.textContent.startsWith(textParts(otherSkill.text).name)
+      && !/does nothing right now|not with the|NOT GIVEN/i.test(pageWords));
+  }
   check("rows: a skill shows a short line, its \"?\" shows the rest, and \"Always show explanations\" shows the rest of every row",
     restHidden && restOpened && restAlways);
   showTab("character");
@@ -1493,9 +1504,10 @@ try {
     showTab("town");
     updateScreen();
     let rowNote = document.getElementById("favourite-upgrade-" + otherBoon.id + "-note").textContent;
+    let rowDimmed = document.getElementById("favourite-upgrade-" + otherBoon.id).closest(".row").classList.contains("other-kind");
     let topNote = document.getElementById("favourite-upgrade-note").textContent;
-    check("the Tactician's list says what each boon does, and that " + otherBoon.name + " is not given with this weapon",
-      rowNote.includes(otherBoon.text) && rowNote.includes("NOT GIVEN RIGHT NOW") && topNote.includes(otherBoon.name) && !document.getElementById("favourite-upgrade").hidden);
+    check("the Tactician's list says what each boon does, dims " + otherBoon.name + " (for another weapon), and says bosses give a random boon in its place",
+      rowNote.includes(textParts(otherBoon.text).words) && rowDimmed && topNote.includes(otherBoon.name) && !document.getElementById("favourite-upgrade").hidden);
 
     // On the Town tab it is one line with a Change button; the list is a window of its own
     let lineNow = document.getElementById("favourite-upgrade-now").textContent;

@@ -460,8 +460,9 @@ function showAbilities() {
     title.appendChild(abilityWaitWords[ability.id]);
     let note = document.createElement("p");
     note.className = "note";
-    fillNote(note, ability.text + (otherBuildNote(ability.text) === "" ? "" : " (not with the " + usingName() + ")"),
-      "Rank " + (rank + 1) + " after " + usesForNextRank(ability.id) + " uses: everything it does +" + percent(abilityRankPower) + ".");
+    let parts = textParts(ability.text);
+    fillNote(note, parts.words, "Rank " + (rank + 1) + " after " + usesForNextRank(ability.id) + " uses: everything it does +" + percent(abilityRankPower) + ".", parts.name);
+    row.classList.toggle("other-kind", !fitsBuild(ability));
     words.appendChild(title);
     words.appendChild(note);
 
@@ -531,9 +532,10 @@ function showAbilityBar() {
       continue;
     }
 
+    // (one for another weapon is simply greyed out: its name alone, and no state)
     let state = abilityModeNames[abilityMode(ability)];
     if (!fitsBuild(ability)) {
-      state = "not with this weapon";
+      state = "";
     } else if (abilityPressed[id] === true) {
       state = "next turn";
     } else if (!abilityReady(ability)) {
@@ -544,7 +546,7 @@ function showAbilityBar() {
       state = "ready";
     }
 
-    button.textContent = ability.name + " · " + state;
+    button.textContent = state === "" ? ability.name : ability.name + " · " + state;
     button.disabled = !abilityReady(ability) || !fitsBuild(ability);
     button.className = abilityReady(ability) && fitsBuild(ability) ? "chosen" : "";
     button.title = ability.text + ". Setting: " + abilityModeNames[abilityMode(ability)] + " (change it on the Skills tab).";
