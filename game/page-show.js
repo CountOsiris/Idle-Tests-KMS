@@ -8,7 +8,8 @@
 // THE LAYOUT (style.css, "The layout"): the fight is always at the top of the screen in
 // a short form, the open tab's page is under it, and on a phone the groups of tabs are a
 // bar along the bottom (tabGroups). "tower" is the Fight tab: the whole fight, the boons
-// and the log. A wide screen has no Fight tab: the fight stands beside every page.
+// and the log. A wide screen has no Fight tab: the fight fills the screen, and a tab
+// opens as a window over it ("The arena" in style.css; pressTab closes it again).
 // Anything waiting to be done is also a button in the fight (waitingThings).
 // The width from which the fight and a page stand side by side (the same as in style.css)
 const wideScreen = "(min-width: 1000px)";
@@ -63,14 +64,19 @@ function showGroups() {
 
 const tabNames = ["tower", "character", "inventory", "skills", "town", "travel", "milestones", "ascension", "legend", "friends", "save"];
 
+// ON A WIDE SCREEN THE FIGHT IS THE WHOLE SCREEN, and a tab opens over it as a
+// window (style.css, "The arena"). "tower" is then no window at all. Pressing the tab
+// of the window that is open closes it, as its ✕ does.
+function pressTab(name) {
+  if (name === openTab && name !== "tower" && window.matchMedia(wideScreen).matches) {
+    name = "tower";
+  }
+  showTab(name);
+}
+
 function showTab(name) {
   if (!tabIsOpen(name)) {
     name = "tower";
-  }
-  // A wide screen has no Fight tab: the fight is always on show in the left column,
-  // with its boons and log under it (style.css), so it opens the Hero page beside it
-  if (name === "tower" && window.matchMedia(wideScreen).matches) {
-    name = "character";
   }
   document.body.dataset.tab = name;
 
@@ -994,8 +1000,11 @@ function updateScreen() {
   // The tower
   document.getElementById("tower-name").textContent = towers[tower].icon + " " + towers[tower].name;
 
-  // Each tower tints the fight with its own colour (the "sky" in towers.js)
-  document.getElementById("stage").style.setProperty("--sky", towers[tower].sky);
+  // Each tower tints the fight with its own colour (the "sky" in towers.js), and can
+  // have a picture behind it (its "background")
+  let scene = document.querySelector(".fight-card");
+  scene.style.setProperty("--sky", towers[tower].sky);
+  scene.style.setProperty("--scene-art", towers[tower].background === undefined ? "none" : "url(\"" + towers[tower].background + "\")");
   if (isAway()) {
     let note = "Away from home: monsters have +" + percent(awayTowerHealth) + " health and +" + percent(awayTowerAttack) + " attack, and you earn +" + percent(awayTowerExperience) + " experience.";
     if (towerRule() !== null) {

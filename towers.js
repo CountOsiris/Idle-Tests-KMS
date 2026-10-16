@@ -20,6 +20,11 @@
 // of which tile is which monster; art/CREDITS.md is written from that list.
 // A class gets art the same way, with an  art:  line in its file under  icon:
 //
+// A BACKGROUND: on a wide screen the fight fills the screen. To paint a tower's scene
+// behind it, put a wide picture (about 1920 x 1080) in art/backgrounds/ and add
+//   background: "art/backgrounds/orc-stronghold.png"
+// under the tower's  sky:  line. Without one, the scene is the tower's sky colour.
+//
 // ----- Monsters -----
 // A normal monster on floor F starts with:
 //   the health and attack that data.js works out for floor F, and armor that blocks 10%
