@@ -121,6 +121,23 @@ bash tools/version.sh 20261011a
 Sets the version in all three places (see the comment in `index.html`). Then add an
 entry for it at the top of `updates.js`: the pre-upload check fails without one.
 
+## Friends and chat, without the real server
+
+```
+python tools/fake-cloud.py        the game at http://127.0.0.1:8642/, with a pretend server
+python tools/friends-check.py     (in another window) checks the friends and chat functions
+```
+
+`fake-cloud.py` answers the game's online calls from a Postgres database on this
+computer, in place of Supabase, so two browsers (or two Edge profiles) can add each
+other and chat without touching anybody's real account. The database needs
+`cloud-setup.sql` run on it, a schema called `extensions` and the roles `anon` and
+`authenticated`, as Supabase has; the top of `fake-cloud.py` says how. `friends-check.py`
+makes new accounts each run and must end `ALL GOOD`.
+
+After changing the friends part of `cloud-setup.sql`, run the whole file again in
+Supabase's SQL Editor. Until then the live game says friends are not switched on yet.
+
 ## The monsters' pictures
 
 ```
