@@ -615,10 +615,19 @@ const awayTowerExperience = 0.5;
 // This is what makes a boss kill felt straight away, whatever the upgrade was.
 const bossUpgradePower = 0.1;
 
-// THE PICTURE ON A BOON'S BADGE (the "This run" box under the fight), by the first word
-// of its bonus. A boon can have its own instead, with  icon: "🐺"  on its line in its
-// class file. TO ADD ONE: a word and its picture. A word missing here shows ✦.
-const boonIcons = {
+// THE PICTURE ON A BADGE: a boon's (the "This run" box under the fight) or a milestone
+// perk's (the Perks tab), by the first word of its bonus or multiply. A boon or perk can
+// have its own instead, with  icon: "🐺"  on its line. TO ADD ONE: a word and its
+// picture. A word missing here shows ✦ (★ for a keystone).
+const bonusIcons = {
+  attack: "⚔️", health: "❤️", damage: "💥", damageTaken: "🧱", experience: "📖",
+  gold: "💰", fame: "⭐", secondWind: "🕊️", bossSlayer: "👑", killStreak: "💀",
+  prayer: "🙏", firstStrike: "⚡", momentum: "🌊", quickHands: "✋", bleed: "🩸",
+  poison: "☠️", burn: "🔥", void: "🌀", wolf: "🐺", bear: "🐻", packSize: "🐾",
+  throw: "🥏", shortbow: "🏹", longbowCrit: "🏹", crossbow: "🎯", spear: "🔱",
+  club: "🔨", mace: "🔨", swordCrit: "🗡️", stilettoCrit: "🗡️", shieldPower: "🛡️",
+  iceCrit: "❄️", bolt: "⚡", boulder: "⛰️", hawkCrit: "🦅", sacred: "✨", echo: "🔔",
+  critPower: "🎯", leech: "🩸",
   attackPercent: "⚔️", healthPercent: "❤️", armor: "🛡️", critChance: "🎯", stunChance: "💫",
   blockChance: "🛡️", dodge: "💨", ambush: "🗡️", poisonStacks: "☠️", counter: "🔁",
   lifesteal: "🩸", bleedStacks: "🩸", rage: "💢", bitePower: "🐺", maulPower: "🐻",

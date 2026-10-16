@@ -187,8 +187,7 @@ function showUpgrades() {
     }
     held = held + upgradeLevel(upgrade.id);
 
-    let firstWord = Object.keys(upgrade.bonus || upgrade.multiply || {})[0];
-    let badge = makeBadge(upgrade.icon || boonIcons[firstWord] || "✦", upgrade.name, upgradeLevel(upgrade.id), upgrade.text + " per level");
+    let badge = makeBadge(iconOf(upgrade), upgrade.name, upgradeLevel(upgrade.id), upgrade.text + " per level");
     badge.classList.toggle("other-kind", !fitsBuild(upgrade));
     box.appendChild(badge);
   }
@@ -979,6 +978,13 @@ function makeBadge(icon, name, count, text) {
     badge.append(number);
   }
   return badge;
+}
+
+// The picture for a boon or a perk: its own icon, or the one for its first bonus word
+// (bonusIcons in data.js)
+function iconOf(thing) {
+  let firstWord = Object.keys(thing.bonus || thing.multiply || {})[0];
+  return thing.icon || bonusIcons[firstWord] || (thing.keystone === true ? "★" : "✦");
 }
 
 // The relics again, as badges in the "This run" box under the fight

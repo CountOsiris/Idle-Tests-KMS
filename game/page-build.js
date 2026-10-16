@@ -324,14 +324,33 @@ function buildMilestones() {
     choices.className = "choices";
 
     for (let perk of milestone.perks) {
+      // Each perk is a badge: its picture, its name and what it gives in a few words.
+      // The whole text shows when it is pointed at (style.css, ".perk-badge"). A keystone
+      // has a colour of its own and a ★ in its corner, and a perk for one weapon carries
+      // its tag (see textParts in game/page-show.js).
+      let parts = textParts(perk.text);
       let button = document.createElement("button");
       button.id = "perk-" + milestone.floor + "-" + perk.id;
-      // A keystone is marked with a star (and a colour of its own: see style.css), and a
-      // perk for one weapon carries its tag (see textParts in game/page-show.js)
-      let parts = textParts(perk.text);
-      button.textContent = (perk.keystone === true ? "★ " : "") + perk.name + " (" + parts.words + ")";
+      button.className = "perk-badge";
+      button.dataset.tip = perk.name + (parts.name === "" ? "" : " · " + parts.name) + "\n" + parts.words;
+      let picture = document.createElement("span");
+      picture.className = "badge-icon";
+      picture.textContent = iconOf(perk);
+      let name = document.createElement("span");
+      name.className = "perk-name";
+      name.textContent = perk.name;
+      let effect = document.createElement("span");
+      effect.className = "perk-effect";
+      effect.textContent = parts.words;
+      button.append(picture, name, effect);
       if (parts.name !== "") {
         button.prepend(kindTag(parts.name));
+      }
+      if (perk.keystone === true) {
+        let star = document.createElement("span");
+        star.className = "badge-count";
+        star.textContent = "★";
+        button.append(star);
       }
       button.classList.toggle("keystone", perk.keystone === true);
       button.onclick = function () {

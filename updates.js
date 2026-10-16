@@ -13,6 +13,14 @@
 
 const gameUpdates = [
   {
+    version: "20261016d",
+    title: "Perks as badges",
+    changes: [
+      "The Perks tab is now rows of badges in place of long buttons: each perk has a picture, its name and what it gives in a few words (\"health x1.1\"). The one you picked glows. Point at a perk to read all of it.",
+      "Keystones carry a ★ in their corner, and a perk for one weapon carries its tag and is dimmed while you use another, as before."
+    ]
+  },
+  {
     version: "20261016c",
     title: "The arena",
     changes: [

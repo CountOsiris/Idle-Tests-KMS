@@ -1386,6 +1386,17 @@ try {
   }
   check("rows: a skill shows a short line, its \"?\" shows the rest, and \"Always show explanations\" shows the rest of every row",
     restHidden && restOpened && restAlways);
+
+  // The Perks tab: every perk is a badge with a picture, its name and its few words, and
+  // its whole text for the box shown when it is pointed at
+  showTab("milestones");
+  let firstPerk = allMilestones()[0].perks[0];
+  let perkBadge = document.getElementById("perk-" + allMilestones()[0].floor + "-" + firstPerk.id);
+  check("perks: " + firstPerk.name + " is a badge with a picture, its name, \"" + textParts(firstPerk.text).words + "\" and its whole text to point at",
+    perkBadge.classList.contains("perk-badge") && perkBadge.querySelector(".badge-icon").textContent !== ""
+    && perkBadge.querySelector(".perk-name").textContent === firstPerk.name
+    && perkBadge.querySelector(".perk-effect").textContent === textParts(firstPerk.text).words
+    && perkBadge.dataset.tip.includes(textParts(firstPerk.text).words) && perkBadge.offsetHeight > 0);
   showTab("character");
 
   // 3i17. The Second Climber: locked without the legend unlock; with it, another class
