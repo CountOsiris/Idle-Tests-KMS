@@ -187,25 +187,10 @@ function showUpgrades() {
     }
     held = held + upgradeLevel(upgrade.id);
 
-    let row = document.createElement("div");
-    row.className = "run-tile";
-    row.classList.toggle("other-kind", !fitsBuild(upgrade));
-
-    let text = document.createElement("div");
-    text.className = "row-text";
-
-    let title = document.createElement("p");
-    title.className = "row-title";
-    title.textContent = upgrade.name + " · level " + upgradeLevel(upgrade.id);
-    text.appendChild(title);
-
-    let note = document.createElement("p");
-    note.className = "note";
-    writeWithTag(note, upgrade.text, " per level");
-    text.appendChild(note);
-
-    row.appendChild(text);
-    box.appendChild(row);
+    let firstWord = Object.keys(upgrade.bonus || upgrade.multiply || {})[0];
+    let badge = makeBadge(upgrade.icon || boonIcons[firstWord] || "✦", upgrade.name, upgradeLevel(upgrade.id), upgrade.text + " per level");
+    badge.classList.toggle("other-kind", !fitsBuild(upgrade));
+    box.appendChild(badge);
   }
 
   document.getElementById("upgrade-count").textContent = held;
@@ -970,7 +955,33 @@ function showRelics() {
   showRunRelics();
 }
 
-// The relics again, as small tiles in the "This run" box under the fight
+// A BADGE: a square with a picture, a name under it, and a number in its corner (a
+// boon's level, or how many of a relic are held). What it does shows when the badge is
+// pointed at, or tapped on a phone (style.css, ".badge"), so the box stays a row of
+// pictures instead of a page of sentences.
+function makeBadge(icon, name, count, text) {
+  let parts = textParts(text);
+  let badge = document.createElement("div");
+  badge.className = "badge";
+  badge.tabIndex = 0;
+  badge.dataset.tip = name + (parts.name === "" ? "" : " · " + parts.name) + "\n" + parts.words;
+  let picture = document.createElement("span");
+  picture.className = "badge-icon";
+  picture.textContent = icon;
+  let label = document.createElement("span");
+  label.className = "badge-name";
+  label.textContent = name;
+  badge.append(picture, label);
+  if (count > 1) {
+    let number = document.createElement("span");
+    number.className = "badge-count";
+    number.textContent = count;
+    badge.append(number);
+  }
+  return badge;
+}
+
+// The relics again, as badges in the "This run" box under the fight
 function showRunRelics() {
   let box = document.getElementById("run-relics");
   box.replaceChildren();
@@ -979,20 +990,13 @@ function showRunRelics() {
     if (held === 0) {
       continue;
     }
-    let tile = document.createElement("div");
-    tile.className = "run-tile relic-tile";
-    tile.classList.toggle("legendary", relic.legendary === true);
-    tile.classList.toggle("other-kind", forOtherKind(relic.text));
-
-    let name = document.createElement("p");
-    name.className = "row-title";
-    name.textContent = (relic.icon || "💎") + " " + relic.name + (held > 1 ? " x" + held : "");
-    let effect = document.createElement("p");
-    effect.className = "note";
-    writeWithTag(effect, relic.text, held > 1 ? " (each)" : "");
-    tile.append(name, effect);
-    box.append(tile);
+    let badge = makeBadge(relic.icon || "💎", relic.name, held, relic.text + (held > 1 ? " (each)" : ""));
+    badge.classList.toggle("legendary", relic.legendary === true);
+    badge.classList.toggle("other-kind", forOtherKind(relic.text));
+    box.append(badge);
   }
+  document.getElementById("run-relic-count").textContent = ownedRelics.length > 0 ? ownedRelics.length : "";
+  document.getElementById("run-relics-empty").hidden = ownedRelics.length > 0;
 }
 
 function updateScreen() {

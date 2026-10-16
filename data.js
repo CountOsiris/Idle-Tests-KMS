@@ -615,6 +615,19 @@ const awayTowerExperience = 0.5;
 // This is what makes a boss kill felt straight away, whatever the upgrade was.
 const bossUpgradePower = 0.1;
 
+// THE PICTURE ON A BOON'S BADGE (the "This run" box under the fight), by the first word
+// of its bonus. A boon can have its own instead, with  icon: "🐺"  on its line in its
+// class file. TO ADD ONE: a word and its picture. A word missing here shows ✦.
+const boonIcons = {
+  attackPercent: "⚔️", healthPercent: "❤️", armor: "🛡️", critChance: "🎯", stunChance: "💫",
+  blockChance: "🛡️", dodge: "💨", ambush: "🗡️", poisonStacks: "☠️", counter: "🔁",
+  lifesteal: "🩸", bleedStacks: "🩸", rage: "💢", bitePower: "🐺", maulPower: "🐻",
+  bond: "🔗", burnStacks: "🔥", extraBolts: "⚡", aimChance: "🎯", quickShot: "🏹",
+  boltPower: "🎯", boltPierce: "📌", aimPower: "👁️", bodkin: "📌", reflect: "🌵",
+  throwPower: "🥏", vengeance: "⚖️", voidRend: "🌀", echoChance: "🔔", devotion: "🙏",
+  smite: "✨", sacredFlame: "🕯️", crusade: "🚩"
+};
+
 // The most time away that counts (the Night Watch in town adds to it: see awayLimit in
 // game/start.js), and how long away before you get a report
 const maxAwaySeconds = 8 * 60 * 60;

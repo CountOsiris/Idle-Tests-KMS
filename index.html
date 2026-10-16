@@ -253,11 +253,22 @@
           <p><strong id="upgrade-count" class="big-number">0</strong> boons</p>
         </div>
         <p class="note">Every boss you defeat gives one boon that suits the weapon you are using. Boons last until you fall. Each one also makes you stronger all round: right now <strong id="upgrade-boost">+0%</strong> attack and health. The relics you hold are here too.</p>
-        <p id="upgrades-empty" class="note">No boons yet. The first boss is on floor 5.</p>
-        <!-- The tiles are made by the game (game/) from the class's upgrades list -->
-        <div id="upgrades" class="run-tiles"></div>
-        <!-- One tile for each relic held (showRelics in game/page-show.js) -->
-        <div id="run-relics" class="run-tiles"></div>
+        <!-- Two halves: the boons on the left, the relics on the right, each a row of
+             badges. A badge shows what it does when pointed at or tapped (style.css). -->
+        <div class="run-halves">
+          <div class="run-half">
+            <p class="run-label">Boons</p>
+            <p id="upgrades-empty" class="note">None yet. The first boss is on floor 5.</p>
+            <!-- Made by showUpgrades (game/page-show.js) from the class's upgrades list -->
+            <div id="upgrades" class="badges"></div>
+          </div>
+          <div class="run-half">
+            <p class="run-label">Relics <span id="run-relic-count"></span></p>
+            <p id="run-relics-empty" class="note">None yet.</p>
+            <!-- Made by showRunRelics (game/page-show.js) -->
+            <div id="run-relics" class="badges"></div>
+          </div>
+        </div>
       </div>
 
       <div class="card">
