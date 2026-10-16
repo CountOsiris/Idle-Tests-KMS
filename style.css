@@ -3111,3 +3111,167 @@ body.help-always .row-help {
     grid-template-columns: 268px minmax(0, 1fr);
   }
 }
+
+/* ----- A calmer arena -----
+   The first arena was a phone's page made big: large type, big boxes and a paragraph
+   under the fight. Players found it rough on the eyes (October 2026). So on a wide
+   screen the scene keeps only what is watched: the fighters, their bars, the monster's
+   weaknesses and numbers on one small line, your abilities and what is waiting. The
+   plaque is one line. How you stand against the floor (#pressure), the monster's
+   story, the goals and the tower's description are not shown here: a wall still shows
+   as the "Stuck?" button. Everything else is in smaller type, in lighter boxes. */
+@media (min-width: 1000px) {
+  body {
+    font-size: 15px;
+  }
+
+  h2 {
+    font-size: 13px;
+    letter-spacing: 2.5px;
+  }
+
+  /* The scene: only what is watched */
+  body .play .fight-card #pressure,
+  body .play .fight-card #monster-text,
+  body .play .fight-card #goals,
+  body .play .fight-card #tower-note,
+  body:not([data-tab="tower"]) .play .fight-card #pressure,
+  body:not([data-tab="tower"]) .play .fight-card #monster-text,
+  body:not([data-tab="tower"]) .play .fight-card #goals {
+    display: none;
+  }
+
+  body .play .fight-card .stage {
+    --art-height: clamp(90px, 20vh, 230px);
+    min-height: clamp(180px, 36vh, 480px);
+  }
+
+  body .play .fight-card .fighter-name {
+    font-size: 12px;
+    letter-spacing: 2px;
+  }
+
+  body .play .fight-card .bar-text {
+    font-size: 13px;
+  }
+
+  /* The plaque: one slim line */
+  body .play .fight-card .tower-head {
+    gap: 14px;
+    padding: 4px 16px;
+    background: rgba(8, 7, 6, 0.6);
+  }
+
+  body .play .fight-card .tower-head h2 {
+    font-size: 12px;
+  }
+
+  body .play .fight-card #week-note:not([hidden]) {
+    font-size: 11.5px;
+  }
+
+  body .play .fight-card .floor-box {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 11px;
+  }
+
+  body .play .fight-card .floor-box strong {
+    font-size: 22px;
+    line-height: 1;
+  }
+
+  /* The monster's weaknesses and numbers: one quiet line under the fight, no box */
+  body .play .fight-card .weak-line,
+  body .play .fight-card #monster-numbers,
+  body .play .fight-card #boss-rules:not([hidden]),
+  body:not([data-tab="tower"]) .play .fight-card .weak-line,
+  body:not([data-tab="tower"]) .play .fight-card #monster-numbers,
+  body:not([data-tab="tower"]) .play .fight-card #boss-rules:not([hidden]) {
+    grid-column: 1 / -1;
+    grid-row: auto;
+    justify-self: center;
+    width: auto;
+    max-width: 100%;
+    padding: 0;
+    border: none;
+    background: none;
+    font-size: 12.5px;
+    color: var(--faded);
+    text-align: center;
+  }
+
+  body .play .fight-card #monster-numbers strong {
+    font-weight: 500;
+  }
+
+  body .play .fight-card #ability-bar,
+  body .play .fight-card #ready,
+  body:not([data-tab="tower"]) .play .fight-card #ability-bar,
+  body:not([data-tab="tower"]) .play .fight-card #ready {
+    grid-column: 1 / -1;
+    grid-row: auto;
+    justify-self: center;
+  }
+
+  body .play .fight-card #ability-bar button,
+  body .play .fight-card .ready-button {
+    padding: 3px 9px;
+    font-size: 12px;
+  }
+
+  body .play .fight-card {
+    grid-template-columns: minmax(0, 1fr);
+    min-height: 0;
+    padding: 10px 18px 12px;
+  }
+
+  /* The windows, the boons and the log: smaller type in lighter boxes */
+  body .page .card,
+  body .play > .card:not(.fight-card) {
+    padding: 10px 14px;
+    background: rgba(17, 15, 13, 0.7);
+    box-shadow: none;
+  }
+
+  body .page .note,
+  body .play > .card .note {
+    font-size: 13px;
+  }
+
+  body .page .row {
+    padding: 7px 0;
+  }
+
+  body .page .row-title {
+    font-size: 14px;
+  }
+
+  body .page button {
+    padding: 4px 10px;
+    font-size: 13px;
+  }
+
+  body .page .row button {
+    min-width: 84px;
+  }
+
+  body .play > .card:not(.fight-card) {
+    max-height: 220px;
+    font-size: 13.5px;
+  }
+}
+
+@media (min-width: 1000px) {
+  /* (the phone keeps room for a boss's rules, so that the fight does not jump when one
+     appears; the scene has no need of the empty space) */
+  body .play .fight-card .boss-rules {
+    min-height: 0;
+  }
+
+  body .play .fight-card .boss-rules[hidden],
+  body .play .fight-card #tower-note:not(:empty) {
+    display: none;
+  }
+}

@@ -16,7 +16,7 @@ const gameUpdates = [
     version: "20261016c",
     title: "The arena",
     changes: [
-      "On a computer the fight now fills the screen, as in landscape idle games: one wide scene with your hero and the monster standing big in the middle, the tower and floor on a plaque at the top, and how you stand, your abilities and the monster's details along the bottom.",
+      "On a computer the fight now fills the screen, as in landscape idle games: one wide scene with your hero and the monster in the middle, the tower and floor on a slim plaque at the top, and under them only what you watch: the monster's weaknesses and numbers on one line, your abilities and anything waiting. Smaller type and lighter boxes everywhere, and no paragraphs under the fight.",
       "Every tab now opens as a window over the right of the scene. The fight steps aside and keeps going in plain sight. Close the window with its ✕, or press its tab again.",
       "The heroes stay in their column on the left. The boons of the run and the log are under the scene.",
       "Each tower can now have a painted background behind the fight (towers.js says how). Until one is added, the scene takes the tower's colour.",
