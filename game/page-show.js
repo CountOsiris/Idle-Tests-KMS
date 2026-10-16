@@ -1043,6 +1043,7 @@ function updateScreen() {
   let scene = document.querySelector(".fight-card");
   scene.style.setProperty("--sky", towers[tower].sky);
   scene.style.setProperty("--scene-art", towers[tower].background === undefined ? "none" : "url(\"" + towers[tower].background + "\")");
+  scene.classList.toggle("has-art", towers[tower].background !== undefined);
   if (isAway()) {
     let note = "Away from home: monsters have +" + percent(awayTowerHealth) + " health and +" + percent(awayTowerAttack) + " attack, and you earn +" + percent(awayTowerExperience) + " experience.";
     if (towerRule() !== null) {

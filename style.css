@@ -3487,3 +3487,27 @@ body.help-always .row-help {
     right: 0;
   }
 }
+
+/* ----- A tower's painted background -----
+   The pictures are bright, so they are dimmed, and darkest along the ground where the
+   names, bars and numbers are, and the words get a shadow to stand out. */
+@media (min-width: 1000px) {
+  body .play .fight-card.has-art {
+    background:
+      linear-gradient(180deg, rgba(6, 5, 4, 0.45) 0%, rgba(6, 5, 4, 0.25) 35%, rgba(6, 5, 4, 0.55) 70%, rgba(6, 5, 4, 0.88) 100%),
+      radial-gradient(ellipse 80% 70% at 50% 45%, transparent 40%, rgba(0, 0, 0, 0.55) 100%),
+      var(--scene-art) center / cover no-repeat,
+      #0c0a09;
+  }
+
+  body .play .fight-card.has-art .tower-head {
+    background: rgba(8, 7, 6, 0.85);
+  }
+
+  body .play .fight-card.has-art .fighter-name,
+  body .play .fight-card.has-art .bar-text,
+  body .play .fight-card.has-art .weak-line,
+  body .play .fight-card.has-art #monster-numbers {
+    text-shadow: 0 1px 3px #000, 0 0 8px rgba(0, 0, 0, 0.9);
+  }
+}

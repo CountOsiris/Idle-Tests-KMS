@@ -22,7 +22,7 @@
 //
 // A BACKGROUND: on a wide screen the fight fills the screen. To paint a tower's scene
 // behind it, put a wide picture (about 1920 x 1080) in art/backgrounds/ and add
-//   background: "art/backgrounds/orc-stronghold.png"
+//   background: "art/backgrounds/orc-stronghold.jpg"
 // under the tower's  sky:  line. Without one, the scene is the tower's sky colour.
 //
 // ----- Monsters -----
@@ -113,6 +113,7 @@ const towers = {
     name: "Orc Stronghold",
     ward: 2,          // shamans' charms: spells lose twice what a normal armor would take
     sky: "#4d2e1a",
+    background: "art/backgrounds/orc-stronghold.jpg",
     icon: "👹",
     text: "Big, loud and lightly armored. Plenty of flesh to steal life from.",
     monsters: [
@@ -144,6 +145,7 @@ const towers = {
     name: "Raider's Pass",
     ward: 2.5,
     sky: "#3a3f4d",
+    background: "art/backgrounds/raiders-pass.jpg",
     icon: "🤺",
     text: "Reckless raiders who hit hard and fall quickly. Every blow they land comes straight back.",
     monsters: [
@@ -176,6 +178,7 @@ const towers = {
     lunge: true,      // its beasts leap out: they hit first, unless you fight from range
     ward: 3,          // old forest magic: the hardest place for a caster
     sky: "#1d4028",
+    background: "art/backgrounds/wildwood.jpg",
     icon: "🐗",
     text: "Slow, heavy beasts. They take a long time to reach an archer.",
     monsters: [
@@ -207,6 +210,7 @@ const towers = {
     name: "The Undercity",
     ward: 2,
     sky: "#2e2244",
+    background: "art/backgrounds/undercity.jpg",
     icon: "🐀",
     text: "Thugs and vermin in the dark. Frail enough to fall to one well-placed blade.",
     monsters: [
@@ -237,6 +241,7 @@ const towers = {
     awayRule: { name: "Grave chill", text: "you do not heal after a kill", bonus: { noKillHeal: 1 } },
     name: "Iron Crypt",
     sky: "#1c3042",
+    background: "art/backgrounds/iron-crypt.jpg",
     icon: "💀",
     text: "The armored dead. Steel means nothing to a spell.",
     monsters: [
@@ -267,6 +272,7 @@ const towers = {
     awayRule: { name: "Thin air", text: "abilities take half as long again to be ready", bonus: { quickHands: -0.5 } },
     name: "Storm Peak",
     sky: "#1f3d47",
+    background: "art/backgrounds/storm-peak.jpg",
     icon: "🐉",
     text: "A bit of everything: armor, venom and fury. The right element answers each of them.",
     monsters: [
@@ -297,6 +303,7 @@ const towers = {
     awayRule: { name: "The restless dead", text: "you lose 2% of your health every turn of a fight", bonus: { drain: 0.02 } },
     name: "Haunted Abbey",
     sky: "#3b2540",
+    background: "art/backgrounds/haunted-abbey.jpg",
     icon: "👻",
     text: "The restless dead. They wear you down slowly, which only works on those who cannot heal.",
     monsters: [
@@ -327,6 +334,7 @@ const towers = {
     awayRule: { name: "Hunted", text: "something has already drawn blood: you begin every fight missing a fifth of your health", bonus: { hunted: 0.2 } },
     name: "The Wild Reaches",
     sky: "#3d3520",
+    background: "art/backgrounds/wild-reaches.jpg",
     icon: "🦁",
     text: "Open country full of things with teeth. Nothing here wears armor worth the name, and nothing here is afraid of you.",
     monsters: [
