@@ -3489,19 +3489,107 @@ body.help-always .row-help {
 }
 
 /* ----- A tower's painted background -----
-   The pictures are bright, so they are dimmed, and darkest along the ground where the
-   names, bars and numbers are, and the words get a shadow to stand out. */
+   The scene takes the picture's own shape (16:9, as long as it fits on the screen), so
+   the whole picture shows and is never enlarged to fill a strip. The fighters stand on
+   its floor near the bottom, with their names and health bars over their heads, and the
+   monster's weaknesses and numbers sit under the plaque at the top. The picture is
+   dimmed a little, and the words get a shadow to stand out. */
 @media (min-width: 1000px) {
   body .play .fight-card.has-art {
+    display: flex;
+    flex-direction: column;
+    aspect-ratio: 16 / 9;
+    max-height: calc(100vh - 150px);
     background:
-      linear-gradient(180deg, rgba(6, 5, 4, 0.45) 0%, rgba(6, 5, 4, 0.25) 35%, rgba(6, 5, 4, 0.55) 70%, rgba(6, 5, 4, 0.88) 100%),
-      radial-gradient(ellipse 80% 70% at 50% 45%, transparent 40%, rgba(0, 0, 0, 0.55) 100%),
-      var(--scene-art) center / cover no-repeat,
+      linear-gradient(180deg, rgba(6, 5, 4, 0.5) 0%, rgba(6, 5, 4, 0.2) 30%, rgba(6, 5, 4, 0.15) 70%, rgba(6, 5, 4, 0.45) 100%),
+      radial-gradient(ellipse 85% 75% at 50% 50%, transparent 50%, rgba(0, 0, 0, 0.5) 100%),
+      var(--scene-art) center bottom / cover no-repeat,
       #0c0a09;
   }
 
   body .play .fight-card.has-art .tower-head {
+    align-self: center;
+    order: 0;
     background: rgba(8, 7, 6, 0.85);
+  }
+
+  body .play .fight-card.has-art .weak-line {
+    align-self: center;
+    order: 1;
+    margin-top: 2px;
+  }
+
+  body .play .fight-card.has-art #monster-numbers {
+    align-self: center;
+    order: 2;
+  }
+
+  body .play .fight-card.has-art #boss-rules {
+    align-self: center;
+    order: 3;
+  }
+
+  /* The fighters fill the rest, standing on the floor */
+  body .play .fight-card.has-art .stage {
+    --art-height: clamp(100px, 22vh, 240px);
+    flex: 1;
+    order: 4;
+    min-height: 0;
+    padding-bottom: 2.5%;
+  }
+
+  body .play .fight-card.has-art #ability-bar,
+  body .play .fight-card.has-art #ready {
+    align-self: center;
+    order: 5;
+  }
+
+  /* Over each fighter's head: the name, then the health bar and its number */
+  .fight-card.has-art .fighter {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+  }
+
+  .fight-card.has-art .fighter-name {
+    order: 1;
+    min-height: 0;
+    margin: 0 0 3px;
+  }
+
+  .fight-card.has-art .fighter > .bar,
+  .fight-card.has-art #monster-stats {
+    order: 2;
+    width: 100%;
+    max-width: 230px;
+    margin: 0 auto;
+  }
+
+  .fight-card.has-art .fighter > .bar-text {
+    order: 3;
+    margin: 2px 0 6px;
+  }
+
+  .fight-card.has-art #monster-stats .bar-text {
+    margin: 2px 0 6px;
+  }
+
+  /* (each fighter's box is as tall as its picture, so a short monster's bar sits just
+     over its head instead of high above it) */
+  .fight-card.has-art .mover,
+  .fight-card.has-art .stage.with-art .mover {
+    order: 4;
+    height: auto;
+  }
+
+  .fight-card.has-art .shadow {
+    order: 5;
+  }
+
+  /* The monster that just fell fades where it stood: on the floor, not over its name */
+  .fight-card.has-art .ghost {
+    top: auto;
+    bottom: 17px;
   }
 
   body .play .fight-card.has-art .fighter-name,
