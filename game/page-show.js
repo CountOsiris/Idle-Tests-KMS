@@ -6,13 +6,71 @@
 // The page has tabs: Character, Skills, Town and so on. Only one is open at a time.
 // style.css shows the page whose name matches body's data-tab.
 // THE LAYOUT (style.css, "The layout"): the fight is always at the top of the screen in
-// a short form, the open tab's page is under it, and the tabs are a bar along the
-// bottom, as on a phone. "tower" is the Fight tab: the whole fight, the boons and the log.
+// a short form, the open tab's page is under it, and on a phone the groups of tabs are a
+// bar along the bottom (tabGroups). "tower" is the Fight tab: the whole fight, the boons
+// and the log. A wide screen has no Fight tab: the fight stands beside every page.
+// Anything waiting to be done is also a button in the fight (waitingThings).
+// The width from which the fight and a page stand side by side (the same as in style.css)
+const wideScreen = "(min-width: 1000px)";
+
+// ON A PHONE the eleven tabs did not fit on the bar, and the last five were off its edge.
+// So a phone's bar holds these groups instead, and the tabs of the open group are a row
+// of small buttons at the top of the page. A wide screen shows every tab, as before.
+// A group shows once any of its tabs has opened, and has a dot if any of its tabs has.
+// TO ADD A TAB: put it in tabNames and in one group here.
+const tabGroups = [
+  { name: "Fight", icon: "⚔️", tabs: ["tower"] },
+  { name: "Hero", icon: "🧍", tabs: ["character", "inventory", "skills"] },
+  { name: "Town", icon: "🏘️", tabs: ["town", "travel"] },
+  { name: "Grow", icon: "⭐", tabs: ["milestones", "ascension", "legend"] },
+  { name: "Friends", icon: "👥", tabs: ["friends"] },
+  { name: "Settings", icon: "⚙️", tabs: ["save"] }
+];
+
+// The tab each group opened last, so that coming back to a group finds the same page
+let groupTabs = {};
+
+function groupOf(name) {
+  return tabGroups.find(function (group) { return group.tabs.includes(name); });
+}
+
+// Pressing a group: a tab of it with a dot, or else the one it showed last
+function showGroup(group) {
+  let open = group.tabs.filter(tabIsOpen);
+  let waiting = open.find(function (name) { return document.getElementById("tab-" + name).classList.contains("alert"); });
+  showTab(waiting || groupTabs[group.name] || open[0]);
+}
+
+// Which groups show, which is open and which have a dot, and which tabs are in the row
+function showGroups() {
+  let current = groupOf(openTab);
+  groupTabs[current.name] = openTab;
+
+  for (let group of tabGroups) {
+    let button = document.getElementById("group-" + group.name);
+    let open = group.tabs.filter(tabIsOpen);
+    button.hidden = open.length === 0;
+    button.classList.toggle("open", group === current);
+    button.classList.toggle("alert", open.some(function (name) { return document.getElementById("tab-" + name).classList.contains("alert"); }));
+  }
+
+  // (a group with one tab open has no row: its button says it all)
+  let rowShown = current.tabs.filter(tabIsOpen).length > 1;
+  for (let name of tabNames) {
+    document.getElementById("tab-" + name).classList.toggle("in-group", rowShown && current.tabs.includes(name));
+  }
+}
+
 const tabNames = ["tower", "character", "inventory", "skills", "town", "travel", "milestones", "ascension", "legend", "friends", "save"];
 
 function showTab(name) {
   if (!tabIsOpen(name)) {
     name = "tower";
+  }
+  // A wide screen has no Fight tab: the fight is always on show in the left column,
+  // with its boons and log under it (style.css), so it opens the Hero page beside it
+  if (name === "tower" && window.matchMedia(wideScreen).matches) {
+    name = "character";
   }
   document.body.dataset.tab = name;
 
@@ -28,6 +86,7 @@ function showTab(name) {
   // The tab is remembered, so that reloading the page does not throw you back to the first one
   openTab = name;
   saveSettings();
+  showGroups();
 
   // (a tip's "Show me" button and the outline on its tab depend on the tab on screen)
   showTip();
@@ -43,6 +102,7 @@ function showTab(name) {
 // Puts a small dot on a tab when something there needs the player's attention
 function markTab(name, needsAttention) {
   document.getElementById("tab-" + name).classList.toggle("alert", needsAttention);
+  showGroups();
 }
 
 // Adds a line to the top of the combat log
@@ -654,28 +714,7 @@ function nextGoals() {
     goals.push("Floor " + bestFloor + " is holding. Challenge " + towers[idea.tower].name + ": floor " + idea.trophy.floor + " there wins " + idea.trophy.name + " (Towers).");
   }
 
-  // Things waiting to be used
-  if (skillPointsLeft() > 0) {
-    goals.push("You have " + skillPointsLeft() + " skill points to spend (Skills).");
-  }
-  if (hasEmptyAbilitySlot()) {
-    goals.push("You have an empty ability slot (Skills).");
-  }
-  if (hasPerkToPick()) {
-    goals.push("You have a milestone perk to pick (Milestones).");
-  }
-  if (canBecomeLegend()) {
-    goals.push("You can become a legend (Legend).");
-  }
-  if (canAscend()) {
-    goals.push("You can ascend (Ascension).");
-  }
-  if (canBuyFameUpgrade()) {
-    goals.push("You have enough fame for a fame upgrade (Ascension).");
-  }
-  if (canAffordForge()) {
-    goals.push("The blacksmith can improve your equipment (Town).");
-  }
+  // (things waiting to be used are buttons, not lines: see waitingThings)
 
   // Things to aim for
   if (!canAscend()) {
@@ -699,6 +738,57 @@ function nextGoals() {
   return goals.slice(0, 3);
 }
 
+// THINGS WAITING TO BE DONE. Each one that is true puts a dot on its tab, and a button
+// in the fight that opens that tab, so nothing has to be hunted for tab by tab.
+// TO ADD ONE: give it a line. "tab" is the tab it is done on, "words" what the button
+// says, and "when" is true while it is waiting.
+// (Friends sets friendsWaiting itself, in friends.js, after each answer from the server.)
+let friendsWaiting = false;
+
+const waitingThings = [
+  { tab: "travel", words: function () { return "Stuck? Challenge a tower"; }, when: isStuck },
+  { tab: "skills", words: function () { return skillPointsLeft() + (skillPointsLeft() === 1 ? " skill point" : " skill points"); }, when: function () { return skillPointsLeft() > 0; } },
+  { tab: "skills", words: function () { return "Empty ability slot"; }, when: hasEmptyAbilitySlot },
+  { tab: "milestones", words: function () { return "Pick a perk"; }, when: hasPerkToPick },
+  { tab: "legend", words: function () { return "Become a legend"; }, when: canBecomeLegend },
+  { tab: "legend", words: function () { return "Legend unlock"; }, when: canBuyLegendUnlock },
+  { tab: "ascension", words: function () { return "Ascend"; }, when: canAscend },
+  { tab: "ascension", words: function () { return "Fame upgrade"; }, when: canBuyFameUpgrade },
+  { tab: "town", words: function () { return "Blacksmith"; }, when: canAffordForge },
+  { tab: "friends", words: function () { return "Friends"; }, when: function () { return friendsWaiting; } }
+];
+
+// The buttons in the fight, and the dots on the tabs
+function showWaiting() {
+  let bar = document.getElementById("ready");
+  let waiting = waitingThings.filter(function (thing) { return tabIsOpen(thing.tab) && thing.when(); });
+
+  for (let name of tabNames) {
+    markTab(name, waiting.some(function (thing) { return thing.tab === name; }));
+  }
+
+  // (not redrawn when nothing has changed: a button being pressed must not vanish under the finger)
+  let shown = waiting.filter(function (thing) { return thing.tab !== openTab; });
+  let words = shown.map(function (thing) { return thing.tab + ":" + thing.words(); }).join("|");
+  if (bar.dataset.words === words) {
+    return;
+  }
+  bar.dataset.words = words;
+  bar.replaceChildren();
+  for (let thing of shown) {
+    let button = document.createElement("button");
+    button.className = "ready-button";
+    button.dataset.icon = document.getElementById("tab-" + thing.tab).dataset.icon;
+    button.textContent = thing.words();
+    button.onclick = function () {
+      showTab(thing.tab);
+      showWaiting();
+    };
+    bar.append(button);
+  }
+  bar.hidden = shown.length === 0;
+}
+
 function showGoals() {
   let box = document.getElementById("goals");
   box.innerHTML = "";
@@ -709,13 +799,7 @@ function showGoals() {
     box.appendChild(row);
   }
 
-  // The same things put a dot on their tab
-  markTab("town", canAffordForge());
-  markTab("travel", isStuck());
-  markTab("skills", skillPointsLeft() > 0 || hasEmptyAbilitySlot());
-  markTab("milestones", hasPerkToPick());
-  markTab("ascension", canAscend() || canBuyFameUpgrade());
-  markTab("legend", canBecomeLegend() || canBuyLegendUnlock());
+  showWaiting();
 }
 
 // HOW THE CLASS STANDS AGAINST THE FLOOR: two bars under the fight.

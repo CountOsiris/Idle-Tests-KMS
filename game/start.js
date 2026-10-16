@@ -163,6 +163,7 @@ window.addEventListener("storage", function (event) {
 
 // ----- Start the game -----
 loadGame();
+buildTabGroups();
 buildClassButtons();
 buildRoomPips();
 buildTownList();

@@ -46,6 +46,19 @@ function fillRow(name, title, note, buttonText, buttonOff) {
 }
 
 // Runs once, when the game starts
+// The bar of tab groups for a phone (tabGroups in game/page-show.js)
+function buildTabGroups() {
+  let bar = document.getElementById("groups");
+  for (let group of tabGroups) {
+    let button = document.createElement("button");
+    button.id = "group-" + group.name;
+    button.dataset.icon = group.icon;
+    button.textContent = group.name;
+    button.onclick = function () { showGroup(group); };
+    bar.append(button);
+  }
+}
+
 function buildClassButtons() {
   let box = document.getElementById("class-buttons");
 

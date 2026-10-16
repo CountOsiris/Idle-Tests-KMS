@@ -238,6 +238,7 @@ function checkTabUnlocks() {
   for (let name of tabNames) {
     document.getElementById("tab-" + name).hidden = !tabIsOpen(name);
   }
+  showGroups();
 }
 
 // ----- Settings -----

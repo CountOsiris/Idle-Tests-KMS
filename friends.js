@@ -391,8 +391,8 @@ function showFriends() {
   document.getElementById("chat-status").textContent = partner === undefined ? "" : seenText(partner.seen) + ".";
 
   // A dot on the tab for an unread message or a request to answer
-  let waiting = friends.some(function (friend) { return friend.unread > 0 || friend.state === "received"; });
-  markTab("friends", off === "" && waiting);
+  friendsWaiting = off === "" && friends.some(function (friend) { return friend.unread > 0 || friend.state === "received"; });
+  showWaiting();
 }
 
 // ----- Start-up -----

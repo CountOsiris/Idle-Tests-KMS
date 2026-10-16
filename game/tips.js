@@ -296,6 +296,10 @@ function showTip() {
   for (let name of tabNames) {
     document.getElementById("tab-" + name).classList.toggle("fresh", !hidden && shownTip.tab === name && tipCanGo(shownTip));
   }
+  // (and on a phone, the group the tab is in: the tab itself may be out of sight)
+  for (let group of tabGroups) {
+    document.getElementById("group-" + group.name).classList.toggle("fresh", !hidden && group.tabs.includes(shownTip.tab) && tipCanGo(shownTip));
+  }
   if (hidden) {
     return;
   }

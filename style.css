@@ -1678,7 +1678,8 @@ textarea {
      - the fight stays at the top of the screen in a short form (the two fighters and
        their health), whatever tab is open;
      - under it is the open tab's page, and only that;
-     - the tabs are a bar fixed to the bottom, an icon and a word each.
+     - the tabs are a bar fixed to the bottom, an icon and a word each (on a phone,
+       groups of tabs: see "A phone: groups of tabs along the bottom", further down).
    The Fight tab opens the whole fight: what the monster is, how you stand against the
    floor, your goals, the boons of the run and the log.
    (Until October 2026 a wide screen had two columns, the fight on the left and the tabs
@@ -2166,7 +2167,8 @@ body.tip-showing {
 
 /* The tab a tip is about. Gold, and still: the ember dot (.alert) means "something to
    spend here", and this means "this is what the tip is talking about". */
-.tabs button.fresh {
+.tabs button.fresh,
+.groups button.fresh {
   outline: 1px solid var(--gold-bright);
   outline-offset: -4px;
   color: var(--gold-bright);
@@ -2313,5 +2315,277 @@ body.tip-showing {
 @media (max-width: 600px) {
   .friend-row {
     flex-wrap: wrap;
+  }
+}
+
+/* ----- Waiting to be done: buttons in the fight (showWaiting in game/page-show.js) -----
+   One for each thing that has a dot on its tab, so it is one press away from the fight. */
+.ready-bar {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 6px;
+  margin-top: 8px;
+}
+
+.ready-bar[hidden] {
+  display: none;
+}
+
+.ready-button {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 10px;
+  font-size: 13px;
+  border-color: var(--ember);
+  color: var(--gold-bright);
+  background: #1d140d;
+}
+
+.ready-button::before {
+  content: attr(data-icon);
+  font-size: 15px;
+}
+
+.ready-button:hover {
+  border-color: var(--gold);
+  background: #2a1e12;
+}
+
+/* ----- A wide screen: the fight is never a screen of its own -----
+   Players flipped between the Fight tab, which hid every page, and the pages, which
+   showed only a short fight. So from 1000 pixels wide there is no Fight tab (showTab
+   opens the Hero page in its place): the left column always holds the fight, the twist
+   of the week, a boss's rules, the boons of the run and the log, and scrolls on its own. */
+@media (min-width: 1000px) {
+  .tabs button.tab-tower {
+    display: none;
+  }
+
+  body:not([data-tab="tower"]) .play {
+    max-height: calc(100vh - 66px);
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: var(--gold-dark) transparent;
+  }
+
+  body:not([data-tab="tower"]) .play > .card:not(.fight-card):not(#away-report),
+  body:not([data-tab="tower"]) .fight-card #week-note:not([hidden]),
+  body:not([data-tab="tower"]) .fight-card #boss-rules:not([hidden]),
+  body:not([data-tab="tower"]) .fight-card #monster-numbers {
+    display: block;
+  }
+
+  body:not([data-tab="tower"]) .play > .card:not(.fight-card) {
+    margin-top: 12px;
+  }
+}
+
+/* ----- A phone: groups of tabs along the bottom -----
+   Eleven tabs did not fit on a phone's bar: five were off its edge. So below 1000 pixels
+   the bar holds the groups (tabGroups in game/page-show.js), and the tabs of the open
+   group are a row of small buttons at the top of the page. A group of one has no row. */
+.groups {
+  display: none;
+}
+
+@media (max-width: 999px) {
+  .groups {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 8;
+    display: flex;
+    justify-content: center;
+    padding: 0 4px;
+    background: #0d0b09;
+    border-top: 1px solid var(--gold-dark);
+  }
+
+  .groups button {
+    position: relative;
+    flex: 1 1 0;
+    max-width: 96px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+    min-width: 0;
+    margin: 0;
+    padding: 8px 2px 9px;
+    border: none;
+    border-top: 2px solid transparent;
+    background: none;
+    font-family: var(--title-font);
+    font-size: 10.5px;
+    letter-spacing: 0.4px;
+    text-transform: uppercase;
+    white-space: nowrap;
+    color: var(--faded);
+  }
+
+  .groups button[hidden] {
+    display: none;
+  }
+
+  .groups button::before {
+    content: attr(data-icon);
+    font-size: 20px;
+    line-height: 22px;
+    filter: saturate(0.6);
+  }
+
+  .groups button.open {
+    border-top-color: var(--gold);
+    background: rgba(200, 160, 80, 0.07);
+    color: var(--gold-bright);
+  }
+
+  .groups button.open::before {
+    filter: none;
+  }
+
+  .groups button.alert::after {
+    content: "";
+    position: absolute;
+    top: 6px;
+    right: calc(50% - 20px);
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--ember);
+    box-shadow: 0 0 6px var(--ember);
+  }
+
+  /* The tabs of the open group: a row at the top of the page */
+  .tabs {
+    position: static;
+    z-index: auto;
+    justify-content: flex-start;
+    gap: 6px;
+    margin: 0 0 10px;
+    padding: 0;
+    background: none;
+    border: none;
+    overflow: visible;
+  }
+
+  .tabs button,
+  .tabs button.tab-tower {
+    display: none;
+  }
+
+  .tabs button.in-group:not([hidden]) {
+    display: flex;
+    flex: 1 1 0;
+    flex-direction: row;
+    justify-content: center;
+    gap: 6px;
+    min-width: 0;
+    padding: 8px 6px;
+    border: 1px solid var(--card-edge);
+    font-size: 12px;
+  }
+
+  .tabs button.in-group::before {
+    font-size: 15px;
+    line-height: 16px;
+  }
+
+  .tabs button.in-group.open {
+    border-color: var(--gold);
+    color: var(--gold-bright);
+  }
+
+  .tabs button.in-group.alert::after {
+    top: 4px;
+    right: 6px;
+  }
+}
+
+/* ----- A phone: a header of two short lines -----
+   The name, the links and the four numbers took a quarter of a phone's screen before
+   the fight began. They fit in two lines: the name with who you are, then the numbers. */
+@media (max-width: 600px) {
+  .top {
+    gap: 6px;
+    margin-bottom: 6px;
+    padding-bottom: 6px;
+  }
+
+  .brand {
+    flex-wrap: nowrap;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .title {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    column-gap: 8px;
+    min-width: 0;
+  }
+
+  .title h1 {
+    flex-basis: 100%;
+    font-size: 15px;
+    letter-spacing: 2px;
+    line-height: 20px;
+  }
+
+  .updates-link {
+    font-size: 12px;
+  }
+
+  .who {
+    gap: 6px;
+    min-width: 0;
+  }
+
+  .who-icon {
+    font-size: 20px;
+  }
+
+  .who-text {
+    min-width: 0;
+    font-size: 14px;
+  }
+
+  .tile {
+    padding: 0 4px;
+  }
+
+  .tile span {
+    font-size: 8.5px;
+    letter-spacing: 0.5px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .tile strong {
+    font-size: 15px;
+  }
+}
+
+/* On a phone the heroes are picked on the Fight tab only: over any other page the strip
+   of heroes would push the page another line down the screen */
+@media (max-width: 999px) {
+  body:not([data-tab="tower"]) .hero-strip {
+    display: none;
+  }
+
+  .who-text p {
+    white-space: nowrap;
+  }
+}
+
+/* The narrowest phones: the class's picture beside its name gives way, or the level is cut */
+@media (max-width: 400px) {
+  .who-icon {
+    display: none;
   }
 }
