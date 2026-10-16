@@ -159,7 +159,7 @@ async function addFriend() {
   if (result !== null) {
     let message = result.state === "friends"
       ? "You are now friends with " + box.value.trim() + "."
-      : "Asked " + box.value.trim() + ".";
+      : "Invited " + box.value.trim() + ". You can chat once they accept.";
     box.value = "";
     document.getElementById("friends-message").textContent = message;
     askFriends();
@@ -314,13 +314,13 @@ function friendRow(friend) {
   buttons.className = "friend-buttons";
 
   if (friend.state === "received") {
-    note.textContent = "Wants to be your friend.";
+    note.textContent = "Invited you. Accept to chat.";
     buttons.append(
       friendButton("Accept", false, function () { acceptFriend(friend.name); }),
       friendButton("Decline", true, function () { removeFriend(friend.name, friend.state); }));
   } else if (friend.state === "sent") {
-    note.textContent = "Asked. Waiting for them to say yes.";
-    buttons.append(friendButton("Cancel", true, function () { removeFriend(friend.name, friend.state); }));
+    note.textContent = "Invited. Waiting for them to accept.";
+    buttons.append(friendButton("Cancel invite", true, function () { removeFriend(friend.name, friend.state); }));
   } else {
     let playing = playingText(friend);
     note.textContent = seenText(friend.seen) + (playing === "" ? "." : ". " + playing + ".");
@@ -375,7 +375,7 @@ function showFriends() {
   if (friends.length === 0) {
     let empty = document.createElement("p");
     empty.className = "note";
-    empty.textContent = "No friends yet. Ask a friend for their player name, and add them above.";
+    empty.textContent = "No friends yet. Ask a friend for their player name, and invite them above.";
     list.append(empty);
   }
 

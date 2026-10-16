@@ -606,7 +606,7 @@
           <p id="friends-off" class="note"></p>
 
           <div id="friends-unnamed" hidden>
-            <p class="note">Pick a player name first. It is what friends type to add you, and the name they see.</p>
+            <p class="note">Pick a player name first. It is what friends type to invite you, and the name they see.</p>
             <form class="name-form" onsubmit="savePlayerName('friends-name-box'); return false;">
               <input type="text" id="friends-name-box" maxlength="16" placeholder="Player name" autocomplete="off">
               <button type="submit">Save name</button>
@@ -614,10 +614,10 @@
           </div>
 
           <div id="friends-on" hidden>
-            <p class="note">You are <strong id="friends-my-name"></strong>. Friends add you by that name, and you add them by theirs.</p>
+            <p class="note">You are <strong id="friends-my-name"></strong>. To chat with a friend, invite them by their player name. Once they accept, you can chat.</p>
             <form class="name-form" onsubmit="addFriend(); return false;">
               <input type="text" id="friend-box" maxlength="16" placeholder="Their player name" autocomplete="off">
-              <button type="submit">Add friend</button>
+              <button type="submit">Invite</button>
             </form>
             <div id="friends-list"></div>
           </div>
@@ -723,7 +723,7 @@
             <div class="row">
               <div class="row-text">
                 <p class="row-title">Player name</p>
-                <p class="note">What friends type to add you on the Friends tab, and the name they see. Your username stays private.</p>
+                <p class="note">What friends type to invite you on the Friends tab, and the name they see. Your username stays private.</p>
               </div>
             </div>
             <form class="name-form" onsubmit="savePlayerName('player-name-box'); return false;">

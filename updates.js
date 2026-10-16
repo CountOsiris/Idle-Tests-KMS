@@ -16,10 +16,10 @@ const gameUpdates = [
     version: "20261016a",
     title: "Friends and chat",
     changes: [
-      "A new Friends tab. Add other players by their player name, see who is online and what they are playing, and chat with them while you climb.",
-      "Friends need an account (Settings, Account). Pick a player name there or on the Friends tab. It is the name friends type to add you and the name they see. Your username stays private.",
-      "A friend request waits until the other player accepts it. Only friends can send you messages, and you can remove a friend at any time.",
-      "A dot on the Friends tab means a new message or a request to answer. Messages are kept for 30 days."
+      "A new Friends tab. Invite other players by their player name, see who is online and what they are playing, and chat with them while you climb.",
+      "Friends need an account (Settings, Account). Pick a player name there or on the Friends tab. It is the name friends type to invite you and the name they see. Your username stays private.",
+      "You can only chat once an invite is accepted. Until then nobody can message you, and you can remove a friend at any time.",
+      "A dot on the Friends tab means a new message or an invite to answer. Messages are kept for 30 days."
     ]
   },
   {
