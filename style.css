@@ -2071,13 +2071,62 @@ body:not([data-tab="tower"]) .fight-card .ghost {
   gap: 6px;
   overflow-x: auto;
   padding-bottom: 2px;
+  scrollbar-width: thin;
+  scrollbar-color: var(--gold-dark) transparent;
 }
 
-.hero-buttons button {
+/* A hero's tile: the picture on the left, the name and where it stands beside it */
+.hero-tile {
   flex: 0 0 auto;
-  padding: 5px 10px;
-  font-size: 13px;
+  display: grid;
+  grid-template-columns: 34px auto;
+  column-gap: 8px;
+  align-items: center;
+  padding: 4px 10px 4px 4px;
+  text-align: left;
   white-space: nowrap;
+}
+
+.hero-face {
+  grid-row: 1 / 3;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  overflow: hidden;
+  background: radial-gradient(circle at 50% 40%, #2a2017, var(--inset));
+  border: 1px solid var(--card-edge);
+  font-size: 20px;
+}
+
+.hero-face img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.hero-name {
+  font-size: 13px;
+  color: var(--text);
+}
+
+.hero-note {
+  font-size: 11px;
+  color: var(--faded);
+}
+
+.hero-tile.chosen {
+  border-color: var(--gold);
+  background: #241c12;
+}
+
+.hero-tile.chosen .hero-name {
+  color: var(--gold-bright);
+}
+
+.hero-tile.chosen .hero-face {
+  border-color: var(--gold-dark);
 }
 
 /* The class climbing beside you */
@@ -2587,5 +2636,97 @@ body.tip-showing {
 @media (max-width: 400px) {
   .who-icon {
     display: none;
+  }
+}
+
+/* ----- A wide screen: the heroes in a column of their own -----
+   The game used to stand in the middle of a wide window with empty space either side,
+   while the heroes were a squashed row that scrolled sideways over the fight. So from
+   1000 pixels wide the heroes are big square tiles in a column on the left, beside the
+   fight, that stays on screen and scrolls by itself. */
+@media (min-width: 1000px) {
+  .top,
+  .layout {
+    max-width: 1460px;
+  }
+
+  body:not([data-tab="tower"]) .layout {
+    grid-template-columns: 132px minmax(320px, 430px) minmax(0, 1fr);
+  }
+
+  .hero-strip {
+    grid-column: 1;
+    grid-row: 2;
+    position: sticky;
+    top: 56px;
+    max-height: calc(100vh - 66px);
+    overflow-y: auto;
+    margin: 0;
+    scrollbar-width: thin;
+    scrollbar-color: var(--gold-dark) transparent;
+  }
+
+  .play {
+    grid-column: 2;
+  }
+
+  .page {
+    grid-column: 3;
+  }
+
+  .hero-buttons {
+    flex-direction: column;
+    gap: 8px;
+    overflow: visible;
+  }
+
+  .hero-tile {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 3px;
+    width: 100%;
+    padding: 8px 6px 7px;
+    text-align: center;
+  }
+
+  .hero-face {
+    width: 100%;
+    height: 96px;
+    font-size: 48px;
+  }
+
+  .hero-name {
+    font-family: var(--title-font);
+    font-size: 12px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+
+  .companion-line {
+    font-size: 12px;
+  }
+
+  .companion-line select {
+    display: block;
+    width: 100%;
+    margin: 4px 0;
+  }
+}
+
+/* A very wide screen: two heroes to a row, so all of them show at once, and a wider fight */
+@media (min-width: 1600px) {
+  .top,
+  .layout {
+    max-width: 1860px;
+  }
+
+  body:not([data-tab="tower"]) .layout {
+    grid-template-columns: 268px minmax(360px, 500px) minmax(0, 1fr);
+  }
+
+  .hero-buttons {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
   }
 }

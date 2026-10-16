@@ -62,10 +62,30 @@ function buildTabGroups() {
 function buildClassButtons() {
   let box = document.getElementById("class-buttons");
 
+  // A tile for each class: its picture (or its icon, if it has none), its name, and a
+  // line for where it stands, which showHeroStrip (game/companion.js) keeps up to date
   for (let className in classes) {
     let button = document.createElement("button");
     button.id = "class-" + className;
-    button.textContent = classes[className].icon + " " + classes[className].name;
+    button.className = "hero-tile";
+
+    let face = document.createElement("span");
+    face.className = "hero-face";
+    if (classes[className].art !== undefined) {
+      let picture = document.createElement("img");
+      picture.src = classes[className].art;
+      picture.alt = "";
+      face.append(picture);
+    } else {
+      face.textContent = classes[className].icon;
+    }
+    let name = document.createElement("span");
+    name.className = "hero-name";
+    name.textContent = classes[className].name;
+    let note = document.createElement("span");
+    note.className = "hero-note";
+    button.append(face, name, note);
+
     button.onclick = function () {
       switchClass(className);
     };

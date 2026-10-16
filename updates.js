@@ -19,7 +19,8 @@ const gameUpdates = [
       "Anything waiting for you is now a button right under the fight: skill points, a perk to pick, the blacksmith, ascending, a fame upgrade, a wall to get past, a message from a friend. One press takes you there.",
       "On a computer the fight never goes away. It stands on the left with its boons and log, and every page opens beside it. The Fight tab is gone, as it is no longer needed.",
       "On a phone the bar along the bottom holds six groups that all fit: Fight, Hero, Town, Grow, Friends and Settings. The tabs of a group are buttons at the top of its page, and a group remembers the one you used last.",
-      "On a phone the header takes two short lines, and the heroes to pick from show on the Fight tab only, so pages start much higher up the screen."
+      "On a phone the header takes two short lines, and the heroes to pick from show on the Fight tab only, so pages start much higher up the screen.",
+      "Every hero now has a tile with its picture, its floor and its level. On a computer they stand in a column of big squares on the left, beside the fight, using the space that was empty. On a very wide screen they go two to a row, so all of them show at once."
     ]
   },
   {

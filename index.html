@@ -132,22 +132,24 @@
 
     <!-- The tower and the fight. The fight itself is always on screen, at the top, in a
          short form; the Fight tab shows all of it, with the boons and the log. -->
+    <!-- THE HEROES: a tile for each class, with its picture. Press one to play it.
+         On a phone they are a row above the fight, on the Fight tab. On a wide screen
+         they are a column of their own on the left, beside the fight (style.css).
+         The line under them is the Second Climber, a legend unlock (game/companion.js). -->
+    <div class="hero-strip">
+      <div id="class-buttons" class="hero-buttons"></div>
+      <p id="companion-line" class="note companion-line" hidden>
+        Climbing beside you:
+        <select id="companion-pick" onchange="chooseCompanion(this.value)"></select>
+        <span id="companion-note"></span>
+      </p>
+    </div>
+
     <section class="play">
       <div id="away-report" class="card highlight" hidden>
         <h2>Welcome back</h2>
         <p id="away-text"></p>
         <button onclick="closeAwayReport()">Close</button>
-      </div>
-
-      <!-- THE HEROES: one button a class, always above the fight. Press one to play it.
-           The line under them is the Second Climber, a legend unlock (game/companion.js). -->
-      <div class="hero-strip">
-        <div id="class-buttons" class="choices hero-buttons"></div>
-        <p id="companion-line" class="note companion-line" hidden>
-          Climbing beside you:
-          <select id="companion-pick" onchange="chooseCompanion(this.value)"></select>
-          <span id="companion-note"></span>
-        </p>
       </div>
 
       <div class="card fight-card">

@@ -103,12 +103,10 @@ function showHeroStrip() {
   for (let className in classes) {
     let button = document.getElementById("class-" + className);
     let saved = className === playerClass ? { floor: floor, level: level } : (classSaves[className] || {});
-    let label = classes[className].icon + " " + classes[className].name;
-    if (saved.floor !== undefined) {
-      label = label + " \u00b7 floor " + saved.floor;
-    }
-    if (button.textContent !== label) {
-      button.textContent = label;
+    let label = saved.floor === undefined ? "Not played yet" : "Floor " + saved.floor + " \u00b7 level " + saved.level;
+    let note = button.querySelector(".hero-note");
+    if (note.textContent !== label) {
+      note.textContent = label;
     }
     button.classList.toggle("climbing", companionReady() && className === companionClass);
     button.title = className === playerClass ? "The class you are playing"

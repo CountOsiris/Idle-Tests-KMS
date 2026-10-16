@@ -153,11 +153,7 @@ function showClassButtons() {
     // A class still to be opened with legend marks has no button yet
     button.hidden = !classIsOpen(className);
 
-    if (className === playerClass) {
-      button.className = "chosen";
-    } else {
-      button.className = "";
-    }
+    button.classList.toggle("chosen", className === playerClass);
   }
   showHeroStrip();
 }
