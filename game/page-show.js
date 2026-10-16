@@ -8,7 +8,7 @@
 // THE LAYOUT (style.css, "The layout"): the fight is always at the top of the screen in
 // a short form, the open tab's page is under it, and the tabs are a bar along the
 // bottom, as on a phone. "tower" is the Fight tab: the whole fight, the boons and the log.
-const tabNames = ["tower", "character", "inventory", "skills", "town", "travel", "milestones", "ascension", "legend", "save"];
+const tabNames = ["tower", "character", "inventory", "skills", "town", "travel", "milestones", "ascension", "legend", "friends", "save"];
 
 function showTab(name) {
   if (!tabIsOpen(name)) {

@@ -198,7 +198,7 @@ const tabUnlocks = [
 ];
 
 // Tabs that are always open
-const openFromTheStart = ["tower", "character", "save"];
+const openFromTheStart = ["tower", "character", "friends", "save"];
 
 let unlockedTabs = [];
 
