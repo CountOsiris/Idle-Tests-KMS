@@ -2196,6 +2196,14 @@ async function checkPictures() {
     } else if (!(await pictureLoads(classes[className].art))) {
       missing.push(classes[className].name + " (" + classes[className].art + ")");
     }
+    let artWith = classes[className].artWith || {};
+    for (let kind in artWith) {
+      if (!(kind in (classes[className].gearTypes || {})) && !(kind in (classes[className].stances || {}))) {
+        missing.push(classes[className].name + " with " + kind + " (not one of its kinds)");
+      } else if (!(await pictureLoads(artWith[kind]))) {
+        missing.push(classes[className].name + " with " + kind + " (" + artWith[kind] + ")");
+      }
+    }
   }
 
   check("pictures: " + count + " monsters and bosses and " + Object.keys(classes).length + " classes, every file there"

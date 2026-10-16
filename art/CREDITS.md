@@ -93,4 +93,12 @@ bristles. Both are done by `tools/monster-art.py`.
 
 | File | Used for | Dungeon Crawl tile |
 |---|---|---|
-| `art/beasttamer.png` | The Beast Tamer (the class) | `mon/humanoids/humans/ironbound_beastmaster.png` |
+
+## The game's own pictures
+
+Made for this game (listed in `art/own-art.txt`), not taken from the tile set:
+
+- `beasttamer.png`
+- `beasttamer-bear.png`
+- `beasttamer-hawk.png`
+- `beasttamer-wolf.png`

@@ -13,6 +13,13 @@
 
 const gameUpdates = [
   {
+    version: "20261016e",
+    title: "A new Beast Tamer",
+    changes: [
+      "The Beast Tamer has a new picture: a tamer in furs with a glowing staff, and the spirit of the companion fighting beside them, whether wolf, bear or hawk. Change companion at the blacksmith and the picture changes with it. The hero tile shows all three."
+    ]
+  },
+  {
     version: "20261016d",
     title: "Perks as badges",
     changes: [

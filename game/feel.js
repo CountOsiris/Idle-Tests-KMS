@@ -376,6 +376,13 @@ function showBanner(text, kind) {
   animate("banner", "banner-show");
 }
 
+// The hero's picture in the fight: the one for the weapon or companion in hand if the
+// class has one (artWith, as the Beast Tamer has), or else the class's own
+function heroArt() {
+  let withKind = currentClass().artWith || {};
+  return withKind[kindInHand()] || currentClass().art;
+}
+
 // Shows a fighter's picture: its pixel art if it has some, otherwise its emoji.
 // A class, monster or boss gets pixel art by adding  art: "art/its-file.png"  to its entry.
 function drawPicture(id, icon, art) {

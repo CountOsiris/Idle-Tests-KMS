@@ -1164,7 +1164,7 @@ function updateScreen() {
   if (!inFight) {
     art = "";
   }
-  drawPicture("player-icon", currentClass().icon, currentClass().art);
+  drawPicture("player-icon", currentClass().icon, heroArt());
   document.getElementById("player-name").textContent = currentClass().name;
   drawPicture("monster-icon", icon, art);
 

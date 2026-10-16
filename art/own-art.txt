@@ -4,3 +4,7 @@
 #
 # Example (remove the # to use it):
 # wild-boar.png
+beasttamer.png
+beasttamer-wolf.png
+beasttamer-bear.png
+beasttamer-hawk.png

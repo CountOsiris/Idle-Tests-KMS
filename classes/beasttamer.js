@@ -43,6 +43,10 @@ classes.beasttamer = {
   name: "Beast Tamer",
   icon: "🐺",
   art: "art/beasttamer.png",
+  // The picture in the fight, with only the companion in use beside the tamer (the
+  // one above, with all three, is for the hero tiles). Any class can have this: its
+  // kinds of weapon or element, each with a picture.
+  artWith: { wolf: "art/beasttamer-wolf.png", bear: "art/beasttamer-bear.png", hawk: "art/beasttamer-hawk.png" },
   fervour: "The Hunt",
   text: "Fights beside an animal: a wolf pack that bites many times, a bear that guards you, or a hawk that dives for critical hits.",
   perLevel: { maxHp: 9, attack: 2 },
