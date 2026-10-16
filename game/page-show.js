@@ -188,7 +188,8 @@ function showUpgrades() {
     held = held + upgradeLevel(upgrade.id);
 
     let row = document.createElement("div");
-    row.className = "row";
+    row.className = "run-tile";
+    row.classList.toggle("other-kind", !fitsBuild(upgrade));
 
     let text = document.createElement("div");
     text.className = "row-text";
@@ -964,6 +965,33 @@ function showRelics() {
 
     card.appendChild(text);
     box.appendChild(card);
+  }
+
+  showRunRelics();
+}
+
+// The relics again, as small tiles in the "This run" box under the fight
+function showRunRelics() {
+  let box = document.getElementById("run-relics");
+  box.replaceChildren();
+  for (let relic of allRelics()) {
+    let held = ownedRelics.filter(function (id) { return id === relic.id; }).length;
+    if (held === 0) {
+      continue;
+    }
+    let tile = document.createElement("div");
+    tile.className = "run-tile relic-tile";
+    tile.classList.toggle("legendary", relic.legendary === true);
+    tile.classList.toggle("other-kind", forOtherKind(relic.text));
+
+    let name = document.createElement("p");
+    name.className = "row-title";
+    name.textContent = (relic.icon || "💎") + " " + relic.name + (held > 1 ? " x" + held : "");
+    let effect = document.createElement("p");
+    effect.className = "note";
+    writeWithTag(effect, relic.text, held > 1 ? " (each)" : "");
+    tile.append(name, effect);
+    box.append(tile);
   }
 }
 

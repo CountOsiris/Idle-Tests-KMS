@@ -245,15 +245,19 @@
       </div>
 
       <!-- The upgrades bosses have given this run. Always on the page, so there is no hurry to read them. -->
-      <div class="card">
+      <!-- THIS RUN: the boons bosses have given, and the relics found, as small tiles.
+           Both last until you fall. (The Items tab shows the relics in full.) -->
+      <div class="card run-card">
         <div class="card-head">
-          <h2>Boons this run</h2>
-          <p><strong id="upgrade-count" class="big-number">0</strong> held</p>
+          <h2>This run</h2>
+          <p><strong id="upgrade-count" class="big-number">0</strong> boons</p>
         </div>
-        <p class="note">Every boss you defeat gives one boon that suits the weapon you are using. Boons last until you fall. Each one also makes you stronger all round: right now <strong id="upgrade-boost">+0%</strong> attack and health.</p>
-        <p id="upgrades-empty" class="note">None yet. The first boss is on floor 5.</p>
-        <!-- The rows are made by the game (game/) from the class's upgrades list -->
-        <div id="upgrades"></div>
+        <p class="note">Every boss you defeat gives one boon that suits the weapon you are using. Boons last until you fall. Each one also makes you stronger all round: right now <strong id="upgrade-boost">+0%</strong> attack and health. The relics you hold are here too.</p>
+        <p id="upgrades-empty" class="note">No boons yet. The first boss is on floor 5.</p>
+        <!-- The tiles are made by the game (game/) from the class's upgrades list -->
+        <div id="upgrades" class="run-tiles"></div>
+        <!-- One tile for each relic held (showRelics in game/page-show.js) -->
+        <div id="run-relics" class="run-tiles"></div>
       </div>
 
       <div class="card">

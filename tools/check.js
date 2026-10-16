@@ -1295,6 +1295,11 @@ try {
       layoutProblems.push("the " + name + " tab is not in the row of its group");
     }
   }
+  // (the close button of a tab's window belongs to a wide screen: on a phone a tab is a page)
+  showTab("skills");
+  if (document.getElementById("window-close").offsetHeight > 0) {
+    layoutProblems.push("a window's close button shows on a phone");
+  }
   if (getComputedStyle(bar).position !== "fixed" || Math.abs(bar.getBoundingClientRect().bottom - window.innerHeight) > 1) {
     layoutProblems.push("the groups of tabs are not a bar along the bottom");
   }

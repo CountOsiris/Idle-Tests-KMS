@@ -18,7 +18,7 @@ const gameUpdates = [
     changes: [
       "On a computer the fight now fills the screen, as in landscape idle games: one wide scene with your hero and the monster in the middle, the tower and floor on a slim plaque at the top, and under them only what you watch: the monster's weaknesses and numbers on one line, your abilities and anything waiting. Smaller type and lighter boxes everywhere, and no paragraphs under the fight.",
       "Every tab now opens as a window over the right of the scene. The fight steps aside and keeps going in plain sight. Close the window with its ✕, or press its tab again.",
-      "The heroes stay in their column on the left. The boons of the run and the log are under the scene.",
+      "The heroes stay in their column on the left. Under the scene, one small box called This run holds your boons and your relics as tiles, beside the log. (The Items tab still shows the relics in full.)",
       "Each tower can now have a painted background behind the fight (towers.js says how). Until one is added, the scene takes the tower's colour.",
       "Phones are unchanged."
     ]

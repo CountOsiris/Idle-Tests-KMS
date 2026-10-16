@@ -3275,3 +3275,46 @@ body.help-always .row-help {
     display: none;
   }
 }
+
+/* ----- This run: boons and relics as small tiles (under the fight) -----
+   A boon or a relic was a full-width row, and the box under the fight grew taller with
+   every boss. As tiles, several sit side by side. */
+.run-tiles {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+  gap: 6px;
+  margin-top: 8px;
+}
+
+.run-tiles:empty {
+  display: none;
+}
+
+.run-tile {
+  padding: 6px 9px;
+  background: rgba(0, 0, 0, 0.25);
+  border: 1px solid var(--card-edge);
+}
+
+.run-tile .row-title {
+  font-size: 13.5px;
+}
+
+.run-tile .note {
+  margin: 1px 0 0;
+  font-size: 12px;
+  line-height: 1.3;
+}
+
+.relic-tile {
+  border-color: #3c3326;
+}
+
+.relic-tile.legendary {
+  border-color: var(--ember);
+}
+
+/* The close button of a tab's window belongs to the arena (wide screens) only */
+.window-close-tab {
+  display: none;
+}
