@@ -460,7 +460,8 @@ function showAbilities() {
     title.appendChild(abilityWaitWords[ability.id]);
     let note = document.createElement("p");
     note.className = "note";
-    note.textContent = ability.text + ". Rank " + (rank + 1) + " after " + usesForNextRank(ability.id) + " uses: everything it does +" + percent(abilityRankPower) + "." + otherBuildNote(ability.text);
+    fillNote(note, ability.text + (otherBuildNote(ability.text) === "" ? "" : " (not with the " + usingName() + ")"),
+      "Rank " + (rank + 1) + " after " + usesForNextRank(ability.id) + " uses: everything it does +" + percent(abilityRankPower) + ".");
     words.appendChild(title);
     words.appendChild(note);
 

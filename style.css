@@ -2730,3 +2730,55 @@ body.tip-showing {
     grid-template-columns: 1fr 1fr;
   }
 }
+
+/* ----- A row's "?" (fillNote in game/page-build.js) -----
+   A row shows what it gives in a few words. The rest of its explanation waits behind a
+   small "?" at the end of that line, or shows always with "Always show explanations". */
+.row-help {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 17px;
+  height: 17px;
+  margin-left: 4px;
+  padding: 0;
+  border: 1px solid var(--gold-dark);
+  border-radius: 50%;
+  background: none;
+  color: var(--gold);
+  font-size: 11px;
+  line-height: 1;
+  vertical-align: 1px;
+}
+
+.row button.row-help,
+.row button.row-help:enabled {
+  min-width: 0;
+  border-color: var(--gold-dark);
+  color: var(--gold);
+  background: none;
+}
+
+.row-help:hover {
+  border-color: var(--gold);
+  color: var(--gold-bright);
+}
+
+.row-more {
+  display: none;
+}
+
+.more-open > .row-more,
+body.help-always .row-more {
+  display: block;
+  margin-top: 3px;
+}
+
+.more-open > .row-help {
+  border-color: var(--gold);
+  background: rgba(200, 160, 80, 0.15);
+}
+
+body.help-always .row-help {
+  display: none;
+}

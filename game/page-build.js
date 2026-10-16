@@ -37,12 +37,41 @@ function addRow(box, name, whenClicked) {
   box.appendChild(row);
 }
 
-// Writes into the three parts of a row made by addRow
-function fillRow(name, title, note, buttonText, buttonOff) {
+// Writes into the three parts of a row made by addRow. "more" is optional: the
+// explanation kept behind the row's "?" (see fillNote)
+function fillRow(name, title, note, buttonText, buttonOff, more) {
   document.getElementById(name + "-title").textContent = title;
-  document.getElementById(name + "-note").textContent = note;
+  fillNote(document.getElementById(name + "-note"), note, more || "");
   document.getElementById(name).textContent = buttonText;
   document.getElementById(name).disabled = buttonOff;
+}
+
+// A ROW SAYS WHAT IT GIVES IN A FEW WORDS, AND KEEPS THE REST BEHIND A "?".
+// The short line is always shown: what you get, in numbers ("+18% attack", "x1.2
+// damage"). The "?" at its end shows the rest: the rule, the rank, the story. "Always
+// show explanations" in Settings shows every one (body.help-always, style.css).
+// (Rewritten only when the words change, so a "?" being pressed stays where it is.)
+function fillNote(element, short, more) {
+  let key = short + "|" + more;
+  if (element.dataset.words === key) {
+    return;
+  }
+  element.dataset.words = key;
+  element.replaceChildren(short);
+  if (more === "") {
+    return;
+  }
+  let button = document.createElement("button");
+  button.className = "row-help";
+  button.textContent = "?";
+  button.title = "More about this";
+  button.onclick = function () {
+    element.classList.toggle("more-open");
+  };
+  let rest = document.createElement("span");
+  rest.className = "row-more";
+  rest.textContent = more;
+  element.append(" ", button, rest);
 }
 
 // Runs once, when the game starts

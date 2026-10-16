@@ -474,7 +474,8 @@
           <div class="row">
             <div class="row-text">
               <p class="row-title">Healing potion &middot; carrying <span id="potions">0</span></p>
-              <p class="note">Drunk automatically at low health. A run can drink no more of them than the belt holds.<span id="potion-run-note"></span> <span id="potion-price-note"></span></p>
+              <!-- A short line, and the rest behind its "?" (as fillNote in game/page-build.js does it) -->
+              <p class="note">Drunk automatically at low health.<span id="potion-run-note"></span> <button class="row-help" title="More about this" onclick="this.parentElement.classList.toggle('more-open')">?</button><span class="row-more">A run can drink no more of them than the belt holds. <span id="potion-price-note"></span></span></p>
               <p class="note"><label><input type="checkbox" id="keep-potions-box" onchange="setKeepPotions(this.checked)"> Keep the belt full: buy what is missing from the bank every time you fall</label></p>
             </div>
             <button id="potion-btn" onclick="buyPotion()">Buy</button>

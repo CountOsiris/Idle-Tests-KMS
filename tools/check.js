@@ -1336,6 +1336,42 @@ try {
     smithShown && dotted && led && gone);
   showTab("character");
 
+  // A skill's short line is its one-level text with every number multiplied by its
+  // strength (scaledSkillText), so every skill's text must have a number to multiply,
+  // and multiplying by 1 must give the text back as it is
+  let unscalable = [];
+  for (let className in classes) {
+    for (let skill of classes[className].skills) {
+      if (scaledSkillText(skill.text, 1) !== skill.text || scaledSkillText(skill.text, 2) === skill.text) {
+        unscalable.push(classes[className].name + " " + skill.name);
+      }
+    }
+  }
+  check("skills: every skill's text says what one level gives in numbers, so its short line can say what all its levels give"
+    + (unscalable.length === 0 ? "" : ": NOT SO FOR " + unscalable.join(", ")), unscalable.length === 0);
+
+  // A row shows a short line; the rest is behind its "?", and "Always show explanations" shows it all
+  showTab("skills");
+  updateScreen();
+  let skillNote = document.getElementById("skill-" + currentClass().skills[0].id + "-note");
+  let rest = skillNote.querySelector(".row-more");
+  let helpWas = helpAlways;
+  setHelpAlways(false);
+  let restHidden = rest !== null && rest.offsetHeight === 0 && skillNote.querySelector(".row-help").offsetHeight > 0;
+  if (rest !== null) {
+    skillNote.querySelector(".row-help").click();
+  }
+  let restOpened = rest !== null && rest.offsetHeight > 0;
+  if (rest !== null) {
+    skillNote.querySelector(".row-help").click();
+  }
+  setHelpAlways(true);
+  let restAlways = rest !== null && rest.offsetHeight > 0 && skillNote.querySelector(".row-help").offsetHeight === 0;
+  setHelpAlways(helpWas);
+  check("rows: a skill shows a short line, its \"?\" shows the rest, and \"Always show explanations\" shows the rest of every row",
+    restHidden && restOpened && restAlways);
+  showTab("character");
+
   // 3i17. The Second Climber: locked without the legend unlock; with it, another class
   // takes its turns out of sight and the class being played is left exactly as it was
   let marksWere = legendLevels;

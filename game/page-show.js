@@ -205,6 +205,27 @@ function showUpgrades() {
   document.getElementById("upgrades-empty").hidden = held > 0;
 }
 
+// A skill's text says what ONE level gives ("+3% health and +1.5% attack"). This
+// writes what a number of levels give, by multiplying every number in it, except one
+// straight after "every" ("for every 10% of your health that is missing" stays 10%).
+// So TO ADD A SKILL: write its text for one level, as the others are.
+function scaledSkillText(text, times) {
+  return text.replace(/(every )?(\d+(?:\.\d+)?)/g, function (whole, every, number) {
+    if (every !== undefined) {
+      return whole;
+    }
+    return String(Math.round(Number(number) * times * 100) / 100);
+  });
+}
+
+// The weapon or element the class is using right now, by name ("Club", "Fire")
+function usingName() {
+  if (currentClass().stances !== undefined) {
+    return currentClass().stances[stance].name;
+  }
+  return currentClass().gearTypes[weapon];
+}
+
 // A description that begins with the name of a weapon ("Axe: ...") or of an element
 // ("Fire: ...") only works with that one. If the class is using another right now,
 // this gives a few words to say so, so nobody spends points and wonders why nothing changed.
@@ -285,8 +306,14 @@ function showSkills() {
       title = title + " · rank " + rank + " (x" + big(skillRankBoost(skill.id)) + ")";
     }
 
-    // Skills have no top level
-    fillRow("skill-" + skill.id, title, skill.text + " per level." + rankNote + otherBuildNote(skill.text), price, skillPointsLeft() < cost);
+    // The short line: all it gives now (or what one level gives, before the first).
+    // Behind the "?": one level's worth, and the next rank. (Skills have no top level.)
+    let strength = skillLevel(skill.id) * skillRankBoost(skill.id);
+    let short = strength > 0 ? scaledSkillText(skill.text, strength) : skill.text + " a level";
+    if (otherBuildNote(skill.text) !== "") {
+      short = short + " (not with the " + usingName() + ")";
+    }
+    fillRow("skill-" + skill.id, title, short, price, skillPointsLeft() < cost, "Each level: " + skill.text + "." + rankNote);
   }
 }
 
@@ -331,18 +358,31 @@ function showFavourite(boxId, favouriteButtonId) {
   }
 }
 
+// A text cut after its first sentence: { first: "+10% penetration.", rest: "Penetration cuts..." }
+// (so in a list of things to buy, the first sentence should say what it gives)
+function firstSentence(text) {
+  let end = text.indexOf(". ");
+  if (end === -1) {
+    return { first: text, rest: "" };
+  }
+  return { first: text.slice(0, end + 1), rest: text.slice(end + 2) };
+}
+
 function showTown() {
   for (let item of townUpgrades) {
     let name = "town-" + item.id;
     let price = big(townCost(item)) + " gold";
 
+    // The first sentence of its text is the short line, and the rest is behind the "?"
+    let parts = firstSentence(item.text);
+
     // The helpers are bought once. Everything else can be bought forever.
     if (townUpgradeIsMaxed(item)) {
-      fillRow(name, item.name, item.text, "Owned", true);
+      fillRow(name, item.name, parts.first, "Owned", true, parts.rest);
     } else if (item.maxLevel === 1) {
-      fillRow(name, item.name, item.text, price, bank < townCost(item));
+      fillRow(name, item.name, parts.first, price, bank < townCost(item), parts.rest);
     } else {
-      fillRow(name, item.name + " · level " + townLevel(item.id), item.text, price, bank < townCost(item));
+      fillRow(name, item.name + " · level " + townLevel(item.id), parts.first, price, bank < townCost(item), parts.rest);
     }
   }
 
@@ -520,12 +560,14 @@ function showTowers() {
     // damage does there, and the next trophy. The rule and every trophy are behind
     // "All trophies" (game/tidy.js), or the tab was a wall of text.
     let open = towersOpen[towerName] === true;
-    let text = place.text + " Your best floor here: " + best + ".";
+    // (what the place is like is behind the row's "?")
+    let text = "Your best floor here: " + best + ".";
+    let about = place.text;
     let more = document.getElementById(name + "-more");
     more.hidden = towerName === playerClass;
 
     if (towerName === playerClass) {
-      text = text + "\nYour home tower: no rule against you, and its trophies are for the other classes to win.";
+      about = about + " Your home tower: no rule against you, and its trophies are for the other classes to win.";
     } else {
       let won = place.trophies.filter(function (trophy) { return trophies.includes(trophy.id); }).length;
       let next = place.trophies.find(function (trophy) { return !trophies.includes(trophy.id); });
@@ -548,15 +590,15 @@ function showTowers() {
     button.className = "";
 
     if (towerName === tower && towerName === nextTower) {
-      fillRow(name, title, text, "You are here", true);
+      fillRow(name, title, text, "You are here", true, about);
       button.className = "chosen";
     } else if (towerName === nextTower) {
-      fillRow(name, title, text, "Entering after you fall", true);
+      fillRow(name, title, text, "Entering after you fall", true, about);
       button.className = "chosen";
     } else if (towerName === tower) {
-      fillRow(name, title, text, "Stay here", false);
+      fillRow(name, title, text, "Stay here", false, about);
     } else {
-      fillRow(name, title, text, "Enter next run", false);
+      fillRow(name, title, text, "Enter next run", false, about);
     }
   }
 }
@@ -661,18 +703,20 @@ function showAscension() {
     }
 
     let title = item.name + " · level " + fameLevel(item.id);
-    let note = item.text + " For this class: " + fameEffectText(item) + ".";
+    let note = fameLevel(item.id) > 0 ? "For this class: " + fameEffectText(item) : "Not bought yet";
+    let more = item.text;
 
     // Levels this class has not caught up with yet
     let waiting = fameLevel(item.id) - fameLevelsAtFull(item.id);
     if (waiting > 0) {
-      note = note + " (" + fameLevelsAtFull(item.id) + " at full power, " + waiting + " at " + percent(fameCatchUpShare) + " until this class ascends more.)";
+      note = note + " (" + waiting + " levels at " + percent(fameCatchUpShare) + ")";
+      more = more + " " + fameLevelsAtFull(item.id) + " levels at full power, " + waiting + " at " + percent(fameCatchUpShare) + " until this class ascends more.";
     }
 
     if (fameUpgradeIsMaxed(item)) {
-      fillRow(name, title, note, "Max", true);
+      fillRow(name, title, note, "Max", true, more);
     } else {
-      fillRow(name, title, note, big(fameCost(item)) + " fame", fame < fameCost(item));
+      fillRow(name, title, note, big(fameCost(item)) + " fame", fame < fameCost(item), more);
     }
   }
 }
