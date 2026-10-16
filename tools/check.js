@@ -1269,7 +1269,8 @@ try {
   // 3i16. The layout: the fight is on screen on every tab, above the page; the tabs are a
   // bar along the bottom; and the Fight tab shows the whole fight with the boons and the log
   let layoutProblems = [];
-  let bar = document.querySelector(".tabs");
+  // (on a phone, which is the size this check runs at, the bar holds the groups of tabs)
+  let bar = document.querySelector(".groups");
   for (let name of tabNames) {
     if (!tabIsOpen(name)) {
       continue;
@@ -1285,12 +1286,17 @@ try {
       layoutProblems.push("the " + name + " page is not under the fight");
     }
     let button = document.getElementById("tab-" + name);
-    if (button.offsetHeight === 0 || !button.dataset.icon) {
+    let group = groupOf(name);
+    let groupButton = document.getElementById("group-" + group.name);
+    if (groupButton.offsetHeight === 0 || !groupButton.dataset.icon || !button.dataset.icon) {
       layoutProblems.push("the " + name + " tab has no button with a picture");
+    }
+    if (group.tabs.filter(tabIsOpen).length > 1 && button.offsetHeight === 0) {
+      layoutProblems.push("the " + name + " tab is not in the row of its group");
     }
   }
   if (getComputedStyle(bar).position !== "fixed" || Math.abs(bar.getBoundingClientRect().bottom - window.innerHeight) > 1) {
-    layoutProblems.push("the tabs are not a bar along the bottom");
+    layoutProblems.push("the groups of tabs are not a bar along the bottom");
   }
   showTab("skills");
   let shortFight = document.querySelector(".fight-card").offsetHeight;
@@ -1302,7 +1308,32 @@ try {
   if (!(logHidden && logShown && wholeFight > shortFight + 100)) {
     layoutProblems.push("the Fight tab does not open the whole fight (" + shortFight + " pixels short, " + wholeFight + " whole)");
   }
-  check("layout: the fight is on top of every tab's page, the tabs are a bar along the bottom, and the Fight tab opens the whole fight" + (layoutProblems.length === 0 ? "" : ": " + layoutProblems.join("; ")), layoutProblems.length === 0);
+  check("layout: the fight is on top of every tab's page, the groups of tabs are a bar along the bottom, and the Fight tab opens the whole fight" + (layoutProblems.length === 0 ? "" : ": " + layoutProblems.join("; ")), layoutProblems.length === 0);
+  showTab("character");
+
+  // What is waiting to be done is a button in the fight that opens its tab, and the same
+  // thing puts the dot on that tab and its group: with gold for the blacksmith, a press
+  // on the button opens the Town, and there the button goes (the player is where it led)
+  let bankBefore = bank;
+  bank = 1e15;
+  showTab("tower");
+  updateScreen();
+  let smith = Array.from(document.querySelectorAll("#ready button")).find(function (button) { return button.textContent === "Blacksmith"; });
+  let dotted = document.getElementById("tab-town").classList.contains("alert") && document.getElementById("group-Town").classList.contains("alert");
+  let smithShown = smith !== undefined && smith.offsetHeight > 0;
+  if (smith !== undefined) {
+    smith.click();
+  }
+  let led = openTab === "town" && !Array.from(document.querySelectorAll("#ready button")).some(function (button) { return button.textContent === "Blacksmith"; });
+  bank = 0;
+  updateScreen();
+  // (the Town group may keep a dot of its own: its Towers tab has one while stuck at a wall)
+  let gone = !document.getElementById("tab-town").classList.contains("alert");
+  bank = bankBefore;
+  updateScreen();
+  check("waiting: gold for the blacksmith shows a Blacksmith button in the fight and dots on Town and its group; the button opens Town; without the gold the Town tab's dot goes"
+    + (smithShown && dotted && led && gone ? "" : ": shown " + smithShown + ", dots " + dotted + ", opens Town " + led + ", goes " + gone),
+    smithShown && dotted && led && gone);
   showTab("character");
 
   // 3i17. The Second Climber: locked without the legend unlock; with it, another class
@@ -1361,11 +1392,11 @@ try {
   let swappedBack = playerClass === first && companionClass === other;
   saveGame();
   let savedChoice = JSON.parse(localStorage.getItem(saveName)).companionClass === other;
-  showTab("skills");
+  showTab("tower");
   updateScreen();
   let stripShown = document.getElementById("class-" + other).offsetHeight > 0 && document.getElementById("class-" + other).classList.contains("climbing")
     && document.getElementById("class-" + other).getBoundingClientRect().top < document.querySelector(".fight-card").getBoundingClientRect().top;
-  check("the Second Climber: nothing happens without the unlock; with it the " + classes[other].name + " takes 300 turns out of sight and the " + currentClass().name + " is left exactly as it was; a minute of turns is owed and paid between rooms; playing it swaps the two; the heroes are above the fight on every tab",
+  check("the Second Climber: nothing happens without the unlock; with it the " + classes[other].name + " takes 300 turns out of sight and the " + currentClass().name + " is left exactly as it was; a minute of turns is owed and paid between rooms; playing it swaps the two; the heroes are above the fight on the Fight tab",
     lockedOwesNothing && lineShown && untouched && climbed && owedAMinute && paid && swapped && swappedBack && savedChoice && stripShown);
   legendLevels = marksWere;
   companionClass = companionWas;
@@ -1886,15 +1917,23 @@ try {
   check("tips: " + tips.length + " in the list, each with its own id, a title, at most 2 sentences and 30 words, and one for each of the " + tabUnlocks.length + " tabs that open"
     + (tipProblems.length === 0 ? "" : ": " + tipProblems.join("; ")), tipProblems.length === 0);
 
-  // A tab that has not opened yet is not on the bar at all, and one that has is.
+  // A tab that has not opened yet is not on the bar at all, nor in its group's row, and a
+  // group none of whose tabs has opened is not on the bar either. One that has opened is.
   // (For a while style.css showed every tab from the first minute.)
-  // (the buttons are hidden by hand here, as checkTabUnlocks does it: on these saves
-  // every tab has been earned, and it would open them all again)
+  // (as if only the Skills tab had been earned: on these saves every tab has been, and
+  // checkTabUnlocks would open them all again)
+  let unlockedWere = unlockedTabs;
+  unlockedTabs = ["skills"];
   for (let name of tabNames) {
-    document.getElementById("tab-" + name).hidden = name !== "tower" && name !== "skills";
+    document.getElementById("tab-" + name).hidden = !tabIsOpen(name);
   }
-  let closedTabs = tabNames.filter(function (name) { return document.getElementById("tab-" + name).hidden && document.getElementById("tab-" + name).offsetWidth > 0; });
-  let barShowsOpen = document.getElementById("tab-skills").offsetWidth > 0 && document.getElementById("tab-tower").offsetWidth > 0;
+  showTab("skills");
+  let closedTabs = tabNames.filter(function (name) { return !tabIsOpen(name) && document.getElementById("tab-" + name).offsetWidth > 0; })
+    .concat(tabGroups.filter(function (group) { return !group.tabs.some(tabIsOpen) && document.getElementById("group-" + group.name).offsetWidth > 0; })
+      .map(function (group) { return "the " + group.name + " group"; }));
+  let barShowsOpen = document.getElementById("tab-skills").offsetWidth > 0 && document.getElementById("group-Hero").offsetWidth > 0
+    && document.getElementById("group-Fight").offsetWidth > 0;
+  unlockedTabs = unlockedWere;
   checkTabUnlocks();
   check("tabs: one that has not opened is not on the bar, and one that has is" + (closedTabs.length === 0 ? "" : "; ON THE BAR UNOPENED: " + closedTabs.join(", ")),
     closedTabs.length === 0 && barShowsOpen);
