@@ -4094,3 +4094,89 @@ body.help-always .row-help {
     background: radial-gradient(circle at 50% 35%, rgba(220, 184, 102, 0.25), transparent 70%);
   }
 }
+
+/* ----- A phone: the This run box as one row of slots -----
+   The box took a third of a phone's screen for two or three badges (17 October 2026):
+   a big number, two labelled halves and badges with their names under them. On a phone
+   it is one line of title, then the boons and relics as small square slots in one row,
+   the relics after a thin line. What a slot does shows in a bar above the bottom tray
+   when it is tapped, so it is never cut off by the edge of the screen. */
+@media (max-width: 999px) {
+  .run-card .card-head h2 {
+    margin: 0;
+  }
+
+  .run-card .big-number {
+    font-size: 15px;
+  }
+
+  .run-card .card-head p {
+    margin: 0;
+    font-size: 13px;
+    color: var(--faded);
+  }
+
+  .run-card .run-halves {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    gap: 6px 10px;
+    margin-top: 6px;
+  }
+
+  .run-card .run-half + .run-half {
+    padding-left: 10px;
+  }
+
+  .run-card .run-label {
+    margin: 0 0 3px;
+    font-size: 9px;
+    letter-spacing: 1.5px;
+  }
+
+  .run-card .run-half .note {
+    margin: 0;
+    font-size: 12px;
+  }
+
+  .run-card .badges {
+    gap: 6px;
+  }
+
+  .run-card .badge {
+    width: 42px;
+    height: 42px;
+    border-radius: 8px;
+    background: radial-gradient(circle at 50% 35%, #2e2318, #0e0b08);
+    box-shadow: inset 0 1px 4px rgba(0, 0, 0, 0.6);
+  }
+
+  .run-card .badge-icon {
+    font-size: 22px;
+    line-height: 24px;
+  }
+
+  .run-card .badge-name {
+    display: none;
+  }
+
+  .run-card .badge-count {
+    top: auto;
+    bottom: -5px;
+    right: -5px;
+    min-width: 16px;
+    font-size: 10px;
+    line-height: 16px;
+  }
+
+  .run-card .badge:hover::after,
+  .run-card .badge:focus::after {
+    position: fixed;
+    left: 12px;
+    right: 12px;
+    bottom: 84px;
+    width: auto;
+    border-radius: 10px;
+    font-size: 13px;
+  }
+}

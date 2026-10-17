@@ -13,6 +13,13 @@
 
 const gameUpdates = [
   {
+    version: "20261017b",
+    title: "A smaller This run box on a phone",
+    changes: [
+      "On a phone the This run box is one line of title and one row of small square slots: your boons, then your relics after a thin line. Tap a slot to read what it does in a bar above the buttons at the bottom."
+    ]
+  },
+  {
     version: "20261017a",
     title: "A cleaner phone",
     changes: [
