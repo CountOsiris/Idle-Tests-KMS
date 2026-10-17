@@ -825,6 +825,8 @@ function showWaiting() {
     button.className = "ready-button";
     button.dataset.icon = document.getElementById("tab-" + thing.tab).dataset.icon;
     button.textContent = thing.words();
+    // (a phone shows only the icon, so the words are also what a finger held on it shows)
+    button.title = thing.words();
     button.onclick = function () {
       showTab(thing.tab);
       showWaiting();
@@ -1035,6 +1037,28 @@ function updateScreen() {
   document.getElementById("xp").textContent = big(experience);
   document.getElementById("fame").textContent = big(fame);
 
+  // A phone's header: the same in one row (the face is set only when the class changes,
+  // or the picture would be loaded again every turn)
+  let face = document.getElementById("phone-face");
+  if (face.dataset.className !== playerClass) {
+    face.dataset.className = playerClass;
+    if (currentClass().art !== undefined) {
+      let picture = document.createElement("img");
+      picture.src = currentClass().art;
+      picture.alt = "";
+      face.replaceChildren(picture);
+    } else {
+      face.textContent = currentClass().icon;
+    }
+  }
+  document.getElementById("phone-level").textContent = level;
+  document.getElementById("phone-hp").textContent = big(playerHp) + " / " + big(playerMaxHp);
+  document.getElementById("phone-hp-bar").style.width = Math.max(0, playerHp / playerMaxHp * 100) + "%";
+  document.getElementById("phone-xp").textContent = big(experience) + " / " + big(levelCost()) + " exp";
+  document.getElementById("phone-xp-bar").style.width = Math.min(100, experience / levelCost() * 100) + "%";
+  document.getElementById("phone-gold").textContent = big(gold);
+  document.getElementById("phone-bank").textContent = big(bank);
+
   // The tower
   document.getElementById("tower-name").textContent = towers[tower].icon + " " + towers[tower].name;
 
@@ -1053,6 +1077,8 @@ function updateScreen() {
   } else {
     document.getElementById("tower-note").textContent = "Your home tower. " + towers[tower].text;
   }
+  // (a phone hides the home tower's description, but never the rules of being away)
+  document.getElementById("tower-note").classList.toggle("home-note", !isAway());
 
   showPressure();
 

@@ -2115,7 +2115,8 @@ try {
   let guideOpens = !document.getElementById("guide").hidden && guideList.querySelectorAll(".guide-tab").length === 3 && guideList.querySelectorAll(".row-title").length === 3
     && guideList.querySelector(".guide-tab").textContent === document.getElementById("tab-tower").textContent
     && guideWords.includes(tips[0].text) && !guideWords.includes("Keystones") && document.getElementById("guide-count").textContent.includes("3 of " + tips.length)
-    && document.getElementById("guide-btn").offsetHeight > 0;
+    && (document.getElementById("guide-btn").offsetHeight > 0 || document.getElementById("phone-settings").offsetHeight > 0);
+  // (on a phone the header's Guide link gives way to the Settings button, where the Guide is)
   document.querySelector("#guide .window-close").click();
   check("tips: switched off, nothing shows and what is reached is marked seen; the Guide lists the seen tips under their tabs and no others, and its X closes it",
     offIsQuiet && guideOpens && document.getElementById("guide").hidden);

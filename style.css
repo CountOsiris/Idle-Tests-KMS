@@ -2556,87 +2556,10 @@ body.tip-showing {
   }
 }
 
-/* ----- A phone: a header of two short lines -----
-   The name, the links and the four numbers took a quarter of a phone's screen before
-   the fight began. They fit in two lines: the name with who you are, then the numbers. */
-@media (max-width: 600px) {
-  .top {
-    gap: 6px;
-    margin-bottom: 6px;
-    padding-bottom: 6px;
-  }
-
-  .brand {
-    flex-wrap: nowrap;
-    align-items: center;
-    gap: 10px;
-  }
-
-  .title {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: baseline;
-    column-gap: 8px;
-    min-width: 0;
-  }
-
-  .title h1 {
-    flex-basis: 100%;
-    font-size: 15px;
-    letter-spacing: 2px;
-    line-height: 20px;
-  }
-
-  .updates-link {
-    font-size: 12px;
-  }
-
-  .who {
-    gap: 6px;
-    min-width: 0;
-  }
-
-  .who-icon {
-    font-size: 20px;
-  }
-
-  .who-text {
-    min-width: 0;
-    font-size: 14px;
-  }
-
-  .tile {
-    padding: 0 4px;
-  }
-
-  .tile span {
-    font-size: 8.5px;
-    letter-spacing: 0.5px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-
-  .tile strong {
-    font-size: 15px;
-  }
-}
-
 /* On a phone the heroes are picked on the Fight tab only: over any other page the strip
    of heroes would push the page another line down the screen */
 @media (max-width: 999px) {
   body:not([data-tab="tower"]) .hero-strip {
-    display: none;
-  }
-
-  .who-text p {
-    white-space: nowrap;
-  }
-}
-
-/* The narrowest phones: the class's picture beside its name gives way, or the level is cut */
-@media (max-width: 400px) {
-  .who-icon {
     display: none;
   }
 }
@@ -3597,5 +3520,577 @@ body.help-always .row-help {
   body .play .fight-card.has-art .weak-line,
   body .play .fight-card.has-art #monster-numbers {
     text-shadow: 0 1px 3px #000, 0 0 8px rgba(0, 0, 0, 0.9);
+  }
+}
+
+/* ----- A phone, after Reckoner Idle -----
+   The owner asked for a cleaner phone view (17 October 2026), after the mobile game
+   Reckoner Idle. Below 1000 pixels wide:
+     - the header is one framed row: the hero's face and level, health and experience
+       bars, the gold, and a button to Settings (Updates and the Guide are there);
+     - the fight is a framed scene over the tower's picture, with the things waiting to be
+       done as small icons along its top and the floor in its corner;
+     - under it, small capitals and little boxes ("chips") in place of sentences;
+     - the heroes are round faces, and the bar along the bottom is a framed tray.
+   The two other layouts tried that day (the same with fewer changes, and one where the
+   fight stays pinned to the top) are kept in docs/design/phone-layouts. */
+.phone-top {
+  display: none;
+}
+
+@media (max-width: 999px) {
+  /* The header */
+  .top {
+    position: sticky;
+    top: 0;
+    z-index: 9;
+    max-width: none;
+    margin: 0 0 8px;
+    padding: 7px 9px;
+    background: linear-gradient(180deg, #2a2016, #17110c);
+    border: 1px solid var(--gold-dark);
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.6);
+  }
+
+  .top .brand,
+  .top .tiles {
+    display: none;
+  }
+
+  .phone-top {
+    display: flex;
+    flex: 1;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .phone-face {
+    position: relative;
+    flex: none;
+    width: 46px;
+    height: 46px;
+    padding: 0;
+    border: 2px solid var(--gold);
+    border-radius: 50%;
+    background: #0c0a08;
+  }
+
+  .phone-face-picture {
+    display: block;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    border-radius: 50%;
+    font-size: 26px;
+    line-height: 42px;
+  }
+
+  .phone-face-picture img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: 50% 15%;
+  }
+
+  .phone-level {
+    position: absolute;
+    right: -8px;
+    bottom: -6px;
+    min-width: 22px;
+    padding: 0 4px;
+    font-family: var(--title-font);
+    font-size: 11px;
+    line-height: 16px;
+    color: var(--gold-bright);
+    background: #1a130c;
+    border: 1px solid var(--gold);
+    border-radius: 9px;
+  }
+
+  .phone-bars {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    min-width: 0;
+  }
+
+  .phone-bar {
+    position: relative;
+    height: 15px;
+    overflow: hidden;
+    border: 1px solid #3a2e22;
+    border-radius: 8px;
+    background: #0b0908;
+  }
+
+  .phone-fill {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    transition: width 0.4s;
+  }
+
+  .phone-fill.health {
+    background: linear-gradient(180deg, #d0605a, #8d241d);
+  }
+
+  .phone-fill.experience {
+    background: linear-gradient(180deg, #7aa0d8, #34558f);
+  }
+
+  .phone-bar span {
+    position: relative;
+    display: block;
+    text-align: center;
+    font-size: 10.5px;
+    font-weight: 600;
+    line-height: 14px;
+    color: #f2e8d5;
+    text-shadow: 0 1px 2px #000;
+    white-space: nowrap;
+  }
+
+  .phone-gold {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    font-family: var(--title-font);
+    white-space: nowrap;
+  }
+
+  .phone-gold strong {
+    font-weight: 500;
+    font-size: 14px;
+    color: var(--gold-bright);
+  }
+
+  .phone-gold strong::before {
+    content: "◆ ";
+    color: #e0b44a;
+  }
+
+  .phone-gold > span {
+    font-size: 11px;
+    color: var(--faded);
+  }
+
+  .phone-settings {
+    position: relative;
+    flex: none;
+    width: 34px;
+    height: 34px;
+    padding: 0;
+    font-size: 16px;
+    border: 1px solid var(--gold-dark);
+    border-radius: 8px;
+    background: #1d160f;
+  }
+
+  /* (a dot on it while there is an update not yet read) */
+  .phone-settings.alert::after {
+    content: "";
+    position: absolute;
+    top: -3px;
+    right: -3px;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--ember);
+    box-shadow: 0 0 6px var(--ember);
+  }
+
+  /* Framed cards with small spaced capitals for their titles */
+  .layout {
+    gap: 8px;
+  }
+
+  .card {
+    padding: 10px;
+    border: 1px solid #4a3a24;
+    border-radius: 12px;
+    background: linear-gradient(180deg, #221a12, #15100b);
+    box-shadow: inset 0 1px 0 rgba(255, 220, 150, 0.08), 0 3px 10px rgba(0, 0, 0, 0.5);
+  }
+
+  .card h2 {
+    font-size: 12px;
+    letter-spacing: 2.5px;
+    color: #b8a888;
+  }
+
+  .run-card > .note {
+    display: none;
+  }
+
+  /* The heroes: a row of round faces, the one being played ringed in gold */
+  .hero-buttons {
+    display: flex;
+    gap: 10px;
+    overflow-x: auto;
+    padding: 2px 2px 4px;
+  }
+
+  .hero-tile {
+    flex: none;
+    display: block;
+    width: 46px;
+    height: 46px;
+    min-width: 0;
+    padding: 0;
+    overflow: hidden;
+    border: 2px solid #3c2f1e;
+    border-radius: 50%;
+    background: #0c0a08;
+  }
+
+  .hero-tile .hero-name,
+  .hero-tile .hero-note {
+    display: none;
+  }
+
+  .hero-tile .hero-face {
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    border: 0;
+    border-radius: 50%;
+  }
+
+  .hero-tile .hero-face img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: 50% 15%;
+  }
+
+  .hero-tile.chosen {
+    border-color: var(--gold-bright);
+    box-shadow: 0 0 8px rgba(220, 184, 102, 0.6);
+  }
+
+  .hero-tile:not(.chosen) img {
+    filter: grayscale(0.6) brightness(0.7);
+  }
+
+  /* The fight card: the scene first, then the words under it */
+  .fight-card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    padding: 8px;
+  }
+
+  .fight-card .stage {
+    --art-height: 118px;
+    order: -1;
+    aspect-ratio: 4 / 3;
+    /* (on a tablet the scene would be taller than the screen) */
+    max-height: 55vh;
+    min-height: 0;
+    margin: 0 0 10px;
+    padding: 0 6px 5%;
+    align-items: end;
+    border: 1px solid var(--gold-dark);
+    border-radius: 10px;
+  }
+
+  .fight-card.has-art .stage {
+    background:
+      linear-gradient(180deg, rgba(6, 5, 4, 0.35) 0%, rgba(6, 5, 4, 0) 35%, rgba(6, 5, 4, 0.1) 75%, rgba(6, 5, 4, 0.55) 100%),
+      var(--scene-art) center bottom / cover no-repeat,
+      #0c0a09;
+    box-shadow: inset 0 0 30px rgba(0, 0, 0, 0.7);
+  }
+
+  .fight-card.has-art .stage::before {
+    display: none;
+  }
+
+  .fight-card .versus {
+    visibility: hidden;
+  }
+
+  /* Over each fighter's head: the name, then the health bar and its number */
+  .fight-card .fighter {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+  }
+
+  .fight-card .fighter-name {
+    order: 1;
+    min-height: 0;
+    margin: 0 0 2px;
+    font-size: 10px;
+    letter-spacing: 1px;
+  }
+
+  .fight-card .fighter > .bar,
+  .fight-card #monster-stats {
+    order: 2;
+    width: 82%;
+    max-width: 150px;
+    margin: 0 auto;
+  }
+
+  .fight-card .stage .bar {
+    height: 7px;
+  }
+
+  .fight-card .fighter > .bar-text,
+  .fight-card #monster-stats .bar-text {
+    order: 3;
+    margin: 1px 0 4px;
+    font-size: 10.5px;
+  }
+
+  .fight-card .mover,
+  .fight-card .stage.with-art .mover {
+    order: 4;
+    height: auto;
+  }
+
+  .fight-card .shadow {
+    order: 5;
+  }
+
+  .fight-card .ghost {
+    top: auto;
+    bottom: 17px;
+  }
+
+  .fight-card .fighter-name,
+  .fight-card .bar-text {
+    text-shadow: 0 1px 3px #000, 0 0 8px #000;
+  }
+
+  /* The things waiting to be done: small square icons along the top of the scene
+     (their words show when a finger is held on one) */
+  .fight-card #ready {
+    position: absolute;
+    top: 14px;
+    left: 14px;
+    z-index: 4;
+    flex-wrap: nowrap;
+    gap: 5px;
+    margin: 0;
+  }
+
+  .fight-card .ready-button {
+    position: relative;
+    width: 36px;
+    height: 36px;
+    justify-content: center;
+    padding: 0;
+    font-size: 0;
+    border: 1px solid var(--gold);
+    border-radius: 8px;
+    background: rgba(20, 15, 10, 0.85);
+    box-shadow: 0 0 8px rgba(220, 184, 102, 0.35);
+  }
+
+  .fight-card .ready-button::before {
+    font-size: 18px;
+  }
+
+  .fight-card .ready-button::after {
+    content: "";
+    position: absolute;
+    top: -3px;
+    right: -3px;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--ember);
+    box-shadow: 0 0 6px var(--ember);
+  }
+
+  /* The floor, in the scene's top right corner */
+  .fight-card .floor-box {
+    position: absolute;
+    top: 14px;
+    right: 14px;
+    z-index: 4;
+    display: flex;
+    align-items: baseline;
+    gap: 5px;
+    padding: 2px 9px;
+    font-size: 11px;
+    letter-spacing: 1px;
+    color: var(--gold-bright);
+    background: rgba(10, 8, 6, 0.8);
+    border: 1px solid var(--gold-dark);
+    border-radius: 9px;
+  }
+
+  .fight-card .floor-box strong,
+  body:not([data-tab="tower"]) .fight-card .floor-box strong {
+    display: inline;
+    font-size: 14px;
+    line-height: 18px;
+    color: var(--gold-bright);
+  }
+
+  .fight-card .floor-box .pips,
+  .fight-card .floor-box > span:last-child {
+    display: none;
+  }
+
+  /* Under the scene: the tower's name in small capitals, then chips */
+  .fight-card .tower-head {
+    display: block;
+    margin: 0 0 8px;
+    padding: 0 0 6px;
+    border-bottom: 1px solid #3c2f1e;
+  }
+
+  .fight-card #tower-name {
+    margin: 0;
+    font-size: 12px;
+    letter-spacing: 2.5px;
+    color: #b8a888;
+  }
+
+  .fight-card #tower-name::before {
+    content: "Climbing · ";
+  }
+
+  .fight-card #tower-note {
+    margin: 4px 0 0;
+    font-size: 13px;
+  }
+
+  .fight-card #tower-note.home-note,
+  .fight-card #monster-text {
+    display: none;
+  }
+
+  .fight-card #week-note:not([hidden]),
+  .fight-card .weak-line span:not(:empty),
+  .fight-card #monster-numbers {
+    display: inline-block;
+    padding: 2px 8px;
+    font-size: 12.5px;
+    border: 1px solid #3c2f1e;
+    border-radius: 6px;
+    background: #120e0a;
+  }
+
+  .fight-card #week-note:not([hidden]) {
+    margin: 6px 0 0;
+    color: #d9b56a;
+  }
+
+  .fight-card .weak-line {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+    margin: 0 0 6px;
+  }
+
+  .fight-card #monster-numbers {
+    align-self: flex-start;
+    margin: 0 0 6px;
+  }
+
+  .fight-card #boss-rules {
+    min-height: 0;
+    font-size: 13px;
+  }
+
+  /* How you stand against the floor: two bars, the words left out */
+  .fight-card #pressure {
+    margin: 4px 0 0;
+  }
+
+  .fight-card .pressure-row {
+    grid-template-columns: 92px 1fr;
+    min-height: 0;
+    margin: 2px 0;
+    font-size: 12px;
+  }
+
+  .fight-card .pressure-words {
+    display: none;
+  }
+
+  .fight-card .ability-bar {
+    justify-content: flex-start;
+    margin: 8px 0 0;
+  }
+
+  .fight-card .goals {
+    margin-top: 8px;
+    padding: 4px 10px;
+    font-size: 13px;
+  }
+
+  /* On every other tab the scene is a short strip above the page */
+  body:not([data-tab="tower"]) .fight-card {
+    padding: 5px;
+  }
+
+  body:not([data-tab="tower"]) .fight-card .stage {
+    --art-height: 72px;
+    aspect-ratio: 2.4 / 1;
+    margin: 0;
+    padding: 0 6px 5%;
+  }
+
+  body:not([data-tab="tower"]) .fight-card .tower-head {
+    margin: 0;
+    padding: 0;
+    border: 0;
+  }
+
+  body:not([data-tab="tower"]) .fight-card .tower-head > div:first-child,
+  body:not([data-tab="tower"]) .fight-card .fighter-name {
+    display: none;
+  }
+
+  body:not([data-tab="tower"]) .fight-card #ready {
+    top: 10px;
+    left: 10px;
+  }
+
+  body:not([data-tab="tower"]) .fight-card .floor-box {
+    top: 10px;
+    right: 10px;
+  }
+
+  body:not([data-tab="tower"]) .fight-card .ready-button {
+    width: 28px;
+    height: 28px;
+  }
+
+  body:not([data-tab="tower"]) .fight-card .ready-button::before {
+    font-size: 14px;
+  }
+
+  /* The bar along the bottom: a framed tray, the icons first */
+  .groups {
+    padding: 4px 6px calc(4px + env(safe-area-inset-bottom));
+    background: linear-gradient(180deg, #2a2016, #120d09);
+    border-top: 1px solid var(--gold-dark);
+    border-radius: 14px 14px 0 0;
+  }
+
+  .groups button {
+    padding: 6px 2px 5px;
+    font-size: 9px;
+    border-top: 0;
+    border-radius: 10px;
+  }
+
+  .groups button::before {
+    font-size: 24px;
+    line-height: 28px;
+  }
+
+  .groups button.open {
+    background: radial-gradient(circle at 50% 35%, rgba(220, 184, 102, 0.25), transparent 70%);
   }
 }

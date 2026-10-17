@@ -321,6 +321,7 @@ function showSettings() {
   // A dot on the Updates button (under the game's name) until the newest entry has been
   // opened, and the Settings tab's own Updates button lit up until then
   document.getElementById("updates-btn").classList.toggle("alert", seenVersion !== gameVersion);
+  document.getElementById("phone-settings").classList.toggle("alert", seenVersion !== gameVersion);
   document.getElementById("updates-btn-settings").classList.toggle("chosen", seenVersion !== gameVersion);
   document.getElementById("settings-version").textContent = gameVersion;
 }

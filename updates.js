@@ -13,6 +13,17 @@
 
 const gameUpdates = [
   {
+    version: "20261017a",
+    title: "A cleaner phone",
+    changes: [
+      "On a phone the header is one row: your hero's face and level, your health and experience bars, your gold and bank, and a ⚙ button for Settings (Updates and the Guide are there, and the ⚙ has a dot when there is news).",
+      "The fight is a framed scene over the tower's painted background, as on a computer. Anything waiting to be done is a small icon along its top (hold a finger on one to read it), and the floor sits in its corner. On the other tabs the scene is a short strip above the page.",
+      "Under the scene, the tower's name in small capitals and the week, the monster's weaknesses and its numbers as little boxes. Fewer sentences: the home tower's and the monster's descriptions are left out, and so are the words under the two damage bars.",
+      "The heroes are a row of round faces, and the bar along the bottom is a framed tray with bigger icons.",
+      "Computers are unchanged."
+    ]
+  },
+  {
     version: "20261016e",
     title: "A new Beast Tamer, and a scene for every tower",
     changes: [

@@ -1,0 +1,8 @@
+<!doctype html><meta charset="utf-8"><title>Phone variants</title>
+<script src="save-pre.js"></script>
+<style>body{margin:0;background:#222;color:#ddd;font:14px sans-serif;display:flex;gap:12px;padding:8px}
+div{display:flex;flex-direction:column;gap:4px}iframe{width:390px;border:0;background:#000}</style>
+<script>
+const q=new URLSearchParams(location.search);const tab=q.get('tab')||'';const h=q.get('h')||844;
+for(const v of (q.get('vs')||'base,a,b,c').split(',')){document.write('<div><b>'+v+'</b><iframe style="height:'+h+'px" src="index.html?v='+v+'&tab='+tab+'"></iframe></div>')}
+</script>
